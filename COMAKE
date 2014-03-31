@@ -111,4 +111,5 @@ CONFIGS('public/configure@base')
 CONFIGS('public/uconv@base')
 CONFIGS('app/search/sep/anti-spam/gezi@base')
 
-Application('melt',Sources('melt.cc'))
+srcs = GLOB('./src/Prediction/Instances/*.cpp'.replace('./',RELATIVE_PATH))
+Application('melt',Sources('melt.cc', srcs))
