@@ -92,7 +92,7 @@ if GCC_HIGH  == 1:
 LDFLAGS('-lpthread -lcrypto -lrt -lssl -lldap -lcurl -ldl -rdynamic', GCC_LDFLAGS)
 
 #头文件路径.
-INCPATHS('./'.replace('./', RELATIVE_PATH))
+INCPATHS('./ ./include/'.replace('./', RELATIVE_PATH))
 
 #使用库
 #LIBS('./librsc-sender.a')
@@ -110,6 +110,5 @@ CONFIGS('lib2-64/others-ex@base')
 CONFIGS('public/configure@base')
 CONFIGS('public/uconv@base')
 CONFIGS('app/search/sep/anti-spam/gezi@base')
-srcs=GLOB('./src/*.cpp ./src/Prediction/Instances/*.cpp'.replace('./',RELATIVE_PATH))
 
-Application('melt',Sources('melt.cc', srcs))
+Application('melt',Sources('melt.cc'))
