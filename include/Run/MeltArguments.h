@@ -25,8 +25,9 @@ namespace gezi {
 		int numRuns;
 		int numThreads;
 		int randSeed;
-		string testDatafile;
 		string datafile;
+		string testDatafile;
+		string validationDatafile;
 		string modelfile;
 		string modelfileCode;
 		string modelfileText;
