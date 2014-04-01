@@ -124,6 +124,15 @@ namespace gezi {
 			return data;
 		}
 
+		string GetSummary()
+		{
+			uint64 pcnt = PositiveCount();
+			return (format(
+				"Total instance num: %1% PostiveCount: %2% NegativeCount %3% PostiveRatio: %4%")
+				% InstanceNum() % pcnt % 
+				(InstanceNum() - pcnt) % ((double) pcnt * 100/ InstanceNum())).str();
+		}
+
 		uint64 PositiveCount()
 		{
 			return from(data) >> where([](const InstancePtr& a) { return a->label > 0; })

@@ -30,17 +30,17 @@ namespace gezi {
 
 	void InstanceParser::ParseArguments()
 	{
-		_cmd.labelIdx = FLAGS_labelIdx;
-		_cmd.weightIdx = FLAGS_weightIdx;
-		_cmd.namesIdx = FLAGS_nameIdx;
-		_cmd.attrsIdx = FLAGS_attrIdx;
-		_cmd.hasHeader = FLAGS_header;
-		_cmd.sep = FLAGS_sep;
-		_cmd.ncsep = FLAGS_ncsep;
-		_cmd.excl = FLAGS_excl;
-		_cmd.incl = FLAGS_incl;
-		_cmd.keepSparse = FLAGS_sparse;
-		_cmd.keepDense = FLAGS_dense;
+		_args.labelIdx = FLAGS_labelIdx;
+		_args.weightIdx = FLAGS_weightIdx;
+		_args.namesIdx = FLAGS_nameIdx;
+		_args.attrsIdx = FLAGS_attrIdx;
+		_args.hasHeader = FLAGS_header;
+		_args.sep = FLAGS_sep;
+		_args.ncsep = FLAGS_ncsep;
+		_args.excl = FLAGS_excl;
+		_args.incl = FLAGS_incl;
+		_args.keepSparse = FLAGS_sparse;
+		_args.keepDense = FLAGS_dense;
 	}
 
 }  //----end of namespace gezi

@@ -46,30 +46,35 @@ namespace gezi {
 	public:
 		struct Arguments
 		{
-			//input
-			int labelIdx;
-			int weightIdx;
-			string namesIdx;
-			string attrsIdx;
-			bool hasHeader;
-			string sep;
-			string ncsep;
-			string excl;
-			string incl;
-			bool keepSparse;
-			bool keepDense;
+			int labelIdx = -1;
+			int weightIdx = -1;
+			//nameIdx|, seprated like 1,2,3, name filed will be shown in .inst.txt result file
+			string namesIdx = "";
+			//|the same as nameIdx, attrIdx will be filed to be ignored
+			string attrsIdx = "";
+			bool hasHeader = false; //|header: no header by default
+			string sep = "tab"; //|or space or something like , ; etc. 
+			string ncsep = "|"; //|contact names filed like pid|title|content 4003|good title|good content
+			//|excl vs. incl determines whether features for the expression below are included or excluded. expression=[s:substringList | r:regexList | i:indexList | e:exactNameList]
+			string excl = "";
+			//|use excl will exlude those specified, use incl will only include those specified, use incl + excl means first incl then excl
+			string incl = "";
+			bool keepSparse = false; //sparse|
+			bool keepDense = false; //dense|
 		};
-		
-		virtual ~InstanceParser()
-		{
-		}
+
 		InstanceParser()
 		{
 			ParseArguments();
 			InitParam();
 		}
-		
+
 		void ParseArguments();
+
+		Arguments& Args()
+		{
+			return _args;
+		}
 
 		ivec GetIndexesFromInput(string input)
 		{
@@ -95,32 +100,32 @@ namespace gezi {
 		}
 		void InitParam()
 		{
-			if (_cmd.sep == "tab")
+			if (_args.sep == "tab")
 			{
 				_sep = "\t";
 			}
-			else if (_cmd.sep == "space")
+			else if (_args.sep == "space")
 			{
 				_sep = " ";
 			}
-			else if (_cmd.sep.empty())
+			else if (_args.sep.empty())
 			{
 				_sep = "\t";
 			}
 			else
 			{
-				_sep = _cmd.sep;
+				_sep = _args.sep;
 			}
 
-			if (!_cmd.attrsIdx.empty())
+			if (!_args.attrsIdx.empty())
 			{
-				_attributesIdx = GetIndexesFromInput(_cmd.attrsIdx);
+				_attributesIdx = GetIndexesFromInput(_args.attrsIdx);
 				PVEC(_attributesIdx);
 			}
 
-			if (!_cmd.namesIdx.empty())
+			if (!_args.namesIdx.empty())
 			{
-				_namesIdx = GetIndexesFromInput(_cmd.namesIdx);
+				_namesIdx = GetIndexesFromInput(_args.namesIdx);
 				PVEC(_namesIdx);
 			}
 		}
@@ -191,13 +196,13 @@ namespace gezi {
 		BitArray GetSelectedArray()
 		{
 			BitArray filterArray;
-			if (!_cmd.incl.empty())
+			if (!_args.incl.empty())
 			{
-				ivec incls = GetSelectedFeatures(_cmd.incl);
+				ivec incls = GetSelectedFeatures(_args.incl);
 
 				if (incls.empty())
 				{
-					LOG(WARNING) << "Do not has any match for incl " << _cmd.incl;
+					LOG(WARNING) << "Do not has any match for incl " << _args.incl;
 				}
 				else
 				{
@@ -210,13 +215,13 @@ namespace gezi {
 				}
 			}
 
-			if (!_cmd.excl.empty())
+			if (!_args.excl.empty())
 			{
-				ivec excls = GetSelectedFeatures(_cmd.excl);
+				ivec excls = GetSelectedFeatures(_args.excl);
 
 				if (excls.empty())
 				{
-					LOG(WARNING) << "Do not has any match for excl " << _cmd.excl;
+					LOG(WARNING) << "Do not has any match for excl " << _args.excl;
 				}
 				else
 				{
@@ -259,15 +264,15 @@ namespace gezi {
 				_columnTypes[idx] = ColumnType::Name;
 			}
 
-			if (_cmd.weightIdx >= 0)
+			if (_args.weightIdx >= 0)
 			{
-				_columnTypes[_cmd.weightIdx] = ColumnType::Weight;
+				_columnTypes[_args.weightIdx] = ColumnType::Weight;
 			}
 
-			if (_cmd.labelIdx >= 0)
+			if (_args.labelIdx >= 0)
 			{
-				_columnTypes[_cmd.labelIdx] = ColumnType::Label;
-				_labelIdx = _cmd.labelIdx;
+				_columnTypes[_args.labelIdx] = ColumnType::Label;
+				_labelIdx = _args.labelIdx;
 			}
 
 			if (startswith(_firstColums[0], "#"))
@@ -395,14 +400,14 @@ namespace gezi {
 						break;
 					}
 				}
-				if (!_cmd.keepDense)
+				if (!_args.keepDense)
 				{//if not keep dense   如果是0值数目<= FeatureNum/2转 sparse
 					features.TrySparse();
 				}
-				instance.name = join(instance.names, _cmd.ncsep);
+				instance.name = join(instance.names, _args.ncsep);
 			}
 		}
-		
+
 		void CreateInstancesFromSparseFormat(svec& lines, uint64 start)
 		{
 			Noticer nt("CreateInstancesFromSparseFormat", true);
@@ -415,7 +420,7 @@ namespace gezi {
 				Instance& instance = *_instances.data[i - start];
 				Vector& features = instance.features;
 				svec l = split(line, _sep);
-				
+
 				for (size_t j = 0; j < l.size(); j++)
 				{
 					string item = l[j];
@@ -445,11 +450,11 @@ namespace gezi {
 						}
 					}
 				}
-				if (!_cmd.keepSparse)
+				if (!_args.keepSparse)
 				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
 					features.TryDense();
 				}
-				instance.name = join(instance.names, _cmd.ncsep);
+				instance.name = join(instance.names, _args.ncsep);
 			}
 		}
 
@@ -519,10 +524,10 @@ namespace gezi {
 			{
 				PVEC_TOPN(_instances.schema.featureNames, 10);
 			}
-			PVAL(_cmd.keepSparse);
-			PVAL(_cmd.keepDense);
+			PVAL(_args.keepSparse);
+			PVAL(_args.keepDense);
 		}
-		
+
 		Instances&& Parse(const string& dataFile)
 		{
 			vector<string> lines = read_lines(dataFile);
@@ -532,7 +537,7 @@ namespace gezi {
 			}
 			int instanceNum = lines.size();
 
-			if (_cmd.hasHeader)
+			if (_args.hasHeader)
 			{
 				instanceNum--;
 				if (!instanceNum)
@@ -543,7 +548,7 @@ namespace gezi {
 			}
 
 			ParseFirstLine(lines);
-			
+
 			_selectedArray = GetSelectedArray();
 
 			_instanceNum = lines.size() - _hasHeader;
@@ -559,7 +564,7 @@ namespace gezi {
 			}
 
 			PrintInfo();
-			
+
 			return move(_instances);
 		}
 
@@ -580,7 +585,7 @@ namespace gezi {
 		int _labelIdx = -1;
 
 		//----params
-		Arguments _cmd;
+		Arguments _args;
 		string _sep;
 		ivec _namesIdx;
 		ivec _attributesIdx;

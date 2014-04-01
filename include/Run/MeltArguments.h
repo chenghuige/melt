@@ -18,24 +18,24 @@ namespace gezi {
 
 	struct MeltArguments
 	{
-		string command;
-		string classifierName;
-		string classifierSettings;
-		int numFolds;
-		int numRuns;
-		int numThreads;
-		int randSeed;
-		string datafile;
-		string testDatafile;
-		string validationDatafile;
-		string modelfile;
-		string modelfileCode;
-		string modelfileText;
-		bool stratify;
-		bool foldsSequential;
-		double trainProportion;
+		//c|Options are: Train, Test, CV (cross validation), TrainTest, FeatureSelection, CreateInstances
+		string command = "cv"; 
+		string classifierName = "LinearSvm";
+		string classifierSettings = "";
+		int numFolds = 5;
+		int numRuns = 1;
+		int numThreads = 0;
+		int randSeed = 0;
+		string datafile = "";
+		string testDatafile = "";
+		string validationDatafile = "";
+		string modelfile = "";
+		string modelfileCode = "";
+		string modelfileText = "";
+		bool stratify = false;
+		bool foldsSequential = false;
+		double trainProportion = 1.0;
 	};
-
 }  //----end of namespace gezi
 
 #endif  //----end of RUN__MELT_ARGUMENTS_H_

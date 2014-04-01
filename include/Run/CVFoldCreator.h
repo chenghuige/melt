@@ -31,6 +31,7 @@ namespace gezi {
 		}
 
 		//对每一个instance给一个分组编号，确保每一组的正反比例一致 most commonly used
+		//和TLC保持一致
 		static ivec CreateFoldIndicesBalanced(const ListInstances& data, int numFolds)
 		{
 			ivec foldIndices(data.size(), -1);
