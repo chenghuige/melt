@@ -16,7 +16,7 @@
 #define protected public
 #include "common_util.h"
 #include "Prediction/Instances/InstanceParser.h"
-#include "Prediction/Normalization/SimpleMinMaxNormalizer.h"
+#include "Prediction/Normalization/MinMaxNormalizer.h"
 using namespace std;
 using namespace gezi;
 DEFINE_int32(level, 0, "min log level");
@@ -29,7 +29,7 @@ TEST(test_normalize, func)
 	InstanceParser parser;
 	Instances instances = parser.Parse(FLAGS_i);
 	Pval(instances.Size());
-	NormalizerPtr normalizer = make_shared<SimpleMinMaxNormalizer>();
+	NormalizerPtr normalizer = make_shared<MinMaxNormalizer>();
 	Pval(instances.data[0]->name);
 	(*(instances.data[0])).features.ForEach([](int index, double value)
 	{

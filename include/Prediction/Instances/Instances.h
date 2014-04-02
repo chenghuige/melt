@@ -61,6 +61,16 @@ namespace gezi {
 			return schema.FeatureNum();
 		}
 
+		svec FeatureNames() const
+		{
+			return schema.featureNames;
+		}
+		
+		svec& FeatureNames()
+		{
+			return schema.featureNames;
+		}
+
 		bool HasHeader() const
 		{
 			return schema.HasHeader();

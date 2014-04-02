@@ -13,10 +13,10 @@
 
 #ifndef PREDICTION__NORMALIZATION__MIN_MAX_NORMALIZER_H_
 #define PREDICTION__NORMALIZATION__MIN_MAX_NORMALIZER_H_
-
+#include "Prediction/Normalization/AffineNormalizer.h"
 namespace gezi {
 
-class MinMaxNormalizer 
+class MinMaxNormalizer : public AffineNormalizer
 {
 public:
 	virtual void Process(const Vector& vec)
@@ -53,12 +53,14 @@ public:
 			_scales[i] -= _offsets[i];
 			if (_scales[i] <= 0)
 			{
-				LOG(WARNING) << "Feature " << index << " : " << _featureNames[index]
+				LOG(WARNING) << "Feature " << i << " : " << _featureNames[i]
 					<< " with the same value so do not take in effect";
 			}
 		}
 	}
 protected:
+	Fvec _offsets;
+	Fvec _scales;
 private:
 	bool _isFirst = true;
 
