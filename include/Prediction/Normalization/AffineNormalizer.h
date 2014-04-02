@@ -25,7 +25,6 @@ namespace gezi {
 			{
 				if (_scales[index] <= 0)
 				{
-					VLOG(6) << "Feature " << index << " with the same value so do not take in effect";
 					return value;
 				}
 
@@ -57,14 +56,9 @@ namespace gezi {
 
 		}
 
-		virtual void NormalizeDense(Vector& vec) override
+		virtual void NormalizeCore(Vector& vec) override
 		{
-			NormalizeDenseCore(vec, _func);
-		}
-
-		virtual void NormalizeSparse(Vector& vec) override
-		{
-			NormalizeSparseCore(vec, _func);
+			Normalize(vec, _func);
 		}
 
 	protected:

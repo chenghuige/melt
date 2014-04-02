@@ -51,9 +51,12 @@ public:
 		for (size_t i = 0; i < _featureNum; i++)
 		{
 			_scales[i] -= _offsets[i];
+			if (_scales[i] <= 0)
+			{
+				LOG(WARNING) << "Feature " << index << " : " << _featureNames[index]
+					<< " with the same value so do not take in effect";
+			}
 		}
-		PVEC(_offsets);
-		PVEC(_scales);
 	}
 protected:
 private:

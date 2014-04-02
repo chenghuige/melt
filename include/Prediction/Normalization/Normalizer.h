@@ -39,28 +39,29 @@ namespace gezi {
 		//同时是norm之后覆盖原结果 如果需要 
 		void Normalize(Vector& vec)
 		{
-			if (vec.IsDense())
-			{
-				NormalizeDense(vec);
-			}
-			else
-			{
-				NormalizeSparse(vec);
-			}
+			NormalizeCore(vec);
 		}
 
-		virtual void NormalizeDense(Vector& vec)
-		{
-
-		}
-
-		virtual void NormalizeSparse(Vector& vec)
+		virtual void NormalizeCore(Vector& vec)
 		{
 
 		}
 
 		template<typename Func>
-		void NormalizeDenseCore(Vector& vec, Func func)
+		void Normalize(Vector& vec, Func func)
+		{
+			if (vec.IsDense())
+			{
+				NormalizeDense(vec, func);
+			}
+			else
+			{
+				NormalizeSparse(vec, func);
+			}
+		}
+
+		template<typename Func>
+		void NormalizeDense(Vector& vec, Func func)
 		{
 			vec.ForEachDense([&func](int index, double& value)
 			{
@@ -70,7 +71,7 @@ namespace gezi {
 
 	
 		template<typename Func>
-		void NormalizeSparseCore(Vector& vec, Func func)
+		void NormalizeSparse(Vector& vec, Func func)
 		{
 			Vector result(_featureNum);
 			vec.ForEachAllSparse([&func, &result](int index, double value)
@@ -96,19 +97,22 @@ namespace gezi {
 		void Normalize(Instances& instances)
 		{
 			_featureNum = instances.FeatureNum();
+			_featureNames = instances.FeatureNames();
 			Begin();
 			for (InstancePtr& instance : instances)
 			{
 				Process(instance->features);
 			}
 			Finalize();
-			for (InstancePtr& instance : instances)
+#pragma omp parallel for //omp not work for foreach loop ? @TODO
+			for (int i = 0; i < instances.Size(); i++)
 			{
-				Normalize(instance->features);
+				Normalize(instances[i]->features);
 			}
 		}
 	protected:
 		int _featureNum;
+		svec _featureNames;
 		Float _lower = 0.0;
 		Float _upper = 1.0;
 		Float _range;
