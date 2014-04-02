@@ -13,21 +13,66 @@
 
 #ifndef PREDICTION__NORMALIZATION__AFFINE_NORMALIZER_H_
 #define PREDICTION__NORMALIZATION__AFFINE_NORMALIZER_H_
-
+#include "Prediction/Normalization/Normalizer.h"
 namespace gezi {
 
-class AffineNormalizer 
-{
-public:
-	AffineNormalizer() 
+	class AffineNormalizer : public Normalizer
 	{
+	public:
+		AffineNormalizer()
+		{
+			_func = [this](int index, Float value)
+			{
+				if (_scales[index] <= 0)
+				{
+					VLOG(6) << "Feature " << index << " with the same value so do not take in effect";
+					return value;
+				}
 
-	}
+				if (_trunct)
+				{
+					if (value >= _offsets[index] + _scales[index])
+						value = _upper;
+					else if (value <= _offsets[index])
+						value = _lower;
+					else
+						value = _lower + _range * (value - _offsets[index]) / _scales[index];
+				}
+				else
+				{
+					value = _lower + _range * (value - _offsets[index]) / _scales[index];
+				}
+				return value;
+			};
+		}
 
-protected:
-private:
+		virtual void Begin() override
+		{
+			_offsets.resize(_featureNum, 0);
+			_scales.resize(_featureNum, 0);
+		}
 
-};
+		virtual void Finalize() override
+		{
+
+		}
+
+		virtual void NormalizeDense(Vector& vec) override
+		{
+			NormalizeDenseCore(vec, _func);
+		}
+
+		virtual void NormalizeSparse(Vector& vec) override
+		{
+			NormalizeSparseCore(vec, _func);
+		}
+
+	protected:
+		Fvec _offsets;
+		Fvec _scales;
+	private:
+		std::function<Float(int,Float)> _func;
+	};
 
 }  //----end of namespace gezi
 

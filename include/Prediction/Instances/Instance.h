@@ -61,6 +61,11 @@ public:
 		features.ToDense(newFeatures);
 	}
 
+	Vector& Features()
+	{
+		return features;
+	}
+
 	Vector features;
 	bool hasMissingFeatures = false;
 	Float label = -1.0;

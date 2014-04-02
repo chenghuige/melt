@@ -45,6 +45,13 @@ namespace gezi {
 			_values.swap(values);
 		}
 
+		void Swap(Vector& other)
+		{
+			_length = other._length;
+			_indices.swap(other._indices);
+			_values.swap(other._values);
+		}
+
 		//to a densnse format from values
 		Vector(vector<Float>& values)
 		{
@@ -103,7 +110,7 @@ namespace gezi {
 			_values.reserve(_length);
 		}
 
-		void TrySparse()
+		void Sparsify()
 		{
 			int nonZeroNum = 0;
 			for (auto item : _values)
@@ -114,15 +121,15 @@ namespace gezi {
 				}
 			}
 			//@TODO 检查特征全是0的情况
-			if (nonZeroNum < _length / 2)
+			if (nonZeroNum < _length * _maxSparsity)
 			{
 				ToSparse();
 			}
 		}
 
-		void TryDense()
+		void Densify()
 		{
-			if (Count() >= _length / 2)
+			if (Count() >= _length * _maxSparsity)
 			{
 				ToDense();
 			}
@@ -201,6 +208,45 @@ namespace gezi {
 		}
 
 		template<typename ValueVistor>
+		void ForEachAll(ValueVistor visitor) const
+		{
+			if (IsDense())
+			{
+				for (size_t i = 0; i < _values.size(); i++)
+				{
+					visitor(i, _values[i]);
+				}
+			}
+			else
+			{
+				size_t j = 0;
+				for (size_t i = 0; i < _values.size(); i++)
+				{
+					while (j < _indices[i])
+					{
+						visitor(j++, 0);
+					}
+					visitor(j++, _values[i]);
+				}
+			}
+		}
+
+		template<typename ValueVistor>
+		void ForEachAllSparse(ValueVistor visitor) const
+		{
+				size_t j = 0;
+				for (size_t i = 0; i < _values.size(); i++)
+				{
+					while (j < _indices[i])
+					{
+						visitor(j++, 0);
+					}
+					visitor(j++, _values[i]);
+				}
+		}
+
+
+		template<typename ValueVistor>
 		void ForEach(ValueVistor visitor)
 		{
 			if (IsDense())
@@ -218,6 +264,87 @@ namespace gezi {
 				}
 			}
 		}
+
+		template<typename ValueVistor>
+		void ForEachDense(ValueVistor visitor) const
+		{
+			for (size_t i = 0; i < _values.size(); i++)
+			{
+				visitor(i, _values[i]);
+			}
+		}
+		template<typename ValueVistor>
+		void ForEachDense(ValueVistor visitor)
+		{
+			for (size_t i = 0; i < _values.size(); i++)
+			{
+				visitor(i, ref(_values[i]));
+			}
+		}
+
+		template<typename ValueVistor>
+		void ForEachSparse(ValueVistor visitor) const
+		{
+			for (size_t i = 0; i < _values.size(); i++)
+			{
+				visitor(_indices[i], _values[i]);
+			}
+		}
+
+		template<typename ValueVistor>
+		void ForEachSparse(ValueVistor visitor) 
+		{
+			for (size_t i = 0; i < _values.size(); i++)
+			{
+				visitor(_indices[i], ref(_values[i]));
+			}
+		}
+
+		//注意自己保证稀疏格式value不是0 一般用于print 只读 还ok
+		template<typename ValueVistor>
+		void ForEachNonZero(ValueVistor visitor) const
+		{
+			if (IsDense())
+			{
+				for (size_t i = 0; i < _values.size(); i++)
+				{
+					if (_values[i])
+					{
+						visitor(i, _values[i]);
+					}
+				}
+			}
+			else
+			{
+				for (size_t i = 0; i < _values.size(); i++)
+				{
+					visitor(_indices[i], _values[i]);
+				}
+			}
+		}
+
+		template<typename ValueVistor>
+		void ForEachNonZero(ValueVistor visitor) 
+		{
+			if (IsDense())
+			{
+				for (size_t i = 0; i < _values.size(); i++)
+				{
+					if (_values[i])
+					{
+						visitor(i, ref(_values[i]));
+					}
+				}
+			}
+			else
+			{
+				for (size_t i = 0; i < _values.size(); i++)
+				{
+					visitor(_indices[i], ref(_values[i]));
+				}
+			}
+		}
+
 	public:
 		/// True if the Vector is using sparse representation.
 		inline bool IsDense() const
@@ -265,6 +392,7 @@ namespace gezi {
 		vector<int> _indices; //不使用Node(index,value)更加灵活 同时可以允许一项为空
 		vector<Float> _values;
 		int _length = 0;
+		Float _maxSparsity = 0.5;
 	};
 
 }  //----end of namespace gezi

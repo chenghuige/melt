@@ -39,6 +39,7 @@ namespace gezi {
 			TRAIN_TEST,
 			FEATURE_SELECTION,
 			CREATE_INSTANCES,
+			NORMALIZE
 		};
 
 		MeltArguments& Cmd()
@@ -126,6 +127,13 @@ namespace gezi {
 
 		}
 
+		void RunNormalizeInstances()
+		{
+			string infile = _cmd.datafile;
+			string outfile = endswith(infile, ".txt") ? boost::replace_last_copy(".txt", ".normed.txt") : infile + ".normed";
+			Pval(outfile);
+		}
+
 		void RunExperiments()
 		{
 			Pval(omp_get_num_procs());
@@ -161,6 +169,9 @@ namespace gezi {
 				PrintCommands();
 				//THROW("Unhandled test command: " + _cmd.command);
 				break;
+			case RunType::NORMALIZE:
+				RunNormalizeInstances();
+				break;
 			default:
 				LOG(WARNING) << commandStr << " is not supported yet ";
 				RunCrossValidation();
@@ -178,7 +189,8 @@ namespace gezi {
 			{ "test", RunType::TEST },
 			{ "traintest", RunType::TRAIN_TEST },
 			{ "featureselection", RunType::FEATURE_SELECTION },
-			{ "createinstances", RunType::CREATE_INSTANCES }
+			{ "createinstances", RunType::CREATE_INSTANCES },
+			{ "norm", RunType::NORMALIZE }
 		};
 	};
 } //end of namespace gezi

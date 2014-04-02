@@ -1,25 +1,26 @@
 /**
  *  ==============================================================================
  *
- *          \file   Prediction/Normalization/MinMaxNormalizer.h
+ *          \file   Prediction/Normalization/SimpleMinMaxNormalizer.h
  *
  *        \author   chenghuige
  *
- *          \date   2014-04-01 17:07:34.193483
+ *          \date   2014-04-02 10:30:54.515916
  *
  *  \Description:
  *  ==============================================================================
  */
 
-#ifndef PREDICTION__NORMALIZATION__MIN_MAX_NORMALIZER_H_
-#define PREDICTION__NORMALIZATION__MIN_MAX_NORMALIZER_H_
+#ifndef PREDICTION__NORMALIZATION__SIMPLE_MIN_MAX_NORMALIZER_H_
+#define PREDICTION__NORMALIZATION__SIMPLE_MIN_MAX_NORMALIZER_H_
 
+#include "Prediction/Normalization/AffineNormalizer.h"
 namespace gezi {
 
-class MinMaxNormalizer 
+class SimpleMinMaxNormalizer : public AffineNormalizer
 {
 public:
-	virtual void Process(const Vector& vec)
+	virtual void Process(const Vector& vec) 
 	{
 		if (_isFirst)
 		{
@@ -58,9 +59,9 @@ public:
 protected:
 private:
 	bool _isFirst = true;
-
+	
 };
 
 }  //----end of namespace gezi
 
-#endif  //----end of PREDICTION__NORMALIZATION__MIN_MAX_NORMALIZER_H_
+#endif  //----end of PREDICTION__NORMALIZATION__SIMPLE_MIN_MAX_NORMALIZER_H_

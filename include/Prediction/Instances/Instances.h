@@ -27,6 +27,9 @@ namespace gezi {
 		Instances(const Instances&) = default;
 		Instances& operator = (const Instances&) = default;
 
+		typedef ListInstances::iterator Iter;
+		typedef ListInstances::const_iterator ConstIter;
+
 		Instances(const HeaderSchema& schema_)
 			:schema(schema_)
 		{
@@ -148,6 +151,26 @@ namespace gezi {
 		const InstancePtr& operator[](uint64 index) const
 		{
 			return data[index];
+		}
+
+		Iter begin()
+		{
+			return data.begin();
+		}
+
+		Iter end()
+		{
+			return data.end();
+		}
+
+		ConstIter begin() const
+		{
+			return data.begin();
+		}
+
+		ConstIter end() const
+		{
+			return data.end();
 		}
 
 	public:

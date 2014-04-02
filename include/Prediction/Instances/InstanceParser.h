@@ -400,11 +400,22 @@ namespace gezi {
 						break;
 					}
 				}
-				if (!_args.keepDense)
-				{//if not keep dense   如果是0值数目<= FeatureNum/2转 sparse
-					features.TrySparse();
+				
+				if (_args.keepSparse)
+				{
+					features.ToSparse();
 				}
-				instance.name = join(instance.names, _args.ncsep);
+				else if (!_args.keepDense)
+				{//if not keep dense   如果是0值数目<= FeatureNum/2转 sparse
+					features.Sparsify();
+				}
+				
+				if (!instance.names.empty())
+				{
+					if (startswith(instance.names[0], "_"))
+						instance.names[0] = instance.names[0].substr(1);
+					instance.name = join(instance.names, _args.ncsep);
+				}
 			}
 		}
 
@@ -450,9 +461,13 @@ namespace gezi {
 						}
 					}
 				}
-				if (!_args.keepSparse)
+				if (_args.keepDense)
+				{
+					features.ToDense();
+				}
+				else if (!_args.keepSparse)
 				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
-					features.TryDense();
+					features.Densify();
 				}
 				instance.name = join(instance.names, _args.ncsep);
 			}
@@ -496,8 +511,9 @@ namespace gezi {
 		void ParseFirstLine(svec lines)
 		{
 			string line = lines[0];
-			_firstColums = split(line, _sep);
+			_firstColums = split(line, _sep + " ");
 			_columnNum = _firstColums.size();
+			Pval(_columnNum);
 			if (_columnNum < 2)
 			{
 				LOG(FATAL) << "The header must at least has label and one feature";
