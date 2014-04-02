@@ -5,7 +5,7 @@
  *
  *        \author   chenghuige
  *
- *          \date   2014-04-01 17:07:34.193483
+ *          \date   2014-04-02 10:30:54.515916
  *
  *  \Description:
  *  ==============================================================================
@@ -13,13 +13,14 @@
 
 #ifndef PREDICTION__NORMALIZATION__MIN_MAX_NORMALIZER_H_
 #define PREDICTION__NORMALIZATION__MIN_MAX_NORMALIZER_H_
+
 #include "Prediction/Normalization/AffineNormalizer.h"
 namespace gezi {
 
 class MinMaxNormalizer : public AffineNormalizer
 {
 public:
-	virtual void Process(const Vector& vec)
+	virtual void Process(const Vector& vec) 
 	{
 		if (_isFirst)
 		{
@@ -51,19 +52,14 @@ public:
 		for (size_t i = 0; i < _featureNum; i++)
 		{
 			_scales[i] -= _offsets[i];
-			if (_scales[i] <= 0)
-			{
-				LOG(WARNING) << "Feature " << i << " : " << _featureNames[i]
-					<< " with the same value so do not take in effect";
-			}
 		}
+		PVEC(_offsets);
+		PVEC(_scales);
 	}
 protected:
-	Fvec _offsets;
-	Fvec _scales;
 private:
 	bool _isFirst = true;
-
+	
 };
 
 }  //----end of namespace gezi
