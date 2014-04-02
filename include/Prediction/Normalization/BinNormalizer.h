@@ -13,10 +13,10 @@
 
 #ifndef PREDICTION__NORMALIZATION__BIN_NORMALIZER_H_
 #define PREDICTION__NORMALIZATION__BIN_NORMALIZER_H_
-
+#include "Prediction/Normalization/BinNormalizer.h"
 namespace gezi {
 
-class BinNormalizer 
+class BinNormalizer : public Normalizer
 {
 public:
 	BinNormalizer() 

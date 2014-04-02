@@ -16,12 +16,29 @@
 
 #include "Prediction/Normalization/Normalizer.h"
 #include "Prediction/Normalization/MinMaxNormalizer.h"
-#include "Prediction/Normalization/SimpleMinMaxNormalizer.h"
+#include "Prediction/Normalization/GaussianNormalizer.h"
+#include "Prediction/Normalization/BinNormalizer.h"
 namespace gezi {
 	class NormalizerFactory
 	{
 	public:
-		static 
+		static NormalizerPtr CreateNormalizer(const string& name)
+		{
+			if (name == "MinMax")
+			{
+				return make_shared<MinMaxNormalizer>();
+			}
+			if (name == "Gaussian")
+			{
+				return make_shared<GaussianNormalizer>();
+			}
+			if (name == "Bin")
+			{
+				return make_shared<BinNormalizer>();
+			}
+			LOG(WARNING) << name << " is not supported now, do not use normalzier, return null";
+			return nullptr;
+		}
 
 	protected:
 	private:

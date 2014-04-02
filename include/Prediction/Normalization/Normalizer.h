@@ -52,33 +52,93 @@ namespace gezi {
 		{
 			if (vec.IsDense())
 			{
-				NormalizeDense(vec, func);
+				//NormalizeDense(vec, func);
+				NormalizeDenseFast(vec, func);
 			}
 			else
 			{
-				NormalizeSparse(vec, func);
+				//NormalizeSparse(vec, func);
+				NormalizeSparseFast(vec, func);
 			}
 		}
 
+		//@TODO 如果按照tlc 去判断某些位置比如 offset 0 scale 1 不需要再func 速度能有多少提升 值得吗？
+		//按照现有的数据规模 暂时不需要 norm 1.2w 200特征 2ms
+		//如果修改 需要记录 所有需要scale位置到一个list 然后
+		//需要两个list 做处理 主要是如果稀疏数据处理比较麻烦 类似两list求交集
 		template<typename Func>
 		void NormalizeDense(Vector& vec, Func func)
 		{
-			vec.ForEachDense([&func](int index, double& value)
+			vec.ForEachDense([&func](int index, Float& value)
 			{
-				value = func(index, value);
+				func(index, ref(value));
 			});
 		}
-
 	
 		template<typename Func>
 		void NormalizeSparse(Vector& vec, Func func)
 		{
 			Vector result(_featureNum);
-			vec.ForEachAllSparse([&func, &result](int index, double value)
+			vec.ForEachAllSparse([&func, &result](int index, Float value)
 			{
-				value = func(index, value);
-				result.Add(index, value);
+				Float val = value;
+				func(index, ref(val));
+				result.Add(index, val);
 			});
+			vec.Swap(result);
+		}
+
+		template<typename Func>
+		void NormalizeDenseFast(Vector& vec, Func func)
+		{
+			for (int index : _scaleIndices)
+			{
+				func(index, vec.Values()[index]);
+			}
+		}
+
+		template<typename Func>
+		void NormalizeSparseFast(Vector& vec, Func func)
+		{
+			Vector result(_featureNum);
+			int len = _scaleIndices.size();
+			int len2 = vec.Values().size();
+			
+			Float val;
+			int index, index2;
+			int i = 0, j = 0;
+			for (; i < len && j < len2;)
+			{
+				index = _scaleIndices[i];
+				index2 = vec.Indices()[j];
+				if (index == index2)
+				{
+				  val = vec.Values()[j];
+					func(index, ref(val));
+					result.Add(index, val);
+					i++;
+					j++;
+				}
+				else if (index < index2)
+				{
+					val = 0;
+					func(index, ref(val));
+					result.Add(index, val);
+					i++;
+				}
+				else
+				{
+					j++;
+				}
+				for (；i < len；i++)
+				{
+					index = _scaleIndices[i];
+					val = 0;
+					func(index, ref(val));
+					result.Add(index, val);
+				}
+			}
+			
 			vec.Swap(result);
 		}
 
@@ -94,16 +154,20 @@ namespace gezi {
 
 		}
 		
-		void Normalize(Instances& instances)
+		void Prepare(const Instances& instances)
 		{
 			_featureNum = instances.FeatureNum();
 			_featureNames = instances.FeatureNames();
 			Begin();
-			for (InstancePtr& instance : instances)
+			for (const InstancePtr& instance : instances)
 			{
 				Process(instance->features);
 			}
 			Finalize();
+		}
+		void Normalize(Instances& instances)
+		{
+			Prepare(instances);
 #pragma omp parallel for //omp not work for foreach loop ? @TODO
 			for (int i = 0; i < instances.Size(); i++)
 			{
@@ -116,9 +180,11 @@ namespace gezi {
 		Float _lower = 0.0;
 		Float _upper = 1.0;
 		Float _range;
-	private:
+		ivec _scaleIndices;
 		// if feature is out of bounds, threshold at 0/1, or return values below 0 and above 1?
 		bool _trunct = false; //@TODO here or in MinMaxNormalizer GuassianNormalzier need it?
+	private:
+		
 	};
 
 	typedef shared_ptr<Normalizer> NormalizerPtr;

@@ -21,13 +21,13 @@ namespace gezi {
 	public:
 		AffineNormalizer()
 		{
-			_func = [this](int index, Float value)
+			_func = [this](int index, Float& value)
 			{
-				if (_scales[index] <= 0)
-				{
-					return value;
-				}
-
+				/*	if (_scales[index] <= 0)
+					{
+					value = 0;
+					}
+					else if (_trunct)*/
 				if (_trunct)
 				{
 					if (value >= _offsets[index] + _scales[index])
@@ -41,7 +41,6 @@ namespace gezi {
 				{
 					value = _lower + _range * (value - _offsets[index]) / _scales[index];
 				}
-				return value;
 			};
 		}
 
@@ -56,6 +55,27 @@ namespace gezi {
 
 		}
 
+		void CheckOffsetScale()
+		{
+			for (int i = 0; i < _numFeatures; i++)
+			{
+				if (_scales[i] <= 0)
+				{ //按照TLC 如果是始终值一样 仍然维持原样 不scale 不置为0 @TODO
+					//无效特征 始终是6的比如 还是6 不变成0 @TODO 需要置为0？
+					LOG(WARNING) << "Feature " << i << " : " << _featureNames[i]
+						<< " always take value " << _offsets[i];
+				}
+				else if (_offsets[i] != _lower || _scales[i] != _upper)
+				{ //like [0,1] range will not need to transform
+					_scaleIndices.push_back(i);
+				}
+				else if (_trunct)
+				{ //如果要截断即使[0,1]也需要scale可能， 注意只可能会是在线部分用trunct 离线test部分？@TODO only test trunct ?
+					_scaleIndices.push_back(i);
+				}
+			}
+		}
+
 		virtual void NormalizeCore(Vector& vec) override
 		{
 			Normalize(vec, _func);
@@ -65,7 +85,7 @@ namespace gezi {
 		Fvec _offsets;
 		Fvec _scales;
 	private:
-		std::function<Float(int,Float)> _func;
+		std::function<Float(int, Float)> _func;
 	};
 
 }  //----end of namespace gezi

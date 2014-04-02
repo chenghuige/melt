@@ -52,9 +52,8 @@ public:
 		for (size_t i = 0; i < _featureNum; i++)
 		{
 			_scales[i] -= _offsets[i];
+			CheckOffsetScale();
 		}
-		PVEC(_offsets);
-		PVEC(_scales);
 	}
 protected:
 private:

@@ -14,9 +14,10 @@
 #ifndef PREDICTION__NORMALIZATION__GAUSSIAN_NORMALIZER_H_
 #define PREDICTION__NORMALIZATION__GAUSSIAN_NORMALIZER_H_
 
+#include "Prediction/Normalization/AffineNormalizer.h"
 namespace gezi {
 
-class GaussianNormalizer 
+class GaussianNormalizer : public AffineNormalizer
 {
 public:
 	GaussianNormalizer() 
