@@ -20,6 +20,8 @@
 #include "Run/MeltArguments.h"
 #include "Prediction/Instances/InstanceParser.h"
 #include "Run/CVFoldCreator.h"
+#include "Prediction/Normalization/MinMaxNormalizer.h"
+#include "Prediction/Normalization/NormalizerFactory.h"
 namespace gezi {
 	class Melt
 	{
@@ -39,7 +41,8 @@ namespace gezi {
 			TRAIN_TEST,
 			FEATURE_SELECTION,
 			CREATE_INSTANCES,
-			NORMALIZE
+			NORMALIZE,
+			CHECK_DATA
 		};
 
 		MeltArguments& Cmd()
@@ -93,8 +96,7 @@ namespace gezi {
 		void RunCrossValidation()
 		{
 			//-----------------------------parse input
-			InstanceParser parser;
-			Instances instances = parser.Parse(_cmd.datafile);
+			Instances instances = _parser.Parse(_cmd.datafile);
 			CHECK_GT(instances.Count(), 0) << "Read 0 instances, aborting experiment";
 			Pval(instances.GetSummary());
 			//------------------------------run
@@ -130,13 +132,24 @@ namespace gezi {
 		void RunNormalizeInstances()
 		{
 			string infile = _cmd.datafile;
-			string outfile = endswith(infile, ".txt") ? boost::replace_last_copy(".txt", ".normed.txt") : infile + ".normed";
+			string outfile = endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", ".normed.txt") : infile + ".normed";
 			Pval(outfile);
+			//@TODO instances_util.h Íê³ÉInstancesÐ´³ö
+			Instances instances = _parser.Parse(_cmd.datafile);
+		/*	NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
+			normalizer->Normalize(instances);*/
+		}
+
+		void RunCheckData()
+		{
+			Instances instances = _parser.Parse(_cmd.datafile);
+			NormalizerPtr normalizer = make_shared<MinMaxNormalizer>();
+			normalizer->Prepare(instances);
 		}
 
 		void RunExperiments()
 		{
-			Pval(omp_get_num_procs());
+			PVAL(omp_get_num_procs());
 			if (_cmd.numThreads)
 			{
 				omp_set_num_threads(_cmd.numThreads);
@@ -172,9 +185,11 @@ namespace gezi {
 			case RunType::NORMALIZE:
 				RunNormalizeInstances();
 				break;
+			case RunType::CHECK_DATA:
+				RunCheckData();
+				break;
 			default:
 				LOG(WARNING) << commandStr << " is not supported yet ";
-				RunCrossValidation();
 				break;
 			}
 		}
@@ -190,8 +205,10 @@ namespace gezi {
 			{ "traintest", RunType::TRAIN_TEST },
 			{ "featureselection", RunType::FEATURE_SELECTION },
 			{ "createinstances", RunType::CREATE_INSTANCES },
-			{ "norm", RunType::NORMALIZE }
+			{ "norm", RunType::NORMALIZE },
+			{ "check", RunType::CHECK_DATA }
 		};
+		InstanceParser _parser;
 	};
 } //end of namespace gezi
 

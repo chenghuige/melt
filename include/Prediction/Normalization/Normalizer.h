@@ -74,7 +74,7 @@ namespace gezi {
 				func(index, ref(value));
 			});
 		}
-	
+
 		template<typename Func>
 		void NormalizeSparse(Vector& vec, Func func)
 		{
@@ -93,6 +93,7 @@ namespace gezi {
 		{
 			for (int index : _scaleIndices)
 			{
+				Pval3(index, vec.Values().size(), vec.Indices().size());
 				func(index, vec.Values()[index]);
 			}
 		}
@@ -103,7 +104,7 @@ namespace gezi {
 			Vector result(_featureNum);
 			int len = _scaleIndices.size();
 			int len2 = vec.Values().size();
-			
+
 			Float val;
 			int index, index2;
 			int i = 0, j = 0;
@@ -113,32 +114,38 @@ namespace gezi {
 				index2 = vec.Indices()[j];
 				if (index == index2)
 				{
-				  val = vec.Values()[j];
+				/*	val = vec.Values()[j];
 					func(index, ref(val));
-					result.Add(index, val);
+					result.Add(index, val);*/
 					i++;
 					j++;
 				}
 				else if (index < index2)
 				{
-					val = 0;
+				/*	val = 0;
 					func(index, ref(val));
-					result.Add(index, val);
+					result.Add(index, val);*/
 					i++;
 				}
 				else
 				{
+					result.Add(index2, vec.Values()[j]);
 					j++;
 				}
-				for (£»i < len£»i++)
-				{
-					index = _scaleIndices[i];
-					val = 0;
-					func(index, ref(val));
-					result.Add(index, val);
-				}
 			}
-			
+			for (; i < len; i++)
+			{
+			/*	index = _scaleIndices[i];
+				val = 0;
+				func(index, ref(val));
+				result.Add(index, val);*/
+			}
+
+			for (; j < len2; j++)
+			{
+				result.Add(vec.Indices()[j], vec.Values()[j]);
+			}
+
 			vec.Swap(result);
 		}
 
@@ -153,7 +160,7 @@ namespace gezi {
 		{
 
 		}
-		
+
 		void Prepare(const Instances& instances)
 		{
 			_featureNum = instances.FeatureNum();
@@ -165,26 +172,33 @@ namespace gezi {
 			}
 			Finalize();
 		}
+
 		void Normalize(Instances& instances)
 		{
-			Prepare(instances);
-#pragma omp parallel for //omp not work for foreach loop ? @TODO
-			for (int i = 0; i < instances.Size(); i++)
 			{
-				Normalize(instances[i]->features);
+				Noticer nt("Normalize prepare", true);
+				Prepare(instances);
+			}
+			{
+				Noticer nt("Normalize", true);
+//#pragma omp parallel for //omp not work for foreach loop ? @TODO
+				for (int i = 0; i < instances.Size(); i++)
+				{
+					Normalize(instances[i]->features);
+				}
 			}
 		}
 	protected:
 		int _featureNum;
 		svec _featureNames;
 		Float _lower = 0.0;
-		Float _upper = 1.0;
+		Float _upper = 1.2;
 		Float _range;
 		ivec _scaleIndices;
 		// if feature is out of bounds, threshold at 0/1, or return values below 0 and above 1?
 		bool _trunct = false; //@TODO here or in MinMaxNormalizer GuassianNormalzier need it?
 	private:
-		
+
 	};
 
 	typedef shared_ptr<Normalizer> NormalizerPtr;

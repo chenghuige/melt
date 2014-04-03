@@ -6,7 +6,7 @@ WORKROOT('../../../../../')
 TOOLCHAIN_ROOT='../../../../../ps/se/toolchain'
 RELATIVE_PATH='./'
 
-LEVEL=0
+LEVEL=4
 #是否使用本地的gcc 比如本地安装了gcc 4.8.2使用本地的可以直接使用生成的bin文件 如./main
 GCC_LOCAL=1
 print 'GCC_LOCAL: %d'%GCC_LOCAL 

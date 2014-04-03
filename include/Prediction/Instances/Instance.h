@@ -66,6 +66,11 @@ public:
 		return features;
 	}
 
+	bool IsDense() const
+	{
+		return features.IsDense();
+	}
+
 	Vector features;
 	bool hasMissingFeatures = false;
 	Float label = -1.0;

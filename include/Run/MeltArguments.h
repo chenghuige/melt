@@ -35,6 +35,10 @@ namespace gezi {
 		bool stratify = false;
 		bool foldsSequential = false;
 		double trainProportion = 1.0;
+
+		//----------分类器公用选项
+		bool normalizeFeatures = true; //norm:Normalize features?
+		string normalizerName = "MinMax"; //Which normalizer?
 	};
 }  //----end of namespace gezi
 

@@ -7,7 +7,8 @@
  *
  *          \date   2014-03-26 10:46:03.965585
  *
- *  \Description:  支持读写，dense and sparse
+ *  \Description:  支持读写，dense and sparse  可以增加支持binary 比如value为空表示binary
+ *                 暂时不增加 感觉意义不大@TODO
  *  ==============================================================================
  */
 
@@ -360,6 +361,12 @@ namespace gezi {
 		inline	int Length() const
 		{
 			return _length;
+		}
+
+		/// no real content stored? 因为没有支持binary 所以value为空 就表示没有数据
+		inline bool Empty() const
+		{
+			return _values.empty();
 		}
 
 		/// Gets the number of explicitly represented values in the vector.

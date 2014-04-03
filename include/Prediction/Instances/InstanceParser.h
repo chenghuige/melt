@@ -8,7 +8,7 @@
 *          \date   2014-03-27 17:47:57.438203
 *
 *  \Description:   输入是数据文件 可能是dense 或者 sparse格式 输出是Instances
-*                  目前不只考虑Instances内容数组都保存在内存 不考虑 StreamingInstances @TODO
+*                  @TODO目前只考虑Instances内容数组都保存在内存 不考虑 StreamingInstances @TODO
 * 输入数据格式 dense (default)
 *  //with header
 *	#id label age weight
@@ -365,7 +365,6 @@ namespace gezi {
 
 		void CreateInstancesFromDenseFormat(svec& lines, uint64 start)
 		{
-			Noticer nt("CreateInstancesFromDenseFormat", true);
 			uint64 end = start + _instanceNum;
 #pragma omp parallel for 
 			for (uint64 i = start; i < end; i++)
@@ -385,22 +384,22 @@ namespace gezi {
 					switch (_columnTypes[j])
 					{
 					case ColumnType::Feature:
-						value = _selectedArray[fidx++] ? FLOAT_(item) : 0;
+						value = _selectedArray[fidx++] ? atof(item.c_str()) : 0;
 						features.Add(value);
 						break;
 					case ColumnType::Name:
 						instance.names.push_back(item);
 						break;
 					case ColumnType::Label:
-						instance.label = FLOAT_(item);
+						instance.label = atof(item.c_str());
 						break;
 					case ColumnType::Weight:
-						instance.weight = FLOAT_(item);
+						instance.weight = atof(item.c_str());
 					default:
 						break;
 					}
 				}
-				
+
 				if (_args.keepSparse)
 				{
 					features.ToSparse();
@@ -409,7 +408,7 @@ namespace gezi {
 				{//if not keep dense   如果是0值数目<= FeatureNum/2转 sparse
 					features.Sparsify();
 				}
-				
+
 				if (!instance.names.empty())
 				{
 					if (startswith(instance.names[0], "_"))
@@ -419,9 +418,12 @@ namespace gezi {
 			}
 		}
 
+		//@TODO Instance Next(string line) 支持streaming
+		//@TODO tlc貌似快很多thread.feature.txt 9w instance 
+		//1000ms 这里需要2000ms是因为split c#的速度更快？ 另外注意能char split find不要用string
+		//不过使用omp并行后 200ms就搞定
 		void CreateInstancesFromSparseFormat(svec& lines, uint64 start)
 		{
-			Noticer nt("CreateInstancesFromSparseFormat", true);
 			uint64 end = start + _instanceNum;
 #pragma omp parallel for 
 			for (uint64 i = start; i < end; i++)
@@ -431,16 +433,17 @@ namespace gezi {
 				Instance& instance = *_instances.data[i - start];
 				Vector& features = instance.features;
 				svec l = split(line, _sep);
-
+				
 				for (size_t j = 0; j < l.size(); j++)
 				{
 					string item = l[j];
-					if (contains(item, ":"))
+					string index_, value_; 
+					bool ret = split(item, ':', index_, value_);
+					if (ret)
 					{
-						string index_, value_; split(item, ":", index_, value_);
-						int index = INT(index_); Float value = FLOAT_(value_);
+						int index = atoi(index_.c_str()); Float value = atof(value_.c_str());
 						if (_selectedArray[index])
-							features.Add(INT(index), FLOAT_(value));
+							features.Add(index, value);
 					}
 					else
 					{
@@ -451,10 +454,10 @@ namespace gezi {
 							instance.names.push_back(item);
 							break;
 						case ColumnType::Label:
-							instance.label = FLOAT_(item);
+							instance.label = atof(item.c_str());
 							break;
 						case ColumnType::Weight:
-							instance.weight = FLOAT_(item);
+							instance.weight = atof(item.c_str());
 							break;
 						default:
 							break;
@@ -528,7 +531,8 @@ namespace gezi {
 
 		void PrintInfo()
 		{
-			LOG(INFO) << "The total feature num is " << _featureNum;
+			Pval(_instances.FeatureNum());
+			Pval(_instances.Count());
 			PVEC(_instances.schema.tagNames);
 			PVEC(_instances.schema.attributeNames);
 			PVAL(IsDense());
@@ -546,7 +550,9 @@ namespace gezi {
 
 		Instances&& Parse(const string& dataFile)
 		{
+			Timer timer;
 			vector<string> lines = read_lines(dataFile);
+			Pval_(timer.elapsed_ms(), "read_lines");
 			if (lines.empty())
 			{
 				LOG(FATAL) << "Fail to load data file! " << dataFile << " is empty!";
@@ -563,13 +569,19 @@ namespace gezi {
 				_hasHeader = true;
 			}
 
+			timer.restart();
 			ParseFirstLine(lines);
+			Pval_(timer.elapsed_ms(), "ParseFirstLine");
 
+			timer.restart();
 			_selectedArray = GetSelectedArray();
 
 			_instanceNum = lines.size() - _hasHeader;
 			_instances.data.resize(_instanceNum, nullptr);
 
+			Pval_(timer.elapsed_ms(), "GetSelectedArray");
+
+			timer.restart();
 			if (_instanceType == InstanceType::Dense)
 			{
 				CreateInstancesFromDenseFormat(lines, _hasHeader);
@@ -578,6 +590,8 @@ namespace gezi {
 			{
 				CreateInstancesFromSparseFormat(lines, _hasHeader);
 			}
+
+			Pval_(timer.elapsed_ms(), "CreateInstances");
 
 			PrintInfo();
 

@@ -23,12 +23,13 @@ namespace gezi {
 		{
 			_func = [this](int index, Float& value)
 			{
-				/*	if (_scales[index] <= 0)
-					{
-					value = 0;
-					}
-					else if (_trunct)*/
-				if (_trunct)
+				if (_scales[index] <= 0)
+				{//保持不变
+					//value = 0;
+					return;
+				}
+				else if (_trunct)
+					//if (_trunct)
 				{
 					if (value >= _offsets[index] + _scales[index])
 						value = _upper;
@@ -57,15 +58,15 @@ namespace gezi {
 
 		void CheckOffsetScale()
 		{
-			for (int i = 0; i < _numFeatures; i++)
+			for (int i = 0; i < _featureNum; i++)
 			{
 				if (_scales[i] <= 0)
 				{ //按照TLC 如果是始终值一样 仍然维持原样 不scale 不置为0 @TODO
 					//无效特征 始终是6的比如 还是6 不变成0 @TODO 需要置为0？
-					LOG(WARNING) << "Feature " << i << " : " << _featureNames[i]
+					VLOG(5) << "Feature " << i << " : " << _featureNames[i]
 						<< " always take value " << _offsets[i];
 				}
-				else if (_offsets[i] != _lower || _scales[i] != _upper)
+				else if (_offsets[i] != _lower || _scales[i] != _range)
 				{ //like [0,1] range will not need to transform
 					_scaleIndices.push_back(i);
 				}
@@ -85,7 +86,7 @@ namespace gezi {
 		Fvec _offsets;
 		Fvec _scales;
 	private:
-		std::function<Float(int, Float)> _func;
+		std::function<void(int, Float&)> _func;
 	};
 
 }  //----end of namespace gezi

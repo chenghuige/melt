@@ -56,6 +56,7 @@ TEST(test_normalize, func)
 	{
 	LOG(INFO) << index << "\t" << value;
 	});
+	Pval(instances.data[2983]->IsDense());
 }
 
 int main(int argc, char *argv[])
