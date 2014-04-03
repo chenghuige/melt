@@ -17,6 +17,8 @@
 #include "Prediction/Instances/Instance.h"
 #include "random_util.h"
 namespace gezi {
+
+	//@TODO struct Instances : public ListInstances ¼Ì³Ð´úÌæ×éºÏ£¿
 	struct Instances
 	{
 	public:

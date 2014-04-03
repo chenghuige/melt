@@ -52,13 +52,13 @@ namespace gezi {
 		{
 			if (vec.IsDense())
 			{
-				//NormalizeDense(vec, func);
-				NormalizeDenseFast(vec, func);
+				NormalizeDense(vec, func);
+				//NormalizeDenseFast(vec, func);
 			}
 			else
 			{
-				//NormalizeSparse(vec, func);
-				NormalizeSparseFast(vec, func);
+				NormalizeSparse(vec, func);
+				//NormalizeSparseFast(vec, func);
 			}
 		}
 
@@ -93,7 +93,6 @@ namespace gezi {
 		{
 			for (int index : _scaleIndices)
 			{
-				Pval3(index, vec.Values().size(), vec.Indices().size());
 				func(index, vec.Values()[index]);
 			}
 		}
@@ -114,17 +113,17 @@ namespace gezi {
 				index2 = vec.Indices()[j];
 				if (index == index2)
 				{
-				/*	val = vec.Values()[j];
+					val = vec.Values()[j];
 					func(index, ref(val));
-					result.Add(index, val);*/
+					result.Add(index, val);
 					i++;
 					j++;
 				}
 				else if (index < index2)
 				{
-				/*	val = 0;
+					val = 0;
 					func(index, ref(val));
-					result.Add(index, val);*/
+					result.Add(index, val);
 					i++;
 				}
 				else
@@ -135,10 +134,10 @@ namespace gezi {
 			}
 			for (; i < len; i++)
 			{
-			/*	index = _scaleIndices[i];
+				index = _scaleIndices[i];
 				val = 0;
 				func(index, ref(val));
-				result.Add(index, val);*/
+				result.Add(index, val);
 			}
 
 			for (; j < len2; j++)
@@ -163,40 +162,51 @@ namespace gezi {
 
 		void Prepare(const Instances& instances)
 		{
+			//AutoTimer("Normalize Prepare", 0);
+			LOG(INFO) << "Normalize Prepare start";
 			_featureNum = instances.FeatureNum();
 			_featureNames = instances.FeatureNames();
 			Begin();
-			for (const InstancePtr& instance : instances)
+			for (int i = 0; i < instances.Size(); i++)
 			{
-				Process(instance->features);
+				if (i == _uintmaxNormalizationExamples)
+				{
+					break;
+				}
+				Process(instances[i]->features);
 			}
 			Finalize();
+			LOG(INFO) << "Normalize Prepare finish";
 		}
 
+		//@TODO Load info or just test data normalize
+		void PrepareAndNormalize(Instances& instances)
+		{
+			Prepare(instances);
+			Normalize(instances);
+		}
 		void Normalize(Instances& instances)
 		{
+			LOG(INFO) << "Normalize begin";
+			//AutoTimer("Normalize", 0);
+			//#pragma omp parallel for //omp not work for foreach loop ? @TODO
+			for (int i = 0; i < instances.Size(); i++)
 			{
-				Noticer nt("Normalize prepare", true);
-				Prepare(instances);
+				Normalize(instances[i]->features);
 			}
-			{
-				Noticer nt("Normalize", true);
-//#pragma omp parallel for //omp not work for foreach loop ? @TODO
-				for (int i = 0; i < instances.Size(); i++)
-				{
-					Normalize(instances[i]->features);
-				}
-			}
+			LOG(INFO) << "Normalize finish";
 		}
 	protected:
 		int _featureNum;
 		svec _featureNames;
-		Float _lower = 0.0;
-		Float _upper = 1.2;
 		Float _range;
 		ivec _scaleIndices;
-		// if feature is out of bounds, threshold at 0/1, or return values below 0 and above 1?
+		//----------------------------args
+		Float _lower = 0.0;//:
+		Float _upper = 1.2;//:
+		//:if feature is out of bounds, threshold at 0/1, or return values below 0 and above 1?
 		bool _trunct = false; //@TODO here or in MinMaxNormalizer GuassianNormalzier need it?
+		uint64 _uintmaxNormalizationExamples = 1000000;//numNorm:
 	private:
 
 	};

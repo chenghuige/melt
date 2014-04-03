@@ -137,7 +137,7 @@ namespace gezi {
 			//@TODO instances_util.h Íê³ÉInstancesÐ´³ö
 			Instances instances = _parser.Parse(_cmd.datafile);
 		/*	NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
-			normalizer->Normalize(instances);*/
+			normalizer->PrepareAndNormalize(instances);*/
 		}
 
 		void RunCheckData()

@@ -30,33 +30,37 @@ TEST(test_normalize, func)
 	Instances instances = parser.Parse(FLAGS_i);
 	Pval(instances.Size());
 	NormalizerPtr normalizer = make_shared<MinMaxNormalizer>();
-	Pval(instances.data[0]->name);
-	(*(instances.data[0])).features.ForEach([](int index, double value)
+	Pval(instances[0]->name);
+	(*(instances[0])).features.ForEach([](int index, double value)
 	{
 		LOG(INFO) << index << "\t" << value;
 	});
-	//(*(instances.data[1])).features.ForEach([](int index, double value)
+	//(*(instances[1])).features.ForEach([](int index, double value)
 	//{
 	//	LOG(INFO) << index << "\t" << value;
 	//});
-	normalizer->Normalize(instances);
-	//normalizer->Process(instances.data[0]->features);
-	(*(instances.data[0])).features.ForEach([](int index, double value)
-	{
-		LOG(INFO) << index << "\t" << value;
-	});
 
-	/*(*(instances.data[1])).features.ForEach([](int index, double value)
+	Pval(instances[0]->IsDense());
+	normalizer->PrepareAndNormalize(instances);
+	//normalizer->Process(instances[0]->features);
+	/*(*(instances[0])).features.ForEach([](int index, double value)
 	{
 		LOG(INFO) << index << "\t" << value;
 	});*/
 
-	Pval(instances.data[2983]->name);
-	(*(instances.data[2983])).features.ForEach([](int index, double value)
+	/*(*(instances[1])).features.ForEach([](int index, double value)
 	{
-	LOG(INFO) << index << "\t" << value;
-	});
-	Pval(instances.data[2983]->IsDense());
+		LOG(INFO) << index << "\t" << value;
+	});*/
+	if (instances.Count() > 2983)
+	{
+		Pval(instances[2983]->name);
+		(*(instances[2983])).features.ForEach([](int index, double value)
+		{
+			LOG(INFO) << index << "\t" << value;
+		});
+		Pval(instances[2983]->IsDense());
+	}
 }
 
 int main(int argc, char *argv[])

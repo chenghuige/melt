@@ -370,8 +370,8 @@ namespace gezi {
 			for (uint64 i = start; i < end; i++)
 			{
 				string line = lines[i];
-				_instances.data[i - start] = make_shared<Instance>(_featureNum);
-				Instance& instance = *_instances.data[i - start];
+				_instances[i - start] = make_shared<Instance>(_featureNum);
+				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
 				features.PrepareDense();
 				svec l = split(line, _sep);
@@ -429,8 +429,8 @@ namespace gezi {
 			for (uint64 i = start; i < end; i++)
 			{
 				string line = lines[i];
-				_instances.data[i - start] = make_shared<Instance>(_featureNum);
-				Instance& instance = *_instances.data[i - start];
+				_instances[i - start] = make_shared<Instance>(_featureNum);
+				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
 				svec l = split(line, _sep);
 				
@@ -577,7 +577,7 @@ namespace gezi {
 			_selectedArray = GetSelectedArray();
 
 			_instanceNum = lines.size() - _hasHeader;
-			_instances.data.resize(_instanceNum, nullptr);
+			_instances.data.resize(_instanceNum, nullptr); //@TODO
 
 			Pval_(timer.elapsed_ms(), "GetSelectedArray");
 
