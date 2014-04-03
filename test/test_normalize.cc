@@ -20,6 +20,7 @@
 using namespace std;
 using namespace gezi;
 DEFINE_int32(level, 0, "min log level");
+DEFINE_int32(idx, 0, "min log level");
 DEFINE_string(i, "", "input");
 DEFINE_string(o, "", "output");
 DEFINE_string(type, "simple", "");
@@ -30,36 +31,26 @@ TEST(test_normalize, func)
 	Instances instances = parser.Parse(FLAGS_i);
 	Pval(instances.Size());
 	NormalizerPtr normalizer = make_shared<MinMaxNormalizer>();
-	Pval(instances[0]->name);
-	(*(instances[0])).features.ForEach([](int index, double value)
+	if (instances.Count() > FLAGS_idx)
 	{
-		LOG(INFO) << index << "\t" << value;
-	});
-	//(*(instances[1])).features.ForEach([](int index, double value)
-	//{
-	//	LOG(INFO) << index << "\t" << value;
-	//});
-
-	Pval(instances[0]->IsDense());
-	normalizer->PrepareAndNormalize(instances);
-	//normalizer->Process(instances[0]->features);
-	/*(*(instances[0])).features.ForEach([](int index, double value)
-	{
-		LOG(INFO) << index << "\t" << value;
-	});*/
-
-	/*(*(instances[1])).features.ForEach([](int index, double value)
-	{
-		LOG(INFO) << index << "\t" << value;
-	});*/
-	if (instances.Count() > 2983)
-	{
-		Pval(instances[2983]->name);
-		(*(instances[2983])).features.ForEach([](int index, double value)
+		Pval(instances[FLAGS_idx]->name);
+		(*(instances[FLAGS_idx])).features.ForEach([](int index, double value)
 		{
 			LOG(INFO) << index << "\t" << value;
 		});
-		Pval(instances[2983]->IsDense());
+		Pval(instances[FLAGS_idx]->IsDense());
+	}
+
+	Pval(instances[0]->IsDense());
+	normalizer->PrepareAndNormalize(instances);
+	if (instances.Count() > FLAGS_idx)
+	{
+		Pval(instances[FLAGS_idx]->name);
+		(*(instances[FLAGS_idx])).features.ForEach([](int index, double value)
+		{
+			LOG(INFO) << index << "\t" << value;
+		});
+		Pval(instances[FLAGS_idx]->IsDense());
 	}
 }
 

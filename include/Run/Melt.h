@@ -22,6 +22,7 @@
 #include "Run/CVFoldCreator.h"
 #include "Prediction/Normalization/MinMaxNormalizer.h"
 #include "Prediction/Normalization/NormalizerFactory.h"
+
 namespace gezi {
 	class Melt
 	{
@@ -98,7 +99,7 @@ namespace gezi {
 			//-----------------------------parse input
 			Instances instances = _parser.Parse(_cmd.datafile);
 			CHECK_GT(instances.Count(), 0) << "Read 0 instances, aborting experiment";
-			Pval(instances.GetSummary());
+			instances.PrintSummary();
 			//------------------------------run
 			RunCrossValidation(instances);
 		}
@@ -134,10 +135,12 @@ namespace gezi {
 			string infile = _cmd.datafile;
 			string outfile = endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", ".normed.txt") : infile + ".normed";
 			Pval(outfile);
-			//@TODO instances_util.h 完成Instances写出
+			
 			Instances instances = _parser.Parse(_cmd.datafile);
-		/*	NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
-			normalizer->PrepareAndNormalize(instances);*/
+			NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
+			normalizer->PrepareAndNormalize(instances);
+
+			//@TODO instances_util.h 完成Instances写出
 		}
 
 		void RunCheckData()

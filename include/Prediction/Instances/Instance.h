@@ -18,6 +18,7 @@
 #include "Numeric/Vector/Vector.h"
 namespace gezi {
 
+	//@TODO 模仿TLC 似乎也可以 struct Instance : public Vector
 struct Instance 
 {
 public:
@@ -69,6 +70,11 @@ public:
 	bool IsDense() const
 	{
 		return features.IsDense();
+	} 
+
+	bool IsSparse() const
+	{
+		return features.IsSparse();
 	}
 
 	Vector features;

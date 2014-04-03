@@ -7,7 +7,8 @@
  *
  *          \date   2014-03-26 10:46:03.965585
  *
- *  \Description:  支持读写，dense and sparse  可以增加支持binary 比如value为空表示binary
+ *  \Description:  特征的核心表示
+ *								 支持读写，dense and sparse  可以增加支持binary 比如value为空表示binary
  *                 暂时不增加 感觉意义不大@TODO
  *  ==============================================================================
  */

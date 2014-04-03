@@ -31,7 +31,7 @@ namespace gezi {
 		Instances(const HeaderSchema& schema_)
 			:schema(schema_)
 		{
-			
+
 		}
 
 		void CopySchema(const HeaderSchema& schema_)
@@ -63,7 +63,7 @@ namespace gezi {
 		{
 			return schema.featureNames;
 		}
-		
+
 		svec& FeatureNames()
 		{
 			return schema.featureNames;
@@ -107,31 +107,15 @@ namespace gezi {
 			this->push_back(instancePtr);
 		}
 
-		template<typename ValueVistor>
-		void ForEach(ValueVistor visitor) const
-		{
-			for (const InstancePtr& inst : *this)
-			{
-				visitor(*inst);
-			}
-		}
-
-		template<typename ValueVistor>
-		void ForEach(ValueVistor visitor)
-		{
-			for (InstancePtr& inst : *this)
-			{
-				visitor(ref(*inst));
-			}
-		}
-
-		string GetSummary()
+		void PrintSummary(int level = 0)
 		{
 			uint64 pcnt = PositiveCount();
-			return (format(
+			VLOG(level) << format(
 				"Total instance num: %1% PostiveCount: %2% NegativeCount %3% PostiveRatio: %4%")
-				% InstanceNum() % pcnt % 
-				(InstanceNum() - pcnt) % ((double) pcnt * 100/ InstanceNum())).str();
+				% InstanceNum() % pcnt %
+				(InstanceNum() - pcnt) % ((double)pcnt * 100 / InstanceNum());
+			uint64 dcnt = DenseCount();
+			VLOG(level) << format("DenseCount: %1% SparseCount: %2% DenseRatio: %3%") % dcnt % (InstanceNum() - dcnt) % ((double)dcnt * 100 / InstanceNum());
 		}
 
 		uint64 PositiveCount()
@@ -146,6 +130,17 @@ namespace gezi {
 				>> count();
 		}
 
+		uint64 SparseCount()
+		{
+			return from(*this) >> where([](const InstancePtr& a) { return a->IsSparse(); })
+				>> count();
+		}
+
+		uint64 DenseCount()
+		{
+			return from(*this) >> where([](const InstancePtr& a) { return a->IsDense(); })
+				>> count();
+		}
 	public:
 		HeaderSchema schema;
 	};

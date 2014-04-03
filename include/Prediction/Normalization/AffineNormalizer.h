@@ -32,15 +32,15 @@ namespace gezi {
 					//if (_trunct)
 				{
 					if (value >= _offsets[index] + _scales[index])
-						value = _upper;
+						value = 1.0;
 					else if (value <= _offsets[index])
-						value = _lower;
+						value = 0.0;
 					else
-						value = _lower + _range * (value - _offsets[index]) / _scales[index];
+						value = (value - _offsets[index]) / _scales[index];
 				}
 				else
 				{
-					value = _lower + _range * (value - _offsets[index]) / _scales[index];
+					value = (value - _offsets[index]) / _scales[index];
 				}
 			};
 		}
@@ -56,25 +56,35 @@ namespace gezi {
 
 		}
 
-		void CheckOffsetScale()
+		void CheckOffsetAndScale()
 		{
 			for (int i = 0; i < _featureNum; i++)
 			{
 				if (_scales[i] <= 0)
 				{ //按照TLC 如果是始终值一样 仍然维持原样 不scale 不置为0 @TODO
 					//无效特征 始终是6的比如 还是6 不变成0 @TODO 需要置为0？
-					VLOG(5) << "Feature " << i << " : " << _featureNames[i]
+					VLOG(4) << "Feature " << i << " : " << _featureNames[i]
 						<< " always take value " << _offsets[i];
 				}
-				else if (_offsets[i] != _lower || _scales[i] != _range)
-				{ //like [0,1] range will not need to transform
-					_scaleIndices.push_back(i);
+				else if (_offsets[i] != 0.0)
+				{ //如果最小值是0 那么 所有的点都只需要morph不需要shift，同时如果是0值点 不需要变化
+					_morphIndices.push_back(i);
+					_shiftIndices.push_back(i);
 				}
+				else if (_scales[i] != 1.0)
+				{
+					_shiftIndices.push_back(i);
+				} //like [0,1] 这样的所有点都不需要变化
 				else if (_trunct)
 				{ //如果要截断即使[0,1]也需要scale可能， 注意只可能会是在线部分用trunct 离线test部分？@TODO only test trunct ?
-					_scaleIndices.push_back(i);
+					_shiftIndices.push_back(i);
 				}
 			}
+
+			PVEC(_offsets);
+			PVEC(_scales);
+			PVEC(_shiftIndices);
+			PVEC(_morphIndices);
 		}
 
 		virtual void NormalizeCore(Vector& vec) override
