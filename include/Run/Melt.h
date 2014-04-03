@@ -75,7 +75,7 @@ namespace gezi {
 				RandomEngine rng = random_engine(_cmd.randSeed, runIdx * randomStep);
 				if (!_cmd.foldsSequential)
 					instances.Randomize(rng);
-				ivec instanceFoldIndices = CVFoldCreator::CreateFoldIndices(instances.data, _cmd, rng);
+				ivec instanceFoldIndices = CVFoldCreator::CreateFoldIndices(instances, _cmd, rng);
 #pragma omp parallel for 
 				for (size_t foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
 				{

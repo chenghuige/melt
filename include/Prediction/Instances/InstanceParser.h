@@ -577,7 +577,7 @@ namespace gezi {
 			_selectedArray = GetSelectedArray();
 
 			_instanceNum = lines.size() - _hasHeader;
-			_instances.data.resize(_instanceNum, nullptr); //@TODO
+			_instances.resize(_instanceNum, nullptr); //@TODO
 
 			Pval_(timer.elapsed_ms(), "GetSelectedArray");
 

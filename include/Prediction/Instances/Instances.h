@@ -18,8 +18,7 @@
 #include "random_util.h"
 namespace gezi {
 
-	//@TODO struct Instances : public ListInstances ¼Ì³Ð´úÌæ×éºÏ£¿
-	struct Instances
+	struct Instances : public ListInstances
 	{
 	public:
 		~Instances() = default;
@@ -28,9 +27,6 @@ namespace gezi {
 		Instances& operator = (Instances&&) = default;
 		Instances(const Instances&) = default;
 		Instances& operator = (const Instances&) = default;
-
-		typedef ListInstances::iterator Iter;
-		typedef ListInstances::const_iterator ConstIter;
 
 		Instances(const HeaderSchema& schema_)
 			:schema(schema_)
@@ -45,17 +41,17 @@ namespace gezi {
 
 		uint64 InstanceNum()
 		{
-			return data.size();
+			return this->size();
 		}
 
 		uint64 Size()
 		{
-			return data.size();
+			return this->size();
 		}
 
 		uint64 Count()
 		{
-			return data.size();
+			return this->size();
 		}
 
 		int FeatureNum() const
@@ -90,7 +86,7 @@ namespace gezi {
 
 		void Randomize(const RandomEngine& rng)
 		{
-			shuffle(data, rng);
+			shuffle(*this, rng);
 		}
 
 		void ShrinkData(double trainProportion, const RandomEngine& rng)
@@ -101,20 +97,20 @@ namespace gezi {
 			}
 			int removeSize = (int)((1.0 - trainProportion) * InstanceNum());
 			int afterSize = InstanceNum() - removeSize;
-			LOG(INFO) << format("Shrinking dataset to %1 of original from %2 to %3") % trainProportion % InstanceNum() % afterSize;
-			sample_reverse(data, removeSize, rng);
-			data.resize(afterSize);
+			LOG(INFO) << format("Shrinking *thisset to %1 of original from %2 to %3") % trainProportion % InstanceNum() % afterSize;
+			sample_reverse(*this, removeSize, rng);
+			this->resize(afterSize);
 		}
 
 		void Add(const InstancePtr& instancePtr)
 		{
-			data.push_back(instancePtr);
+			this->push_back(instancePtr);
 		}
 
 		template<typename ValueVistor>
 		void ForEach(ValueVistor visitor) const
 		{
-			for (const InstancePtr& inst : data)
+			for (const InstancePtr& inst : *this)
 			{
 				visitor(*inst);
 			}
@@ -123,20 +119,10 @@ namespace gezi {
 		template<typename ValueVistor>
 		void ForEach(ValueVistor visitor)
 		{
-			for (InstancePtr& inst : data)
+			for (InstancePtr& inst : *this)
 			{
 				visitor(ref(*inst));
 			}
-		}
-
-		ListInstances& Data()
-		{
-			return data;
-		}
-
-		const ListInstances& Data() const
-		{
-			return data;
 		}
 
 		string GetSummary()
@@ -150,44 +136,18 @@ namespace gezi {
 
 		uint64 PositiveCount()
 		{
-			return from(data) >> where([](const InstancePtr& a) { return a->label > 0; })
+			return from(*this) >> where([](const InstancePtr& a) { return a->label > 0; })
 				>> count();
 		}
 
 		uint64 NegativeCount()
 		{
-			return from(data) >> where([](const InstancePtr& a) { return a->label <= 0; })
+			return from(*this) >> where([](const InstancePtr& a) { return a->label <= 0; })
 				>> count();
-		}
-
-		const InstancePtr& operator[](uint64 index) const
-		{
-			return data[index];
-		}
-
-		Iter begin()
-		{
-			return data.begin();
-		}
-
-		Iter end()
-		{
-			return data.end();
-		}
-
-		ConstIter begin() const
-		{
-			return data.begin();
-		}
-
-		ConstIter end() const
-		{
-			return data.end();
 		}
 
 	public:
 		HeaderSchema schema;
-		ListInstances data;
 	};
 
 }  //----end of namespace gezi
