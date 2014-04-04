@@ -15,15 +15,23 @@
 #define PREDICTION__NORMALIZATION__MIN_MAX_NORMALIZER_H_
 
 #include "Prediction/Normalization/AffineNormalizer.h"
+#include "conf_util.h"
 namespace gezi {
 
 	class MinMaxNormalizer : public AffineNormalizer
 	{
 	public:
+		MinMaxNormalizer() = default;
+		MinMaxNormalizer(string infile)
+		{//通过文本载入Normalzier
+			AffineNormalizer::Load(infile); //@FIXME构造函数调用虚函数? 
+		}
+
 		virtual string Name() override
 		{
 			return "MinMaxNormalizer";
 		}
+
 		virtual void Process(const Vector& vec)
 		{
 			if (_isFirst)
@@ -68,15 +76,15 @@ namespace gezi {
 			{
 				if (_counts[i] != _total)
 				{ //这个特征在prepare的所有instance中 存在0值, TLC没有做这个 应该是bug 部分归一后没有到[0,1]可能
-			/*		if (0 < _offsets[i] || 0 > _scales[i])
-					{
-						Pval5(i, _offsets[i], _scales[i], _counts[i], _total);
-					}*/
+					/*		if (0 < _offsets[i] || 0 > _scales[i])
+							{
+							Pval5(i, _offsets[i], _scales[i], _counts[i], _total);
+							}*/
 					SetOffsetScale(i, 0);
 				}
 				_scales[i] -= _offsets[i];
 			}
-			CheckOffsetAndScale();
+			AffineInit();
 		}
 	protected:
 	private:

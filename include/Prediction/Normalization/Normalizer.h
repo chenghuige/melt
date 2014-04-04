@@ -23,7 +23,15 @@ namespace gezi {
 	class Normalizer
 	{
 	public:
-		Normalizer()
+		Normalizer() = default;
+
+		//Ğ´ÈëÎÄ±¾
+		virtual void Save(string outfile)
+		{
+
+		}
+
+		virtual void Load(string infile)
 		{
 
 		}

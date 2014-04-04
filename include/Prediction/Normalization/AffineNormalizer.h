@@ -25,7 +25,7 @@ namespace gezi {
 			{
 				if (_scales[index] <= 0)
 				{//保持不变 Dense Sparse 保持逻辑一致 如果置为0 
-					//需要CheckOffsetAndScale函数中shiftIndices增加scale <=0 且offset!=0的点
+					//需要AffineInit函数中shiftIndices增加scale <=0 且offset!=0的点
 					//value = 0;
 					return;
 				}
@@ -45,6 +45,38 @@ namespace gezi {
 			};
 		}
 
+		virtual void Load(string infile) override
+		{
+			svec lines = read_lines(infile);
+			CHECK_GT(lines.size(), 0) << infile;
+			int i = 0;
+			CHECK_EQ(parse_string_param("NormalizerType=", lines[i++]), Name());
+			_trunct = parse_bool_param("Trunct=", lines[i++]);
+			_featureNum = parse_int_param("FeatureNum=", lines[i++]);
+			_offsets.resize(_featureNum);
+			_scales.resize(_featureNum);
+			for (int j = 0; j < _featureNum; j++)
+			{
+				string offset, scale;
+				split(lines[i], '\t', offset, scale);
+				_offsets[j] = DOUBLE_PARSE(offset);
+				_scales[j] = INT_PARSE(scale);
+			}
+			AffineInit();
+		}
+
+		virtual void Save(string outfile) override
+		{
+			ofstream ofs(outfile);
+			ofs << "NormalizerType=" << Name() << endl;
+			ofs << "Trunct=" << (int)_trunct << endl;
+			ofs << "FeatureNum=" << _featureNum << endl;
+			for (int i = 0; i < _featureNum; i++)
+			{
+				ofs << _offsets[i] << "\t" << _scales[i] << endl;
+			}
+		}
+
 		virtual void Begin() override
 		{
 			_offsets.resize(_featureNum, 0);
@@ -56,7 +88,7 @@ namespace gezi {
 
 		}
 
-		void CheckOffsetAndScale()
+		void AffineInit()
 		{
 			for (int i = 0; i < _featureNum; i++)
 			{
