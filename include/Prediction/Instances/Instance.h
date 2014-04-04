@@ -77,6 +77,11 @@ public:
 		return features.IsSparse();
 	}
 
+	bool HasMissingFeatures()
+	{
+		return hasMissingFeatures;
+	}
+
 	Vector features;
 	bool hasMissingFeatures = false;
 	Float label = -1.0;

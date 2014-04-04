@@ -267,6 +267,7 @@ namespace gezi {
 			if (_args.weightIdx >= 0)
 			{
 				_columnTypes[_args.weightIdx] = ColumnType::Weight;
+				_hasWeight = true;
 			}
 
 			if (_args.labelIdx >= 0)
@@ -510,6 +511,13 @@ namespace gezi {
 			LOG(FATAL) << "Data format wrong not feature field " << line;
 		}
 
+		void SetHeaderSchema(string line)
+		{
+			_instances.SetHeader(line, _hasHeader);
+			_instances.schema.instanceType = _instanceType;
+			_instances.schema.hasWeights = _hasWeight;
+		}
+
 		//获取列信息，名字，是dense还是sparse表示
 		void ParseFirstLine(svec lines)
 		{
@@ -525,8 +533,7 @@ namespace gezi {
 			InitColumnTypes(lines);
 			_instanceType = GetInstanceType(lines[_hasHeader]);
 			InitNames();
-			_instances.SetHeader(line, _hasHeader);
-			_instances.schema.instanceType = _instanceType;
+			SetHeaderSchema(line);
 		}
 
 		void PrintInfo()
@@ -604,6 +611,7 @@ namespace gezi {
 		uint64 _instanceNum = 0;
 		int _featureNum = 0;
 		bool _hasHeader = false;
+		bool _hasWeight = false;
 		InstanceType _instanceType = InstanceType::Dense;
 
 		svec _firstColums;

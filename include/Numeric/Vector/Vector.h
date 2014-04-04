@@ -93,6 +93,22 @@ namespace gezi {
 			_values.swap(vec);
 		}
 
+		void MakeDense()
+		{
+			if (IsSparse())
+			{
+				ToDense();
+			}
+		}
+
+		void MakeSparse()
+		{
+			if (IsDense())
+			{
+				ToSparse();
+			}
+		}
+
 		void Add(Float value)
 		{		
 			_values.push_back(value);
@@ -193,6 +209,7 @@ namespace gezi {
 		template<typename ValueVistor>
 		void ForEach(ValueVistor visitor) const
 		{
+			std::sort
 			if (IsDense())
 			{
 				for (size_t i = 0; i < _values.size(); i++)

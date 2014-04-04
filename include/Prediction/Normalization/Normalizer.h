@@ -28,6 +28,11 @@ namespace gezi {
 
 		}
 
+		virtual string Name()
+		{
+			return "Not specified";
+		}
+
 		/// Process next initialization example
 		virtual void Process(const Vector& vec)
 		{
@@ -41,11 +46,14 @@ namespace gezi {
 			NormalizeCore(vec);
 		}
 
+		//核心norm 如何兼容Feature 1.Template For Normalzier class ? 2. Feature : public Vector add names field需要修改feature_util.h 重写Feature类
+		//Feature类2个vector好于1个vector<Node> InverteIndex 需要用Node 方便存储
 		virtual void NormalizeCore(Vector& vec)
 		{
 
 		}
 
+		///norm框架
 		//不是Fast后缀的是常规解法全部遍历 对于文本分类等特征数目多 数据稀疏速度较慢 主要用来验证Fast接口的正确性
 		//采用Func 避免核心部分函数是虚函数
 		template<typename Func>
@@ -125,7 +133,6 @@ namespace gezi {
 				}
 				else
 				{
-					index2 = vec.Indices()[j];
 					val = vec.Values()[j];
 					func(index2, ref(val));
 					result.Add(index2, val);

@@ -20,6 +20,10 @@ namespace gezi {
 	class MinMaxNormalizer : public AffineNormalizer
 	{
 	public:
+		virtual string Name() override
+		{
+			return "MinMaxNormalizer";
+		}
 		virtual void Process(const Vector& vec)
 		{
 			if (_isFirst)

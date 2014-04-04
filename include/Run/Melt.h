@@ -11,6 +11,17 @@
  *  @TODO cmmand处理 脚本统一化 增加原名和简称两种FLAGS同时存在
  *  @TODO 数据分割  train  test // validate ?
  *  @TODO 数据shrink  去掉特定的pos 或者 特定的 neg 使得 正反比例达到预设比如 1:1 1:2 先随机数据 然后舍弃部分index 顺序即可
+ *  暂时 不支持missing feature, class feature, text feature
+ * 初步只实现 
+ * 1. 输入解析 done
+ * 2. Instances 数据结构 稀疏 Dense 自动转换  Done
+ * 3. Normalization 当前实现了 MinMax @TODO Gussian and Bin
+ * 4. 训练支持 Cross Fold 随机cross 已实现 , test 还未实现
+ *    尽快实现完整的 train, test, train-test, cross fold
+ * 5. @TODO 特征evaluatore 组合特征 判断效果
+ * 6. @TODO 参数选择  grid sweeping 初步实现 其它参数选择 ?
+ * 7. 初步实现Binary分类 后续再考虑其他
+ * 8. 尽快实现二分类的 LinearSvm   FastRank -> @TODO 逻辑回归, KernelSvm,LibLinear, 随机森林。。。 
  *  ==============================================================================
  */
 
@@ -138,6 +149,8 @@ namespace gezi {
 			
 			Instances instances = _parser.Parse(_cmd.datafile);
 			NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
+			CHECK_NE(normalizer.get(), NULL);
+			Pval(normalizer->Name());
 			normalizer->PrepareAndNormalize(instances);
 
 			//@TODO instances_util.h 完成Instances写出

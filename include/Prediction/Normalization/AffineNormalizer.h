@@ -24,12 +24,12 @@ namespace gezi {
 			_func = [this](int index, Float& value)
 			{
 				if (_scales[index] <= 0)
-				{//保持不变
+				{//保持不变 Dense Sparse 保持逻辑一致 如果置为0 
+					//需要CheckOffsetAndScale函数中shiftIndices增加scale <=0 且offset!=0的点
 					//value = 0;
 					return;
 				}
 				else if (_trunct)
-					//if (_trunct)
 				{
 					if (value >= _offsets[index] + _scales[index])
 						value = 1.0;
@@ -67,7 +67,7 @@ namespace gezi {
 						<< " always take value " << _offsets[i];
 				}
 				else if (_offsets[i] != 0.0)
-				{ //如果最小值是0 那么 所有的点都只需要morph不需要shift，同时如果是0值点 不需要变化
+				{ //如果最小值是0 那么 所有的点都只需要morph不需要shift，同时如果是0值点 不需要变化,dense 使用shiftIndices, sparse使用morphIdices 就是求并集 非0 union 需要moph的0值点
 					_morphIndices.push_back(i);
 					_shiftIndices.push_back(i);
 				}

@@ -22,17 +22,18 @@ namespace gezi {
 	class NormalizerFactory
 	{
 	public:
-		static NormalizerPtr CreateNormalizer(const string& name)
+		static NormalizerPtr CreateNormalizer(const string& name_)
 		{
-			if (name == "MinMax")
+			string name = boost::to_lower_copy(name_);
+			if (name == "minmax")
 			{
 				return make_shared<MinMaxNormalizer>();
 			}
-			if (name == "Gaussian")
+			if (name == "gaussian")
 			{
 				return make_shared<GaussianNormalizer>();
 			}
-			if (name == "Bin")
+			if (name == "bin")
 			{
 				return make_shared<BinNormalizer>();
 			}
