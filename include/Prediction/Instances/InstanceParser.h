@@ -385,17 +385,17 @@ namespace gezi {
 					switch (_columnTypes[j])
 					{
 					case ColumnType::Feature:
-						value = _selectedArray[fidx++] ? DOUBLE_PARSE(item) : 0;
+						value = _selectedArray[fidx++] ? DOUBLE(item) : 0;
 						features.Add(value);
 						break;
 					case ColumnType::Name:
 						instance.names.push_back(item);
 						break;
 					case ColumnType::Label:
-						instance.label = DOUBLE_PARSE(item);
+						instance.label = DOUBLE(item);
 						break;
 					case ColumnType::Weight:
-						instance.weight = DOUBLE_PARSE(item);
+						instance.weight = DOUBLE(item);
 					default:
 						break;
 					}
@@ -442,7 +442,7 @@ namespace gezi {
 					bool ret = split(item, ':', index_, value_);
 					if (ret)
 					{
-						int index = DOUBLE_PARSE(index_); Float value = DOUBLE_PARSE(value_);
+						int index = INT(index_); Float value = DOUBLE(value_);
 						if (_selectedArray[index])
 							features.Add(index, value);
 					}
@@ -455,10 +455,10 @@ namespace gezi {
 							instance.names.push_back(item);
 							break;
 						case ColumnType::Label:
-							instance.label = DOUBLE_PARSE(item);
+							instance.label = DOUBLE(item);
 							break;
 						case ColumnType::Weight:
-							instance.weight = DOUBLE_PARSE(item);
+							instance.weight = DOUBLE(item);
 							break;
 						default:
 							break;

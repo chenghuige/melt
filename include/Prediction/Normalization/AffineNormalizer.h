@@ -59,8 +59,8 @@ namespace gezi {
 			{
 				string offset, scale;
 				split(lines[i], '\t', offset, scale);
-				_offsets[j] = DOUBLE_PARSE(offset);
-				_scales[j] = INT_PARSE(scale);
+				_offsets[j] = DOUBLE(offset);
+				_scales[j] = DOUBLE(scale);
 			}
 			AffineInit();
 		}
