@@ -473,6 +473,7 @@ namespace gezi {
 				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
 					features.Densify();
 				}
+				
 				instance.name = join(instance.names, _args.ncsep);
 			}
 		}

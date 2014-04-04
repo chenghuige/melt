@@ -15,8 +15,9 @@
 #define PREDICTION__INSTANCES__HEADER_SCHEMA_H_
 
 #include "common_util.h"
-namespace gezi {
-
+namespace gezi
+{
+	//这个是用于判断输入文本对应是稀疏还是Dense
 	enum class InstanceType
 	{
 		Dense = 0,

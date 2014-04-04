@@ -364,7 +364,7 @@ namespace gezi {
 		}
 
 	public:
-		/// True if the Vector is using sparse representation.
+		/// True if the Vector is using sparse representation. 也有可能是空feature
 		inline bool IsDense() const
 		{
 			return _indices.empty();
