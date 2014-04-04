@@ -67,24 +67,24 @@ namespace gezi {
 						<< " always take value " << _offsets[i];
 				}
 				else if (_offsets[i] != 0.0)
-				{ //如果最小值是0 那么 所有的点都只需要morph不需要shift，同时如果是0值点 不需要变化,dense 使用shiftIndices, sparse使用morphIdices 就是求并集 非0 union 需要moph的0值点
-					_morphIndices.push_back(i);
+				{ //如果最小值是0 那么 所有的点都只需要morph不需要shift，同时如果是0值点 不需要变化,dense 使用morphIndices, sparse使用shiftIdices 就是求并集 非0 union 需要moph的0值点
 					_shiftIndices.push_back(i);
+					_morphIndices.push_back(i);
 				}
 				else if (_scales[i] != 1.0)
 				{
-					_shiftIndices.push_back(i);
+					_morphIndices.push_back(i);
 				} //like [0,1] 这样的所有点都不需要变化
 				else if (_trunct)
 				{ //如果要截断即使[0,1]也需要scale可能， 注意只可能会是在线部分用trunct 离线test部分？@TODO only test trunct ?
-					_shiftIndices.push_back(i);
+					_morphIndices.push_back(i);
 				}
 			}
 
 			PVEC(_offsets);
 			PVEC(_scales);
-			PVEC(_shiftIndices);
 			PVEC(_morphIndices);
+			PVEC(_shiftIndices);
 		}
 
 		virtual void NormalizeCore(Vector& vec) override

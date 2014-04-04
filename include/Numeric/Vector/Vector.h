@@ -209,7 +209,6 @@ namespace gezi {
 		template<typename ValueVistor>
 		void ForEach(ValueVistor visitor) const
 		{
-			std::sort
 			if (IsDense())
 			{
 				for (size_t i = 0; i < _values.size(); i++)

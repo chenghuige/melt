@@ -96,7 +96,7 @@ namespace gezi {
 		template<typename Func>
 		void NormalizeDenseFast(Vector& vec, Func func)
 		{
-			for (int index : _shiftIndices)
+			for (int index : _morphIndices)
 			{
 				func(index, vec.Values()[index]);
 			}
@@ -106,7 +106,7 @@ namespace gezi {
 		void NormalizeSparseFast(Vector& vec, Func func)
 		{
 			Vector result(_featureNum);
-			int len = _morphIndices.size();
+			int len = _shiftIndices.size();
 			int len2 = vec.Values().size();
 
 			Float val;
@@ -114,7 +114,7 @@ namespace gezi {
 			int i = 0, j = 0;
 			for (; i < len && j < len2;)
 			{
-				index = _morphIndices[i];
+				index = _shiftIndices[i];
 				index2 = vec.Indices()[j];
 				if (index == index2)
 				{
@@ -141,7 +141,7 @@ namespace gezi {
 			}
 			for (; i < len; i++)
 			{
-				index = _morphIndices[i];
+				index = _shiftIndices[i];
 				val = 0;
 				func(index, ref(val));
 				result.Add(index, val);
@@ -205,8 +205,8 @@ namespace gezi {
 	protected:
 		int _featureNum;
 		svec _featureNames;
-		ivec _shiftIndices;
 		ivec _morphIndices;
+		ivec _shiftIndices;
 		//----------------------------args
 		//:if feature is out of bounds, threshold at 0/1, or return values below 0 and above 1?
 		bool _trunct = false; //@TODO here or in MinMaxNormalizer GuassianNormalzier need it?
