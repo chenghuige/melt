@@ -109,7 +109,7 @@ CONFIGS('lib2-64/ullib@base')
 CONFIGS('lib2-64/others-ex@base')
 CONFIGS('public/configure@base')
 CONFIGS('public/uconv@base')
-CONFIGS('app/search/sep/anti-spam/gezi@trunk')
+CONFIGS('app/search/sep/anti-spam/gezi@base')
 
 srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Run/*.cpp'.replace('./',RELATIVE_PATH))
 Application('melt',Sources('melt.cc', srcs))
