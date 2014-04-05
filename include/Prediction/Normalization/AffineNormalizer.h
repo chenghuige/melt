@@ -124,6 +124,11 @@ namespace gezi {
 			Normalize(vec, _func);
 		}
 
+		virtual void NormalizeCore(Feature& feature) override
+		{
+			Normalize(feature, _func);
+		}
+
 	protected:
 		Fvec _offsets;
 		Fvec _scales;
