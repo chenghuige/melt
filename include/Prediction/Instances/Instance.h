@@ -18,7 +18,6 @@
 #include "Numeric/Vector/Vector.h"
 namespace gezi {
 
-	//@TODO 模仿TLC 似乎也可以 struct Instance : public Vector
 struct Instance 
 {
 public:

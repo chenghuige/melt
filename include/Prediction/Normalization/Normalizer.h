@@ -58,7 +58,7 @@ namespace gezi {
 
 		void Normalize(Instance& instance)
 		{
-			Normalize(instance.features);
+			NormalizeCore(instance->features);
 		}
 
 		//核心norm 如何兼容Feature 1.Template For Normalzier class ? 2. Feature : public Vector add names field需要修改feature_util.h 重写Feature类

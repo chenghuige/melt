@@ -40,7 +40,7 @@ public:
 		{
 			if (instance->IsPositive())
 			{
-				instance->ForEach([](int index, double value)
+				instance->features.ForEach([](int index, double value)
 				{
 					double val2 = pow(value, 2);
 					means[index] += value;
@@ -52,7 +52,7 @@ public:
 			}
 			else
 			{
-				instance->ForEach([](int index, double value)
+				instance->features.ForEach([](int index, double value)
 				{
 					double val2 = pow(value, 2);
 					means[index] += value;
