@@ -88,10 +88,10 @@ private:
 	{
 		for (int i = 0; i < featureNum; i++)
 		{
-			double x = means[index] / (instanceNum - 1) * means[index] / instanceNum;
-			means[index] /= instanceNum;
-			double y = vars[index] / (instanceNum - 1);
-			vars[index] = y - x;
+			double x = means[i] / (instanceNum - 1) * means[i] / instanceNum;
+			means[i] /= instanceNum;
+			double y = vars[i] / (instanceNum - 1);
+			vars[i] = y - x;
 		}
 	}
 };
