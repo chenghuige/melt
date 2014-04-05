@@ -55,10 +55,10 @@ TEST(test_normalize, func)
 
 	{
 		Feature fe;
-		fe.add(0, 3);
-		fe.add(1, 1);
-		fe.add(3, 0);
-		fe.add(15, 8);
+		fe.add(0, 3.0);
+		fe.add(1, 1.0);
+		fe.add(3, 0.0);
+		fe.add(15, 8.0);
 		normalizer->Normalize(fe);
 		fe.ForEach([](int index, double value)
 		{
