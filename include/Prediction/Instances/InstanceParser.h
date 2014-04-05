@@ -559,7 +559,7 @@ namespace gezi {
 		}
 
 		//libsvm格式不支持过滤特征 仅仅为了方便一直使用libsvm的同学
-		Instances&& ParseLibSVM(const string& datafile)
+		Instances&& ParseLibSVM(const string& dataFile)
 		{
 			Timer timer;
 			vector<string> lines = read_lines(dataFile);
