@@ -568,8 +568,10 @@ namespace gezi {
 			{
 				LOG(FATAL) << "Fail to load data file! " << dataFile << " is empty!";
 			}
+			
 			_instanceNum = lines.size();
 			_instances.resize(_instanceNum, nullptr);
+
 			_hasHeader = false;
 			_instances.SetHeader("", _hasHeader);
 			_instanceType = InstanceType::Sparse;
@@ -624,6 +626,9 @@ namespace gezi {
 					features.Densify();
 				}
 			}
+
+			PrintInfo();
+			return move(_instances);
 		}
 
 		Instances&& ParseNormal(const string& dataFile)
@@ -653,14 +658,14 @@ namespace gezi {
 
 			timer.restart();
 			_selectedArray = GetSelectedArray();
+			Pval_(timer.elapsed_ms(), "GetSelectedArray");
+
 			_instanceNum = lines.size() - _hasHeader; //必须有 因为_hasHeader可能通过解析变为true
 			if (!_instanceNum)
 			{
 				LOG(FATAL) << "Only header no data! " << dataFile;
 			}
 			_instances.resize(_instanceNum, nullptr);
-
-			Pval_(timer.elapsed_ms(), "GetSelectedArray");
 
 			timer.restart();
 			if (_instanceType == InstanceType::Dense)
@@ -675,7 +680,6 @@ namespace gezi {
 			Pval_(timer.elapsed_ms(), "CreateInstances");
 
 			PrintInfo();
-
 			return move(_instances);
 		}
 		Instances&& Parse(const string& dataFile)
