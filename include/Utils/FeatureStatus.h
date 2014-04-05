@@ -19,82 +19,88 @@
 
 namespace gezi {
 
-class FeatureStatus 
-{
-public:
-	static void GenMeanVarInfo(const Instances& instances, const string outFile)
+	class FeatureStatus
 	{
-		int featureNum = instances.FeatureNum();
-		dvec means(featureNum, 0);
-		dvec vars(featureNum, 0);
-
-		dvec posMeans(featureNum, 0);
-		dvec posVars(featureNum, 0);
-
-		dvec negMeans(featureNum, 0);
-		dvec negVars(featureNum, 0);
-
-		uint64 instanceNum = instances.Count();
-		uint64 posNum = 0, negNum = 0;
-		for (InstancePtr instance : instances)
+	public:
+		static void GenMeanVarInfo(const Instances& instances, const string outFile)
 		{
-			if (instance->IsPositive())
+			int featureNum = instances.FeatureNum();
+			dvec means(featureNum, 0);
+			dvec vars(featureNum, 0);
+
+			dvec posMeans(featureNum, 0);
+			dvec posVars(featureNum, 0);
+
+			dvec negMeans(featureNum, 0);
+			dvec negVars(featureNum, 0);
+
+			uint64 instanceNum = instances.Count();
+			uint64 posNum = 0, negNum = 0;
+
+			ProgressBar pb(instanceNum);
+//#pragma omp parallel for
+			for (uint64 i = 0; i < instanceNum; i++)
 			{
-				instance->features.ForEach([&](int index, double value)
+				pb.progress(i);
+				Instance instance = *instances[i];
+				if (instance->IsPositive())
 				{
-					double val2 = pow(value, 2);
-					means[index] += value;
-					vars[index] += val2;
-					posMeans[index] += value;
-					posVars[index] += val2;
-				});
-				posNum++;
-			}
-			else
-			{
-				instance->features.ForEach([&](int index, double value)
+					instance->features.ForEach([&](int index, double value)
+					{
+						double val2 = pow(value, 2);
+						means[index] += value;
+						vars[index] += val2;
+						posMeans[index] += value;
+						posVars[index] += val2;
+					});
+					posNum++;
+				}
+				else
 				{
-					double val2 = pow(value, 2);
-					means[index] += value;
-					vars[index] += val2;
-					negMeans[index] += value;
-					negVars[index] += val2;
-				});
-				negNum++;
+					instance->features.ForEach([&](int index, double value)
+					{
+						double val2 = pow(value, 2);
+						means[index] += value;
+						vars[index] += val2;
+						negMeans[index] += value;
+						negVars[index] += val2;
+					});
+					negNum++;
+				}
 			}
-		}
-		MeanVar(means, vars, featureNum, instanceNum);
-		MeanVar(posMeans, posVars, featureNum, posNum);
-		MeanVar(negMeans, negVars, featureNum, negNum);
+			MeanVar(means, vars, featureNum, instanceNum);
+			MeanVar(posMeans, posVars, featureNum, posNum);
+			MeanVar(negMeans, negVars, featureNum, negNum);
 
-		//--------------------save result
-		ofstream ofs(outFile);
-		ofs << "FeatureName\tMean\tPosMean\tNegMean\tVar\tPosVar\tNegVar" << endl;
-		for (int i = 0; i < featureNum; i++)
-		{
-			ofs << instances.FeatureNames()[i] << "\t"
-				<< means[i] << "\t"
-				<< posMeans[i] << "\t"
-				<< negMeans[i] << "\t"
-				<< vars[i] << "\t"
-				<< posVars[i] << "\t"
-				<< negVars[i] << "\t" 
-				<< endl;
+			//--------------------save result
+			LOG(INFO) << "Write result to " << outFile;
+			ofstream ofs(outFile);
+			ofs << "FeatureName\tMean\tPosMean\tNegMean\tVar\tPosVar\tNegVar" << endl;
+			for (int i = 0; i < featureNum; i++)
+			{
+				ofs << instances.FeatureNames()[i] << "\t"
+					<< means[i] << "\t"
+					<< posMeans[i] << "\t"
+					<< negMeans[i] << "\t"
+					<< vars[i] << "\t"
+					<< posVars[i] << "\t"
+					<< negVars[i] << "\t"
+					<< endl;
+			}
 		}
-	}
-protected:
-private:
-	static void MeanVar(dvec& means, dvec& vars, int featureNum, uint64 instanceNum)
-	{
-		for (int i = 0; i < featureNum; i++)
+	protected:
+	private:
+		static void MeanVar(dvec& means, dvec& vars, int featureNum, uint64 instanceNum)
 		{
-			double x = means[i] / (instanceNum - 1) * means[i] / instanceNum;
-			means[i] /= instanceNum;
-			double y = vars[i] / (instanceNum - 1);
-			vars[i] = y - x;
+			for (int i = 0; i < featureNum; i++)
+			{
+				double x = means[i] / (instanceNum - 1) * means[i] / instanceNum;
+				means[i] /= instanceNum;
+				double y = vars[i] / (instanceNum - 1);
+				vars[i] = y - x;
+			}
 		}
-	}
-};
+	};
 
 }  //----end of namespace gezi
 
