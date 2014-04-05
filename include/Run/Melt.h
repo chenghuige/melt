@@ -221,6 +221,7 @@ namespace gezi {
 				break;
 			case RunType::FEATURE_STATUS:
 				RunFeatureStatus();
+				break;
 			case RunType::UNKNOWN:
 			default:
 				LOG(WARNING) << commandStr << " is not supported yet ";
