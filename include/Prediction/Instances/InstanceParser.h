@@ -653,7 +653,11 @@ namespace gezi {
 
 			timer.restart();
 			_selectedArray = GetSelectedArray();
-
+			_instanceNum = lines.size() - _hasHeader; //必须有 因为_hasHeader可能通过解析变为true
+			if (!_instanceNum)
+			{
+				LOG(FATAL) << "Only header no data! " << dataFile;
+			}
 			_instances.resize(_instanceNum, nullptr);
 
 			Pval_(timer.elapsed_ms(), "GetSelectedArray");
