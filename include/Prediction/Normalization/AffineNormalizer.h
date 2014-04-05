@@ -50,9 +50,9 @@ namespace gezi {
 			svec lines = read_lines(infile);
 			CHECK_GT(lines.size(), 0) << infile;
 			int i = 0;
-			CHECK_EQ(parse_string_param("NormalizerType=", lines[i++]), Name());
-			_trunct = parse_bool_param("Trunct=", lines[i++]);
-			_featureNum = parse_int_param("FeatureNum=", lines[i++]);
+			CHECK_EQ(parse_string_param("NormalizerType", lines[i++]), Name());
+			_trunct = parse_bool_param("Trunct", lines[i++]);
+			_featureNum = parse_int_param("FeatureNum", lines[i++]);
 			_offsets.resize(_featureNum);
 			_scales.resize(_featureNum);
 			for (int j = 0; j < _featureNum; j++)
