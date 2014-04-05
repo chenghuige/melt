@@ -36,36 +36,36 @@ namespace gezi {
 
 			uint64 instanceNum = instances.Count();
 			uint64 posNum = 0, negNum = 0;
-
-			ProgressBar pb(instanceNum);
-//#pragma omp parallel for
-			for (uint64 i = 0; i < instanceNum; i++)
 			{
-				pb.progress(i);
-				const InstancePtr& instance = instances[i];
-				if (instance->IsPositive())
+				ProgressBar pb(instanceNum);
+				for (uint64 i = 0; i < instanceNum; i++)
 				{
-					instance->features.ForEach([&](int index, double value)
+					pb.progress(i);
+					const InstancePtr& instance = instances[i];
+					if (instance->IsPositive())
 					{
-						double val2 = pow(value, 2);
-						means[index] += value;
-						vars[index] += val2;
-						posMeans[index] += value;
-						posVars[index] += val2;
-					});
-					posNum++;
-				}
-				else
-				{
-					instance->features.ForEach([&](int index, double value)
+						instance->features.ForEach([&](int index, double value)
+						{
+							double val2 = pow(value, 2);
+							means[index] += value;
+							vars[index] += val2;
+							posMeans[index] += value;
+							posVars[index] += val2;
+						});
+						posNum++;
+					}
+					else
 					{
-						double val2 = pow(value, 2);
-						means[index] += value;
-						vars[index] += val2;
-						negMeans[index] += value;
-						negVars[index] += val2;
-					});
-					negNum++;
+						instance->features.ForEach([&](int index, double value)
+						{
+							double val2 = pow(value, 2);
+							means[index] += value;
+							vars[index] += val2;
+							negMeans[index] += value;
+							negVars[index] += val2;
+						});
+						negNum++;
+					}
 				}
 			}
 			MeanVar(means, vars, featureNum, instanceNum);
@@ -73,19 +73,23 @@ namespace gezi {
 			MeanVar(negMeans, negVars, featureNum, negNum);
 
 			//--------------------save result
-			LOG(INFO) << "Write result to " << outFile;
-			ofstream ofs(outFile);
-			ofs << "FeatureName\tMean\tPosMean\tNegMean\tVar\tPosVar\tNegVar" << endl;
-			for (int i = 0; i < featureNum; i++)
 			{
-				ofs << instances.FeatureNames()[i] << "\t"
-					<< means[i] << "\t"
-					<< posMeans[i] << "\t"
-					<< negMeans[i] << "\t"
-					<< vars[i] << "\t"
-					<< posVars[i] << "\t"
-					<< negVars[i] << "\t"
-					<< endl;
+				LOG(INFO) << "Write result to " << outFile;
+				ofstream ofs(outFile);
+				ofs << "FeatureName\tMean\tPosMean\tNegMean\tVar\tPosVar\tNegVar" << endl;
+				ProgressBar pb(featureNum);
+				for (int i = 0; i < featureNum; i++)
+				{
+					pb.progress(i);
+					ofs << instances.FeatureNames()[i] << "\t"
+						<< means[i] << "\t"
+						<< posMeans[i] << "\t"
+						<< negMeans[i] << "\t"
+						<< vars[i] << "\t"
+						<< posVars[i] << "\t"
+						<< negVars[i] << "\t"
+						<< endl;
+				}
 			}
 		}
 	protected:
