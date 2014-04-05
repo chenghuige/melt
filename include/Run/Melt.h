@@ -35,6 +35,7 @@
 #include "Prediction/Normalization/MinMaxNormalizer.h"
 #include "Prediction/Normalization/NormalizerFactory.h"
 #include "Utils/FeatureStatus.h"
+#include "Prediction/Instances/instances_util.h"
 
 namespace gezi {
 	class Melt
