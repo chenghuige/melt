@@ -454,7 +454,7 @@ namespace gezi {
 		vector<int> _indices; //不使用Node(index,value)更加灵活 同时可以允许一项为空
 		vector<Float> _values;
 		int _length = 0;
-		Float _maxSparsity = 0.25;
+		Float _maxSparsity = 0.5;
 	};
 
 }  //----end of namespace gezi
