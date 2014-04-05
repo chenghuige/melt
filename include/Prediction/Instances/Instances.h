@@ -116,6 +116,17 @@ namespace gezi {
 				(InstanceNum() - pcnt) % ((double)pcnt * 100 / InstanceNum());
 			uint64 dcnt = DenseCount();
 			VLOG(level) << format("DenseCount: %1% SparseCount: %2% DenseRatio: %3%") % dcnt % (InstanceNum() - dcnt) % ((double)dcnt * 100 / InstanceNum());
+
+			for (InstancePtr inst : *this)
+			{
+				if (inst->IsDense())
+				{
+				}
+				else
+				{
+					cout << inst->features.Count() / (double)inst->features.Length() << endl;
+				}
+			}
 		}
 
 		uint64 PositiveCount()
