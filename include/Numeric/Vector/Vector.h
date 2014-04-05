@@ -436,12 +436,25 @@ namespace gezi {
 		{
 			return _values[index];
 		}
+
+		void CheckInvariants()
+		{
+			if (IsDense())
+			{
+				CHECK_EQ(_values.size(), _length);
+			}
+			else
+			{
+				CHECK_EQ(_values.size(), _indices.size());
+				//@TODO 检查所有indice是在合理范围？ 排序？
+			}
+		}
 	protected:
 	private:
 		vector<int> _indices; //不使用Node(index,value)更加灵活 同时可以允许一项为空
 		vector<Float> _values;
 		int _length = 0;
-		Float _maxSparsity = 0.5;
+		Float _maxSparsity = 0.25;
 	};
 
 }  //----end of namespace gezi

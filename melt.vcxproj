@@ -96,6 +96,7 @@
     <ClInclude Include="include\Run\Melt.h" />
     <ClInclude Include="include\Run\MeltArguments.h" />
     <ClInclude Include="include\Tools\FeatureStatus.h" />
+    <ClInclude Include="include\Utils\FeatureStatus.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

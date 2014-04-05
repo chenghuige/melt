@@ -104,5 +104,8 @@
     <ClInclude Include="include\Tools\FeatureStatus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Utils\FeatureStatus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
