@@ -49,18 +49,18 @@ namespace gezi {
 		{
 			svec lines = read_lines(infile);
 			CHECK_GT(lines.size(), 0) << infile;
-			int i = 0;
-			CHECK_EQ(parse_string_param("NormalizerType", lines[i++]), Name());
-			_trunct = parse_bool_param("Trunct", lines[i++]);
-			_featureNum = parse_int_param("FeatureNum", lines[i++]);
+			int idx = 0;
+			CHECK_EQ(parse_string_param("NormalizerType", lines[idx++]), Name());
+			_trunct = parse_bool_param("Trunct", lines[idx++]);
+			_featureNum = parse_int_param("FeatureNum", lines[idx++]);
 			_offsets.resize(_featureNum);
 			_scales.resize(_featureNum);
-			for (int j = 0; j < _featureNum; j++)
+			for (int i = 0; i < _featureNum; i++)
 			{
 				string offset, scale;
-				split(lines[i], '\t', offset, scale);
-				_offsets[j] = DOUBLE(offset);
-				_scales[j] = DOUBLE(scale);
+				split(lines[i + idx], '\t', offset, scale);
+				_offsets[i] = DOUBLE(offset);
+				_scales[i] = DOUBLE(scale);
 			}
 			AffineInit();
 		}
