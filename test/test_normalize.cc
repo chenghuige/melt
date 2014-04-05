@@ -78,6 +78,10 @@ TEST(test_normalize, func)
 			LOG(INFO) << index << "\t" << value;
 		});
 	}
+
+	{
+		normalizer->Save("norm.txt");
+	}
 }
 
 int main(int argc, char *argv[])
