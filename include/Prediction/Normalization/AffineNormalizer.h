@@ -115,7 +115,7 @@ namespace gezi {
 			PVEC(_shiftIndices);
 		}
 
-		virtual void NormalizeCore(Vector& vec) override
+	/*	virtual void NormalizeCore(Vector& vec) override
 		{
 			Normalize(vec, _func);
 		}
@@ -123,6 +123,12 @@ namespace gezi {
 		virtual void NormalizeCore(Feature& feature) override
 		{
 			Normalize(feature, _func);
+		}*/
+
+		template<typename _Vector>
+		virtual void NormalizeCore(_Vector& vec) override
+		{
+			Normalize(vec, _func);
 		}
 
 	protected:
