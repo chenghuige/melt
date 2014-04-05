@@ -86,7 +86,7 @@ TEST(test_normalize, func)
 	{
 		Instances instances = parser.Parse(FLAGS_i);
 		Pval(instances.Size());
-		NormalizerPtr normalizer = make_shared<MinMaxNormalizer>();
+		NormalizerPtr normalizer = make_shared<MinMaxNormalizer>("norm.txt");
 		if (instances.Count() > FLAGS_idx)
 		{
 			Pval(instances[FLAGS_idx]->name);

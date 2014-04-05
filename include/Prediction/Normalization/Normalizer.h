@@ -74,11 +74,6 @@ namespace gezi {
 
 		}
 
-		/*void NormalizeCore(Instance& instance)
-		{
-			NormalizeCore(instance.features);
-		}*/
-
 		///norm框架
 		//不是Fast后缀的是常规解法全部遍历 对于文本分类等特征数目多 数据稀疏速度较慢 主要用来验证Fast接口的正确性
 		//采用Func 避免核心部分函数是虚函数
