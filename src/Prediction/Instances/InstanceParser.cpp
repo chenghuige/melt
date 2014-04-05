@@ -25,6 +25,7 @@ DEFINE_string(excl, "", "excl vs. incl determines whether features for the expre
 DEFINE_string(incl, "", "use excl will exlude those specified, use incl will only include those specified, use incl + excl means first incl then excl");
 DEFINE_bool(sparse, false, "keep sparse");
 DEFINE_bool(dense, false, "keep dense");
+DEFINE_string(format, "normal", "support melt/tlc format as normal, also support libSVM, may support weka/arff, malloc format later");
 
 namespace gezi {
 
@@ -41,6 +42,7 @@ namespace gezi {
 		_args.incl = FLAGS_incl;
 		_args.keepSparse = FLAGS_sparse;
 		_args.keepDense = FLAGS_dense;
+		_args.inputFormat = FLAGS_format;
 	}
 
 }  //----end of namespace gezi

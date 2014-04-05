@@ -61,6 +61,7 @@ namespace gezi {
 			string incl = "";
 			bool keepSparse = false; //sparse|
 			bool keepDense = false; //dense|
+			string inputFormat = "normal";//format|support melt/tlc format as normal, also support libSVM, may support weka/arff, malloc format later
 		};
 
 		InstanceParser()
@@ -100,6 +101,7 @@ namespace gezi {
 		}
 		void InitParam()
 		{
+			_format = boost::to_lower_copy(_args.inputFormat);
 			if (_args.sep == "tab")
 			{
 				_sep = "\t";
@@ -434,11 +436,11 @@ namespace gezi {
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
 				svec l = split(line, _sep);
-				
+
 				for (size_t j = 0; j < l.size(); j++)
 				{
 					string item = l[j];
-					string index_, value_; 
+					string index_, value_;
 					bool ret = split(item, ':', index_, value_);
 					if (ret)
 					{
@@ -473,7 +475,7 @@ namespace gezi {
 				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
 					features.Densify();
 				}
-				
+
 				instance.name = join(instance.names, _args.ncsep);
 			}
 		}
@@ -556,7 +558,8 @@ namespace gezi {
 			PVAL(_args.keepDense);
 		}
 
-		Instances&& Parse(const string& dataFile)
+		//libsvm格式不支持过滤特征 仅仅为了方便一直使用libsvm的同学
+		Instances&& ParseLibSVM(const string& datafile)
 		{
 			Timer timer;
 			vector<string> lines = read_lines(dataFile);
@@ -565,12 +568,79 @@ namespace gezi {
 			{
 				LOG(FATAL) << "Fail to load data file! " << dataFile << " is empty!";
 			}
-			int instanceNum = lines.size();
+			_instanceNum = lines.size();
+			_instances.resize(_instanceNum, nullptr);
+			_hasHeader = false;
+			_instances.SetHeader(line, _hasHeader);
+			_instanceType = InstanceType::Sparse;
+			_instances.schema.instanceType = _instanceType;
+			_hasWeight = false;
+			_instances.schema.hasWeights = _hasWeight;
+
+			ivec maxIndices(_instanceNum, 1);
+#pragma omp parallel for 
+			for (uint64 i = 0; i < _instanceNum; i++)
+			{
+				string line = lines[i];
+				_instances[i] = make_shared<Instance>();
+				Instance& instance = *_instances[i];
+				Vector& features = instance.features;
+				svec l = split(line, _sep);
+				for (size_t j = 0; j < l.size(); j++)
+				{
+					string item = l[j];
+					if (j == 0)
+					{
+						instance.label = DOUBLE(item);
+						continue;
+					}
+					string index_, value_;
+					split(item, ':', index_, value_);
+					int index = INT(index_); Float value = DOUBLE(value_);
+					if (index > maxIndices[i])
+					{
+						maxIndices[i] = index;
+					}
+					features.Add(index - 1, value); //libsvm 是1开始 melt/tlc内部0开始处理
+				}
+			}
+			_featureNum = ufo::max(maxIndices);
+			for (int i = 0; i < _featureNum; i++)
+			{
+				string name = "f" + STR(i);
+				_instances.schema.featureNames.push_back(name);
+			}
+#pragma omp parallel for 
+			for (uint64 i = 0; i < _instanceNum; i++)
+			{
+				Vector& features = _instance[i]->features;
+				features.SetLength(_featureNum);
+				if (_args.keepDense)
+				{
+					features.ToDense();
+				}
+				else if (!_args.keepSparse)
+				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
+					features.Densify();
+				}
+			}
+		}
+
+		Instances&& ParseNormal(const string& dataFile)
+		{
+			Timer timer;
+			vector<string> lines = read_lines(dataFile);
+			Pval_(timer.elapsed_ms(), "read_lines");
+			if (lines.empty())
+			{
+				LOG(FATAL) << "Fail to load data file! " << dataFile << " is empty!";
+			}
+			_instanceNum = lines.size();
 
 			if (_args.hasHeader)
 			{
-				instanceNum--;
-				if (!instanceNum)
+				_instanceNum--;
+				if (!_instanceNum)
 				{
 					LOG(FATAL) << "Only header no data! " << dataFile;
 				}
@@ -584,8 +654,7 @@ namespace gezi {
 			timer.restart();
 			_selectedArray = GetSelectedArray();
 
-			_instanceNum = lines.size() - _hasHeader;
-			_instances.resize(_instanceNum, nullptr); //@TODO
+			_instances.resize(_instanceNum, nullptr);
 
 			Pval_(timer.elapsed_ms(), "GetSelectedArray");
 
@@ -604,6 +673,22 @@ namespace gezi {
 			PrintInfo();
 
 			return move(_instances);
+		}
+		Instances&& Parse(const string& dataFile)
+		{
+			//-----------------判断输入文件类型
+			if (_format == "normal")
+			{
+				return ParseNormal(dataFile);
+			}
+			else if (_format == "libsvm")
+			{
+				return ParseLibSVM(dataFile);
+			}
+			else
+			{
+				LOG(FATAL) << "Not supported input format: " << _format;
+			}
 		}
 
 	protected:
@@ -628,6 +713,7 @@ namespace gezi {
 		string _sep;
 		ivec _namesIdx;
 		ivec _attributesIdx;
+		string _format;
 	};
 
 }  //----end of namespace gezi

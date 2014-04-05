@@ -110,7 +110,7 @@ namespace gezi {
 		}
 
 		void Add(Float value)
-		{		
+		{
 			_values.push_back(value);
 		}
 
@@ -157,7 +157,7 @@ namespace gezi {
 		{
 			return _values[i];
 		}
-		
+
 		Float& Value(int i)
 		{
 			return _values[i];
@@ -252,15 +252,15 @@ namespace gezi {
 		template<typename ValueVistor>
 		void ForEachAllSparse(ValueVistor visitor) const
 		{
-				size_t j = 0;
-				for (size_t i = 0; i < _values.size(); i++)
+			size_t j = 0;
+			for (size_t i = 0; i < _values.size(); i++)
+			{
+				while (j < _indices[i])
 				{
-					while (j < _indices[i])
-					{
-						visitor(j++, 0);
-					}
-					visitor(j++, _values[i]);
+					visitor(j++, 0);
 				}
+				visitor(j++, _values[i]);
+			}
 		}
 
 
@@ -310,7 +310,7 @@ namespace gezi {
 		}
 
 		template<typename ValueVistor>
-		void ForEachSparse(ValueVistor visitor) 
+		void ForEachSparse(ValueVistor visitor)
 		{
 			for (size_t i = 0; i < _values.size(); i++)
 			{
@@ -342,7 +342,7 @@ namespace gezi {
 		}
 
 		template<typename ValueVistor>
-		void ForEachNonZero(ValueVistor visitor) 
+		void ForEachNonZero(ValueVistor visitor)
 		{
 			if (IsDense())
 			{
@@ -365,29 +365,34 @@ namespace gezi {
 
 	public:
 		/// True if the Vector is using sparse representation. 也有可能是空feature
-		inline bool IsDense() const
+		bool IsDense() const
 		{
 			return _indices.empty();
 		}
 
-		inline bool IsSparse() const
+		bool IsSparse() const
 		{
 			return !_indices.empty();
 		}
 		/// Gets a int value representing the dimensionality of the vector.
-		inline	int Length() const
+		int Length() const
 		{
 			return _length;
 		}
 
+		void SetLength(int length)
+		{
+			_length = length;
+		}
+
 		/// no real content stored? 因为没有支持binary 所以value为空 就表示没有数据
-		inline bool Empty() const
+		bool Empty() const
 		{
 			return _values.empty();
 		}
 
 		/// Gets the number of explicitly represented values in the vector.
-		inline int Count() const
+		int Count() const
 		{
 			return _values.size();
 		}
