@@ -21,6 +21,8 @@ DEFINE_int32(rs, 0, "0 means random, 1 means can reproduce | randSeed: controls 
 DEFINE_int32(nt, 0, "num of threads, default 0 means use threads num according to processor num");
 
 DEFINE_string(i, "", "datafile: Input data file used for train or cross validation, you can also put data file just after exe like: ./melt datafile");
+DEFINE_string(o, "", "outfile: specified output file(not modelfile)");
+DEFINE_string(nf, "", "normalzierfile: specified the output normalzier text");
 DEFINE_string(test, "", "testDatafile: Data file used for test");
 DEFINE_string(valid, "", "Data file used for training validation (with IValidatingPredictor classifiers)");
 
@@ -38,6 +40,8 @@ namespace gezi {
 		_cmd.classifierName = FLAGS_cl;
 		_cmd.classifierSettings = FLAGS_cls;
 		_cmd.datafile = FLAGS_i;
+		_cmd.outfile = FLAGS_o;
+		_cmd.normalizerfile = FLAGS_nf;
 		_cmd.testDatafile = FLAGS_test;
 		_cmd.validationDatafile = FLAGS_valid;
 		_cmd.modelfile = FLAGS_m;

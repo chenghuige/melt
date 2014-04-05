@@ -34,6 +34,7 @@
 #include "Run/CVFoldCreator.h"
 #include "Prediction/Normalization/MinMaxNormalizer.h"
 #include "Prediction/Normalization/NormalizerFactory.h"
+#include "Utils/FeatureStatus.h"
 
 namespace gezi {
 	class Melt
@@ -55,7 +56,8 @@ namespace gezi {
 			FEATURE_SELECTION,
 			CREATE_INSTANCES,
 			NORMALIZE,
-			CHECK_DATA
+			CHECK_DATA,
+			FEATURE_STATUS
 		};
 
 		MeltArguments& Cmd()
@@ -109,7 +111,7 @@ namespace gezi {
 				LOG(FATAL) << "You cannot specify a model file to output when running cross-validation";
 			}
 			//-----------------------------parse input
-			Instances instances = create_instances(_cmd.dataFile);
+			Instances instances = create_instances(_cmd.datafile);
 			CHECK_GT(instances.Count(), 0) << "Read 0 instances, aborting experiment";
 			instances.PrintSummary();
 			//------------------------------run
@@ -119,7 +121,7 @@ namespace gezi {
 		void RunTrain()
 		{
 			Noticer nt("Train!");
-			Instances instances = create_instances(_cmd.dataFile);
+			Instances instances = create_instances(_cmd.datafile);
 		}
 
 		void RunTest()
@@ -135,6 +137,7 @@ namespace gezi {
 		void RunFeatureSelection()
 		{
 			Noticer nt("FeatureSelection!");
+			Instances instances = create_instances(_cmd.datafile);
 		}
 
 		void RunCreateInstances()
@@ -148,24 +151,36 @@ namespace gezi {
 			string infile = _cmd.datafile;
 			string outfile = endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", ".normed.txt") : infile + ".normed";
 			Pval(outfile);
+			string normalizerFile = _cmd.normalizerfile.empty() ?
+				(endswith(infile, ".txt") ? 
+				boost::replace_last_copy(infile, ".txt", ".normalizer.txt") : infile + ".normalizer") : _cmd.normalizerfile;
 			
-			Instances instances = create_instances(_cmd.dataFile);
+			Instances instances = create_instances(_cmd.datafile);
 			NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
 			CHECK_NE(normalizer.get(), NULL);
 			Pval(normalizer->Name());
 			normalizer->PrepareAndNormalize(instances);
-
+			normalizer->Save(normalizerFile);
 			//@TODO instances_util.h Íê³ÉInstancesÐ´³ö
 		}
 
 		void RunCheckData()
 		{
 			Noticer nt("CheckData!(need GLOG_v=4 ./melt)");
-			Instances instances = create_instances(_cmd.dataFile);
+			Instances instances = create_instances(_cmd.datafile);
 			NormalizerPtr normalizer = make_shared<MinMaxNormalizer>();
 			normalizer->Prepare(instances);
 		}
 
+		void RunFeatureStatus()
+		{
+			Noticer nt("FeatureStatus!");
+			string infile = _cmd.datafile;
+			string outfile = _cmd.outfile.empty() ? (endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", ".featurestatus.txt") : infile + ".featuestatus")
+				: _cmd.outfile;
+			Instances instances = create_instances(_cmd.datafile);
+			FeatureStatus::GenMeanVarInfo(instances, outfile);
+		}
 		void RunExperiments()
 		{
 			PVAL(omp_get_num_procs());
@@ -207,6 +222,8 @@ namespace gezi {
 			case RunType::CHECK_DATA:
 				RunCheckData();
 				break;
+			case RunType::FEATURE_STATUS:
+
 			default:
 				LOG(WARNING) << commandStr << " is not supported yet ";
 				break;

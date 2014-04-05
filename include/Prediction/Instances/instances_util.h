@@ -21,6 +21,7 @@ namespace gezi {
 		InstanceParser parser;
 		return parser.Parse(infile);
 	}
+
 }  //----end of namespace gezi
 
 #endif  //----end of PREDICTION__INSTANCES_INSTANCES_UTIL_H_

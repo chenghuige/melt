@@ -118,6 +118,16 @@ namespace gezi {
 			VLOG(level) << format("DenseCount: %1% SparseCount: %2% DenseRatio: %3%") % dcnt % (InstanceNum() - dcnt) % ((double)dcnt * 100 / InstanceNum());
 		}
 
+		bool IsPositive()
+		{
+			return label > 0;
+		}
+
+		bool IsNegative()
+		{
+			return label <= 0;
+		}
+
 		uint64 PositiveCount()
 		{
 			return from(*this) >> where([](const InstancePtr& a) { return a->label > 0; })

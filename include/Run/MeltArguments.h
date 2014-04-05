@@ -27,6 +27,8 @@ namespace gezi {
 		int numThreads = 0;
 		int randSeed = 0;
 		string datafile = "";
+		string outfile = ""; //o|specify the output file
+		string normalizerfile = ""; //nf|normalzier output file
 		string testDatafile = "";
 		string validationDatafile = "";
 		string modelfile = "";
