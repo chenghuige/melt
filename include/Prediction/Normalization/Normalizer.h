@@ -63,7 +63,7 @@ namespace gezi {
 
 		}
 
-		//@TODO better handle? 模板成员函数无法虚函数?
+		//@TODO better handle? 模板成员函数无法虚函数? 暂时这样处理 后面可以考虑Feature类继承Vector 去掉这个
 		virtual void NormalizeCore(Feature& vec)
 		{
 
@@ -129,7 +129,7 @@ namespace gezi {
 		template<typename Func, typename _Vector>
 		void NormalizeSparseFast(_Vector& vec, Func func)
 		{
-			_Vector result(_featureNum);
+			_Vector result;
 			int len = _shiftIndices.size();
 			int len2 = vec.Count();
 
