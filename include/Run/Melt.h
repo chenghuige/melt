@@ -243,7 +243,8 @@ namespace gezi {
 			{ "featureselection", RunType::FEATURE_SELECTION },
 			{ "createinstances", RunType::CREATE_INSTANCES },
 			{ "norm", RunType::NORMALIZE },
-			{ "check", RunType::CHECK_DATA }
+			{ "check", RunType::CHECK_DATA },
+			{ "featurestatus", RunType::FEATURE_STATUS }
 		};
 	};
 } //end of namespace gezi
