@@ -571,7 +571,7 @@ namespace gezi {
 			_instanceNum = lines.size();
 			_instances.resize(_instanceNum, nullptr);
 			_hasHeader = false;
-			_instances.SetHeader(line, _hasHeader);
+			_instances.SetHeader("", _hasHeader);
 			_instanceType = InstanceType::Sparse;
 			_instances.schema.instanceType = _instanceType;
 			_hasWeight = false;
@@ -613,7 +613,7 @@ namespace gezi {
 #pragma omp parallel for 
 			for (uint64 i = 0; i < _instanceNum; i++)
 			{
-				Vector& features = _instance[i]->features;
+				Vector& features = _instances[i]->features;
 				features.SetLength(_featureNum);
 				if (_args.keepDense)
 				{
