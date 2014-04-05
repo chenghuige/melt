@@ -95,8 +95,11 @@ namespace gezi {
 				if (_scales[i] <= 0)
 				{ //按照TLC 如果是始终值一样 仍然维持原样 不scale 不置为0 @TODO
 					//无效特征 始终是6的比如 还是6 不变成0 @TODO 需要置为0？
-					VLOG(4) << "Feature " << i << " : " << _featureNames[i]
-						<< " always take value " << _offsets[i];
+					if (!_featureNames.empty())
+					{
+						VLOG(4) << "Feature " << i << " : " << _featureNames[i]
+							<< " always take value " << _offsets[i];
+					}
 				}
 				else if (_offsets[i] != 0.0)
 				{ //如果最小值是0 那么 所有的点都只需要morph不需要shift，同时如果是0值点 不需要变化,dense 使用morphIndices, sparse使用shiftIdices 就是求并集 非0 union 需要moph的0值点
@@ -115,7 +118,7 @@ namespace gezi {
 			PVEC(_shiftIndices);
 		}
 
-	/*	virtual void NormalizeCore(Vector& vec) override
+		virtual void NormalizeCore(Vector& vec) override
 		{
 			Normalize(vec, _func);
 		}
@@ -123,12 +126,6 @@ namespace gezi {
 		virtual void NormalizeCore(Feature& feature) override
 		{
 			Normalize(feature, _func);
-		}*/
-
-		template<typename _Vector>
-		virtual void NormalizeCore(_Vector& vec) override
-		{
-			Normalize(vec, _func);
 		}
 
 	protected:
