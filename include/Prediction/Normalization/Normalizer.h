@@ -227,6 +227,17 @@ namespace gezi {
 				Normalize(instances[i]->features);
 			}
 		}
+		bool Trunct() const 
+		{
+			return _trunct;
+		}
+
+		//选择set而不是函数中Normalize(vec, trunct=true)选项 因为如果trunct=true就应该是对所有都是 
+		//倾向于是Normalizer的内部属性 而不是外部灵活改变的
+		void SetTrunct(bool trunct)
+		{ 
+			_trunct = trunct;
+		}
 	protected:
 		int _featureNum;
 		svec _featureNames;

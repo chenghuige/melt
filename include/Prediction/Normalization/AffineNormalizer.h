@@ -107,10 +107,6 @@ namespace gezi {
 				{
 					_morphIndices.push_back(i);
 				} //like [0,1] 这样的所有点都不需要变化
-				else if (_trunct)
-				{ //如果要截断即使[0,1]也需要scale可能， 注意只可能会是在线部分用trunct 离线test部分？@TODO only test trunct ?
-					_morphIndices.push_back(i);
-				}
 			}
 
 			PVEC(_offsets);

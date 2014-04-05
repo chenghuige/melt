@@ -65,6 +65,19 @@ TEST(test_normalize, func)
 			LOG(INFO) << index << "\t" << value;
 		}); 
 	}
+	{
+		Feature fe;
+		fe.add(0, 3.0);
+		fe.add(1, 1.0);
+		fe.add(3, 0.0);
+		fe.add(15, 8.0);
+		normalizer->SetTrunct(true);
+		normalizer->Normalize(fe);
+		fe.ForEach([](int index, double value)
+		{
+			LOG(INFO) << index << "\t" << value;
+		});
+	}
 }
 
 int main(int argc, char *argv[])
