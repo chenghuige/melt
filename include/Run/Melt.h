@@ -213,10 +213,6 @@ namespace gezi {
 			case  RunType::CREATE_INSTANCES:
 				RunCreateInstances();
 				break;
-			case RunType::UNKNOWN:
-				PrintCommands();
-				//THROW("Unhandled test command: " + _cmd.command);
-				break;
 			case RunType::NORMALIZE:
 				RunNormalizeInstances();
 				break;
@@ -224,8 +220,10 @@ namespace gezi {
 				RunCheckData();
 				break;
 			case RunType::FEATURE_STATUS:
-
+				RunFeatureStatus();
+			case RunType::UNKNOWN:
 			default:
+				PrintCommands();
 				LOG(WARNING) << commandStr << " is not supported yet ";
 				break;
 			}
