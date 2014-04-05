@@ -411,6 +411,26 @@ namespace gezi {
 		{
 			return _values;
 		}
+
+		int IndexAt(int index) const
+		{
+			return _indices[index];
+		}
+
+		int IndexAt(int index)
+		{
+			return _indices[index];
+		}
+
+		Float ValueAt(int index) const
+		{
+			return _values[index];
+		}
+
+		Float& ValueAt(int index)
+		{
+			return _values[index];
+		}
 	protected:
 	private:
 		vector<int> _indices; //不使用Node(index,value)更加灵活 同时可以允许一项为空

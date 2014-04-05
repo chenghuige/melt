@@ -18,6 +18,7 @@
 #define PREDICTION__NORMALIZATION__NORMALIZER_H_
 #include "common_util.h"
 #include "Prediction/Instances/Instances.h"
+#include "feature/Feature.h"
 namespace gezi {
 
 	class Normalizer
@@ -49,7 +50,8 @@ namespace gezi {
 
 		//TLC 比较复杂 而且感觉有bug  不再做dense sparse再转换这里 
 		//同时是norm之后覆盖原结果 如果需要 
-		void Normalize(Vector& vec)
+		template<typename _Vector>
+		void Normalize(_Vector& vec)
 		{
 			NormalizeCore(vec);
 		}
@@ -57,6 +59,12 @@ namespace gezi {
 		//核心norm 如何兼容Feature 1.Template For Normalzier class ? 2. Feature : public Vector add names field需要修改feature_util.h 重写Feature类
 		//Feature类2个vector好于1个vector<Node> InverteIndex 需要用Node 方便存储
 		virtual void NormalizeCore(Vector& vec)
+		{
+
+		}
+
+		//@TODO better handle? 模板成员函数无法虚函数?
+		virtual void NormalizeCore(Feature& vec)
 		{
 
 		}
@@ -77,6 +85,12 @@ namespace gezi {
 				//NormalizeSparse(vec, func);
 				NormalizeSparseFast(vec, func);
 			}
+		}
+
+		template<typename Func>
+		void Normalize(Feature& feature, Func func)
+		{
+			NormalizeSparseFast(feature, func);
 		}
 
 		template<typename Func>
@@ -110,12 +124,13 @@ namespace gezi {
 			}
 		}
 
+		//@TODO can use ForEach ?
 		template<typename Func>
 		void NormalizeSparseFast(Vector& vec, Func func)
 		{
 			Vector result(_featureNum);
 			int len = _shiftIndices.size();
-			int len2 = vec.Values().size();
+			int len2 = vec.Count();
 
 			Float val;
 			int index, index2;
@@ -123,10 +138,10 @@ namespace gezi {
 			for (; i < len && j < len2;)
 			{
 				index = _shiftIndices[i];
-				index2 = vec.Indices()[j];
+				index2 = vec.IndexAt(j);
 				if (index == index2)
 				{
-					val = vec.Values()[j];
+					val = vec.ValueAt(j);
 					func(index, ref(val));
 					result.Add(index, val);
 					i++;
@@ -141,7 +156,7 @@ namespace gezi {
 				}
 				else
 				{
-					val = vec.Values()[j];
+					val = vec.ValueAt(j);
 					func(index2, ref(val));
 					result.Add(index2, val);
 					j++;
@@ -157,13 +172,14 @@ namespace gezi {
 
 			for (; j < len2; j++)
 			{
-				index2 = vec.Indices()[j];
-				val = vec.Values()[j];
+				index2 = vec.IndexAt(j);
+				val = vec.ValueAt(j);
 				func(index2, ref(val));
 				result.Add(index2, val);
 			}
 
-			vec.Swap(result);
+			//vec.Swap(result);
+			vec = move(result);
 		}
 
 		/// Begin iterating through initialization examples
