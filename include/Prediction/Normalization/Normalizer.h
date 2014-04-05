@@ -58,6 +58,11 @@ namespace gezi {
 
 		void Normalize(Instance& instance)
 		{
+			NormalizeCore(instance.features);
+		}
+
+		void Normalize(const InstancePtr& instance)
+		{
 			NormalizeCore(instance->features);
 		}
 
