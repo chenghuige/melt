@@ -36,7 +36,6 @@ namespace gezi {
 		{
 			if (_isFirst)
 			{
-				_counts.resize(_featureNum, 1);
 				vec.ForEachAll([this](int i, Float value)
 				{
 					_offsets[i] = value;
@@ -69,7 +68,11 @@ namespace gezi {
 				_scales[i] = value;
 			}
 		}
-
+		virtual void Begin()
+		{
+			AffineNormalizer::Begin();
+			_counts.resize(_featureNum, 1);
+		}
 		virtual void Finalize()
 		{
 			for (size_t i = 0; i < _featureNum; i++)

@@ -87,6 +87,7 @@ namespace gezi {
 			}
 		}
 
+		//在线 都按照sparse处理 归一化
 		template<typename Func>
 		void Normalize(Feature& feature, Func func)
 		{
@@ -125,10 +126,10 @@ namespace gezi {
 		}
 
 		//@TODO can use ForEach ?
-		template<typename Func>
-		void NormalizeSparseFast(Vector& vec, Func func)
+		template<typename Func, typename _Vector>
+		void NormalizeSparseFast(_Vector& vec, Func func)
 		{
-			Vector result(_featureNum);
+			_Vector result(_featureNum);
 			int len = _shiftIndices.size();
 			int len2 = vec.Count();
 
