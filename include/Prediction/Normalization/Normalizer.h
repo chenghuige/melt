@@ -56,6 +56,11 @@ namespace gezi {
 			NormalizeCore(vec);
 		}
 
+		void Normalize(Instance& instance)
+		{
+			Normalize(instance->features);
+		}
+
 		//核心norm 如何兼容Feature 1.Template For Normalzier class ? 2. Feature : public Vector add names field需要修改feature_util.h 重写Feature类
 		//Feature类2个vector好于1个vector<Node> InverteIndex 需要用Node 方便存储
 		virtual void NormalizeCore(Vector& vec)

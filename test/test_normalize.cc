@@ -80,7 +80,23 @@ TEST(test_normalize, func)
 	}
 
 	{
+		normalizer->SetTrunct(false);
 		normalizer->Save("norm.txt");
+	}
+	{
+		Instances instances = parser.Parse(FLAGS_i);
+		Pval(instances.Size());
+		NormalizerPtr normalizer = make_shared<MinMaxNormalizer>();
+		if (instances.Count() > FLAGS_idx)
+		{
+			Pval(instances[FLAGS_idx]->name);
+			normalizer->Normalize(instances[FLAGS_idx]);
+			(*(instances[FLAGS_idx])).features.ForEach([](int index, double value)
+			{
+				LOG(INFO) << index << "\t" << value;
+			});
+			Pval(instances[FLAGS_idx]->IsDense());
+		}
 	}
 }
 
