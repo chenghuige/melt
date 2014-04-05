@@ -52,6 +52,19 @@ TEST(test_normalize, func)
 		});
 		Pval(instances[FLAGS_idx]->IsDense());
 	}
+
+	{
+		Feature fe;
+		fe.add(0, 3);
+		fe.add(1, 1);
+		fe.add(3, 0);
+		fe.add(15, 8);
+		normalizer->Normalize(fe);
+		fe.ForEach([](int index, double value)
+		{
+			LOG(INFO) << index << "\t" << value;
+		}); 
+	}
 }
 
 int main(int argc, char *argv[])
