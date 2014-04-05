@@ -90,7 +90,7 @@ TEST(test_normalize, func)
 		if (instances.Count() > FLAGS_idx)
 		{
 			Pval(instances[FLAGS_idx]->name);
-			normalizer->Normalize(instances[FLAGS_idx]);
+			normalizer->Normalize(*instances[FLAGS_idx]);
 			(*(instances[FLAGS_idx])).features.ForEach([](int index, double value)
 			{
 				LOG(INFO) << index << "\t" << value;
