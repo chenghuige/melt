@@ -119,6 +119,12 @@ namespace gezi {
 				_sep = _args.sep;
 			}
 
+			if (_format == "libsvm")
+			{
+				_sep = " ";
+			}
+			
+
 			if (!_args.attrsIdx.empty())
 			{
 				_attributesIdx = GetIndexesFromInput(_args.attrsIdx);
