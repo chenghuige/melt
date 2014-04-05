@@ -135,8 +135,12 @@ namespace gezi {
 
 			return foldIndices;
 		}
-		//@TODO 支持按照第一个name group进行交叉验证 例如 每天的评估数据一个tag  20天数据 做20次交叉验证
-		//用其余天的数据train 特定某天数据test
+		//@TODO 指定特定的 name,attibute 比如 username 那么相同userid的instance 会分到相同group
+		//对于比如urate样本集合 可能会避免 类似样本同时作为训练和测试样本，类似的包括比如
+		//query,url 对 可能需要对相同query 放到相同group
+		//this is *EXTREMELY* important if your data has multiple examples for same “item” – e.g., 
+		//multiple keywords for the same query.  It is then critical that all items for the query 
+		//are in the same fold (otherwise the learner “cheats” by seeing examples for same query).  
 		static ivec CreateFoldIndicesStratified(const ListInstances& data, int numFolds)
 		{
 			ivec result;

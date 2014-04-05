@@ -74,13 +74,6 @@ namespace gezi {
 
 		void RunCrossValidation(const Instances& instances)
 		{
-			LOG(INFO) << format("%d fold cross-validation") % _cmd.numFolds;
-			CHECK_GE(_cmd.numFolds, 2) << "The number of folds must be at least 2 for cross validation";
-			if (!_cmd.modelfile.empty() || !_cmd.modelfileCode.empty() || !_cmd.modelfileText.empty())
-			{
-				LOG(FATAL) << "You cannot specify a model file to output when running cross-validation";
-			}
-			//-----------------------------run
 			const int randomStep = 10000;
 			for (size_t runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
 			{
@@ -108,8 +101,15 @@ namespace gezi {
 
 		void RunCrossValidation()
 		{
+			Noticer nt((format("%d fold cross-validation") % _cmd.numFolds).str());
+			//----------------------------check if command ok
+			CHECK_GE(_cmd.numFolds, 2) << "The number of folds must be at least 2 for cross validation";
+			if (!_cmd.modelfile.empty() || !_cmd.modelfileCode.empty() || !_cmd.modelfileText.empty())
+			{
+				LOG(FATAL) << "You cannot specify a model file to output when running cross-validation";
+			}
 			//-----------------------------parse input
-			Instances instances = _parser.Parse(_cmd.datafile);
+			Instances instances = create_instances(_cmd.dataFile);
 			CHECK_GT(instances.Count(), 0) << "Read 0 instances, aborting experiment";
 			instances.PrintSummary();
 			//------------------------------run
@@ -118,23 +118,23 @@ namespace gezi {
 
 		void RunTrain()
 		{
-			LOG(INFO) << "Train!";
-			vector<int> vec;
-			vec.push_back(3);
+			Noticer nt("Train!");
+			Instances instances = create_instances(_cmd.dataFile);
 		}
 
 		void RunTest()
 		{
+			Noticer nt("Test!");
 		}
 
 		void RunTrainTest()
 		{
-
+			Noticer nt("TrainTest!");
 		}
 
 		void RunFeatureSelection()
 		{
-
+			Noticer nt("FeatureSelection!");
 		}
 
 		void RunCreateInstances()
@@ -144,11 +144,12 @@ namespace gezi {
 
 		void RunNormalizeInstances()
 		{
+			Noticer nt("NormalizeInstances!");
 			string infile = _cmd.datafile;
 			string outfile = endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", ".normed.txt") : infile + ".normed";
 			Pval(outfile);
 			
-			Instances instances = _parser.Parse(_cmd.datafile);
+			Instances instances = create_instances(_cmd.dataFile);
 			NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
 			CHECK_NE(normalizer.get(), NULL);
 			Pval(normalizer->Name());
@@ -159,7 +160,8 @@ namespace gezi {
 
 		void RunCheckData()
 		{
-			Instances instances = _parser.Parse(_cmd.datafile);
+			Noticer nt("CheckData!(need GLOG_v=4 ./melt)");
+			Instances instances = create_instances(_cmd.dataFile);
 			NormalizerPtr normalizer = make_shared<MinMaxNormalizer>();
 			normalizer->Prepare(instances);
 		}
@@ -225,7 +227,6 @@ namespace gezi {
 			{ "norm", RunType::NORMALIZE },
 			{ "check", RunType::CHECK_DATA }
 		};
-		InstanceParser _parser;
 	};
 } //end of namespace gezi
 
