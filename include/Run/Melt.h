@@ -223,8 +223,8 @@ namespace gezi {
 				RunFeatureStatus();
 			case RunType::UNKNOWN:
 			default:
-				PrintCommands();
 				LOG(WARNING) << commandStr << " is not supported yet ";
+				PrintCommands();
 				break;
 			}
 		}
