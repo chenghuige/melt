@@ -84,6 +84,7 @@ TEST(test_normalize, func)
 		normalizer->Save("norm.txt");
 	}
 	{
+		InstanceParser parser;
 		Instances instances = parser.Parse(FLAGS_i);
 		Pval(instances.Size());
 		NormalizerPtr normalizer = make_shared<MinMaxNormalizer>("norm.txt");

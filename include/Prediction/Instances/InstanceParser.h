@@ -705,6 +705,12 @@ namespace gezi {
 			}
 		}
 
+		void Clear()
+		{
+			_firstColums.clear();
+			_headerColums.clear();
+			_columnNum = 0;
+		}
 	protected:
 	private:
 		Instances _instances;
@@ -719,7 +725,7 @@ namespace gezi {
 
 		BitArray _selectedArray;
 		vector<ColumnType> _columnTypes;
-		int _columnNum;
+		int _columnNum = 0;
 		int _labelIdx = -1;
 
 		//----params
