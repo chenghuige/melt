@@ -77,6 +77,16 @@ public:
 		return features.IsSparse();
 	}
 
+	bool IsPositive()
+	{
+		return label > 0;
+	}
+
+	bool IsNegative()
+	{
+		return label <= 0;
+	}
+
 	bool HasMissingFeatures()
 	{
 		return hasMissingFeatures;
