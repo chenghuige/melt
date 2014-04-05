@@ -42,7 +42,7 @@ namespace gezi {
 			for (uint64 i = 0; i < instanceNum; i++)
 			{
 				pb.progress(i);
-				InstancePtr& instance = instances[i];
+				const InstancePtr& instance = instances[i];
 				if (instance->IsPositive())
 				{
 					instance->features.ForEach([&](int index, double value)
