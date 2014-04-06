@@ -139,7 +139,7 @@ namespace gezi {
 				}
 			}
 			//@TODO 检查特征全是0的情况
-			if (nonZeroNum < _length * _maxSparsity)
+			if (nonZeroNum < (uint64) (_length * _maxSparsity))
 			{
 				ToSparse();
 			}
@@ -147,7 +147,7 @@ namespace gezi {
 
 		void Densify()
 		{
-			if (Count() >= _length * _maxSparsity)
+			if (Count() >= (uint64) (_length * _maxSparsity))
 			{
 				ToDense();
 			}
@@ -454,7 +454,7 @@ namespace gezi {
 		vector<int> _indices; //不使用Node(index,value)更加灵活 同时可以允许一项为空
 		vector<Float> _values;
 		int _length = 0;
-		Float _maxSparsity = 0.495;
+		Float _maxSparsity = 0.5;
 	};
 
 }  //----end of namespace gezi
