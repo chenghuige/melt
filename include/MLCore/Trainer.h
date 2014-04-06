@@ -14,22 +14,37 @@
 #ifndef M_L_CORE__TRAINER_H_
 #define M_L_CORE__TRAINER_H_
 
+#include "Prediction/Instances/Instances.h"
 namespace gezi {
 
 class Trainer 
 {
 public:
-	~Trainer() = default;
-	Trainer() = default;
-	Trainer(Trainer&&) = default;
-	Trainer& operator = (Trainer&&) = default;
-	Trainer(const Trainer&) = default;
-	Trainer& operator = (const Trainer&) = default;
-public:
+	void Train(Instances& instances)
+	{
+		_trainingSchema = instances.schema;
 
+		Initialize(instances);
+
+		InnerTrain(instances);
+	}
+
+	virtual void Initialize(Instances& instances)
+	{
+
+	}
+	virtual void InnerTrain(Instances& instances)
+	{
+
+	}
+
+	const HeaderSchema& TrainingSchema() const
+	{
+		return _trainingSchema;
+	}
 protected:
 private:
-
+	HeaderSchema _trainingSchema;
 };
 
 }  //----end of namespace gezi
