@@ -40,6 +40,16 @@ namespace gezi {
 			LOG(WARNING) << name << " is not supported now, do not use normalzier, return null";
 			return nullptr;
 		}
+		
+		static NormalizerPtr CreateNormalizer(const string& name, const string& normalizerFile)
+		{
+			NormalizerPtr normalizer = CreateNormalizer(name);
+			if (normalizer != nullptr)
+			{
+				normalizer->Load(normalizerFile);
+			}
+			return normalizer;
+		}
 
 	protected:
 	private:
