@@ -417,22 +417,22 @@ namespace gezi {
 			return _values;
 		}
 
-		int IndexAt(int index) const
+		int Index(int index) const
 		{
 			return _indices[index];
 		}
 
-		int IndexAt(int index)
+		int Index(int index)
 		{
 			return _indices[index];
 		}
 
-		Float ValueAt(int index) const
+		Float Value(int index) const
 		{
 			return _values[index];
 		}
 
-		Float& ValueAt(int index)
+		Float& Value(int index)
 		{
 			return _values[index];
 		}

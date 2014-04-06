@@ -149,10 +149,10 @@ namespace gezi {
 			for (; i < len && j < len2;)
 			{
 				index = _shiftIndices[i];
-				index2 = vec.IndexAt(j);
+				index2 = vec.Index(j);
 				if (index == index2)
 				{
-					val = vec.ValueAt(j);
+					val = vec.Value(j);
 					func(index, ref(val));
 					result.Add(index, val);
 					i++;
@@ -167,7 +167,7 @@ namespace gezi {
 				}
 				else
 				{
-					val = vec.ValueAt(j);
+					val = vec.Value(j);
 					func(index2, ref(val));
 					result.Add(index2, val);
 					j++;
@@ -183,8 +183,8 @@ namespace gezi {
 
 			for (; j < len2; j++)
 			{
-				index2 = vec.IndexAt(j);
-				val = vec.ValueAt(j);
+				index2 = vec.Index(j);
+				val = vec.Value(j);
 				func(index2, ref(val));
 				result.Add(index2, val);
 			}

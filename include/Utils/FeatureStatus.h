@@ -22,7 +22,8 @@ namespace gezi {
 	class FeatureStatus
 	{
 	public:
-		static void GenMeanVarInfo(const Instances& instances, const string outFile)
+		static void GenMeanVarInfo(const Instances& instances, const string outFile, 
+			const string& featureName = "")
 		{
 			int featureNum = instances.FeatureNum();
 			dvec means(featureNum, 0);
@@ -77,18 +78,40 @@ namespace gezi {
 				LOG(INFO) << "Write result to " << outFile;
 				ofstream ofs(outFile);
 				ofs << "FeatureName\tMean\tPosMean\tNegMean\tVar\tPosVar\tNegVar" << endl;
-				ProgressBar pb(featureNum);
-				for (int i = 0; i < featureNum; i++)
+				if (featureName.empty())
 				{
-					pb.progress(i);
-					ofs << instances.FeatureNames()[i] << "\t"
-						<< means[i] << "\t"
-						<< posMeans[i] << "\t"
-						<< negMeans[i] << "\t"
-						<< vars[i] << "\t"
-						<< posVars[i] << "\t"
-						<< negVars[i] << "\t"
-						<< endl;
+					ProgressBar pb(featureNum);
+					for (int i = 0; i < featureNum; i++)
+					{
+						pb.progress(i);
+						ofs << instances.FeatureNames()[i] << "\t"
+							<< means[i] << "\t"
+							<< posMeans[i] << "\t"
+							<< negMeans[i] << "\t"
+							<< vars[i] << "\t"
+							<< posVars[i] << "\t"
+							<< negVars[i] << "\t"
+							<< endl;
+					}
+				}
+				else
+				{
+					for (int i = 0; i < featureNum; i++)
+					{
+						if (instances.FeatureNames()[i] == featureName)
+						{
+							std::cerr << instances.FeatureNames()[i] << "\t"
+								<< means[i] << "\t"
+								<< posMeans[i] << "\t"
+								<< negMeans[i] << "\t"
+								<< vars[i] << "\t"
+								<< posVars[i] << "\t"
+								<< negVars[i] << "\t"
+								<< endl;
+							return;
+						}
+					}
+					LOG(WARNING) << "Not find feature name: " << featureName;
 				}
 			}
 		}
