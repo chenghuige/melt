@@ -153,16 +153,6 @@ namespace gezi {
 			}
 		}
 
-		Float Value(int i) const
-		{
-			return _values[i];
-		}
-
-		Float& Value(int i)
-		{
-			return _values[i];
-		}
-
 		Float operator[](int i) const
 		{
 #ifndef NDEBUG

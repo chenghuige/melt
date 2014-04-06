@@ -22,7 +22,7 @@ DEFINE_int32(nt, 0, "num of threads, default 0 means use threads num according t
 
 DEFINE_string(i, "", "datafile: Input data file used for train or cross validation, you can also put data file just after exe like: ./melt datafile");
 DEFINE_string(o, "", "outfile: specified output file(not modelfile)");
-DEFINE_string(nf, "", "normalzierfile: specified the output normalzier text");
+
 DEFINE_string(test, "", "testDatafile: Data file used for test");
 DEFINE_string(valid, "", "Data file used for training validation (with IValidatingPredictor classifiers)");
 
@@ -32,6 +32,9 @@ DEFINE_string(mt, "", "modelfileText:  Model file to save in text format (for Tr
 
 DEFINE_bool(norm, true, "Normalize features");
 DEFINE_string(normalizer, "MinMax", "Which normalizer?");
+DEFINE_string(nf, "", "normalzierfile: specified the output normalzier text");
+
+DEFINE_string(fn, "", "featureName:");
 
 namespace gezi {
 	void Melt::ParseArguments()
@@ -57,5 +60,7 @@ namespace gezi {
 
 		_cmd.normalizeFeatures = FLAGS_norm;
 		_cmd.normalizerName = FLAGS_normalizer;
+
+		_cmd.featureName = FLAGS_fn;
 	}
 } //end of namespace gezi

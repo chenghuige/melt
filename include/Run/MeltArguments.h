@@ -34,6 +34,7 @@ namespace gezi {
 		string modelfile = "";
 		string modelfileCode = "";
 		string modelfileText = "";
+		string featureName = ""; //fn|
 		bool stratify = false;
 		bool foldsSequential = false;
 		double trainProportion = 1.0;
