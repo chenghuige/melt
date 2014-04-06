@@ -58,7 +58,8 @@ namespace gezi {
 			CREATE_INSTANCES,
 			NORMALIZE,
 			CHECK_DATA,
-			FEATURE_STATUS
+			FEATURE_STATUS,
+			SHOW_FEATURES
 		};
 
 		MeltArguments& Cmd()
@@ -146,6 +147,17 @@ namespace gezi {
 
 		}
 
+		void RunShowFeatures()
+		{
+			Instances instances = create_instances(_cmd.datafile);
+			Pval(instances.FeatureNum());
+			int num = 0;
+			for (string feature : instances.FeatureNames())
+			{
+				std::cerr << num++ << "\t" << feature << endl;
+			}
+		}
+
 		void RunNormalizeInstances()
 		{
 			Noticer nt("NormalizeInstances!");
@@ -222,6 +234,9 @@ namespace gezi {
 			case RunType::FEATURE_STATUS:
 				RunFeatureStatus();
 				break;
+			case RunType::SHOW_FEATURES:
+				RunShowFeatures();
+				break;
 			case RunType::UNKNOWN:
 			default:
 				LOG(WARNING) << commandStr << " is not supported yet ";
@@ -243,7 +258,8 @@ namespace gezi {
 			{ "createinstances", RunType::CREATE_INSTANCES },
 			{ "norm", RunType::NORMALIZE },
 			{ "check", RunType::CHECK_DATA },
-			{ "featurestatus", RunType::FEATURE_STATUS }
+			{ "featurestatus", RunType::FEATURE_STATUS },
+			{"showfeatures", RunType::SHOW_FEATURES}
 		};
 	};
 } //end of namespace gezi
