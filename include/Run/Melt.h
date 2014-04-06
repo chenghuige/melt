@@ -192,7 +192,7 @@ namespace gezi {
 			string outfile = _cmd.outfile.empty() ? (endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", ".featurestatus.txt") : infile + ".featuestatus")
 				: _cmd.outfile;
 			Instances instances = create_instances(_cmd.datafile);
-			FeatureStatus::GenMeanVarInfo(instances, outfile);
+			FeatureStatus::GenMeanVarInfo(instances, outfile, _cmd.featureName);
 		}
 		void RunExperiments()
 		{
