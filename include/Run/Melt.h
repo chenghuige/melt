@@ -150,7 +150,6 @@ namespace gezi {
 		void RunShowFeatures()
 		{
 			Instances instances = create_instances(_cmd.datafile);
-			Pval(instances.FeatureNum());
 			int num = 0;
 			for (string feature : instances.FeatureNames())
 			{
