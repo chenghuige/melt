@@ -242,7 +242,7 @@ namespace gezi {
 		{
 			++numIterExamples;
 
-			InstancePtr instance = make_shared<Instance>(instance_);
+			InstancePtr instance = make_shared<Instance>(*instance_);
 			instance->features.Densify();
 
 			// compute the update and update if needed     
