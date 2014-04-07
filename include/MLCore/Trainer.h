@@ -13,7 +13,7 @@
 
 #ifndef M_L_CORE__TRAINER_H_
 #define M_L_CORE__TRAINER_H_
-
+#include "common_def.h"
 #include "Prediction/Instances/Instances.h"
 namespace gezi {
 
@@ -46,6 +46,8 @@ protected:
 private:
 	HeaderSchema _trainingSchema;
 };
+
+typedef shared_ptr<Trainer> TrainerPtr;
 
 }  //----end of namespace gezi
 

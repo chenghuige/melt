@@ -37,7 +37,7 @@ namespace gezi {
 			{
 				return make_shared<BinNormalizer>();
 			}
-			LOG(WARNING) << name << " is not supported now, do not use normalzier, return null";
+			LOG(WARNING) << name_ << " is not supported now, do not use normalzier, return null";
 			return nullptr;
 		}
 		

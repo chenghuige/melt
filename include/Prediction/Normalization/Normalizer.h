@@ -24,7 +24,15 @@ namespace gezi {
 	class Normalizer
 	{
 	public:
-		Normalizer() = default;
+		Normalizer()
+		{
+			ParseArgs();
+		}
+
+		void ParseArgs()
+		{
+
+		}
 
 		//Ð´ÈëÎÄ±¾
 		virtual void Save(string outfile)
@@ -213,7 +221,7 @@ namespace gezi {
 			Begin();
 			for (uint64 i = 0; i < instances.Size(); i++)
 			{
-				if (i == _uintmaxNormalizationExamples)
+				if (i == _maxNormalizationExamples)
 				{
 					break;
 				}
@@ -253,10 +261,11 @@ namespace gezi {
 		svec _featureNames;
 		ivec _morphIndices;
 		ivec _shiftIndices;
-		//----------------------------args
-		//:if feature is out of bounds, threshold at 0/1, or return values below 0 and above 1?
+		//----------------------------args begin
+		//|if feature is out of bounds, threshold at 0/1, or return values below 0 and above 1?
 		bool _trunct = false; //@TODO here or in MinMaxNormalizer GuassianNormalzier need it?
-		uint64 _uintmaxNormalizationExamples = 1000000;//numNorm:
+		uint64 _maxNormalizationExamples = 1000000;//numNorm|
+		//-----------------------------args end
 	private:
 
 	};

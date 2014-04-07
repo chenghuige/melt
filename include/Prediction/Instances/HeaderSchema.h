@@ -35,7 +35,12 @@ namespace gezi
 		HeaderSchema(const HeaderSchema&) = default;
 		HeaderSchema& operator = (const HeaderSchema&) = default;
 	public:
-		int FeatureNum()
+		int FeatureNum() const
+		{
+			return featureNames.size();
+		}
+
+		int NumFeatures() const
 		{
 			return featureNames.size();
 		}

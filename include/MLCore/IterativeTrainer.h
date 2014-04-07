@@ -31,14 +31,14 @@ namespace gezi {
 		/// Process a given training example. 
 		/// Update weights after observing a given example
 		/// </summary>        
-		virtual bool ProcessTrainingInstance(Instance& instance)
+		virtual bool ProcessTrainingInstance(InstancePtr instance)
 		{
 
 		}
 
 		/// Called after last case is sent. 
 		/// Learner return true (bMoreIterations) if it wants another iteration of the data.  
-		virtual bool FinishTrainingIteration();
+		virtual void FinishTrainingIteration(bool& bMoreIterations);
 		{
 
 		}

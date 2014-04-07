@@ -15,7 +15,7 @@
 
 #ifndef NUMERIC__VECTOR__VECTOR_H_
 #define NUMERIC__VECTOR__VECTOR_H_
-
+#include "common_util.h"
 namespace gezi {
 
 	class Vector
@@ -28,69 +28,74 @@ namespace gezi {
 		Vector(const Vector&) = default;
 		Vector& operator = (const Vector&) = default;
 
-		Vector(int length)
-			: _length(length)
+		Vector(int length_)
+			: length(length_)
 		{
 		}
 
-		Vector(int length, vector<int>& indices, vector<Float>& values)
-			:_length(length)
+		Vector(int length_, vector<int>& indices_, Fvec& values_)
+			:length(length_)
 		{
-			_indices.swap(indices);
-			_values.swap(values);
+			indices.swap(indices_);
+			values.swap(values_);
 		}
 
-		void Create(int length, vector<int>& indices, vector<Float>& values)
+		void Init(int length_, vector<int>& indices_, Fvec& values_)
 		{
-			_length = length;
-			_indices.swap(indices);
-			_values.swap(values);
+			length = length_;
+			indices.swap(indices_);
+			values.swap(values_);
 		}
 
 		void Swap(Vector& other)
 		{
-			_length = other._length;
-			_indices.swap(other._indices);
-			_values.swap(other._values);
+			length = other.length;
+			indices.swap(other.indices);
+			values.swap(other.values);
 		}
 
 		//to a densnse format from values
-		Vector(vector<Float>& values)
+		Vector(Fvec& values_)
 		{
-			ToDense(values);
+			ToDense(values_);
 		}
 
-		void ToDense(vector<Float>& values)
+		void Init(Fvec& values_)
 		{
-			_values.swap(values);
-			_length = _values.size();
-			_indices.clear();
+			ToDense(values_);
+		}
+
+		void ToDense(Fvec& values_)
+		{
+			values.swap(values_);
+			length = values.size();
+			indices.clear();
 		}
 
 		void ToDense()
 		{
-			vector<Float> vec(_length, 0);
-			for (size_t i = 0; i < _indices.size(); i++)
+			Fvec vec(length, 0);
+			for (size_t i = 0; i < indices.size(); i++)
 			{
-				vec[_indices[i]] = _values[i];
+				vec[indices[i]] = values[i];
 			}
-			_indices.clear();
-			_values.swap(vec);
+			indices.clear();
+			values.swap(vec);
 		}
 
 		//do not check if dense // _indices empty
 		void ToSparse()
 		{
-			vector<Float> vec;
-			for (size_t i = 0; i < _values.size(); i++)
+			Fvec vec;
+			for (size_t i = 0; i < values.size(); i++)
 			{
-				if (_values[i])
+				if (values[i])
 				{
-					_indices.push_back(i);
-					vec.push_back(_values[i]);
+					indices.push_back(i);
+					vec.push_back(values[i]);
 				}
 			}
-			_values.swap(vec);
+			values.swap(vec);
 		}
 
 		void MakeDense()
@@ -111,27 +116,27 @@ namespace gezi {
 
 		void Add(Float value)
 		{
-			_values.push_back(value);
+			values.push_back(value);
 		}
 
 		void Add(int index, Float value)
 		{
 			if (value)
 			{
-				_indices.push_back(index);
-				_values.push_back(value);
+				indices.push_back(index);
+				values.push_back(value);
 			}
 		}
 
 		void PrepareDense()
 		{
-			_values.reserve(_length);
+			values.reserve(length);
 		}
 
 		void Sparsify()
 		{
 			int nonZeroNum = 0;
-			for (auto item : _values)
+			for (auto item : values)
 			{
 				if (item != 0)
 				{
@@ -139,7 +144,7 @@ namespace gezi {
 				}
 			}
 			//@TODO 检查特征全是0的情况
-			if (nonZeroNum < (uint64) (_length * _maxSparsity))
+			if (nonZeroNum < (uint64)(length * maxSparsity))
 			{
 				ToSparse();
 			}
@@ -147,7 +152,7 @@ namespace gezi {
 
 		void Densify()
 		{
-			if (Count() >= (uint64) (_length * _maxSparsity))
+			if (Count() >= (uint64)(length * maxSparsity))
 			{
 				ToDense();
 			}
@@ -156,42 +161,42 @@ namespace gezi {
 		Float operator[](int i) const
 		{
 #ifndef NDEBUG
-			if (i < 0 || i >= _length)
-				THROW((format("Index %d out of range in Vector of length %d") % i % _length).str());
+			if (i < 0 || i >= length)
+				THROW((format("Index %d out of range in Vector of length %d") % i % length).str());
 #endif 
 			if (IsDense())
 			{
-				return _values[i];
+				return values[i];
 			}
 			else
 			{
-				auto iter = std::lower_bound(_indices.begin(), _indices.end(), i);
-				if (iter == _indices.end() || *iter != i)
+				auto iter = std::lower_bound(indices.begin(), indices.end(), i);
+				if (iter == indices.end() || *iter != i)
 				{
 					return 0;
 				}
-				return _values[iter - _indices.begin()];
+				return values[iter - indices.begin()];
 			}
 		}
 
 		Float& operator[](int i)
 		{
 #ifndef NDEBUG
-			if (i < 0 || i >= _length)
-				THROW((format("Index %d out of range in Vector of length %d") % i % _length).str());
+			if (i < 0 || i >= length)
+				THROW((format("Index %d out of range in Vector of length %d") % i % length).str());
 #endif 
 			if (IsDense())
 			{
-				return _values[i];
+				return values[i];
 			}
 			else
 			{
-				auto iter = std::lower_bound(_indices.begin(), _indices.end(), i);
+				auto iter = std::lower_bound(indices.begin(), indices.end(), i);
 #ifndef NDEBUG
-				if (iter == _indices.end() || *iter != i)
+				if (iter == indices.end() || *iter != i)
 					THROW((format("In sparse vector could not find the index %d") % i).str());
 #endif 
-				return _values[iter - _indices.begin()];
+				return values[iter - indices.begin()];
 			}
 		}
 
@@ -201,16 +206,16 @@ namespace gezi {
 		{
 			if (IsDense())
 			{
-				for (size_t i = 0; i < _values.size(); i++)
+				for (size_t i = 0; i < values.size(); i++)
 				{
-					visitor(i, _values[i]);
+					visitor(i, values[i]);
 				}
 			}
 			else
 			{
-				for (size_t i = 0; i < _values.size(); i++)
+				for (size_t i = 0; i < values.size(); i++)
 				{
-					visitor(_indices[i], _values[i]);
+					visitor(indices[i], values[i]);
 				}
 			}
 		}
@@ -220,21 +225,21 @@ namespace gezi {
 		{
 			if (IsDense())
 			{
-				for (size_t i = 0; i < _values.size(); i++)
+				for (size_t i = 0; i < values.size(); i++)
 				{
-					visitor(i, _values[i]);
+					visitor(i, values[i]);
 				}
 			}
 			else
 			{
 				size_t j = 0;
-				for (size_t i = 0; i < _values.size(); i++)
+				for (size_t i = 0; i < values.size(); i++)
 				{
-					while (j < _indices[i])
+					while (j < indices[i])
 					{
 						visitor(j++, 0);
 					}
-					visitor(j++, _values[i]);
+					visitor(j++, values[i]);
 				}
 			}
 		}
@@ -243,13 +248,13 @@ namespace gezi {
 		void ForEachAllSparse(ValueVistor visitor) const
 		{
 			size_t j = 0;
-			for (size_t i = 0; i < _values.size(); i++)
+			for (size_t i = 0; i < values.size(); i++)
 			{
-				while (j < _indices[i])
+				while (j < indices[i])
 				{
 					visitor(j++, 0);
 				}
-				visitor(j++, _values[i]);
+				visitor(j++, values[i]);
 			}
 		}
 
@@ -259,16 +264,16 @@ namespace gezi {
 		{
 			if (IsDense())
 			{
-				for (size_t i = 0; i < _values.size(); i++)
+				for (size_t i = 0; i < values.size(); i++)
 				{
-					visitor(i, ref(_values[i]));
+					visitor(i, ref(values[i]));
 				}
 			}
 			else
 			{
-				for (size_t i = 0; i < _values.size(); i++)
+				for (size_t i = 0; i < values.size(); i++)
 				{
-					visitor(_indices[i], ref(_values[i]));
+					visitor(indices[i], ref(values[i]));
 				}
 			}
 		}
@@ -276,35 +281,35 @@ namespace gezi {
 		template<typename ValueVistor>
 		void ForEachDense(ValueVistor visitor) const
 		{
-			for (size_t i = 0; i < _values.size(); i++)
+			for (size_t i = 0; i < values.size(); i++)
 			{
-				visitor(i, _values[i]);
+				visitor(i, values[i]);
 			}
 		}
 		template<typename ValueVistor>
 		void ForEachDense(ValueVistor visitor)
 		{
-			for (size_t i = 0; i < _values.size(); i++)
+			for (size_t i = 0; i < values.size(); i++)
 			{
-				visitor(i, ref(_values[i]));
+				visitor(i, ref(values[i]));
 			}
 		}
 
 		template<typename ValueVistor>
 		void ForEachSparse(ValueVistor visitor) const
 		{
-			for (size_t i = 0; i < _values.size(); i++)
+			for (size_t i = 0; i < values.size(); i++)
 			{
-				visitor(_indices[i], _values[i]);
+				visitor(indices[i], values[i]);
 			}
 		}
 
 		template<typename ValueVistor>
 		void ForEachSparse(ValueVistor visitor)
 		{
-			for (size_t i = 0; i < _values.size(); i++)
+			for (size_t i = 0; i < values.size(); i++)
 			{
-				visitor(_indices[i], ref(_values[i]));
+				visitor(indices[i], ref(values[i]));
 			}
 		}
 
@@ -314,19 +319,19 @@ namespace gezi {
 		{
 			if (IsDense())
 			{
-				for (size_t i = 0; i < _values.size(); i++)
+				for (size_t i = 0; i < values.size(); i++)
 				{
-					if (_values[i])
+					if (values[i])
 					{
-						visitor(i, _values[i]);
+						visitor(i, values[i]);
 					}
 				}
 			}
 			else
 			{
-				for (size_t i = 0; i < _values.size(); i++)
+				for (size_t i = 0; i < values.size(); i++)
 				{
-					visitor(_indices[i], _values[i]);
+					visitor(indices[i], values[i]);
 				}
 			}
 		}
@@ -336,19 +341,19 @@ namespace gezi {
 		{
 			if (IsDense())
 			{
-				for (size_t i = 0; i < _values.size(); i++)
+				for (size_t i = 0; i < values.size(); i++)
 				{
-					if (_values[i])
+					if (values[i])
 					{
-						visitor(i, ref(_values[i]));
+						visitor(i, ref(values[i]));
 					}
 				}
 			}
 			else
 			{
-				for (size_t i = 0; i < _values.size(); i++)
+				for (size_t i = 0; i < values.size(); i++)
 				{
-					visitor(_indices[i], ref(_values[i]));
+					visitor(indices[i], ref(values[i]));
 				}
 			}
 		}
@@ -357,96 +362,179 @@ namespace gezi {
 		/// True if the Vector is using sparse representation. 也有可能是空feature
 		bool IsDense() const
 		{
-			return _indices.empty();
+			return indices.empty();
 		}
 
 		bool IsSparse() const
 		{
-			return !_indices.empty();
+			return !indices.empty();
 		}
 		/// Gets a int value representing the dimensionality of the vector.
 		int Length() const
 		{
-			return _length;
+			return length;
 		}
 
-		void SetLength(int length)
+		void SetLength(int length_)
 		{
-			_length = length;
+			length = length_;
 		}
 
 		/// no real content stored? 因为没有支持binary 所以value为空 就表示没有数据
 		bool Empty() const
 		{
-			return _values.empty();
+			return values.empty();
 		}
 
 		/// Gets the number of explicitly represented values in the vector.
 		int Count() const
 		{
-			return _values.size();
+			return values.size();
 		}
 
 		const vector<int>& Indices() const
 		{
-			return _indices;
+			return indices;
 		}
 
-		const vector<Float>& Values() const
+		const Fvec& Values() const
 		{
-			return _values;
+			return values;
 		}
 
 		vector<int>& Indices()
 		{
-			return _indices;
+			return indices;
 		}
 
-		vector<Float>& Values()
+		Fvec& Values()
 		{
-			return _values;
+			return values;
 		}
 
 		int Index(int index) const
 		{
-			return _indices[index];
+			return indices[index];
 		}
 
 		int Index(int index)
 		{
-			return _indices[index];
+			return indices[index];
 		}
 
 		Float Value(int index) const
 		{
-			return _values[index];
+			return values[index];
 		}
 
 		Float& Value(int index)
 		{
-			return _values[index];
+			return values[index];
 		}
 
 		void CheckInvariants()
 		{
 			if (IsDense())
 			{
-				CHECK_EQ(_values.size(), _length);
+				CHECK_EQ(values.size(), length);
 			}
 			else
 			{
-				CHECK_EQ(_values.size(), _indices.size());
+				CHECK_EQ(values.size(), indices.size());
 				//@TODO 检查所有indice是在合理范围？ 排序？
 			}
 		}
-	protected:
-	private:
-		vector<int> _indices; //不使用Node(index,value)更加灵活 同时可以允许一项为空
-		vector<Float> _values;
-		int _length = 0;
-		Float _maxSparsity = 0.5;
+		/// <summary>
+		/// Multiples the Vector by a real value
+		/// </summary>
+		/// <param name="d">Value to multiply vector with</param>
+		void ScaleBy(Float d)
+		{
+			if (d == 1.0)
+				return;
+
+			if (d == 0)
+			{
+				if (!keepDense)
+				{
+					values.clear();
+					indices.clear();
+				}
+				else
+				{
+					for (int i = 0; i < values.length; i++)
+						values[i] = 0;
+				}
+			}
+			else
+			{
+				for (int i = 0; i < values.length; i++)
+					values[i] *= d;
+			}
+		}
+
+		friend Float dot(const Vector& l, const Vector& r);
+
+	public:
+		vector<int> indices; //不使用Node(index,value)更加灵活 同时可以允许一项为空
+		Fvec values;
+		int length = 0;
+		Float maxSparsity = 0.5;
+		bool keepDense = false;
 	};
 
+	Float dot(const Vector& a, const Vector& b)
+	{
+		if (a.indices.begin() == b.indices.begin())
+		{
+			if (a.Length() != b.Length())
+			{
+				THROW("Vectors must have the same dimensionality.");
+			}
+			Float res = 0;
+			for (size_t i = 0; i < a.values.size(); i++)
+			{
+				res += a.values[i] * b.values[i];
+			}
+			return res;
+		}
+
+		Float result = 0;
+
+		if (b.IsDense())
+		{
+			for (size_t i = 0; i < a.indices.size(); i++)
+				result += a.values[i] * b.values[a.indices[i]];
+		}
+		else if (a.IsDense())
+		{
+			for (size_t i = 0; i < b.indices.size(); i++)
+				result += a.values[b.indices[i]] * b.values[i];
+		}
+		else
+		{ // both sparse
+			size_t aI = 0, bI = 0;
+			while (aI < a.indices.size() && bI < b.indices.size())
+			{
+				switch (compare(a.indices[aI],b. indices[bI]))
+				{
+				case 0:
+					result += a.Value(aI++) * b.Value(bI++);
+					break;
+				case -1:
+					aI++;
+					break;
+				case 1:
+					bI++;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+
+		return result;
+	}
 }  //----end of namespace gezi
 
 #endif  //----end of NUMERIC__VECTOR__VECTOR_H_

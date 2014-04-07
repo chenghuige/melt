@@ -39,6 +39,11 @@ public:
 		return features.Length();
 	}
 
+	int NumFeatures() const
+	{
+		return features.length;
+	}
+
 	void SelectFeatures(const BitArray& includedFeatures)
 	{
 		features.ForEach([&includedFeatures](int index, Float& val)

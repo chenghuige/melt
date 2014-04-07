@@ -14,18 +14,28 @@
 #ifndef M_L_CORE__TRAINER_FACTORY_H_
 #define M_L_CORE__TRAINER_FACTORY_H_
 
+#include "MLCore/Trainer.h"
+#include "Trainers/SVM/LinearSVM.h"
+
 namespace gezi {
 
 class TrainerFactory 
 {
 public:
-	~TrainerFactory() = default;
-	TrainerFactory() = default;
-	TrainerFactory(TrainerFactory&&) = default;
-	TrainerFactory& operator = (TrainerFactory&&) = default;
-	TrainerFactory(const TrainerFactory&) = default;
-	TrainerFactory& operator = (const TrainerFactory&) = default;
-public:
+	static TrainerPtr CreateTrainer(const string& name_)
+	{
+		string name = boost::to_lower_copy(name_);
+		if (name == "linearsvm")
+		{
+			return make_shared<LinearSVM>();
+		}
+	/*	if (name == "fastrankbinaryclassification")
+		{
+
+		}*/
+		LOG(WARNING) << name_ << " is not supported now, return nullptr";
+		return nullptr;
+	}
 
 protected:
 private:
