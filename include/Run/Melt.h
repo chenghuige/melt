@@ -136,10 +136,13 @@ namespace gezi {
 			}
 			trainer->Train(instances);
 			PredictorPtr predictor = trainer->CreatePredictor();
-			for (InstancePtr instance : instances)
 			{
-				cout << instance->name << "\t" << instance->label << "\t" <<
-					predictor->Output(instance) << endl;
+				ofstream ofs("./temp.txt");
+				ofs << "true\tprobability" << endl;
+				for (InstancePtr instance : instances)
+				{
+					ofs << instance->label << "\t" << predictor->Output(instance) << endl;
+				}
 			}
 		}
 
