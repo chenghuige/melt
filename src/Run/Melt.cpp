@@ -3,8 +3,8 @@
 #include "Run/Melt.h"
 
 DEFINE_string(c, "cv", "command: Options are: Train, Test, CV (cross validation), TrainTest, FeatureSelection, CreateInstances, Norm, Check");
-DEFINE_string(cl, "", "classifierName: Classifier to use");
-DEFINE_string(cls, "LinearSVM", "classifierSettings: Classifier settings");
+DEFINE_string(cl, "LinearSVM", "classifierName: Classifier to use");
+DEFINE_string(cls, "", "classifierSettings: Classifier settings");
 
 //---------------cross validation 
 DEFINE_int32(k, 5, "numFolds: Number of folds in k-fold cross-validation");
