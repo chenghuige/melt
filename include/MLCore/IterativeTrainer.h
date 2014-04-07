@@ -38,7 +38,7 @@ namespace gezi {
 
 		/// Called after last case is sent. 
 		/// Learner return true (bMoreIterations) if it wants another iteration of the data.  
-		virtual void FinishTrainingIteration(bool& bMoreIterations);
+		virtual void FinishTrainingIteration(bool& bMoreIterations)
 		{
 
 		}
@@ -64,7 +64,7 @@ namespace gezi {
 
 				ProgressBar pb(instances.Count());
 				int num = 0;
-				for (Instance& instance : instances)
+				for (InstancePtr instance : instances)
 				{
 					pb.progress(num);
 					num++;

@@ -216,7 +216,7 @@ namespace gezi {
 		/// Then does calibration iteration
 		/// Then any further data is used for online training
 		/// </summary>        
-		virtual void FinishTrainingIteration(out bool bMoreIterations) override
+		virtual void FinishTrainingIteration(bool& bMoreIterations) override
 		{
 			if (calibrationIteration)
 			{
@@ -409,13 +409,13 @@ namespace gezi {
 		/// <summary>
 		/// Scale the weights at the end of the iteration when we're sampling training instances
 		/// </summary>
-		private void ScaleWeightsSampled()
+		void ScaleWeightsSampled()
 		{
 			// w_{t+1/2} = (1-eta*lambda) w_t + eta/k * totalUpdate
 			Float learningRate = 1 / (_args.lambda * iteration);
 			_weights.ScaleBy(1 - learningRate * _args.lambda);
 
-			if (weightsUpdate != null)
+			if (!weightsUpdate.Empty())
 			{
 				weightsUpdate.ScaleBy(learningRate / numIterExamples);
 				_weights.Add(weightsUpdate);
@@ -438,7 +438,7 @@ namespace gezi {
 		/// <summary>
 		/// Scale the weights at the end of the iteration when we picked a random number of training instances
 		/// </summary>
-		private void ScaleWeightsFixed()
+		void ScaleWeightsFixed()
 		{
 			// add up the updates
 			for(Vector& nextUpdate : weightUpdates)
@@ -454,7 +454,7 @@ namespace gezi {
 			}
 
 			// add up bias update
-			foreach(Float bUpdate in biasUpdates)
+			for(Float bUpdate : biasUpdates)
 			{
 				biasUpdate += bUpdate;
 			}
