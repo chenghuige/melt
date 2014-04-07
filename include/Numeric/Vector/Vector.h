@@ -715,6 +715,11 @@ namespace gezi {
 
 	inline Float dot(const Vector& a, const Vector& b)
 	{
+		if (!a.Count() || !b.Count())
+		{
+			return 0;
+		}
+		
 		if (a.indices.begin() == b.indices.begin())
 		{
 			if (a.Length() != b.Length())
@@ -731,6 +736,7 @@ namespace gezi {
 
 		Float result = 0;
 
+		//注意TLC对 内容为空的indices,values做了特殊处理 
 		if (b.IsDense())
 		{
 			for (size_t i = 0; i < a.indices.size(); i++)
