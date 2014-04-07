@@ -172,7 +172,6 @@ namespace gezi {
 					for (int i = 0; i < instances.Count() * _args.sampleRate; i++)
 					{
 						int idx = _rand->Next(instances.Count());
-						Pval(idx);
 						//@TODO densify() ? before process ? 
 						ProcessDataInstance(instances[idx]);
 					}
