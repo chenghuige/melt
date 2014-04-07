@@ -359,15 +359,16 @@ namespace gezi {
 		}
 
 	public:
-		/// True if the Vector is using sparse representation. 也有可能是空feature
+		//注意和TLC的区别 默认一个空的Vector是Sparse的 也就是表示所有向量值都是0的情况
+		//注意需要保证如果是sparse indices和values始终长度相同
 		bool IsDense() const
 		{
-			return indices.empty();
+			return indices.size() != values.size();
 		}
 
 		bool IsSparse() const
 		{
-			return !indices.empty();
+			return indices.size() == values.size();
 		}
 		/// Gets a int value representing the dimensionality of the vector.
 		int Length() const
