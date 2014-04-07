@@ -72,7 +72,8 @@ namespace gezi {
 			LOG(INFO) << "Supported commands now are below:";
 			for (auto item : _commands)
 			{
-				LOG(INFO) << item.first << " ---- type number: " << (int)item.second;
+				LOG(INFO) << setiosflags(ios::left) << setfill(' ') << setw(40)
+					<< item.first << " " << (int)item.second;
 			}
 		}
 
