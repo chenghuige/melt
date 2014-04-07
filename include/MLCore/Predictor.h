@@ -26,7 +26,7 @@ class Predictor
 {
 public:
 	//输出未经Calibrator矫正的数值 -n,+n 0表示分界 越高越倾向positive
-	Float Output(const Instance& instance)
+	Float Output(Instance& instance)
 	{
 		return Output(instance.features);
 	}
@@ -41,7 +41,7 @@ public:
 	}
 
 	//输出经Calibrator矫正的数值 [0,1], 输出值表示结果倾向positive的概率
-	Float Predict(const Instance& instance)
+	Float Predict(Instance& instance)
 	{
 		return Predict(instance.features);
 	}
