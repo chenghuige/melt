@@ -170,7 +170,7 @@ namespace gezi {
 				bool wantMore;
 				FinishDataIteration(ref(wantMore));
 			}
-			
+
 			TrainingComplete();
 		}
 
@@ -236,14 +236,14 @@ namespace gezi {
 
 			FinishDataIteration(ref(bMoreIterations));
 		}
-	
+
 		/// Observe an example and update weights if necessary
-		bool ProcessDataInstance(InstancePtr instance_)
+		bool ProcessDataInstance(InstancePtr instance)
 		{
 			++numIterExamples;
 
-			InstancePtr instance = make_shared<Instance>(*instance_);
-			instance->features.Densify();
+			/*	InstancePtr instance = make_shared<Instance>(*instance_);
+				instance->features.Densify();*/
 
 			// compute the update and update if needed     
 			Float output = Margin(instance);
@@ -255,18 +255,18 @@ namespace gezi {
 			{
 				Float currentBiasUpdate;
 				Vector currentWeightUpdate;
-				GetUpdate(output, trueOutput, instance, 
+				GetUpdate(output, trueOutput, instance,
 					ref(currentWeightUpdate), ref(currentBiasUpdate));
 
 				if (_args.sampleSize == 0)
 				{ // rate sampling     @TODO                                   
 					/*if (weightsUpdate == null)
 					{
-						weightsUpdate = currentWeightUpdate;
+					weightsUpdate = currentWeightUpdate;
 					}
 					else
 					{
-						weightsUpdate.Add(currentWeightUpdate);
+					weightsUpdate.Add(currentWeightUpdate);
 					}
 					biasUpdate += currentBiasUpdate;*/
 				}
@@ -382,8 +382,8 @@ namespace gezi {
 		// <summary>
 		/// Given an impression, and the output of the classifier, compute an update
 		/// </summary>        
-		void GetUpdate(Float output, Float trueOutput, InstancePtr instance,  
-			Vector& gradient,Float& biasUpdate)
+		void GetUpdate(Float output, Float trueOutput, InstancePtr instance,
+			Vector& gradient, Float& biasUpdate)
 		{
 			gradient = instance->features;
 			biasUpdate = 0;
@@ -446,7 +446,7 @@ namespace gezi {
 		void ScaleWeightsFixed()
 		{
 			// add up the updates
-			for(Vector& nextUpdate : weightUpdates)
+			for (Vector& nextUpdate : weightUpdates)
 			{
 				if (weightsUpdate.Empty())
 				{
@@ -459,7 +459,7 @@ namespace gezi {
 			}
 
 			// add up bias update
-			for(Float bUpdate : biasUpdates)
+			for (Float bUpdate : biasUpdates)
 			{
 				biasUpdate += bUpdate;
 			}
@@ -488,7 +488,7 @@ namespace gezi {
 		// number of processed examples and actual weight updates
 		uint64 numProcessedExamples = 0;
 		uint64 numIterExamples = 0;
-		
+
 		int iteration = 0;
 		bool normalizationIteration = false;
 		bool calibrationIteration = false;
