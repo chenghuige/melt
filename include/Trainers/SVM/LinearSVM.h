@@ -238,9 +238,12 @@ namespace gezi {
 		}
 	
 		/// Observe an example and update weights if necessary
-		bool ProcessDataInstance(InstancePtr instance)
+		bool ProcessDataInstance(InstancePtr instance_)
 		{
 			++numIterExamples;
+
+			InstancePtr instance = make_shared<Instance>(instance_);
+			instance->features.Densify();
 
 			// compute the update and update if needed     
 			Float output = Margin(instance);
