@@ -168,7 +168,7 @@ namespace gezi {
 				}
 
 				bool wantMore;
-				FinishDataIteration(ref(wantMore));
+				FinishDataIteration(ref wantMore);
 			}
 			
 			TrainingComplete();
