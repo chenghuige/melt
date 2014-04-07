@@ -265,7 +265,7 @@ namespace gezi {
 
 				if (_args.sampleSize == 0)
 				{ // rate sampling                                   
-					(weightsUpdate.Empty())
+					if (weightsUpdate.Empty())
 					{
 						weightsUpdate = move(currentWeightUpdate);
 					}
@@ -273,7 +273,7 @@ namespace gezi {
 					{
 						weightsUpdate.Add(currentWeightUpdate);
 					}
-					biasUpdate += currentBiasUpdate;*/
+					biasUpdate += currentBiasUpdate;
 				}
 				else
 				{ // pick a slot
