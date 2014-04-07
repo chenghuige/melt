@@ -126,6 +126,7 @@ namespace gezi {
 		{
 			Noticer nt("Train!");
 			Instances instances = create_instances(_cmd.datafile);
+			Pval(_cmd.classifierName);
 			TrainerPtr trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
 			trainer->Train(instances);
 		}
