@@ -155,7 +155,7 @@ namespace gezi {
 		virtual void InnerTrain(Instances& instances) override
 		{
 			_featureNames = instances.schema.featureNames;
-			ProgressBar pb(_args.numIterations);
+			ProgressBar pb("LinbSVM training", _args.numIterations);
 			for (int iter = 0; iter < _args.numIterations; iter++)
 			{
 				pb.progress(iter);
