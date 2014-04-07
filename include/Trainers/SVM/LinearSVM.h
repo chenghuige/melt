@@ -479,27 +479,27 @@ namespace gezi {
 		Random _rand;
 
 		// number of processed examples and actual weight updates
-		private uint64 numProcessedExamples = 0;
-		private uint64 numIterExamples = 0;
-
-		private int iteration = 0;
-		private bool normalizationIteration = false;
-		private bool calibrationIteration = false;
+		uint64 numProcessedExamples = 0;
+		uint64 numIterExamples = 0;
+		
+		int iteration = 0;
+		bool normalizationIteration = false;
+		bool calibrationIteration = false;
 
 		// error counts
-		private uint64 numFalsePosTrain = 0;
-		private uint64 numFalseNegTrain = 0;
-		private uint64 numPosTrain = 0;
-		private uint64 numNegTrain = 0;
+		uint64 numFalsePosTrain = 0;
+		uint64 numFalseNegTrain = 0;
+		uint64 numPosTrain = 0;
+		uint64 numNegTrain = 0;
 
 		// compute error separately after X examples
-		private uint64 numHoldoutExamples = std::numeric_limits<uint64>::max();
+		uint64 numHoldoutExamples = std::numeric_limits<uint64>::max();
 
 		// testing statistics
-		private uint64 numFalsePosTest = 0;
-		private uint64 numFalseNegTest = 0;
-		private uint64 numClicksTest = 0;
-		private uint64 numNonClicksTest = 0;
+		uint64 numFalsePosTest = 0;
+		uint64 numFalseNegTest = 0;
+		uint64 numClicksTest = 0;
+		uint64 numNonClicksTest = 0;
 
 		// history of weight updates
 		vector<vector<Float> > weightHistory;

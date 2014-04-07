@@ -72,7 +72,7 @@ namespace gezi {
 					if (!continueTraining)
 						break;
 				}
-				FinishTrainingIteration(out continueTraining);
+				FinishTrainingIteration(continueTraining);
 			}
 
 			TrainingComplete();
