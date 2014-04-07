@@ -641,7 +641,7 @@ namespace gezi {
 		{
 			Timer timer;
 			vector<string> lines = read_lines(dataFile);
-			Pval_(timer.elapsed_ms(), "read_lines");
+			PVAL_(timer.elapsed_ms(), "read_lines");
 			if (lines.empty())
 			{
 				LOG(FATAL) << "Fail to load data file! " << dataFile << " is empty!";
@@ -660,11 +660,11 @@ namespace gezi {
 
 			timer.restart();
 			ParseFirstLine(lines);
-			Pval_(timer.elapsed_ms(), "ParseFirstLine");
+			PVAL_(timer.elapsed_ms(), "ParseFirstLine");
 
 			timer.restart();
 			_selectedArray = GetSelectedArray();
-			Pval_(timer.elapsed_ms(), "GetSelectedArray");
+			PVAL_(timer.elapsed_ms(), "GetSelectedArray");
 
 			_instanceNum = lines.size() - _hasHeader; //必须有 因为_hasHeader可能通过解析变为true
 			if (!_instanceNum)
@@ -683,7 +683,7 @@ namespace gezi {
 				CreateInstancesFromSparseFormat(lines, _hasHeader);
 			}
 
-			Pval_(timer.elapsed_ms(), "CreateInstances");
+			PVAL_(timer.elapsed_ms(), "CreateInstances");
 
 			PrintInfo();
 			return move(_instances);
