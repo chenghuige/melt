@@ -36,6 +36,7 @@
 #include "Prediction/Normalization/NormalizerFactory.h"
 #include "Utils/FeatureStatus.h"
 #include "Prediction/Instances/instances_util.h"
+#include "MLCore/TrainerFactory.h"
 
 namespace gezi {
 	class Melt
@@ -125,6 +126,8 @@ namespace gezi {
 		{
 			Noticer nt("Train!");
 			Instances instances = create_instances(_cmd.datafile);
+			TrainerPtr trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
+			trainer->Train(instances);
 		}
 
 		void RunTest()
