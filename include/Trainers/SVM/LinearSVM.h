@@ -151,22 +151,24 @@ namespace gezi {
 
 				if (_args.sampleSize == 0)
 				{ // rate sampling
-					for (int i = 0; i < data.Count() * _args.sampleRate; i++)
+					for (int i = 0; i < instances.Count() * _args.sampleRate; i++)
 					{
-						int idx = _rand.Next(data.Count());
-						ProcessDataInstance(data[idx]);
+						int idx = _rand.Next(instances.Count());
+						//@TODO densify() ? before process ? 
+						ProcessDataInstance(instances[idx]);
 					}
 				}
 				else
 				{ // size sampling  当前走这里
 					for (int i = 0; i < _args.sampleSize; i++)
 					{
-						int idx = _rand.Next(data.Count());
-						ProcessDataInstance(data[idx]);
+						int idx = _rand.Next(instances.Count());
+						ProcessDataInstance(instances[idx]);
 					}
 				}
 
-				bool wantMore = FinishDataIteration();
+				bool wantMore;
+				FinishDataIteration(ref(wantMore));
 			}
 			
 			TrainingComplete();
@@ -195,7 +197,7 @@ namespace gezi {
 			}
 			else
 			{ // size sampling
-				if (weightUpdates.Count() == _args.sampleSize)
+				if (weightUpdates.size() == _args.sampleSize)
 				{
 					// should we replace an existing update with this one? 
 					Float toss = _rand.NextFloat();
