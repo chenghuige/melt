@@ -153,7 +153,7 @@ namespace gezi {
 			int num = 0;
 			for (string feature : instances.FeatureNames())
 			{
-				std::cerr << num++ << "\t" << feature << endl;
+				std::cout << num++ << "\t" << feature << endl;
 			}
 		}
 

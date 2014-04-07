@@ -100,8 +100,8 @@ namespace gezi {
 					{
 						if (instances.FeatureNames()[i] == featureName)
 						{
-							std::cerr << "FeatureName\tMean\tPosMean\tNegMean\tVar\tPosVar\tNegVar" << endl;
-							std::cerr << instances.FeatureNames()[i] << "\t"
+							std::cout << "FeatureName\tMean\tPosMean\tNegMean\tVar\tPosVar\tNegVar" << endl;
+							std::cout << instances.FeatureNames()[i] << "\t"
 								<< means[i] << "\t"
 								<< posMeans[i] << "\t"
 								<< negMeans[i] << "\t"
