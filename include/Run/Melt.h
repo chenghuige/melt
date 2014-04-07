@@ -128,6 +128,10 @@ namespace gezi {
 			Instances instances = create_instances(_cmd.datafile);
 			Pval(_cmd.classifierName);
 			TrainerPtr trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
+			if (trainer == nullptr)
+			{
+				return;
+			}
 			trainer->Train(instances);
 		}
 

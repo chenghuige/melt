@@ -20,7 +20,7 @@ namespace gezi {
 	{
 		//c|Options are: Train, Test, CV (cross validation), TrainTest, FeatureSelection, CreateInstances
 		string command = "cv"; 
-		string classifierName = "LinearSvm";
+		string classifierName = "LinearSvm";//cls|
 		string classifierSettings = "";
 		int numFolds = 5;
 		int numRuns = 1;
