@@ -133,8 +133,11 @@ namespace gezi {
 			values.reserve(length);
 		}
 
-		void Sparsify()
+		void Sparsify(Float maxSparsity)
 		{
+			if (!IsDense() || keepDense)
+				return;
+
 			int nonZeroNum = 0;
 			for (auto item : values)
 			{
@@ -150,12 +153,23 @@ namespace gezi {
 			}
 		}
 
-		void Densify()
+
+		void Sparsify()
 		{
-			if (Count() >= (uint64)(length * maxSparsity))
+			Sparsify(sparsityRatio);
+		}
+
+		void Densify(Float maxSparsity)
+		{
+			if (keepDense || Count() >= (uint64)(length * maxSparsity))
 			{
 				ToDense();
 			}
+		}
+
+		void Densify()
+		{
+			Densify(sparsityRatio);
 		}
 
 		Float operator[](int i) const
@@ -546,7 +560,7 @@ namespace gezi {
 					indices.clear();
 					values.swap(newValues);
 				}
-				//Sparsify(); //@TODO
+				Sparsify(); 
 			}
 			else if (IsDense())
 			{ // a sparse, this not sparse
@@ -692,7 +706,7 @@ namespace gezi {
 					indices.swap(newIndices);
 					values.swap(newVals);
 
-					//Densify();  @TODO
+					Densify();  
 				}
 			}
 		}
@@ -710,8 +724,9 @@ namespace gezi {
 		ivec indices; //不使用Node(index,value)更加灵活 同时可以允许一项为空
 		Fvec values;
 		int length = 0;
-		Float maxSparsity = 0.5;
+		Float sparsityRatio = 0.25; //non_zero count < ratio to sparse, non_zero count >= ratio to dense
 		bool keepDense = false;
+		bool keepSparse = false;
 	};
 
 	inline Float dot(const Vector& a, const Vector& b)

@@ -415,7 +415,7 @@ namespace gezi {
 				}
 				else if (!_args.keepDense)
 				{//if not keep dense   如果是0值数目<= FeatureNum/2转 sparse
-					features.Sparsify();
+					features.Sparsify(0.5);
 				}
 
 				if (!instance.names.empty())
@@ -479,7 +479,7 @@ namespace gezi {
 				}
 				else if (!_args.keepSparse)
 				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
-					features.Densify();
+					features.Densify(0.5);
 				}
 
 				instance.name = join(instance.names, _args.ncsep);
