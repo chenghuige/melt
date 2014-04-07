@@ -142,7 +142,7 @@ namespace gezi {
 		/// Override the default training loop:   we need to pick random instances manually...
 		virtual void InnerTrain(Instances& instances) override
 		{
-			_featureNames = instances.schema.FeatureNames();
+			_featureNames = instances.schema.featureNames;
 			ProgressBar pb(_args.numIterations);
 			for (int iter = 0; iter < _args.numIterations; iter++)
 			{
