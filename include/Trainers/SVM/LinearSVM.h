@@ -135,7 +135,7 @@ namespace gezi {
 			//--- 将所有数据归一化 和TLC策略不同 TLC将normalize混在训练过程中(主要可能是兼容streaming模式)
 			//特别是hadoop scope训练  @TODO  也许这里也会变化
 			if (_normalizer != nullptr)
-				_normalizer->Normalize(instances);
+				_normalizer->PrepareAndNormalize(instances);
 
 			VLOG(3) << "Initialized LinearSVM on " << numFeatures << " features";
 		}
