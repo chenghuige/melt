@@ -490,12 +490,12 @@ namespace gezi {
 
 			if (indices == a.indices)
 			{
-				for (int i = 0; i < values.Length; i++)
+				for (size_t i = 0; i < values.size(); i++)
 					values[i] += a.values[i];
 			}
 			else if (IsDense())
 			{ // a sparse, this not sparse
-				for (int i = 0; i < a.indices.Length; i++)
+				for (int i = 0; i < a.indices.size(); i++)
 				{
 					values[a.indices[i]] += a.values[i];
 				}
