@@ -72,7 +72,7 @@ namespace gezi {
 			LOG(INFO) << "Supported commands now are below:";
 			for (auto item : _commands)
 			{
-				LOG(INFO) << item.first;
+				LOG(INFO) << item.first << " ---- type number: " << (int)item.second;
 			}
 		}
 
@@ -253,12 +253,16 @@ namespace gezi {
 			{ "train", RunType::TRAIN },
 			{ "test", RunType::TEST },
 			{ "traintest", RunType::TRAIN_TEST },
+			{ "tt", RunType::TRAIN_TEST },
 			{ "featureselection", RunType::FEATURE_SELECTION },
+			{ "fs", RunType::FEATURE_SELECTION },
 			{ "createinstances", RunType::CREATE_INSTANCES },
 			{ "norm", RunType::NORMALIZE },
 			{ "check", RunType::CHECK_DATA },
 			{ "featurestatus", RunType::FEATURE_STATUS },
-			{"showfeatures", RunType::SHOW_FEATURES}
+			{ "fss", RunType::FEATURE_STATUS },
+			{"showfeatures", RunType::SHOW_FEATURES},
+			{ "sf", RunType::SHOW_FEATURES }
 		};
 	};
 } //end of namespace gezi

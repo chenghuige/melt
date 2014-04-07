@@ -29,7 +29,7 @@ namespace gezi {
 		string datafile = "";
 		string outfile = ""; //o|specify the output file
 		string normalizerfile = ""; //nf|normalzier output file
-		string testDatafile = "";
+		string testDatafile = ""; //test|Data file used for test
 		string validationDatafile = "";
 		string modelfile = "";
 		string modelfileCode = "";
