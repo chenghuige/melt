@@ -142,7 +142,7 @@ namespace gezi {
 		/// Override the default training loop:   we need to pick random instances manually...
 		virtual void InnerTrain(Instances& instances) override
 		{
-			_featureNames = instances.Schema.FeatureNames();
+			_featureNames = instances.schema.FeatureNames();
 			ProgressBar pb(_args.numIterations);
 			for (int iter = 0; iter < _args.numIterations; iter++)
 			{
@@ -462,6 +462,8 @@ namespace gezi {
 		}
 	private:
 		Arguments _args;
+
+		svec _featureNames;
 
 		/// <summary> Total number of features </summary>
 		int numFeatures;
