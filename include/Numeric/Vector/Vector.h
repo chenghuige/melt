@@ -643,7 +643,7 @@ namespace gezi {
 				else
 				{
 					ivec newIndices(newLength, 0);
-					fvec newVals(newLength, 0);
+					Fvec newVals(newLength, 0);
 
 					int newI = 0;
 					for (size_t aI = 0; aI < a.indices.size(); aI++)
