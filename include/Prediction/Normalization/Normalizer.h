@@ -81,7 +81,10 @@ namespace gezi {
 
 		}
 
-		//@TODO better handle? 模板成员函数无法虚函数? 暂时这样处理 后面可以考虑Feature类继承Vector 去掉这个
+		//@TODO better handle? 模板成员函数无法虚函数 兼容线上预测 后面可以考虑去掉Feature类
+		//重写一个FeatureVector : public Vector 
+		//即在原有Vector基础上 增加一个names即可 Vector部分采用sparse表示
+		//修改feature_util.h -> feature_vector_util.h 尽量采用ForEach即可
 		virtual void NormalizeCore(Feature& vec)
 		{
 

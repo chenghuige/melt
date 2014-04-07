@@ -27,6 +27,8 @@ public:
 		Initialize(instances);
 
 		InnerTrain(instances);
+
+		Finalize(instances);
 	}
 
 	const HeaderSchema& TrainingSchema() const
@@ -39,6 +41,11 @@ protected:
 
 	}
 	virtual void InnerTrain(Instances& instances)
+	{
+
+	}
+
+	virtual void Finalize(Instances& instances)
 	{
 
 	}

@@ -51,15 +51,16 @@ namespace gezi {
 			int sampleSize = 1; //ss|Sampling size
 			bool performProjection = false; //project|Perform projection to unit-ball
 			bool noBias = false;
-			bool calibrateOutput = true; //calibrate|
 			string initialWeightsString = ""; //initweights|Initial weights and bias, comma-separated
 			bool randomInitialWeights = false; //randweights|Randomize initial weights
 			int featureNumThre = 1000; //fnt|if NumFeatures > featureNumThre use dense format 
 			//暂时不支持streaming 模式
 			bool doStreamingTraining = false; //stream|Streaming instances training
+			
 			bool normalizeFeatures = true; //norm|Normalize features
 			string normalizerName = "MinMax"; //normalizer|Which normalizer?
 			int randSeed = 0;//rs|controls wether the expermient can reproduce, 0 means not reproduce
+			bool calibrateOutput = true; //calibrate|
 		};
 
 		void ParseArgs()
