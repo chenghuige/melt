@@ -25,6 +25,7 @@
 #include "Numeric/Vector/Vector.h"
 #include "Prediction/Normalization/Normalizer.h"
 #include "Prediction/Calibrate/ICalibrator.h"
+#include "Predictors/LinearPredictor.h"
 namespace gezi {
 
 	class LinearSVM : public IterativeTrainer
