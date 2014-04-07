@@ -713,7 +713,7 @@ namespace gezi {
 		bool keepDense = false;
 	};
 
-	Float dot(const Vector& a, const Vector& b)
+	inline Float dot(const Vector& a, const Vector& b)
 	{
 		if (a.indices.begin() == b.indices.begin())
 		{
