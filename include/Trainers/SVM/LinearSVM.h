@@ -23,22 +23,26 @@
 #include "MLCore/IterativeTrainer.h"
 #include "Prediction/Instances/Instances.h"
 #include "Numeric/Vector/Vector.h"
+#include "Prediction/Normalization/NormalizerFactory.h"
 namespace gezi {
 
 	class LinearSVM : public IterativeTrainer
 	{
+	private:
+		RandomPtr _rand = nullptr;
+		NormalizerPtr _normalizer = nullptr;
+
 	public:
 		LinearSVM()
 		{
 			ParseArgs();
+			_rand = make_shared<Random>(random_engine(_args.randSeed));
+			if (_args.normalizeFeatures)
+			{
+				_normalizer = NormalizerFactory::CreateNormalizer(_args.normalizerName);
+			}
 		}
-
-		LinearSVM(int randSeed)
-			:_rand(randSeed)
-		{
-			ParseArgs();
-		}
-
+	
 		struct Arguments
 		{
 			int numIterations = 50000; //iter|Number of iterations
@@ -53,6 +57,9 @@ namespace gezi {
 			int featureNumThre = 1000; //fnt|if NumFeatures > featureNumThre use dense format 
 			//暂时不支持streaming 模式
 			bool doStreamingTraining = false; //stream|Streaming instances training
+			bool normalizeFeatures = true; //norm|Normalize features
+			string normalizerName = "MinMax"; //normalizer|Which normalizer?
+			int randSeed = 0;//rs|controls wether the expermient can reproduce, 0 means not reproduce
 		};
 
 		void ParseArgs()
@@ -101,10 +108,10 @@ namespace gezi {
 				{
 					for (int featureIdx = 0; featureIdx < numFeatures; featureIdx++)
 					{
-						_weights[featureIdx] = 2 * _rand.NextFloat() - 1;
+						_weights[featureIdx] = 2 * _rand->NextFloat() - 1;
 					}
 					if (!_args.noBias)
-						_bias = 2 * _rand.NextFloat() - 1;
+						_bias = 2 * _rand->NextFloat() - 1;
 				}
 			}
 
@@ -124,6 +131,11 @@ namespace gezi {
 			numFalsePosTest = 0;
 			numClicksTest = 0;
 			numNonClicksTest = 0;
+
+			//--- 将所有数据归一化 和TLC策略不同 TLC将normalize混在训练过程中(主要可能是兼容streaming模式)
+			//特别是hadoop scope训练  @TODO  也许这里也会变化
+			if (_normalizer != nullptr)
+				_normalizer->Normalize(instances);
 
 			VLOG(3) << "Initialized LinearSVM on " << numFeatures << " features";
 		}
@@ -153,7 +165,7 @@ namespace gezi {
 				{ // rate sampling
 					for (int i = 0; i < instances.Count() * _args.sampleRate; i++)
 					{
-						int idx = _rand.Next(instances.Count());
+						int idx = _rand->Next(instances.Count());
 						//@TODO densify() ? before process ? 
 						ProcessDataInstance(instances[idx]);
 					}
@@ -162,7 +174,7 @@ namespace gezi {
 				{ // size sampling  当前走这里
 					for (int i = 0; i < _args.sampleSize; i++)
 					{
-						int idx = _rand.Next(instances.Count());
+						int idx = _rand->Next(instances.Count());
 						ProcessDataInstance(instances[idx]);
 					}
 				}
@@ -184,15 +196,10 @@ namespace gezi {
 			//	return ProcessCalibrationInstance(instance);
 			//}
 
-			//if (normalizationIteration)
-			//{
-			//	return ProcessNormalizationInstance(instance);
-			//}
-
 			// train on this example or skip it?
 			if (_args.sampleSize == 0)
 			{ // rate sampling
-				if (_rand.NextFloat() > _args.sampleRate)
+				if (_rand->NextFloat() > _args.sampleRate)
 					return true;
 			}
 			else
@@ -200,7 +207,7 @@ namespace gezi {
 				if (weightUpdates.size() == _args.sampleSize)
 				{
 					// should we replace an existing update with this one? 
-					Float toss = _rand.NextFloat();
+					Float toss = _rand->NextFloat();
 					if (toss > ((Float)_args.sampleSize / numProcessedExamples))
 						return true;
 				}
@@ -210,14 +217,12 @@ namespace gezi {
 			return ProcessDataInstance(instance);
 		}
 
-		/// <summary>
 		/// Called after last case is sent. Learner sets bMoreIterations to true if it wants another
 		/// iteration of the data.  
 		/// First does normalization iteration
 		/// Then does training iteration
 		/// Then does calibration iteration
 		/// Then any further data is used for online training
-		/// </summary>        
 		virtual void FinishTrainingIteration(bool& bMoreIterations) override
 		{
 			if (calibrationIteration)
@@ -259,14 +264,14 @@ namespace gezi {
 					ref(currentWeightUpdate), ref(currentBiasUpdate));
 
 				if (_args.sampleSize == 0)
-				{ // rate sampling     @TODO                                   
-					/*if (weightsUpdate == null)
+				{ // rate sampling                                   
+					(weightsUpdate.Empty())
 					{
-					weightsUpdate = currentWeightUpdate;
+						weightsUpdate = move(currentWeightUpdate);
 					}
 					else
 					{
-					weightsUpdate.Add(currentWeightUpdate);
+						weightsUpdate.Add(currentWeightUpdate);
 					}
 					biasUpdate += currentBiasUpdate;*/
 				}
@@ -279,7 +284,7 @@ namespace gezi {
 					}
 					else
 					{ // need to replace random one
-						int idxToReplace = _rand.Next(_args.sampleSize);
+						int idxToReplace = _rand->Next(_args.sampleSize);
 						weightUpdates[idxToReplace] = move(currentWeightUpdate);
 						biasUpdates[idxToReplace] = currentBiasUpdate;
 					}
@@ -483,8 +488,7 @@ namespace gezi {
 		/// </summary>
 		Float lastMargin = 0;
 		InstancePtr lastMarginInstance = nullptr;
-		Random _rand;
-
+	
 		// number of processed examples and actual weight updates
 		uint64 numProcessedExamples = 0;
 		uint64 numIterExamples = 0;
