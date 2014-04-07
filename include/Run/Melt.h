@@ -38,6 +38,8 @@
 #include "Prediction/Instances/instances_util.h"
 #include "MLCore/TrainerFactory.h"
 
+#include "MLCore/Predictor.h"
+
 namespace gezi {
 	class Melt
 	{
@@ -133,6 +135,12 @@ namespace gezi {
 				return;
 			}
 			trainer->Train(instances);
+			PredictorPtr predictor = trainer->CreatePredictor();
+			for (InstancePtr instance : instances)
+			{
+				cout << instance->name << "\t" << instance->label << "\t" <<
+					predictor->Output(instance) << endl;
+			}
 		}
 
 		void RunTest()

@@ -37,6 +37,8 @@ public:
 	virtual void PrintInfo() = 0;
 };
 
+typedef shared_ptr<ICalibrator> ICalibratorPtr;
+
 }  //----end of namespace gezi
 
 #endif  //----end of PREDICTION__CALIBRATE__I_CALIBRATOR_H_

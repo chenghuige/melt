@@ -102,7 +102,6 @@ public:
 	string name;
 	svec names;
 	string metaData;
-	bool normalized = false;
 	bool sparse = false;
 	Float weight = 1.0;
 };

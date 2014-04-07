@@ -106,6 +106,7 @@ namespace gezi {
 				//NormalizeSparse(vec, func);
 				NormalizeSparseFast(vec, func);
 			}
+			vec.normalized = true;
 		}
 
 		//在线 都按照sparse处理 归一化
@@ -113,6 +114,7 @@ namespace gezi {
 		void Normalize(Feature& feature, Func func)
 		{
 			NormalizeSparseFast(feature, func);
+			feature.normalized = true;
 		}
 
 		template<typename Func>

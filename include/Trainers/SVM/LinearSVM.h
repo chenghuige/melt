@@ -23,7 +23,8 @@
 #include "MLCore/IterativeTrainer.h"
 #include "Prediction/Instances/Instances.h"
 #include "Numeric/Vector/Vector.h"
-#include "Prediction/Normalization/NormalizerFactory.h"
+#include "Prediction/Normalization/Normalizer.h"
+#include "Prediction/Calibrate/ICalibrator.h"
 namespace gezi {
 
 	class LinearSVM : public IterativeTrainer
@@ -31,7 +32,7 @@ namespace gezi {
 	private:
 		RandomPtr _rand = nullptr;
 		NormalizerPtr _normalizer = nullptr;
-
+		ICalibratorPtr _calibrator = nullptr;
 	public:
 		LinearSVM()
 		{
@@ -40,6 +41,10 @@ namespace gezi {
 			if (_args.normalizeFeatures)
 			{
 				_normalizer = NormalizerFactory::CreateNormalizer(_args.normalizerName);
+			}
+			if (_args.calibrateOutput)
+			{ //@TODO
+				_calibrator = nullptr;
 			}
 		}
 	
@@ -95,7 +100,6 @@ namespace gezi {
 			{
 				// We want a dense vector, to prevent memory creation during training
 				// unless we have a lot of features
-				// TODO:   make a setting 
 				_weights.SetLength(numFeatures);
 				if (numFeatures <= _args.featureNumThre)
 				{ //使用dense表示
@@ -365,6 +369,14 @@ namespace gezi {
 			return _args;
 		}
 
+		virtual PredictorPtr CreatePredictor()
+		{
+			_weights.MakeDense();
+			return make_shared<LinearPredictor>(_weights, _bias, 
+				_normalizer, _calibrator, 
+				_featureNames);
+		}
+
 	protected:
 	private:
 		/// <summary>
@@ -471,6 +483,7 @@ namespace gezi {
 			}
 			ScaleWeightsSampled();
 		}
+
 	private:
 		Arguments _args;
 

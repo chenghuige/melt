@@ -15,6 +15,7 @@
 #define M_L_CORE__TRAINER_H_
 #include "common_def.h"
 #include "Prediction/Instances/Instances.h"
+#include "MLCore/Predictor.h"
 namespace gezi {
 
 class Trainer 
@@ -35,6 +36,9 @@ public:
 	{
 		return _trainingSchema;
 	}
+
+	virtual PredictorPtr CreatePredictor() = 0;
+
 protected:
 	virtual void Initialize(Instances& instances)
 	{
