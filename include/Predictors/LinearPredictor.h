@@ -32,7 +32,7 @@ public:
 
 	}
 
-	virtual void Output(Vector& features) override
+	virtual Float Output(Vector& features) override
 	{
 		if (_normalizer != nullptr && !features.normalized)
 		{
