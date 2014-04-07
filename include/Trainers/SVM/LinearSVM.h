@@ -133,6 +133,10 @@ namespace gezi {
 			numProcessedExamples = 0;
 			numIterExamples = 0;
 			biasUpdate = 0;
+
+			weightsUpdate.Clear();
+			weightUpdates.clear();
+			biasUpdates.clear();
 		}
 
 		/// Override the default training loop:   we need to pick random instances manually...
@@ -238,7 +242,7 @@ namespace gezi {
 
 			// compute the update and update if needed     
 			Float output = Margin(instance);
-			Float trueOutput = (instance.IsPositive() ? 1 : -1);
+			Float trueOutput = (instance->IsPositive() ? 1 : -1);
 			Float loss = output * trueOutput - 1;
 
 			// record the update if there is a loss
@@ -279,7 +283,7 @@ namespace gezi {
 
 			if (loss < 0)
 			{ // update error statistics
-				if ((output < 0 && instance.label > 0) || (output > 0 && instance.label == 0))
+				if ((output < 0 && instance->IsPositive()) || (output > 0 && instance->IsNegative()))
 				{
 					if (numProcessedExamples < numHoldoutExamples)
 						if (output < 0)
@@ -296,12 +300,12 @@ namespace gezi {
 
 			// update class distribution statistics
 			if (numProcessedExamples < numHoldoutExamples)
-				if (instance.label > 0)
+				if (instance->label > 0)
 					numPosTrain++;
 				else
 					numNegTrain++;
 			else
-				if (instance.label > 0)
+				if (instance->label > 0)
 					numClicksTest++;
 				else
 					numNonClicksTest++;
@@ -355,7 +359,7 @@ namespace gezi {
 		/// <summary>
 		/// Return the raw margin from the decision hyperplane
 		/// </summary>		
-		Float Margin(InstancePtr& instance)
+		Float Margin(InstancePtr instance)
 		{
 			if (instance == lastMarginInstance)
 			{
@@ -373,14 +377,14 @@ namespace gezi {
 		// <summary>
 		/// Given an impression, and the output of the classifier, compute an update
 		/// </summary>        
-		void GetUpdate(Float output, Float trueOutput, Instance& instance,  
+		void GetUpdate(Float output, Float trueOutput, InstancePtr instance,  
 			Vector& gradient,Float& biasUpdate)
 		{
-			gradient = instance.features;
+			gradient = instance->features;
 			biasUpdate = 0;
 
 			// scale regret by weight
-			trueOutput *= instance.weight;
+			trueOutput *= instance->weight;
 			gradient.ScaleBy(trueOutput);
 			biasUpdate = _args.noBias ? 0 : trueOutput;
 		}
@@ -395,7 +399,7 @@ namespace gezi {
 				ScaleWeightsSampled();
 			}
 			else
-			{ // size sampling
+			{ // size sampling  ◊ﬂ’‚¿Ô
 				ScaleWeightsFixed();
 			}
 
@@ -420,9 +424,9 @@ namespace gezi {
 			_bias = (1 - learningRate * _args.lambda) * _bias + learningRate / numIterExamples * biasUpdate;
 
 			// w_{t+1} = min{1, 1/sqrt(lambda)/|w_{t+1/2}|} * w_{t+1/2}
-			if (_args.PerformProjection)
+			if (_args.performProjection)
 			{
-				Float normalizer = 1 / (MathUtils.Sqrt(_args.lambda) * _weights.Norm());
+				Float normalizer = 1 / (sqrt(_args.lambda) * _weights.Norm());
 				if (normalizer < 1)
 				{
 					_weights.ScaleBy(normalizer);
@@ -437,11 +441,11 @@ namespace gezi {
 		private void ScaleWeightsFixed()
 		{
 			// add up the updates
-			foreach(WritableVector nextUpdate in weightUpdates)
+			for(Vector& nextUpdate : weightUpdates)
 			{
-				if (weightsUpdate == null)
+				if (weightsUpdate.Empty())
 				{
-					weightsUpdate = nextUpdate;
+					weightsUpdate = move(nextUpdate);
 				}
 				else
 				{
