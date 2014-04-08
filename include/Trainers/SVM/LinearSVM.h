@@ -438,7 +438,6 @@ namespace gezi {
 			// w_{t+1/2} = (1-eta*lambda) w_t + eta/k * totalUpdate
 			Float learningRate = 1 / (_args.lambda * iteration);
 			_weights.ScaleBy(1 - learningRate * _args.lambda);
-
 			if (!weightsUpdate.Empty())
 			{
 				weightsUpdate.ScaleBy(learningRate / numIterExamples);
@@ -476,7 +475,6 @@ namespace gezi {
 					weightsUpdate.Add(nextUpdate);
 				}
 			}
-
 			// add up bias update
 			for (Float bUpdate : biasUpdates)
 			{

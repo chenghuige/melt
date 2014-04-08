@@ -75,9 +75,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MLCore\IPredictor.h" />
+    <ClInclude Include="include\MLCore\IterativeTrainer.h" />
     <ClInclude Include="include\MLCore\ITrainer.h" />
     <ClInclude Include="include\MLCore\ITrainerFactory.h" />
+    <ClInclude Include="include\MLCore\Predictor.h" />
+    <ClInclude Include="include\MLCore\Trainer.h" />
+    <ClInclude Include="include\MLCore\TrainerFactory.h" />
     <ClInclude Include="include\Numeric\Vector\Vector.h" />
+    <ClInclude Include="include\Prediction\Calibrate\ICalibrator.h" />
     <ClInclude Include="include\Prediction\Instances\HeaderSchema.h" />
     <ClInclude Include="include\Prediction\Instances\Instance.h" />
     <ClInclude Include="include\Prediction\Instances\InstanceParser.h" />
@@ -92,10 +97,12 @@
     <ClInclude Include="include\Predictors\FastRank\FastRankClassification.h" />
     <ClInclude Include="include\Predictors\FastRank\FastRankRanking.h" />
     <ClInclude Include="include\Predictors\FastRank\FastRankRegression.h" />
+    <ClInclude Include="include\Predictors\LinearPredictor.h" />
     <ClInclude Include="include\Run\CVFoldCreator.h" />
     <ClInclude Include="include\Run\Melt.h" />
     <ClInclude Include="include\Run\MeltArguments.h" />
     <ClInclude Include="include\Tools\FeatureStatus.h" />
+    <ClInclude Include="include\Trainers\SVM\LinearSVM.h" />
     <ClInclude Include="include\Utils\FeatureStatus.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

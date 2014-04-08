@@ -152,7 +152,7 @@ namespace gezi {
 		template<typename Func, typename _Vector>
 		void NormalizeSparseFast(_Vector& vec, Func func)
 		{
-			_Vector result;
+			_Vector result(_featureNum); //@NOTICE 一定注意要加上长度构造
 			int len = _shiftIndices.size();
 			int len2 = vec.Count();
 

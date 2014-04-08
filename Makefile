@@ -292,48 +292,15 @@ melt:melt_melt.o \
 	mkdir -p ./output/bin
 	cp -f --link melt ./output/bin
 
-melt_melt.o:melt.cc \
-  include/Run/Melt.h \
-  include/Run/MeltArguments.h \
-  include/Prediction/Instances/InstanceParser.h \
-  include/Prediction/Instances/Instances.h \
-  include/Prediction/Instances/HeaderSchema.h \
-  include/Prediction/Instances/Instance.h \
-  include/Numeric/Vector/Vector.h \
-  include/Run/CVFoldCreator.h \
-  include/Prediction/Normalization/MinMaxNormalizer.h \
-  include/Prediction/Normalization/AffineNormalizer.h \
-  include/Prediction/Normalization/Normalizer.h \
-  include/Prediction/Normalization/NormalizerFactory.h \
-  include/Prediction/Normalization/GaussianNormalizer.h \
-  include/Prediction/Normalization/BinNormalizer.h
+melt_melt.o:melt.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt_melt.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o melt_melt.o melt.cc
 
-src/Prediction/Instances/melt_InstanceParser.o:src/Prediction/Instances/InstanceParser.cpp \
-  include/Prediction/Instances/InstanceParser.h \
-  include/Prediction/Instances/Instances.h \
-  include/Prediction/Instances/HeaderSchema.h \
-  include/Prediction/Instances/Instance.h \
-  include/Numeric/Vector/Vector.h
+src/Prediction/Instances/melt_InstanceParser.o:src/Prediction/Instances/InstanceParser.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Prediction/Instances/melt_InstanceParser.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o src/Prediction/Instances/melt_InstanceParser.o src/Prediction/Instances/InstanceParser.cpp
 
-src/Run/melt_Melt.o:src/Run/Melt.cpp \
-  include/Run/Melt.h \
-  include/Run/MeltArguments.h \
-  include/Prediction/Instances/InstanceParser.h \
-  include/Prediction/Instances/Instances.h \
-  include/Prediction/Instances/HeaderSchema.h \
-  include/Prediction/Instances/Instance.h \
-  include/Numeric/Vector/Vector.h \
-  include/Run/CVFoldCreator.h \
-  include/Prediction/Normalization/MinMaxNormalizer.h \
-  include/Prediction/Normalization/AffineNormalizer.h \
-  include/Prediction/Normalization/Normalizer.h \
-  include/Prediction/Normalization/NormalizerFactory.h \
-  include/Prediction/Normalization/GaussianNormalizer.h \
-  include/Prediction/Normalization/BinNormalizer.h
+src/Run/melt_Melt.o:src/Run/Melt.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Run/melt_Melt.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o src/Run/melt_Melt.o src/Run/Melt.cpp
 
