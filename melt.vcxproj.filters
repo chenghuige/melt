@@ -107,5 +107,38 @@
     <ClInclude Include="include\Utils\FeatureStatus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\MLCore\IterativeTrainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MLCore\Predictor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MLCore\Trainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MLCore\TrainerFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Prediction\Calibrate\ICalibrator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Predictors\LinearPredictor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Trainers\SVM\LinearSVM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Prediction\Calibrate\Calibrator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Prediction\Calibrate\ICalibrateTrainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Prediction\Calibrate\Calibration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Prediction\Calibrate\SigmoidCalibrator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

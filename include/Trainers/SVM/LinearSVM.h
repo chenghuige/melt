@@ -24,7 +24,8 @@
 #include "Prediction/Instances/Instances.h"
 #include "Numeric/Vector/Vector.h"
 #include "Prediction/Normalization/Normalizer.h"
-#include "Prediction/Calibrate/ICalibrator.h"
+#include "Prediction/Calibrate/Calibrator.h"
+#include "Prediction/Calibrate/SigmoidCalibrator.h"
 #include "Predictors/LinearPredictor.h"
 namespace gezi {
 
@@ -33,7 +34,7 @@ namespace gezi {
 	private:
 		RandomPtr _rand = nullptr;
 		NormalizerPtr _normalizer = nullptr;
-		ICalibratorPtr _calibrator = nullptr;
+		CalibratorPtr _calibrator = nullptr;
 	public:
 		LinearSVM()
 		{
@@ -45,7 +46,7 @@ namespace gezi {
 			}
 			if (_args.calibrateOutput)
 			{ //@TODO
-				_calibrator = nullptr;
+				_calibrator = make_shared<SigmoidCalibrator>();
 			}
 		}
 	
@@ -190,6 +191,12 @@ namespace gezi {
 			}
 
 			TrainingComplete();
+		}
+
+		virtual void Finalize(Instances& instances)
+		{
+			_calibrator->Train(instances, [this](InstancePtr instance) {
+				return _bias + dot(instance->features, _weights); });
 		}
 
 		/// Process a given training example.         /// 目前没用到 streaming方式 才用这个

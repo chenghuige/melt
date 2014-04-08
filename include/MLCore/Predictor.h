@@ -50,11 +50,31 @@ public:
 		return Predict(instance->features);
 	}
 
-	virtual Float Predict(Vector& features)
+	Float Predict(Vector& features)
 	{
-		return 0;
+		return Predict(Output(features));
+	}
+
+	Float Predict(Instance& instance, Float& output)
+	{
+		return Predict(instance.features, output);
+	}
+
+	Float Predict(InstancePtr instance, Float& output)
+	{
+		return Predict(instance->features, output);
+	}
+
+	Float Predict(Vector& features, Float& output)
+	{
+		output = Output(features);
+		return Predict(output);
 	}
 protected:
+	virtual Float Predict(Float output)
+	{
+
+	}
 private:
 
 };

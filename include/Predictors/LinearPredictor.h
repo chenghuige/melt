@@ -16,13 +16,14 @@
 
 #include "MLCore/Predictor.h"
 #include "Prediction/Normalization/Normalizer.h"
+#include "Prediction/Calibrate/Calibrator.h"
 namespace gezi {
 
 class LinearPredictor : public Predictor
 {
 public:
 	LinearPredictor(const Vector& weights, Float bias,
-		NormalizerPtr normalizer, ICalibratorPtr calibrator, 
+		NormalizerPtr normalizer, CalibratorPtr calibrator, 
 		const svec& featureNames)
 		:_weights(weights), _bias(bias),
 		_normalizer(normalizer), _calibrator(calibrator),
@@ -45,8 +46,6 @@ public:
 
 	}
 
-
-
 	virtual Float Output(Vector& features) override
 	{
 		if (_normalizer != nullptr && !features.normalized)
@@ -54,6 +53,18 @@ public:
 			_normalizer->Normalize(features);
 		}
 		return Margin(features);
+	}
+
+	virtual Float Predict(Float output)
+	{
+		if (_calibrator != nullptr)
+		{
+			return _calibrator->PredictProbability(output);
+		}
+		else
+		{
+			THROW("calibrator is nullptr");
+		}
 	}
 
 private:
@@ -66,7 +77,7 @@ private:
 	Vector _weights;
 	Float _bias;
 	NormalizerPtr _normalizer = nullptr;
-	ICalibratorPtr _calibrator = nullptr;
+	CalibratorPtr _calibrator = nullptr;
 	svec _featureNames;
 };
 

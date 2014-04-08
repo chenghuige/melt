@@ -82,7 +82,11 @@
     <ClInclude Include="include\MLCore\Trainer.h" />
     <ClInclude Include="include\MLCore\TrainerFactory.h" />
     <ClInclude Include="include\Numeric\Vector\Vector.h" />
+    <ClInclude Include="include\Prediction\Calibrate\Calibration.h" />
+    <ClInclude Include="include\Prediction\Calibrate\Calibrator.h" />
+    <ClInclude Include="include\Prediction\Calibrate\ICalibrateTrainer.h" />
     <ClInclude Include="include\Prediction\Calibrate\ICalibrator.h" />
+    <ClInclude Include="include\Prediction\Calibrate\SigmoidCalibrator.h" />
     <ClInclude Include="include\Prediction\Instances\HeaderSchema.h" />
     <ClInclude Include="include\Prediction\Instances\Instance.h" />
     <ClInclude Include="include\Prediction\Instances\InstanceParser.h" />
