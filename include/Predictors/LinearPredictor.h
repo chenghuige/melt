@@ -21,7 +21,6 @@ namespace gezi {
 class LinearPredictor : public Predictor
 {
 public:
-	LinearPredictor() = default;
 	LinearPredictor(const Vector& weights, Float bias,
 		NormalizerPtr normalizer, ICalibratorPtr calibrator, 
 		const svec& featureNames)
@@ -31,6 +30,22 @@ public:
 	{
 
 	}
+
+	//通过文本文件载入预测模型
+	LinearPredictor(const string& modelFile = "",
+		const string& normalizerFile = "",
+		const string& calibratorFile = "")
+	{
+
+	}
+
+	//输入是模型路径 另外的载入方式是序列化 serialize_util::load(file, predictor)
+	LinearPredictor(const string& modelDir)
+	{
+
+	}
+
+
 
 	virtual Float Output(Vector& features) override
 	{
