@@ -137,10 +137,13 @@ namespace gezi {
 			//--- 将所有数据归一化 和TLC策略不同 TLC将normalize混在训练过程中(主要可能是兼容streaming模式)
 			//特别是hadoop scope训练  @TODO  也许这里也会变化
 			//如果不是类似交叉验证 比如就是训练测试 默认是 no normalize copy
-			if (_normalizer != nullptr && !_normalizeCopy)
-				_normalizer->RunNormalize(instances);
-			else
-				_normalizer->Prepare(instances);
+			if (_normalizer != nullptr)
+			{
+				if (!_normalizeCopy)
+					_normalizer->RunNormalize(instances);
+				else
+					_normalizer->Prepare(instances);
+			}
 
 			VLOG(3) << "Initialized LinearSVM on " << numFeatures << " features";
 		}
@@ -194,6 +197,10 @@ namespace gezi {
 		virtual void Finalize(Instances& instances)
 		{
 			_calibrator->Train(instances, [this](InstancePtr instance) {
+				if (_normalizer != nullptr && !instance->normalized)
+				{
+					instance = _normalizer->NormalizeCopy(instance);
+				}
 				return _bias + dot(instance->features, _weights); });
 		}
 

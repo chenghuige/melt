@@ -104,6 +104,7 @@ public:
 	string metaData;
 	bool sparse = false;
 	Float weight = 1.0;
+	bool normalized = false;
 };
 typedef shared_ptr<Instance> InstancePtr;
 typedef vector<InstancePtr> ListInstances;

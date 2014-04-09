@@ -96,7 +96,16 @@ namespace gezi {
 					_shiftIndices.push_back(i);
 			}*/
 		}
-
+		friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive &ar, const unsigned int version)
+		{
+			ar & boost::serialization::base_object<Normalizer>(*this);
+			ar & numBins;
+			ar & binUpperBounds;
+			ar & binValues;
+			ar & _included;
+		}
 	protected:
 	private:
 		//------------args begin

@@ -116,6 +116,20 @@ private:
 			ncP[i] = PredictProbability(ncOutputs[i]);
 	}
 
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar & boost::serialization::base_object<Calibrator>(*this);
+		ar & cMargins;
+		ar & ncMargins;
+		ar & numBins;
+		ar & binSize;
+		ar & _min;
+		ar & _max;
+		ar & binProbs;
+	}
+
 protected:
 private:
 	Fvec cMargins;

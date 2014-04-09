@@ -19,45 +19,50 @@
 #include "Prediction/Calibrate/Calibrator.h"
 namespace gezi {
 
-class LinearPredictor : public Predictor
-{
-public:
-	LinearPredictor() = default;
-
-	LinearPredictor(const Vector& weights, Float bias,
-		NormalizerPtr normalizer, CalibratorPtr calibrator, 
-		const svec& featureNames)
-		:Predictor(normalizer, calibrator),
-		_weights(weights), _bias(bias),
-		_featureNames(featureNames)
+	class LinearPredictor : public Predictor
 	{
+	public:
+		LinearPredictor() = default;
 
-	}
+		//训练器中使用构造
+		LinearPredictor(const Vector& weights, Float bias,
+			NormalizerPtr normalizer, CalibratorPtr calibrator,
+			const svec& featureNames)
+			:Predictor(normalizer, calibrator),
+			_weights(weights), _bias(bias),
+			_featureNames(featureNames)
+		{
 
-	//通过文本文件载入预测模型
-	LinearPredictor(const string& modelFile = "",
-		const string& normalizerFile = "",
-		const string& calibratorFile = "")
-	{
+		}
 
-	}
+		//通过文本文件载入预测模型
+		LinearPredictor(const string& modelFile,
+			const string& normalizerFile = "",
+			const string& calibratorFile = "")
+		{
 
-	//输入是模型路径 另外的载入方式是序列化 serialize_util::load(file, predictor)
-	LinearPredictor(const string& modelDir)
-	{
+		}
 
-	}
-	
-protected:
-	virtual Float Margin(const Vector& features) override
-	{
-		return _bias + dot(_weights, features);
-	}
-private:
-	Vector _weights;
-	Float _bias;
-	svec _featureNames;
-};
+		friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive &ar, const unsigned int version)
+		{
+			ar & boost::serialization::base_object<Predictor>(*this);
+			ar & _weights;
+			ar & _bias;
+			ar & _featureNames;
+		}
+
+	protected:
+		virtual Float Margin(const Vector& features) override
+		{
+			return _bias + dot(_weights, features);
+		}
+	private:
+		Vector _weights;
+		Float _bias;
+		svec _featureNames;
+	};
 
 }  //----end of namespace gezi
 

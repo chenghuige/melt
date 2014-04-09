@@ -15,6 +15,8 @@
 #define M_L_CORE__PREDICTOR_H_
 
 #include "common_util.h"
+#include "serialize_util.h"
+
 #include "Prediction/Instances/Instance.h"
 #include "Prediction/Normalization/Normalizer.h"
 #include "Prediction/Calibrate/Calibrator.h"
@@ -109,6 +111,21 @@ namespace gezi {
 		{
 			_normalizeCopy = normalizeCopy;
 		}
+
+		friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive &ar, const unsigned int version)
+		{
+			ar & _normalizeCopy;
+			ar & _normalizer;
+			ar & _calibrator;
+		}
+
+		/*void Deseralize(string infile)
+		{
+			serialize_util::load(infile, *this);
+		}*/
+
 	protected:
 		virtual Float Margin(const Vector& features)
 		{

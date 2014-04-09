@@ -28,6 +28,16 @@ public:
 		Float maxX = 0; // beginning of interval
 		Float val = 0; // value of function in interval
 		Float n = 0; // number of points/weight of interval
+
+		friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive &ar, const unsigned int version)
+		{
+			ar & maxX;
+			ar & maxX;
+			ar & val;
+			ar & n;
+		}
 	};
 
 	virtual Float PredictProbability(Float score) override
@@ -164,6 +174,16 @@ protected:
 		return slope * (score - piecewise[p1].maxX) + piecewise[p1].val;
 	}
 
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar & boost::serialization::base_object<Calibrator>(*this);
+		ar & boost::serialization::base_object<CalibratorWrapper>(*this);
+		ar & piecewise;
+		ar & minToReturn;
+		ar & maxToReturn;
+	}
 protected:
 private:
 	vector<Piece> piecewise;

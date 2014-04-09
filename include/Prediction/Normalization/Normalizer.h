@@ -86,23 +86,32 @@ namespace gezi {
 		Instance NormalizeCopy(const Instance& instance)
 		{
 			Instance temp = instance;
-			Normalize(temp.features, _func);
+			if (!temp.normalized)
+			{
+				Normalize(temp.features, _func);
+				temp.normalized = true;
+			}
 			return temp;
 		}
 
 		InstancePtr NormalizeCopy(InstancePtr instance)
 		{
 			InstancePtr temp = make_shared<Instance>(*instance);
-			Normalize(temp->features, _func); 
+			if (!temp->normalized)
+			{
+				Normalize(temp->features, _func);
+			}
 			return temp;
 		}
 
 		void Normalize(InstancePtr instance)
 		{
-			Normalize(instance->features, _func);
+			if (!instance->normalized)
+			{
+				Normalize(instance->features, _func);
+				instance->normalized = true;
+			}
 		}
-
-
 
 		/// Begin iterating through initialization examples
 		virtual void Begin()
@@ -240,6 +249,19 @@ namespace gezi {
 		{
 			apply_sparse(vec, _shiftIndices, func);
 		}
+
+		friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive &ar, const unsigned int version)
+		{
+			ar & _numFeatures;
+			ar & _featureNames;
+			ar & _morphIndices;
+			ar & _shiftIndices;
+			ar & _normType;
+			ar & _trunct;
+		}
+
 	protected:
 		int _numFeatures = 0;
 		svec _featureNames;
@@ -247,14 +269,13 @@ namespace gezi {
 		ivec _shiftIndices; //Affine,Bin都使用
 		NormType _normType = NormType::Affine;
 		std::function<void(int, Float&)> _func;
-
-		uint64 _numProcessedInstances = 1; //处理的instance数目
-
+		
 		//----------------------------args begin
 		//|if feature is out of bounds, threshold at 0/1, or return values below 0 and above 1?
 		bool _trunct = false; //@TODO 似乎只有MinMax才可能越界吧
 		uint64 _maxNormalizationExamples = 1000000;//numNorm|
 		//-----------------------------args end
+		uint64 _numProcessedInstances = 1; //处理的instance数目
 	private:
 
 	};

@@ -175,6 +175,11 @@ namespace gezi {
 		{
 
 		}
+		friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive &ar, const unsigned int version)
+		{
+		}
 	};
 	typedef shared_ptr<Calibrator> CalibratorPtr;
 
@@ -194,6 +199,13 @@ namespace gezi {
 		{
 			_data->Sort();
 			TrainModel(*_data);
+		}
+
+		friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive &ar, const unsigned int version)
+		{
+			ar & boost::serialization::base_object<Calibrator>(*this);
 		}
 	protected:
 

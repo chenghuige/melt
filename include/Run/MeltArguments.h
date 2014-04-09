@@ -44,6 +44,8 @@ namespace gezi {
 		string resultDir = "./result";
 		int resultIndex = 0;
 
+		string evaluate = "python ./scripts/evaluate.py ";
+
 		//----------分类器公用选项
 		bool normalizeFeatures = true; //norm:Normalize features?
 		string normalizerName = "MinMax"; //Which normalizer?

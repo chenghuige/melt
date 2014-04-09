@@ -114,6 +114,8 @@ namespace gezi {
 #pragma omp parallel for 
 				for (size_t foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
 				{
+					string instfile = (format("%s/%d_%d_%d.inst.txt") % _cmd.resultDir % _cmd.resultIndex
+						% runIdx % foldIdx).str();
 					Instances trainData, testData;
 					//只是trainProportion < 1 才需要rng
 					CVFoldCreator::CreateFolds(instances, _cmd.trainProportion,
@@ -132,13 +134,15 @@ namespace gezi {
 					predictor->SetNormalizeCopy();
 					//@TODO 每个test 输出一个inst 文件也 然后每个给出一个结果
 					LOG(INFO) << "-------------------------------------Testing";
+					Test(testData, predictor, instfile, ofs);
+					string command = _cmd.evaluate + instfile;
 					omp_set_lock(lock());
-					Test(testData, predictor, ofs);
+					system(command.c_str());
 					omp_unset_lock(lock());
 				}
 			}
 
-			string command = "python ./scripts/evaluate.py " + instFile;
+			string command = _cmd.evaluate + instFile;
 			system(command.c_str());
 		}
 
@@ -162,6 +166,16 @@ namespace gezi {
 		void WriteInstFileHeader(ofstream& ofs)
 		{
 			ofs << "Instance\tTrue\tAssigned\tOutput\tProbability" << endl;
+		}
+
+		//@TODO 多做了一次预测等于
+		void Test(Instances& instances, PredictorPtr predictor,
+			string outfile, ofstream& ofs)
+		{
+			Test(instances, predictor, outfile);
+			omp_set_lock(lock());
+			Test(instances, predictor, ofs);
+			omp_unset_lock(lock());
 		}
 		void Test(Instances& instances, PredictorPtr predictor, string outfile)
 		{
@@ -213,7 +227,7 @@ namespace gezi {
 			auto testInstances = create_instances(_cmd.datafile);
 			CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
 			Test(testInstances, predictor, instFile);
-			string command = "python ./scripts/evaluate.py " + instFile;
+			string command = _cmd.evaluate + instFile;
 			system(command.c_str());
 			//save predictor
 		}
@@ -240,7 +254,7 @@ namespace gezi {
 			CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
 			CHECK_EQ(instances.schema == testInstances.schema, 1);
 			Test(testInstances, predictor, instFile);
-			string command = "python ./scripts/evaluate.py " + instFile;
+			string command = _cmd.evaluate + instFile;
 			system(command.c_str());
 		}
 

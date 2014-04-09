@@ -38,6 +38,7 @@ DEFINE_string(normalizer, "MinMax", "Which normalizer?");
 DEFINE_string(nf, "", "normalzierfile: specified the output normalzier text");
 
 DEFINE_string(fn, "", "featureName:");
+//DEFINE_string(ev, "python ./scripts/evaluate.py ", "evaluate: use what to evalute the result");
 
 namespace gezi {
 	void Melt::ParseArguments()
@@ -68,5 +69,7 @@ namespace gezi {
 
 		_cmd.resultDir = FLAGS_rd;
 		_cmd.resultIndex = FLAGS_ri;
+
+		//_cmd.evaluate = FLAGS_ev;
 	}
 } //end of namespace gezi

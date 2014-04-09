@@ -194,6 +194,16 @@ protected:
 		Pval(paramB);
 	}
 
+	friend class boost::serialization::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar & boost::serialization::base_object<Calibrator>(*this);
+		ar & boost::serialization::base_object<CalibratorWrapper>(*this);
+		ar & paramA;
+		ar & paramB; 
+	}
+
 private:
 	double paramA = 0;
 	double paramB = 0;
