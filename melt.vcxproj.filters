@@ -36,6 +36,9 @@
     <ClCompile Include="test\test_vector.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Prediction\Trainers\LinearSVM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MLCore\IPredictor.h">
@@ -138,6 +141,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Prediction\Calibrate\SigmoidCalibrator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Prediction\Calibrate\CalibratorFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Prediction\Calibrate\NaiveCalibrator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Prediction\Calibrate\PAVCalibrator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,19 +14,161 @@
 #ifndef PREDICTION__CALIBRATE__P_A_V_CALIBRATOR_H_
 #define PREDICTION__CALIBRATE__P_A_V_CALIBRATOR_H_
 
+#include "common_util.h"
+#include "Prediction/Calibrate/Calibrator.h"
 namespace gezi {
 
-class PAVCalibrator 
+//@FIXME 确认结果不对AUC不对  TLC结果正常
+class PAVCalibrator : public CalibratorWrapper
 {
 public:
-	PAVCalibrator() 
+	struct Piece
 	{
+		Float minX = 0; // end of interval
+		Float maxX = 0; // beginning of interval
+		Float val = 0; // value of function in interval
+		Float n = 0; // number of points/weight of interval
+	};
 
+	virtual Float PredictProbability(Float score) override
+	{
+		Float prob = FindValue(score);
+		if (prob < minToReturn)
+			return minToReturn;
+		if (prob > maxToReturn)
+			return maxToReturn;
+		return prob;
+	}
+
+	//@TODO what is this usage	?
+	Float PredictLogOdds(Float score)
+	{
+		Float p = PredictProbability(score);
+		return log(p / (1 - p));
+	}
+
+	virtual string Name() override
+	{
+		return "PAVCalibrator";
+	}
+protected:
+	// build up the piecwise approximation
+	// go through data in d_i.score sorted order for any out of order pairs (i.e. Target[i] > Target[i-1])
+	// as an efficiency step do (Target[i] >= Target[i-1]) since this average will eventually be forced if there is a violator
+	//  and interpolation will be done between segments when no violator
+	virtual void TrainModel(CalibratorStore& data) override
+	{
+		for(CalibratorStore::Node& d_i : data.Nodes()) // this will iterate in sorted order
+		{
+			Piece curr;
+			curr.maxX = d_i.score;
+			curr.minX = d_i.score;
+			curr.n = d_i.weight;
+			curr.val = d_i.target;
+			bool changed = true;
+			int p = (int)piecewise.size();
+			while (changed)
+			{
+				if (p == 0)
+				{
+					piecewise.emplace_back(curr);
+					p++;
+					changed = false;
+				}
+				else if ((piecewise[p - 1].maxX >= curr.minX) // equals can happen because of ties in score
+					|| (curr.val <= piecewise[p - 1].val)) // adjacency violator?  (equals assumes we will interpolate between intervals later)
+				{
+					Float newW = piecewise[p - 1].n + curr.n;
+					piecewise[p - 1].val = (piecewise[p - 1].val * piecewise[p - 1].n + curr.val * curr.n) / newW;
+					piecewise[p - 1].n = newW;
+					piecewise[p - 1].maxX = curr.maxX; // minX is the same as piecewise[p-1]
+					curr = piecewise[p - 1];  // now pop and continue to check if changes need to be propagated back
+					piecewise.pop_back();
+					p--;
+				}
+				else
+				{
+					piecewise.emplace_back(curr);
+					p++;
+					changed = false;
+				}
+			}
+		}
+
+		VLOG(0) <<"PAV calibrator:  piecewise function approximation has " << piecewise.size() << " components.";
+	}
+
+	Float FindValue(Float score)
+	{
+		int P = piecewise.size();
+		if (P == 0)
+			return 0;
+		if (score < piecewise[0].minX)
+		{
+			return piecewise[0].val;
+			// tail off to zero exponentially
+			// return Math.Exp(-(piecewise[0].minX-score)) * piecewise[0].val;
+		}
+		if (score > piecewise[P - 1].maxX)
+		{
+			return piecewise[P - 1].val;
+			// tail off to one exponentially
+			// return (1-Math.Exp(-(score - piecewise[P - 1].maxX)))   * (1 - piecewise[P - 1].val) + piecewise[P - 1].val;
+		}
+		int b = 0;
+		int e = P - 1;
+		int c = 0;
+		bool found = false;
+		while ((!found) && (b <= e))
+		{
+			c = b + e;
+			if (c % 2 == 0)
+				c /= 2;
+			else
+				c = (c - 1) / 2;
+			// Console.Error.WriteLine("{0} {1} {2}", b, e, c);
+			if (score >= piecewise[c].minX)
+			{
+				if (score <= piecewise[c].maxX)
+				{
+					found = true;
+				}
+				else
+				{
+					// search in latter half of array
+					b = c + 1;
+				}
+			}
+			else // in first half of array
+				e = c - 1;
+		}
+		if (found)
+			return piecewise[c].val;
+		// Console.Error.WriteLine("l:{0} {1} {2} {3}", b, e, c, score);
+		int p1 = 0, p2 = 0;
+		if (b > c) // it occurs right after c
+		{
+			p1 = c;
+			p2 = c + 1;
+		}
+		else if (e < c) // it occurs right before c
+		{
+			p1 = c - 1;
+			p2 = c;
+		}
+		else
+			THROW("Invariant violated in binary search.");
+		// otherwise do interpolation
+		Float slope = (piecewise[p2].val - piecewise[p1].val) / (piecewise[p2].minX - piecewise[p1].maxX);
+		// compute y = m * (x - x_1) + y_1
+		return slope * (score - piecewise[p1].maxX) + piecewise[p1].val;
 	}
 
 protected:
 private:
-
+	vector<Piece> piecewise;
+	Float minToReturn = EPSILON; // max predicted is 1 - min;
+	Float maxToReturn = 1 - EPSILON; // max predicted is 1 - min;
 };
 
 }  //----end of namespace gezi

@@ -52,10 +52,10 @@ namespace gezi {
 			int idx = 0;
 			CHECK_EQ(parse_string_param("NormalizerType=", lines[idx++]), Name());
 			_trunct = parse_bool_param("Trunct=", lines[idx++]);
-			_featureNum = parse_int_param("FeatureNum=", lines[idx++]);
-			_offsets.resize(_featureNum);
-			_scales.resize(_featureNum);
-			for (int i = 0; i < _featureNum; i++)
+			_numFeatures = parse_int_param("FeatureNum=", lines[idx++]);
+			_offsets.resize(_numFeatures);
+			_scales.resize(_numFeatures);
+			for (int i = 0; i < _numFeatures; i++)
 			{
 				string offset, scale;
 				split(lines[i + idx], '\t', offset, scale);
@@ -70,8 +70,8 @@ namespace gezi {
 			ofstream ofs(outfile);
 			ofs << "NormalizerType=" << Name() << endl;
 			ofs << "Trunct=" << (int)_trunct << endl;
-			ofs << "FeatureNum=" << _featureNum << endl;
-			for (int i = 0; i < _featureNum; i++)
+			ofs << "FeatureNum=" << _numFeatures << endl;
+			for (int i = 0; i < _numFeatures; i++)
 			{
 				ofs << _offsets[i] << "\t" << _scales[i] << endl;
 			}
@@ -79,18 +79,18 @@ namespace gezi {
 
 		virtual void Begin() override
 		{
-			_offsets.resize(_featureNum, 0);
-			_scales.resize(_featureNum, 0);
+			_offsets.resize(_numFeatures, 0);
+			_scales.resize(_numFeatures, 0);
 		}
 
-		virtual void Finalize() override
+		virtual void Finish() override
 		{
 
 		}
 
 		void AffineInit()
 		{
-			for (int i = 0; i < _featureNum; i++)
+			for (int i = 0; i < _numFeatures; i++)
 			{
 				if (_scales[i] <= 0)
 				{ //按照TLC 如果是始终值一样 仍然维持原样 不scale 不置为0 @TODO
@@ -118,21 +118,10 @@ namespace gezi {
 			PVEC(_shiftIndices);
 		}
 
-		virtual void NormalizeCore(Vector& vec) override
-		{
-			Normalize(vec, _func);
-		}
-
-		virtual void NormalizeCore(Feature& feature) override
-		{
-			Normalize(feature, _func);
-		}
-
 	protected:
 		Fvec _offsets;
 		Fvec _scales;
-	private:
-		std::function<void(int, Float&)> _func;
+		vector<uint64> _counts;
 	};
 
 }  //----end of namespace gezi

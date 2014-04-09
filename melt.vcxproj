@@ -67,6 +67,7 @@
   <ItemGroup>
     <ClCompile Include="melt.cc" />
     <ClCompile Include="src\Prediction\Instances\InstanceParser.cpp" />
+    <ClCompile Include="src\Prediction\Trainers\LinearSVM.cpp" />
     <ClCompile Include="src\Run\Melt.cpp" />
     <ClCompile Include="test\test_fastrank_classification.cc" />
     <ClCompile Include="test\test_normalize.cc" />
@@ -84,8 +85,11 @@
     <ClInclude Include="include\Numeric\Vector\Vector.h" />
     <ClInclude Include="include\Prediction\Calibrate\Calibration.h" />
     <ClInclude Include="include\Prediction\Calibrate\Calibrator.h" />
+    <ClInclude Include="include\Prediction\Calibrate\CalibratorFactory.h" />
     <ClInclude Include="include\Prediction\Calibrate\ICalibrateTrainer.h" />
     <ClInclude Include="include\Prediction\Calibrate\ICalibrator.h" />
+    <ClInclude Include="include\Prediction\Calibrate\NaiveCalibrator.h" />
+    <ClInclude Include="include\Prediction\Calibrate\PAVCalibrator.h" />
     <ClInclude Include="include\Prediction\Calibrate\SigmoidCalibrator.h" />
     <ClInclude Include="include\Prediction\Instances\HeaderSchema.h" />
     <ClInclude Include="include\Prediction\Instances\Instance.h" />

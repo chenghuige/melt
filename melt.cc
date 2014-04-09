@@ -19,6 +19,8 @@
 using namespace std;
 using namespace gezi;
 DEFINE_int32(level, 0, "min log level");
+DEFINE_bool(calibrate, true, "calibrateOutput: use calibrator to gen probability?");
+DEFINE_string(calibrator, "sigmoid", "calibratorName: sigmoid/platt naive pav");
 
 int main(int argc, char *argv[])
 {

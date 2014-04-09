@@ -18,12 +18,18 @@
 #define PREDICTION__NORMALIZATION__NORMALIZER_H_
 #include "common_util.h"
 #include "Prediction/Instances/Instances.h"
-#include "feature/Feature.h"
+#include "Numeric/Vector/vector_util.h"
+#include "feature/Feature.h" //@TODO remove
 namespace gezi {
 
 	class Normalizer
 	{
 	public:
+		enum class NormType
+		{
+			Affine,
+			Bin
+		};
 		Normalizer()
 		{
 			ParseArgs();
@@ -61,60 +67,117 @@ namespace gezi {
 		template<typename _Vector>
 		void Normalize(_Vector& vec)
 		{
-			NormalizeCore(vec);
+			Normalize(vec, _func);
 		}
 
 		void Normalize(Instance& instance)
 		{
-			NormalizeCore(instance.features);
+			Normalize(instance.features, _func);
 		}
 
 		void Normalize(const InstancePtr& instance)
 		{
-			NormalizeCore(instance->features);
+			Normalize(instance->features, _func);
 		}
 
-		//核心norm 如何兼容Feature 1.Template For Normalzier class ? 2. Feature : public Vector add names field需要修改feature_util.h 重写Feature类
-		//Feature类2个vector好于1个vector<Node> InverteIndex 需要用Node 方便存储
-		virtual void NormalizeCore(Vector& vec)
+
+
+		/// Begin iterating through initialization examples
+		virtual void Begin()
 		{
 
 		}
 
-		//@TODO better handle? 模板成员函数无法虚函数 兼容线上预测 后面可以考虑去掉Feature类
-		//重写一个FeatureVector : public Vector 
-		//即在原有Vector基础上 增加一个names section name即可 Vector部分采用sparse表示
-		//修改feature_util.h -> feature_vector_util.h 尽量采用ForEach即可
-		virtual void NormalizeCore(Feature& vec)
+		/// Finish processing initialization examples; ready to normalize
+		virtual void Finish()
 		{
 
 		}
 
+		void Prepare(const Instances& instances)
+		{
+			Noticer nt("Normalize prepare");
+			_numFeatures = instances.FeatureNum();
+			_featureNames = instances.FeatureNames();
+			Begin();
+			for (uint64 i = 0; i < instances.Size(); i++)
+			{
+				if (i == _maxNormalizationExamples)
+				{
+					break;
+				}
+				Process(instances[i]->features);
+			}
+			Finish();
+		}
+
+		//@TODO Load info or just test data normalize
+		void PrepareAndNormalize(Instances& instances)
+		{
+			Prepare(instances);
+			Normalize(instances);
+		}
+		void Normalize(Instances& instances)
+		{
+			Noticer nt("Normalize");
+#pragma omp parallel for //omp not work for foreach loop ? @TODO
+			for (uint64 i = 0; i < instances.Size(); i++)
+			{
+				Normalize(instances[i]->features);
+			}
+		}
+
+		//@TODO move to MinMax ?
+		bool Trunct() const
+		{
+			return _trunct;
+		}
+
+		//选择set而不是函数中Normalize(vec, trunct=true)选项 因为如果trunct=true就应该是对所有都是 
+		//倾向于是Normalizer的内部属性 而不是外部灵活改变的
+		void SetTrunct(bool trunct)
+		{
+			_trunct = trunct;
+		}
+	protected:
 		///norm框架
 		//不是Fast后缀的是常规解法全部遍历 对于文本分类等特征数目多 数据稀疏速度较慢 主要用来验证Fast接口的正确性
 		//采用Func 避免核心部分函数是虚函数
 		template<typename Func>
 		void Normalize(Vector& vec, Func func)
 		{
-			if (vec.IsDense())
+			if (!vec.normalized)
 			{
-				//NormalizeDense(vec, func);
-				NormalizeDenseFast(vec, func);
+				if (_normType == NormType::Affine)
+				{
+					if (vec.IsDense())
+					{
+						//NormalizeDense(vec, func);
+						NormalizeDenseFast(vec, func);
+					}
+					else
+					{
+						//NormalizeSparse(vec, func);
+						NormalizeSparseFast(vec, func);
+					}
+				}
+				else
+				{//bin norm @TODO其实不管affine bin 都使用apply(vec, _shiftIndices, func)也可以速度影响很小
+					apply(vec, _shiftIndices, func);
+				}
+				vec.normalized = true;
 			}
-			else
-			{
-				//NormalizeSparse(vec, func);
-				NormalizeSparseFast(vec, func);
-			}
-			vec.normalized = true;
 		}
 
-		//在线 都按照sparse处理 归一化
+		//@TODO remove 在线 都按照sparse处理 归一化
 		template<typename Func>
 		void Normalize(Feature& feature, Func func)
 		{
-			NormalizeSparseFast(feature, func);
-			feature.normalized = true;
+			if (!feature.normalized)
+			{
+				NormalizeSparseFast(feature, func);
+				feature.normalized = true;
+			}
 		}
 
 		template<typename Func>
@@ -129,7 +192,7 @@ namespace gezi {
 		template<typename Func>
 		void NormalizeSparse(Vector& vec, Func func)
 		{
-			Vector result(_featureNum);
+			Vector result(_numFeatures);
 			vec.ForEachAllSparse([&func, &result](int index, Float value)
 			{
 				Float val = value;
@@ -148,127 +211,22 @@ namespace gezi {
 			}
 		}
 
-		//@TODO can use ForEach ?
 		template<typename Func, typename _Vector>
 		void NormalizeSparseFast(_Vector& vec, Func func)
 		{
-			_Vector result(_featureNum); //@NOTICE 一定注意要加上长度构造
-			int len = _shiftIndices.size();
-			int len2 = vec.Count();
-
-			Float val;
-			int index, index2;
-			int i = 0, j = 0;
-			for (; i < len && j < len2;)
-			{
-				index = _shiftIndices[i];
-				index2 = vec.Index(j);
-				if (index == index2)
-				{
-					val = vec.Value(j);
-					func(index, ref(val));
-					result.Add(index, val);
-					i++;
-					j++;
-				}
-				else if (index < index2)
-				{
-					val = 0;
-					func(index, ref(val));
-					result.Add(index, val);
-					i++;
-				}
-				else
-				{
-					val = vec.Value(j);
-					func(index2, ref(val));
-					result.Add(index2, val);
-					j++;
-				}
-			}
-			for (; i < len; i++)
-			{
-				index = _shiftIndices[i];
-				val = 0;
-				func(index, ref(val));
-				result.Add(index, val);
-			}
-
-			for (; j < len2; j++)
-			{
-				index2 = vec.Index(j);
-				val = vec.Value(j);
-				func(index2, ref(val));
-				result.Add(index2, val);
-			}
-
-			//vec.Swap(result);
-			vec = move(result);
-		}
-
-		/// Begin iterating through initialization examples
-		virtual void Begin()
-		{
-
-		}
-
-		/// Finish processing initialization examples; ready to normalize
-		virtual void Finalize()
-		{
-
-		}
-
-		void Prepare(const Instances& instances)
-		{
-			Noticer nt("Normalize prepare");
-			_featureNum = instances.FeatureNum();
-			_featureNames = instances.FeatureNames();
-			Begin();
-			for (uint64 i = 0; i < instances.Size(); i++)
-			{
-				if (i == _maxNormalizationExamples)
-				{
-					break;
-				}
-				Process(instances[i]->features);
-			}
-			Finalize();
-		}
-
-		//@TODO Load info or just test data normalize
-		void PrepareAndNormalize(Instances& instances)
-		{
-			Prepare(instances);
-			Normalize(instances);
-		}
-		void Normalize(Instances& instances)
-		{
-			Noticer nt("Normalize");
-#pragma omp parallel for //omp not work for foreach loop ? @TODO
-			for (uint64 i = 0; i < instances.Size(); i++)
-			{
-				Normalize(instances[i]->features);
-			}
-		}
-		bool Trunct() const 
-		{
-			return _trunct;
-		}
-
-		//选择set而不是函数中Normalize(vec, trunct=true)选项 因为如果trunct=true就应该是对所有都是 
-		//倾向于是Normalizer的内部属性 而不是外部灵活改变的
-		void SetTrunct(bool trunct)
-		{ 
-			_trunct = trunct;
+			apply_sparse(vec, _shiftIndices, func);
 		}
 	protected:
-		int _featureNum;
+		int _numFeatures = 0;
 		svec _featureNames;
-		ivec _morphIndices;
-		ivec _shiftIndices;
+		ivec _morphIndices; //只有AffineNormalizer才使用
+		ivec _shiftIndices; //Affine,Bin都使用
+		NormType _normType = NormType::Affine;
+		std::function<void(int, Float&)> _func;
+
 		//----------------------------args begin
 		//|if feature is out of bounds, threshold at 0/1, or return values below 0 and above 1?
-		bool _trunct = false; //@TODO here or in MinMaxNormalizer GuassianNormalzier need it?
+		bool _trunct = false; //@TODO 似乎只有MinMax才可能越界吧
 		uint64 _maxNormalizationExamples = 1000000;//numNorm|
 		//-----------------------------args end
 	private:

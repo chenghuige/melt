@@ -134,46 +134,70 @@ namespace gezi {
 	};
 
 	typedef shared_ptr<CalibratorStore> CalibratorStorePtr;
-
-	class Calibrator 
+	class Calibrator
 	{
 	public:
 		/// Given a classifier output, produce the probability
-		virtual Float PredictProbability(Float output) 
+		virtual Float PredictProbability(Float output)
 		{
 			return 0.5;
 		}
 
-		virtual void Save(const string& file) 
+		virtual void Save(const string& file)
 		{
 
+		}
+
+		virtual string Name()
+		{
+			return "Calibrator";
 		}
 
 		template<typename MarginFunc>
 		void Train(Instances& instances, MarginFunc marginFunc)
 		{
+			ProgressBar pb(Name() + " calibrating", instances.Count());
+			int num = 0;
 			for (InstancePtr instance : instances)
 			{
+				pb.progress(num++);
 				ProcessTrainingExample(marginFunc(instance), instance->label > 0, instance->weight);
 			}
 			FinishTraining();
 		}
 
+		virtual void ProcessTrainingExample(Float output, bool clicked, Float weight) 
+		{
+
+		}
+
+		virtual void FinishTraining()
+		{
+
+		}
+	};
+	typedef shared_ptr<Calibrator> CalibratorPtr;
+
+	class CalibratorWrapper : public Calibrator
+	{
+	public:
+		
 		/// Training calibrators:  provide the classifier output and the class label
-		void ProcessTrainingExample(Float output, bool clicked, Float weight) 
+		virtual void ProcessTrainingExample(Float output, bool clicked, Float weight) override
 		{
 			if (_data == nullptr)
 				_data = make_shared<CalibratorStore>();
 			_data->Add(output, clicked, weight);
 		}
 
-		void FinishTraining()
+		virtual void FinishTraining()
 		{
+			_data->Sort();
 			TrainModel(*_data);
 		}
 	protected:
 
-		virtual void TrainModel(CalibratorStore& data)
+		virtual void TrainModel(CalibratorStore& data) 
 		{
 
 		}
@@ -181,7 +205,7 @@ namespace gezi {
 		CalibratorStorePtr _data = nullptr;
 	};
 
-	typedef shared_ptr<Calibrator> CalibratorPtr;
+
 }  //----end of namespace gezi
 
 #endif  //----end of INCLUDE__PREDICTION__CALIBRATE__CALIBRATOR_H_

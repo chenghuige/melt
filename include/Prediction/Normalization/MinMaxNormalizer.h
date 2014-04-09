@@ -32,7 +32,7 @@ namespace gezi {
 			return "MinMaxNormalizer";
 		}
 
-		virtual void Process(const Vector& vec)
+		virtual void Process(const Vector& vec) override
 		{
 			if (_isFirst)
 			{
@@ -68,14 +68,14 @@ namespace gezi {
 				_scales[i] = value;
 			}
 		}
-		virtual void Begin()
+		virtual void Begin() override
 		{
 			AffineNormalizer::Begin();
-			_counts.resize(_featureNum, 1);
+			_counts.resize(_numFeatures, 1);
 		}
-		virtual void Finalize()
+		virtual void Finish() override
 		{
-			for (size_t i = 0; i < _featureNum; i++)
+			for (size_t i = 0; i < _numFeatures; i++)
 			{
 				if (_counts[i] != _total)
 				{ //这个特征在prepare的所有instance中 存在0值, TLC没有做这个 应该是bug 部分归一后没有到[0,1]可能
@@ -88,11 +88,11 @@ namespace gezi {
 				_scales[i] -= _offsets[i];
 			}
 			AffineInit();
+			_counts.clear();
 		}
 	protected:
 	private:
 		bool _isFirst = true;
-		vector<uint64> _counts;
 		uint64 _total = 1;
 	};
 

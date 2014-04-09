@@ -145,7 +145,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=2c9c7b8409e05873883b1c6499e2f97e  COMAKE
+COMAKE_MD5=76178ecc31ba4bd2e3ac02510980704c  COMAKE
 
 
 .PHONY:all
@@ -175,6 +175,7 @@ clean:ccpclean
 	rm -rf ./output/bin/melt
 	rm -rf melt_melt.o
 	rm -rf src/Prediction/Instances/melt_InstanceParser.o
+	rm -rf src/Prediction/Trainers/melt_LinearSVM.o
 	rm -rf src/Run/melt_Melt.o
 
 .PHONY:dist
@@ -200,10 +201,12 @@ love:
 
 melt:melt_melt.o \
   src/Prediction/Instances/melt_InstanceParser.o \
+  src/Prediction/Trainers/melt_LinearSVM.o \
   src/Run/melt_Melt.o
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt[0m']"
 	$(CXX) melt_melt.o \
   src/Prediction/Instances/melt_InstanceParser.o \
+  src/Prediction/Trainers/melt_LinearSVM.o \
   src/Run/melt_Melt.o -Xlinker "-("  ../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
@@ -299,6 +302,10 @@ melt_melt.o:melt.cc
 src/Prediction/Instances/melt_InstanceParser.o:src/Prediction/Instances/InstanceParser.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Prediction/Instances/melt_InstanceParser.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o src/Prediction/Instances/melt_InstanceParser.o src/Prediction/Instances/InstanceParser.cpp
+
+src/Prediction/Trainers/melt_LinearSVM.o:src/Prediction/Trainers/LinearSVM.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Prediction/Trainers/melt_LinearSVM.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o src/Prediction/Trainers/melt_LinearSVM.o src/Prediction/Trainers/LinearSVM.cpp
 
 src/Run/melt_Melt.o:src/Run/Melt.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Run/melt_Melt.o[0m']"

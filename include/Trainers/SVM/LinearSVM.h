@@ -23,9 +23,8 @@
 #include "MLCore/IterativeTrainer.h"
 #include "Prediction/Instances/Instances.h"
 #include "Numeric/Vector/Vector.h"
-#include "Prediction/Normalization/Normalizer.h"
-#include "Prediction/Calibrate/Calibrator.h"
-#include "Prediction/Calibrate/SigmoidCalibrator.h"
+#include "Prediction/Normalization/NormalizerFactory.h"
+#include "Prediction/Calibrate/CalibratorFactory.h"
 #include "Predictors/LinearPredictor.h"
 namespace gezi {
 
@@ -45,8 +44,8 @@ namespace gezi {
 				_normalizer = NormalizerFactory::CreateNormalizer(_args.normalizerName);
 			}
 			if (_args.calibrateOutput)
-			{ //@TODO
-				_calibrator = make_shared<SigmoidCalibrator>();
+			{ 
+				_calibrator = CalibratorFactory::CreateCalibrator(_args.calibratorName);
 			}
 		}
 	
@@ -66,14 +65,15 @@ namespace gezi {
 			
 			bool normalizeFeatures = true; //norm|Normalize features
 			string normalizerName = "MinMax"; //normalizer|Which normalizer?
+			
 			int randSeed = 0;//rs|controls wether the expermient can reproduce, 0 means not reproduce
-			bool calibrateOutput = true; //calibrate|
+			
+			bool calibrateOutput = true; //calibrate| use calibrator to gen probability?
+			string calibratorName = "sigmoid"; //calibrator| sigmoid/platt naive pav
+			//uint64 maxCalibrationExamples = 1000000; //numCali|Number of instances to train the calibrator
 		};
 
-		void ParseArgs()
-		{
-
-		}
+		void ParseArgs();
 
 		virtual void Initialize(Instances& instances) override
 		{
@@ -162,7 +162,7 @@ namespace gezi {
 		virtual void InnerTrain(Instances& instances) override
 		{
 			_featureNames = instances.schema.featureNames;
-			ProgressBar pb("LinbSVM training", _args.numIterations);
+			ProgressBar pb("LinearSVM training", _args.numIterations);
 			for (int iter = 0; iter < _args.numIterations; iter++)
 			{
 				pb.progress(iter);

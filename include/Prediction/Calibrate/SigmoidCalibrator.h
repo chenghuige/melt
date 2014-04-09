@@ -18,7 +18,9 @@
 #include "Prediction/Calibrate/Calibrator.h"
 namespace gezi {
 
-class SigmoidCalibrator : public Calibrator
+	//@TODO 测试结果正常 不过 貌似TLC 为什么有这样结果 ? 预测是- 概率确实0.9+ ？@FIXME
+	//43060096782	1	0	-0.301788600113394	 0.938615051570983	0.0913944993702111
+class SigmoidCalibrator : public CalibratorWrapper
 {
 public:
 
@@ -27,7 +29,14 @@ public:
 		return sigmoid(output, paramA, paramB);
 	}
 
+	virtual string Name() override
+	{
+		return "SigmoidCalibrator/PlattCalibrator";
+	}
+
 protected:
+
+	//@TODO understand
 	// Adapted from John Platt's smox code.
 	//
 	// Use the Levenberg-Marquardt algorithm to fit a sigmoid to the output
