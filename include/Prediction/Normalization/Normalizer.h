@@ -96,16 +96,14 @@ namespace gezi {
 
 		void Prepare(const Instances& instances)
 		{
-			Noticer nt("Normalize prepare");
 			_numFeatures = instances.FeatureNum();
 			_featureNames = instances.FeatureNames();
 			Begin();
-			for (uint64 i = 0; i < instances.Size(); i++)
+			uint64 len = min((uint64)instances.size(), (uint64)_maxNormalizationExamples);
+			ProgressBar pb(Name() + " prepare", len);
+			for (uint64 i = 0; i < len; i++)
 			{
-				if (i == _maxNormalizationExamples)
-				{
-					break;
-				}
+				pb.progress(i);
 				Process(instances[i]->features);
 			}
 			Finish();
@@ -223,6 +221,8 @@ namespace gezi {
 		ivec _shiftIndices; //Affine,Bin都使用
 		NormType _normType = NormType::Affine;
 		std::function<void(int, Float&)> _func;
+
+		uint64 _numProcessedInstances = 1; //处理的instance数目
 
 		//----------------------------args begin
 		//|if feature is out of bounds, threshold at 0/1, or return values below 0 and above 1?

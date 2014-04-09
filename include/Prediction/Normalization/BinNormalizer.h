@@ -21,19 +21,23 @@ namespace gezi {
 	{
 	public:
 		BinNormalizer()
-			：_normType(NormType::Bin)
 		{
-				_func = [this](int index, Float& value)
+			_normType = Normalizer::NormType::Bin; //do not BinNormalizer():_normType(NormType::Bin)
+			_func = [this](int index, Float& value)
+			{
+				if (_included[index])
 				{
-					if (_included[index])
-					{
-						auto iter = lower_bound(binUpperBounds[index].begin(), binUpperBounds[index].end(), value);
-						if (iter != binUpperBounds[index].end())
-							value = binValues[i][iter - binUpperBounds.begin()];
-						else
-							THROW("input value is larger than the biggest number in array");
-					}
-				};
+					auto iter = lower_bound(binUpperBounds[index].begin(), binUpperBounds[index].end(), value);
+					if (iter != binUpperBounds[index].end())
+						value = binValues[index][iter - binUpperBounds[index].begin()];
+					else
+						THROW("input value is larger than the biggest number in array");
+				}
+			};
+		}
+		virtual string Name() override
+		{
+			return "BinNormalizer";
 		}
 
 		virtual void Begin() override
@@ -43,9 +47,11 @@ namespace gezi {
 			values.resize(_numFeatures);
 		}
 
+		//TLC的处理直接开辟内存 values大小 最多到 特征数目*样本数目 所以不适合文本分类等特征数目巨大的 
 		virtual void Process(const Vector& vec) override
 		{
-			vec.ForEachAll([this](int idx, Float val) { values[idx].push_back(val); });
+			vec.ForEach([this](int idx, Float val) { values[idx].push_back(val); });
+			_numProcessedInstances++;
 		}
 
 		virtual void Finish() override
@@ -56,23 +62,27 @@ namespace gezi {
 					binValues[i][j] = (Float)j / numBins;
 
 			// pre-compute the normalization range for each feature
+			ProgressBar pb("BinNormalizer finish", _numFeatures);
 			for (int i = 0; i < _numFeatures; i++)
 			{
+				pb.progress(i);
+				values[i].resize(_numProcessedInstances, 0); //后面填充0
 				binUpperBounds[i] = find_bins(values[i], numBins);
 				if (binUpperBounds[i][0] == binUpperBounds[i].back())
 					_included[i] = false;
 				else if (binUpperBounds[i][0] < 0)
-					_shiftIndices.push_back(i);
+					_shiftIndices.push_back(i); //global push 不能并行
 
 				// reclaculate bin values if too few
 				if ((int)binUpperBounds[i].size() < numBins)
 				{
 					int numBinsActual = binUpperBounds[i].size();
-					binValues[i].resize(numBinsActual, 0);
+					binValues[i].resize(numBinsActual);
 
 					for (int j = 0; j < numBinsActual; j++)
 						binValues[i][j] = (Float)j / (numBinsActual - 1);
 				}
+				free_memory(values[i]); //释放空间
 			}
 		}
 

@@ -52,8 +52,8 @@ namespace gezi {
 					_counts[i]++;
 					this->SetOffsetScale(i, value); //need this->
 				});
-				_total++;
 			}
+			_numProcessedInstances++;
 		}
 
 		//@TODO lambda里面再调用这个不行 那么直接把这个类成员函数 传给ForEach?
@@ -77,7 +77,7 @@ namespace gezi {
 		{
 			for (size_t i = 0; i < _numFeatures; i++)
 			{
-				if (_counts[i] != _total)
+				if (_counts[i] != _numProcessedInstances)
 				{ //这个特征在prepare的所有instance中 存在0值, TLC没有做这个 应该是bug 部分归一后没有到[0,1]可能
 					/*		if (0 < _offsets[i] || 0 > _scales[i])
 							{
@@ -93,7 +93,6 @@ namespace gezi {
 	protected:
 	private:
 		bool _isFirst = true;
-		uint64 _total = 1;
 	};
 
 }  //----end of namespace gezi
