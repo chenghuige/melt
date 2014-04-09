@@ -63,6 +63,10 @@ namespace gezi {
 
 			// pre-compute the normalization range for each feature
 			ProgressBar pb("BinNormalizer finish", _numFeatures);
+			//BitArray shifts(_numFeatures, false);
+			//@TODO 动态调整线程数目 确保内存正常 command可以输入一个最大可用内存G
+			//暂时为了安全 单线程
+//#pragma omp parallel for num_threads(4)
 			for (int i = 0; i < _numFeatures; i++)
 			{
 				pb.progress(i);
@@ -71,7 +75,8 @@ namespace gezi {
 				if (binUpperBounds[i][0] == binUpperBounds[i].back())
 					_included[i] = false;
 				else if (binUpperBounds[i][0] < 0)
-					_shiftIndices.push_back(i); //global push 不能并行
+					//shifts[i] = true;
+					_shiftIndices.push_back(i);
 
 				// reclaculate bin values if too few
 				if ((int)binUpperBounds[i].size() < numBins)
@@ -82,8 +87,14 @@ namespace gezi {
 					for (int j = 0; j < numBinsActual; j++)
 						binValues[i][j] = (Float)j / (numBinsActual - 1);
 				}
-				free_memory(values[i]); //释放空间
+				free_memory(values[i]); //释放空间  @TODO 直接用一块儿内存 value[] 其余的拷贝过去 不用释放 效率对比?
 			}
+
+			/*for (size_t i = 0; i < _numFeatures; i++)
+			{
+				if (shifts[i])
+					_shiftIndices.push_back(i);
+			}*/
 		}
 
 	protected:
