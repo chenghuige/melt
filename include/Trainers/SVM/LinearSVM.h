@@ -406,7 +406,7 @@ namespace gezi {
 			//	lastMargin = _bias + dot(_weights, instance->features);
 			//	lastMarginInstance = instance;
 			//	return lastMargin;
-			}
+			//}
 			if (currentIdx == lastIdx)
 			{
 				return lastMargin;
