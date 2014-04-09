@@ -35,10 +35,14 @@ namespace gezi {
 
 		}
 
-		//通过文本文件载入预测模型
-		LinearPredictor(const string& modelFile,
-			const string& normalizerFile = "",
-			const string& calibratorFile = "")
+		LinearPredictor(string modelFile,
+			string normalizerFile = "",
+			string calibratorFile = "")
+		{
+
+		}
+
+		void Load(string dir)
 		{
 
 		}

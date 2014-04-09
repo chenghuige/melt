@@ -23,7 +23,7 @@ namespace gezi {
 class CalibratorFactory 
 {
 public:
-	static CalibratorPtr CreateCalibrator(const string& name_)
+	static CalibratorPtr CreateCalibrator(string name_)
 	{
 		string name = boost::to_lower_copy(name_);
 		if (name == "sigmoid" || name == "platt")

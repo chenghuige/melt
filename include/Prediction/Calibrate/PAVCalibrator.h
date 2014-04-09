@@ -178,7 +178,6 @@ protected:
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		ar & boost::serialization::base_object<Calibrator>(*this);
 		ar & boost::serialization::base_object<CalibratorWrapper>(*this);
 		ar & piecewise;
 		ar & minToReturn;

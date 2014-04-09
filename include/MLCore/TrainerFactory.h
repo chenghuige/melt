@@ -22,7 +22,7 @@ namespace gezi {
 class TrainerFactory 
 {
 public:
-	static TrainerPtr CreateTrainer(const string& name_)
+	static TrainerPtr CreateTrainer(string name_)
 	{
 		string name = boost::to_lower_copy(name_);
 		if (name == "linearsvm")

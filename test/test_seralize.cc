@@ -16,18 +16,17 @@
 #define protected public
 #include "common_util.h"
 
+#include "Prediction/Normalization/MinMaxNormalizer.h"
+#include "Prediction/Calibrate/SigmoidCalibrator.h"
 #include "Predictors/LinearPredictor.h"
+#include "Trainers/SVM/LinearSVM.h"
+#include "MLCore/TrainerFactory.h"
+#include "Prediction/Instances/instances_util.h"
 
-#include "serialize_util.h"
-#include "serialization/shared_ptr_helper.hpp"
-#include "serialization/shared_ptr.hpp"
 
 using namespace std;
 using namespace gezi;
 DEFINE_int32(level, 0, "min log level");
-DEFINE_string(i, "", "input");
-DEFINE_string(o, "", "output");
-DEFINE_string(type, "simple", "");
 
 TEST(test_seralize, func)
 {
@@ -90,7 +89,72 @@ TEST(test_seralize3, func)
 	}*/
 }
 
+TEST(predict, func)
+{
+	Noticer nt("TrainTest!");
+	{
+		auto instances = create_instances("../data/feature.txt");
+		CHECK_GT(instances.Count(), 0) << "Read 0 train instances, aborting experiment";
+		auto trainer = TrainerFactory::CreateTrainer("LinearSVM");
+		if (trainer == nullptr)
+		{
+			return;
+		}
+		trainer->Train(instances);
+		auto predictor = trainer->CreatePredictor();
 
+		shared_ptr<LinearPredictor> p = dynamic_pointer_cast<LinearPredictor>(predictor);
+		//serialize_util::save(*p, "0.model");
+		p->Save();
+	}
+	{
+		LinearPredictor predictor;
+		predictor.Load();
+		Pval(predictor._normalizer->_numFeatures);
+
+		//serialize_util::load(predictor, "0.model");
+		auto testInstances = create_instances("../data/feature.txt");
+		CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
+		CHECK_EQ(instances.schema == testInstances.schema, 1);
+		ofstream ofs("./0.inst.txt");
+		ofs << "Instance\tTrue\tAssigned\tOutput\tProbability" << endl;
+		int idx = 0;
+		for (InstancePtr instance : testInstances)
+		{
+			double output;
+			double probability = predictor->Predict(instance, output);
+			string name = instance->name.empty() ? STR(idx) : instance->name;
+			int assigned = output > 0 ? 1 : 0;
+			ofs << name << "\t" << instance->label << "\t"
+				<< assigned << "\t" << output << "\t"
+				<< probability << endl;
+			idx++;
+		}
+		string command = "python ../scripts/evaluate.py 0.inst.txt";
+		system(command.c_str()); 
+	}
+	
+	/*LOG(INFO) << "-------------------------------------Testing";
+	auto testInstances = create_instances("../data/feature.txt");
+	CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
+	CHECK_EQ(instances.schema == testInstances.schema, 1);
+	ofstream ofs("./0.inst.txt");
+	ofs << "Instance\tTrue\tAssigned\tOutput\tProbability" << endl;
+	int idx = 0;
+	for (InstancePtr instance : testInstances)
+	{
+		double output;
+		double probability = predictor->Predict(instance, output);
+		string name = instance->name.empty() ? STR(idx) : instance->name;
+		int assigned = output > 0 ? 1 : 0;
+		ofs << name << "\t" << instance->label << "\t"
+			<< assigned << "\t" << output << "\t"
+			<< probability << endl;
+		idx++;
+	}
+	string command = "python ../scripts/evaluate.py 0.inst.txt";
+	system(command.c_str());*/
+}
 
 int main(int argc, char *argv[])
 {

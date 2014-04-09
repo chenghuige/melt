@@ -40,6 +40,10 @@ DEFINE_string(nf, "", "normalzierfile: specified the output normalzier text");
 DEFINE_string(fn, "", "featureName:");
 //DEFINE_string(ev, "python ./scripts/evaluate.py ", "evaluate: use what to evalute the result");
 
+DEFINE_bool(calibrate, true, "calibrateOutput: use calibrator to gen probability?");
+DEFINE_string(calibrator, "sigmoid", "calibratorName: sigmoid/platt naive pav");
+
+
 namespace gezi {
 	void Melt::ParseArguments()
 	{

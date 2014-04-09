@@ -22,31 +22,31 @@ namespace gezi {
 	class NormalizerFactory
 	{
 	public:
-		static NormalizerPtr CreateNormalizer(const string& name_)
+		static NormalizerPtr CreateNormalizer(string name)
 		{
-			string name = boost::to_lower_copy(name_);
-			if (name == "minmax")
+			boost::to_lower(name);
+			if (name == "minmax" || name == "minmaxnormalizer")
 			{
 				return make_shared<MinMaxNormalizer>();
 			}
-			if (name == "gaussian")
+			if (name == "gaussian" || name == "gaussiannormalizer")
 			{
 				return make_shared<GaussianNormalizer>();
 			}
-			if (name == "bin")
+			if (name == "bin" || name = "binnormalizer")
 			{
 				return make_shared<BinNormalizer>();
 			}
-			LOG(WARNING) << name_ << " is not supported now, do not use normalzier, return nullptr";
+			LOG(WARNING) << name << " is not supported now, do not use normalzier, return nullptr";
 			return nullptr;
 		}
 		
-		static NormalizerPtr CreateNormalizer(const string& name, const string& normalizerFile)
+		static NormalizerPtr CreateNormalizer(string name, string path)
 		{
 			NormalizerPtr normalizer = CreateNormalizer(name);
 			if (normalizer != nullptr)
 			{
-				normalizer->Load(normalizerFile);
+				normalizer->Load(path);
 			}
 			return normalizer;
 		}

@@ -133,6 +133,7 @@ namespace gezi {
 		vector<uint64> _counts;
 	};
 
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(AffineNormalizer);
 }  //----end of namespace gezi
 
 #endif  //----end of PREDICTION__NORMALIZATION__AFFINE_NORMALIZER_H_

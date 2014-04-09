@@ -565,7 +565,7 @@ namespace gezi {
 		}
 
 		//libsvm格式不支持过滤特征 仅仅为了方便一直使用libsvm的同学
-		Instances&& ParseLibSVM(const string& dataFile)
+		Instances&& ParseLibSVM(string dataFile)
 		{
 			Timer timer;
 			vector<string> lines = read_lines(dataFile);
@@ -637,7 +637,7 @@ namespace gezi {
 			return move(_instances);
 		}
 
-		Instances&& ParseNormal(const string& dataFile)
+		Instances&& ParseNormal(string dataFile)
 		{
 			Timer timer;
 			vector<string> lines = read_lines(dataFile);
@@ -688,7 +688,7 @@ namespace gezi {
 			PrintInfo();
 			return move(_instances);
 		}
-		Instances&& Parse(const string& dataFile)
+		Instances&& Parse(string dataFile)
 		{
 			//-----------------判断输入文件类型
 			if (_format == "normal")

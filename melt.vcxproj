@@ -72,6 +72,7 @@
     <ClCompile Include="test\test_fastrank_classification.cc" />
     <ClCompile Include="test\test_normalize.cc" />
     <ClCompile Include="test\test_parse_input.cc" />
+    <ClCompile Include="test\test_seralize.cc" />
     <ClCompile Include="test\test_vector.cc" />
   </ItemGroup>
   <ItemGroup>

@@ -143,7 +143,7 @@ namespace gezi {
 			return 0.5;
 		}
 
-		virtual void Save(const string& file)
+		virtual void Save(string file)
 		{
 
 		}
@@ -180,6 +180,16 @@ namespace gezi {
 		void serialize(Archive &ar, const unsigned int version)
 		{
 		}
+		void Save()
+		{
+			serialize_util::save(*this, "c");
+		}
+
+		void Load()
+		{
+			serialize_util::load(*this, "c");
+		}
+
 	};
 	typedef shared_ptr<Calibrator> CalibratorPtr;
 
@@ -207,6 +217,7 @@ namespace gezi {
 		{
 			ar & boost::serialization::base_object<Calibrator>(*this);
 		}
+
 	protected:
 
 		virtual void TrainModel(CalibratorStore& data) 

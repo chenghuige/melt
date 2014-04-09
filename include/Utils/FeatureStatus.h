@@ -22,8 +22,8 @@ namespace gezi {
 	class FeatureStatus
 	{
 	public:
-		static void GenMeanVarInfo(const Instances& instances, const string outFile, 
-			const string& featureName = "")
+		static void GenMeanVarInfo(const Instances& instances, string outFile, 
+			string featureName = "")
 		{
 			int featureNum = instances.FeatureNum();
 			dvec means(featureNum, 0);

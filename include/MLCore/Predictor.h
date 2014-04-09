@@ -116,15 +116,27 @@ namespace gezi {
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			ar & _normalizeCopy;
-			ar & _normalizer;
-			ar & _calibrator;
+			//ar & _normalizeCopy;
+			//ar & _normalizer;
+			//ar & _calibrator;
 		}
 
 		/*void Deseralize(string infile)
 		{
 			serialize_util::load(infile, *this);
 		}*/
+
+		void Save()
+		{
+			//serialize_util::save(*this, "a");
+			_normalizer->Save();
+			_calibrator->Save();
+		}
+		void Load()
+		{
+			_normalizer->Load();
+			_calibrator->Load();
+		}
 
 	protected:
 		virtual Float Margin(const Vector& features)
@@ -136,7 +148,7 @@ namespace gezi {
 		NormalizerPtr _normalizer = nullptr;
 		CalibratorPtr _calibrator = nullptr;
 	};
-
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Predictor);
 	typedef shared_ptr<Predictor> PredictorPtr;
 }  //----end of namespace gezi
 

@@ -261,7 +261,15 @@ namespace gezi {
 			ar & _normType;
 			ar & _trunct;
 		}
+		void Save()
+		{
+			serialize_util::save(*this, "b");
+		}
 
+		void Load()
+		{
+			serialize_util::load(*this, "b");
+		}
 	protected:
 		int _numFeatures = 0;
 		svec _featureNames;
@@ -279,7 +287,7 @@ namespace gezi {
 	private:
 
 	};
-
+	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Normalizer);
 	typedef shared_ptr<Normalizer> NormalizerPtr;
 }  //----end of namespace gezi
 
