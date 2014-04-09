@@ -70,12 +70,34 @@ namespace gezi {
 			Normalize(vec, _func);
 		}
 
+		template<typename _Vector>
+		_Vector NormalizeCopy(_Vector& vec)
+		{
+			_Vector temp = vec;
+			Normalize(temp, _func);
+			return temp;
+		}
+
 		void Normalize(Instance& instance)
 		{
 			Normalize(instance.features, _func);
 		}
 
-		void Normalize(const InstancePtr& instance)
+		Instance NormalizeCopy(const Instance& instance)
+		{
+			Instance temp = instance;
+			Normalize(temp.features, _func);
+			return temp;
+		}
+
+		InstancePtr NormalizeCopy(InstancePtr instance)
+		{
+			InstancePtr temp = make_shared<Instance>(*instance);
+			Normalize(temp->features, _func); 
+			return temp;
+		}
+
+		void Normalize(InstancePtr instance)
 		{
 			Normalize(instance->features, _func);
 		}
@@ -110,19 +132,23 @@ namespace gezi {
 		}
 
 		//@TODO Load info or just test data normalize
-		void PrepareAndNormalize(Instances& instances)
+		void RunNormalize(Instances& instances)
 		{
 			Prepare(instances);
 			Normalize(instances);
 		}
 		void Normalize(Instances& instances)
 		{
-			Noticer nt("Normalize");
-#pragma omp parallel for //omp not work for foreach loop ? @TODO
-			for (uint64 i = 0; i < instances.Size(); i++)
+			if (!instances.normalized)
 			{
-				Normalize(instances[i]->features);
+				Noticer nt("Normalize");
+#pragma omp parallel for //omp not work for foreach loop ? @TODO
+				for (uint64 i = 0; i < instances.Size(); i++)
+				{
+					Normalize(instances[i]->features);
+				}
 			}
+			instances.normalized = true;
 		}
 
 		//@TODO move to MinMax ?

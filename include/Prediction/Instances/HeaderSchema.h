@@ -34,6 +34,12 @@ namespace gezi
 		HeaderSchema& operator = (HeaderSchema&&) = default;
 		HeaderSchema(const HeaderSchema&) = default;
 		HeaderSchema& operator = (const HeaderSchema&) = default;
+		//bool operator==(const HeaderSchema&) const = default;
+		//很遗憾 没有默认的
+		bool operator==(const HeaderSchema& other) const
+		{
+			return featureNames == other.featureNames && tagNames == other.tagNames;
+		}
 	public:
 		int FeatureNum() const
 		{

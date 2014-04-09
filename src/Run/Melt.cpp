@@ -30,6 +30,9 @@ DEFINE_string(m, "", "modelfile: Model file to save (for Train) or load (for Tes
 DEFINE_string(mc, "", "modelfileCode: Model file to save in C++ code (for Train or TrainTest)");
 DEFINE_string(mt, "", "modelfileText:  Model file to save in text format (for Train or TrainTest");
 
+DEFINE_string(rd, "./result", "resultDir: where to put the result data");
+DEFINE_int32(ri, 0, "resultIndex: the name ouf out file like 0.model.txt 0.model 0.inst.txt");
+
 DEFINE_bool(norm, true, "Normalize features");
 DEFINE_string(normalizer, "MinMax", "Which normalizer?");
 DEFINE_string(nf, "", "normalzierfile: specified the output normalzier text");
@@ -62,5 +65,8 @@ namespace gezi {
 		_cmd.normalizerName = FLAGS_normalizer;
 
 		_cmd.featureName = FLAGS_fn;
+
+		_cmd.resultDir = FLAGS_rd;
+		_cmd.resultIndex = FLAGS_ri;
 	}
 } //end of namespace gezi

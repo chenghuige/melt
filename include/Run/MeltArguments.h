@@ -39,6 +39,11 @@ namespace gezi {
 		bool foldsSequential = false;
 		double trainProportion = 1.0;
 
+		string modelDir = "";
+		string outDir = "";
+		string resultDir = "./result";
+		int resultIndex = 0;
+
 		//----------分类器公用选项
 		bool normalizeFeatures = true; //norm:Normalize features?
 		string normalizerName = "MinMax"; //Which normalizer?

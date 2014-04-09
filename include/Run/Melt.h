@@ -12,7 +12,7 @@
  *  @TODO 数据分割  train  test // validate ?
  *  @TODO 数据shrink  去掉特定的pos 或者 特定的 neg 使得 正反比例达到预设比如 1:1 1:2 先随机数据 然后舍弃部分index 顺序即可
  *  暂时 不支持missing feature, class feature, text feature
- * 初步只实现 
+ * 初步只实现
  * 1. 输入解析 done
  * 2. Instances 数据结构 稀疏 Dense 自动转换  Done
  * 3. Normalization 当前实现了 MinMax @TODO Gussian and Bin
@@ -21,13 +21,14 @@
  * 5. @TODO 特征evaluatore 组合特征 判断效果
  * 6. @TODO 参数选择  grid sweeping 初步实现 其它参数选择 ?
  * 7. 初步实现Binary分类 后续再考虑其他
- * 8. 尽快实现二分类的 LinearSvm   FastRank -> @TODO 逻辑回归, KernelSvm,LibLinear, 随机森林。。。 
+ * 8. 尽快实现二分类的 LinearSvm   FastRank -> @TODO 逻辑回归, KernelSvm,LibLinear, 随机森林。。。
  * 9. 打印feature特征 最小值 最大值 均值 方差 正例中情况 反例中情况  根据特征名或者index 获取结果
  *  ==============================================================================
  */
 
 #ifndef RUN__MELT_H_
 #define RUN__MELT_H_
+
 #include "common_util.h"
 #include "Run/MeltArguments.h"
 #include "Prediction/Instances/InstanceParser.h"
@@ -46,7 +47,12 @@ namespace gezi {
 	public:
 		Melt()
 		{
+			omp_init_lock(lock()); //初始化互斥锁  
 			ParseArguments();
+		}
+		~Melt()
+		{
+			omp_destroy_lock(lock());  //销毁互斥器  
 		}
 		void ParseArguments();
 
@@ -69,7 +75,7 @@ namespace gezi {
 		{
 			return _cmd;
 		}
-	
+
 		void PrintCommands()
 		{
 			LOG(INFO) << "Supported commands now are below:";
@@ -80,8 +86,23 @@ namespace gezi {
 			}
 		}
 
-		void RunCrossValidation(const Instances& instances)
+		void RunCrossValidation(Instances& instances)
 		{
+			////----------------------------先统一归一化, 会改变instances 逻辑可能稍有不同
+			////比如TLC 可能是 5 fold验证 那么只用4个 数据 做norm
+			//TrainerPtr trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
+			//NormalizerPtr normalizer = trainer->GetNormalizer();
+			//if (normalizer != nullptr)
+			//{
+			//	normalizer->RunNormalize(instances);
+			//}
+
+			//--------------------------- 输出文件头
+			try_create_dir(_cmd.resultDir);
+			string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
+			ofstream ofs(instFile);
+			WriteInstFileHeader(ofs);
+
 			const int randomStep = 10000;
 			for (size_t runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
 			{
@@ -103,8 +124,22 @@ namespace gezi {
 					PVAL3(trainData[0]->name, trainData.PositiveCount(), trainData.NegativeCount());
 					PVAL3(testData[0]->name, testData.PositiveCount(), testData.NegativeCount());
 #endif // !NDEBUG
+					//------------------------------------Train
+					TrainerPtr trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
+					trainer->SetNormalizeCopy();
+					trainer->Train(trainData);
+					PredictorPtr predictor = trainer->CreatePredictor();
+					predictor->SetNormalizeCopy();
+					//@TODO 每个test 输出一个inst 文件也 然后每个给出一个结果
+					LOG(INFO) << "-------------------------------------Testing";
+					omp_set_lock(lock());
+					Test(testData, predictor, ofs);
+					omp_unset_lock(lock());
 				}
 			}
+
+			string command = "python ./scripts/evaluate.py " + instFile;
+			system(command.c_str());
 		}
 
 		void RunCrossValidation()
@@ -124,38 +159,89 @@ namespace gezi {
 			RunCrossValidation(instances);
 		}
 
-		void RunTrain()
+		void WriteInstFileHeader(ofstream& ofs)
 		{
-			Noticer nt("Train!");
-			Instances instances = create_instances(_cmd.datafile);
+			ofs << "Instance\tTrue\tAssigned\tOutput\tProbability" << endl;
+		}
+		void Test(Instances& instances, PredictorPtr predictor, string outfile)
+		{
+			ofstream ofs(outfile);
+			WriteInstFileHeader(ofs);
+			Test(instances, predictor, ofs);
+		}
+
+		void Test(Instances& instances, PredictorPtr predictor, ofstream& ofs)
+		{
+			int idx = 0;
+			for (InstancePtr instance : instances)
+			{
+				double output;
+				double probability = predictor->Predict(instance, output);
+				string name = instance->name.empty() ? STR(idx) : instance->name;
+				int assigned = output > 0 ? 1 : 0;
+				ofs << name << "\t" << instance->label << "\t"
+					<< assigned << "\t" << output << "\t"
+					<< probability << endl;
+				idx++;
+			}
+		}
+
+		PredictorPtr Train(Instances& instances)
+		{
 			Pval(_cmd.classifierName);
-			TrainerPtr trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
+			auto trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
 			if (trainer == nullptr)
 			{
 				return;
 			}
 			trainer->Train(instances);
-			PredictorPtr predictor = trainer->CreatePredictor();
-			{
-				ofstream ofs("./temp.txt");
-				ofs << "true\toutput\tprobability" << endl;
-				for (InstancePtr instance : instances)
-				{
-					double output;
-					double probability = predictor->Predict(instance, output);
-					ofs << instance->label << "\t" << output << "\t" << probability << endl;
-				}
-			}
+			auto predictor = trainer->CreatePredictor();
+			return predictor;
+		}
+
+		void RunTrain()
+		{
+			Noticer nt("Train!");
+			auto instances = create_instances(_cmd.datafile);
+			CHECK_GT(instances.Count(), 0) << "Read 0 test instances, aborting experiment";
+			auto predictor = Train(instances);
+
+			try_create_dir(_cmd.resultDir);
+			string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
+
+			LOG(INFO) << "-------------------------------------Testing";
+			auto testInstances = create_instances(_cmd.datafile);
+			CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
+			Test(testInstances, predictor, instFile);
+			string command = "python ./scripts/evaluate.py " + instFile;
+			system(command.c_str());
+			//save predictor
 		}
 
 		void RunTest()
 		{
 			Noticer nt("Test!");
+			//------load predictor
+			//------test
 		}
 
 		void RunTrainTest()
 		{
 			Noticer nt("TrainTest!");
+			auto instances = create_instances(_cmd.datafile);
+			CHECK_GT(instances.Count(), 0) << "Read 0 train instances, aborting experiment";
+			auto predictor = Train(instances);
+
+			try_create_dir(_cmd.resultDir);
+			string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
+
+			LOG(INFO) << "-------------------------------------Testing";
+			auto testInstances = create_instances(_cmd.testDatafile);
+			CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
+			CHECK_EQ(instances.schema == testInstances.schema, 1);
+			Test(testInstances, predictor, instFile);
+			string command = "python ./scripts/evaluate.py " + instFile;
+			system(command.c_str());
 		}
 
 		void RunFeatureSelection()
@@ -186,14 +272,14 @@ namespace gezi {
 			string outfile = endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", ".normed.txt") : infile + ".normed";
 			Pval(outfile);
 			string normalizerFile = _cmd.normalizerfile.empty() ?
-				(endswith(infile, ".txt") ? 
+				(endswith(infile, ".txt") ?
 				boost::replace_last_copy(infile, ".txt", ".normalizer.txt") : infile + ".normalizer") : _cmd.normalizerfile;
-			
+
 			Instances instances = create_instances(_cmd.datafile);
 			NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
 			CHECK_NE(normalizer.get(), NULL);
 			Pval(normalizer->Name());
-			normalizer->PrepareAndNormalize(instances);
+			normalizer->RunNormalize(instances);
 			normalizer->Save(normalizerFile);
 			//@TODO instances_util.h 完成Instances写出
 		}
@@ -266,8 +352,14 @@ namespace gezi {
 			}
 		}
 
+		static omp_lock_t* lock()
+		{
+			static omp_lock_t _lock;
+			return &_lock;
+		}
 	protected:
 	private:
+		
 		MeltArguments _cmd;
 		map<string, RunType> _commands = {
 			{ "cv", RunType::EVAL },
@@ -283,7 +375,7 @@ namespace gezi {
 			{ "check", RunType::CHECK_DATA },
 			{ "featurestatus", RunType::FEATURE_STATUS },
 			{ "fss", RunType::FEATURE_STATUS },
-			{"showfeatures", RunType::SHOW_FEATURES},
+			{ "showfeatures", RunType::SHOW_FEATURES },
 			{ "sf", RunType::SHOW_FEATURES }
 		};
 	};

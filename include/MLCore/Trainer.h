@@ -13,51 +13,81 @@
 
 #ifndef M_L_CORE__TRAINER_H_
 #define M_L_CORE__TRAINER_H_
+
 #include "common_def.h"
+#include "random_util.h"
 #include "Prediction/Instances/Instances.h"
 #include "MLCore/Predictor.h"
+#include "Prediction/Normalization/Normalizer.h"
+#include "Prediction/Calibrate/Calibrator.h"
+
 namespace gezi {
 
-class Trainer 
-{
-public:
-	void Train(Instances& instances)
+	class Trainer
 	{
-		_trainingSchema = instances.schema;
+	public:
+		void Train(Instances& instances)
+		{
+			_trainingSchema = instances.schema;
 
-		Initialize(instances);
+			Initialize(instances);
 
-		InnerTrain(instances);
+			InnerTrain(instances);
 
-		Finalize(instances);
-	}
+			Finalize(instances);
+		}
 
-	const HeaderSchema& TrainingSchema() const
-	{
-		return _trainingSchema;
-	}
+		const HeaderSchema& TrainingSchema() const
+		{
+			return _trainingSchema;
+		}
 
-	virtual PredictorPtr CreatePredictor() = 0;
+		virtual PredictorPtr CreatePredictor() = 0;
 
-protected:
-	virtual void Initialize(Instances& instances)
-	{
+		RandomPtr GetRandom()
+		{
+			return _rand;
+		}
 
-	}
-	virtual void InnerTrain(Instances& instances)
-	{
+		NormalizerPtr GetNormalizer()
+		{
+			return _normalizer;
+		}
 
-	}
+		CalibratorPtr GetCalibrator()
+		{
+			return _calibrator;
+		}
 
-	virtual void Finalize(Instances& instances)
-	{
+		void SetNormalizeCopy(bool normalizeCopy = true)
+		{
+			_normalizeCopy = normalizeCopy;
+		}
+	protected:
+		virtual void Initialize(Instances& instances)
+		{
 
-	}
-private:
-	HeaderSchema _trainingSchema;
-};
+		}
+		virtual void InnerTrain(Instances& instances)
+		{
 
-typedef shared_ptr<Trainer> TrainerPtr;
+		}
+
+		virtual void Finalize(Instances& instances)
+		{
+
+		}
+	protected:
+		HeaderSchema _trainingSchema;
+
+		RandomPtr _rand = nullptr;
+		NormalizerPtr _normalizer = nullptr;
+		CalibratorPtr _calibrator = nullptr;
+
+		bool _normalizeCopy = false;
+	};
+
+	typedef shared_ptr<Trainer> TrainerPtr;
 
 }  //----end of namespace gezi
 

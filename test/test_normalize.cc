@@ -42,7 +42,7 @@ TEST(test_normalize, func)
 	}
 
 	Pval(instances[0]->IsDense());
-	normalizer->PrepareAndNormalize(instances);
+	normalizer->RunNormalize(instances);
 	if (instances.Count() > FLAGS_idx)
 	{
 		Pval(instances[FLAGS_idx]->name);

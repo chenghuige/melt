@@ -18,22 +18,17 @@
 #ifndef TRAINERS__S_V_M__LINEAR_S_V_M_H_
 #define TRAINERS__S_V_M__LINEAR_S_V_M_H_
 
-#include "random_util.h"
 #include "ProgressBar.h"
 #include "MLCore/IterativeTrainer.h"
 #include "Prediction/Instances/Instances.h"
 #include "Numeric/Vector/Vector.h"
+#include "Predictors/LinearPredictor.h"
 #include "Prediction/Normalization/NormalizerFactory.h"
 #include "Prediction/Calibrate/CalibratorFactory.h"
-#include "Predictors/LinearPredictor.h"
 namespace gezi {
 
 	class LinearSVM : public IterativeTrainer
 	{
-	private:
-		RandomPtr _rand = nullptr;
-		NormalizerPtr _normalizer = nullptr;
-		CalibratorPtr _calibrator = nullptr;
 	public:
 		LinearSVM()
 		{
@@ -141,8 +136,11 @@ namespace gezi {
 
 			//--- 将所有数据归一化 和TLC策略不同 TLC将normalize混在训练过程中(主要可能是兼容streaming模式)
 			//特别是hadoop scope训练  @TODO  也许这里也会变化
-			if (_normalizer != nullptr)
-				_normalizer->PrepareAndNormalize(instances);
+			//如果不是类似交叉验证 比如就是训练测试 默认是 no normalize copy
+			if (_normalizer != nullptr && !_normalizeCopy)
+				_normalizer->RunNormalize(instances);
+			else
+				_normalizer->Prepare(instances);
 
 			VLOG(3) << "Initialized LinearSVM on " << numFeatures << " features";
 		}
@@ -172,17 +170,17 @@ namespace gezi {
 				{ // rate sampling
 					for (int i = 0; i < instances.Count() * _args.sampleRate; i++)
 					{
-						int idx = _rand->Next(instances.Count());
+						currentIdx = _rand->Next(instances.Count());
 						//@TODO densify() ? before process ? 
-						ProcessDataInstance(instances[idx]);
+						ProcessDataInstance(instances[currentIdx]);
 					}
 				}
 				else
 				{ // size sampling  当前走这里
 					for (int i = 0; i < _args.sampleSize; i++)
 					{
-						int idx = _rand->Next(instances.Count());
-						ProcessDataInstance(instances[idx]);
+						currentIdx = _rand->Next(instances.Count());
+						ProcessDataInstance(instances[currentIdx]);
 					}
 				}
 
@@ -259,6 +257,11 @@ namespace gezi {
 		bool ProcessDataInstance(InstancePtr instance)
 		{
 			++numIterExamples;
+
+			if (_normalizer != nullptr && _normalizeCopy)
+			{
+				instance = _normalizer->NormalizeCopy(instance);
+			}
 
 			/*	InstancePtr instance = make_shared<Instance>(*instance_);
 				instance->features.Densify();*/
@@ -392,15 +395,26 @@ namespace gezi {
 		/// </summary>		
 		Float Margin(InstancePtr instance)
 		{
-			if (instance == lastMarginInstance)
+			//@TODo 如果instance是 normalize copy 新生成的 不会走这一步
+			//if (instance == lastMarginInstance)
+			//{
+			//	return lastMargin;
+			//}
+			//else
+			//{
+			//	//@TODO normalize and try to dense as TLC?
+			//	lastMargin = _bias + dot(_weights, instance->features);
+			//	lastMarginInstance = instance;
+			//	return lastMargin;
+			}
+			if (currentIdx == lastIdx)
 			{
 				return lastMargin;
 			}
 			else
 			{
-				//@TODO normalize and try to dense as TLC?
 				lastMargin = _bias + dot(_weights, instance->features);
-				lastMarginInstance = instance;
+				lastIdx = currentIdx;
 				return lastMargin;
 			}
 		}
@@ -539,6 +553,9 @@ namespace gezi {
 		Float biasUpdate = 0;
 		vector<Vector> weightUpdates;
 		Fvec biasUpdates;
+
+		int64 currentIdx = 0;
+		int64 lastIdx = -1;
 	};
 
 }  //----end of namespace gezi

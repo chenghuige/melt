@@ -28,6 +28,9 @@ namespace gezi {
 		Instances(const Instances&) = default;
 		Instances& operator = (const Instances&) = default;
 
+		//@TODO C++ 没有默认的 == 。。。
+		//bool operator==(const Instance&) = default;
+
 		Instances(const HeaderSchema& schema_)
 			:schema(schema_)
 		{
@@ -148,6 +151,7 @@ namespace gezi {
 		}
 	public:
 		HeaderSchema schema;
+		bool normalized = false;
 	};
 
 }  //----end of namespace gezi
