@@ -33,8 +33,10 @@ void run()
 	{
 		ifstream ifs(FLAGS_in);
 		string line;
+		Pval(ifs.is_open());
 		while (getline(ifs, line))
 		{
+			Pval(line);
 			string label_, output_;
 			split(line, ' ', label_, output_);
 			double label = DOUBLE(label_);
