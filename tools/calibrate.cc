@@ -19,35 +19,32 @@
 using namespace std;
 using namespace gezi;
 
-DEFINE_int32(logv, 4, "16 debug, 8 trace, 4 online");
-DEFINE_string(logdir, "./log", "");
+DEFINE_int32(level, 0, "min log level");
 DEFINE_string(type, "simple", "");
 DEFINE_bool(perf, false, "");
 DEFINE_int32(num, 1, "");
 DEFINE_string(in, "", "input file");
 DEFINE_string(out, "", "output file");
 
-void run()
+void run(string infile, string outfile)
 {
 	SigmoidCalibrator calibrator;
+	ifstream ifs(infile);
+	string line;
+	dvec labels, outputs;
+	while (getline(ifs, line))
 	{
-		ifstream ifs(FLAGS_in);
-		string line;
-		dvec labels, outputs;
-		while (getline(ifs, line))
-		{
-			string label_, output_;
-			split(line, ' ', label_, output_);
-			double label = DOUBLE(label_);
-			double output = DOUBLE(output_);
-			labels.push_back(label);
-			outputs.push_back(output);
-			calibrator.ProcessTrainingExample(output, label > 0, 1);
-		}
+		string label_, output_;
+		split(line, ' ', label_, output_);
+		double label = DOUBLE(label_);
+		double output = DOUBLE(output_);
+		labels.push_back(label);
+		outputs.push_back(output);
+		calibrator.ProcessTrainingExample(output, label > 0, 1);
 	}
 	calibrator.FinishTraining();
 	{
-		ofstream ofs(FLAGS_out);
+		ofstream ofs(outfile);
 		ofs << "True\tOutput\tProbability" << endl;
 		for (size_t i = 0; i < labels.size(); i++)
 		{
@@ -65,10 +62,8 @@ int main(int argc, char *argv[])
 	if (FLAGS_log_dir.empty())
 		FLAGS_logtostderr = true;
 	FLAGS_minloglevel = FLAGS_level;
-	//  LogHelper log_helper(FLAGS_logv);
-	LogHelper::set_level(FLAGS_logv);
 
-	run();
+	run(argv[s], argv[s+1]);
 
 	return 0;
 }
