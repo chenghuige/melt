@@ -289,7 +289,6 @@ namespace gezi {
 	private:
 
 	};
-	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Normalizer);
 	typedef shared_ptr<Normalizer> NormalizerPtr;
 }  //----end of namespace gezi
 

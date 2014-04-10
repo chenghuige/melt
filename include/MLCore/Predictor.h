@@ -157,7 +157,6 @@ namespace gezi {
 		NormalizerPtr _normalizer = nullptr;
 		CalibratorPtr _calibrator = nullptr;
 	};
-	BOOST_SERIALIZATION_ASSUME_ABSTRACT(Predictor);
 	typedef shared_ptr<Predictor> PredictorPtr;
 }  //----end of namespace gezi
 
