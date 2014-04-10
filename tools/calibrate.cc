@@ -52,6 +52,10 @@ void run(string infile, string outfile)
 			ofs << labels[i] << "\t" << outputs[i] << "\t" << prob << endl;
 		}
 	}
+	{
+		ofstream ofs("sigmoid_params.txt");
+		ofs << calibrator.paramA << "\t" << calibrator.paramB << endl;
+	}
 }
 
 int main(int argc, char *argv[])
