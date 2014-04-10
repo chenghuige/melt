@@ -47,12 +47,10 @@ namespace gezi {
 	public:
 		Melt()
 		{
-			omp_init_lock(lock()); //³õÊ¼»¯»¥³âËø  
 			ParseArguments();
 		}
 		~Melt()
 		{
-			omp_destroy_lock(lock());  //Ïú»Ù»¥³âÆ÷  
 		}
 		void ParseArguments();
 
@@ -136,14 +134,16 @@ namespace gezi {
 					LOG(INFO) << "-------------------------------------Testing";
 					Test(testData, predictor, instfile, ofs);
 					string command = _cmd.evaluate + instfile;
-					omp_set_lock(lock());
-					system(command.c_str());
-					omp_unset_lock(lock());
+					{
+						system(command.c_str());
+					}
 				}
 			}
-
 			string command = _cmd.evaluate + instFile;
-			system(command.c_str());
+			#pragma omp critical
+			{
+				system(command.c_str());
+			}
 		}
 
 		void RunCrossValidation()
@@ -173,9 +173,10 @@ namespace gezi {
 			string outfile, ofstream& ofs)
 		{
 			Test(instances, predictor, outfile);
-			omp_set_lock(lock());
-			Test(instances, predictor, ofs);
-			omp_unset_lock(lock());
+			#pragma omp critical
+			{
+				Test(instances, predictor, ofs);
+			}
 		}
 		void Test(Instances& instances, PredictorPtr predictor, string outfile)
 		{
@@ -366,11 +367,6 @@ namespace gezi {
 			}
 		}
 
-		static omp_lock_t* lock()
-		{
-			static omp_lock_t _lock;
-			return &_lock;
-		}
 	protected:
 	private:
 		
