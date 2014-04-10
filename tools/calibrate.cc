@@ -44,9 +44,9 @@ void run()
 	}
 	calibrator.FinishTraining();
 	{
-		ofstream ofs(FLAGS_o);
+		ofstream ofs(FLAGS_out);
 		ofs << "True\tOutput\tProbability" << endl;
-		ifstream ifs(FLAGS_i);
+		ifstream ifs(FLAGS_in);
 		string line;
 		while (getline(ifs, line))
 		{
