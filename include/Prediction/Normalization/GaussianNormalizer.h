@@ -23,9 +23,9 @@ class GaussianNormalizer : public AffineNormalizer
 public:
 	GaussianNormalizer() = default;
 
-	GaussianNormalizer(string infile)
+	GaussianNormalizer(string path)
 	{//通过文本载入Normalzier
-		AffineNormalizer::Load(infile); //@FIXME构造函数调用虚函数? 
+		Load(path);
 	}
 
 	virtual string Name() override
@@ -67,7 +67,6 @@ public:
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		ar & boost::serialization::base_object<Normalizer>(*this);
 		ar & boost::serialization::base_object<AffineNormalizer>(*this);
 	}
 

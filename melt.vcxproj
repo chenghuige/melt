@@ -107,6 +107,7 @@
     <ClInclude Include="include\Predictors\FastRank\FastRankRanking.h" />
     <ClInclude Include="include\Predictors\FastRank\FastRankRegression.h" />
     <ClInclude Include="include\Predictors\LinearPredictor.h" />
+    <ClInclude Include="include\Predictors\PredictorFactory.h" />
     <ClInclude Include="include\Run\CVFoldCreator.h" />
     <ClInclude Include="include\Run\Melt.h" />
     <ClInclude Include="include\Run\MeltArguments.h" />

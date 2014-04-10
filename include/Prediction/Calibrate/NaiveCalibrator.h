@@ -31,6 +31,16 @@ public:
 		Initialize();
 	}
 
+	virtual void Load(string path) override
+	{
+		serialize_util::load(*this, path);
+	}
+
+	virtual void Save(string path) override
+	{
+		serialize_util::save(*this, path);
+	}
+
 	virtual string Name() override
 	{
 		return "NaiveCalibrator";
@@ -140,8 +150,6 @@ private:
 	Float _min = std::numeric_limits<Float>::max();
 	Float _max = std::numeric_limits<Float>::min();
 	Fvec binProbs;
-
-	const string DefaultName = "Naive";
 };
 
 }  //----end of namespace gezi

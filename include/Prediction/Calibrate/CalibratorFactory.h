@@ -23,23 +23,33 @@ namespace gezi {
 class CalibratorFactory 
 {
 public:
-	static CalibratorPtr CreateCalibrator(string name_)
+	static CalibratorPtr CreateCalibrator(string name)
 	{
-		string name = boost::to_lower_copy(name_);
-		if (name == "sigmoid" || name == "platt")
+		boost::to_lower(name);
+		if (name == "sigmoid" || name == "platt" || name == "sigmoidcalibrator/plattcalibrator")
 		{
 			return make_shared<SigmoidCalibrator>();
 		}
-		if (name == "pav")
+		if (name == "pav" || name == "pavcalibrator")
 		{
 			return make_shared<PAVCalibrator>();
 		}
-		if (name == "naive")
+		if (name == "naive" || name == "naivecalibrator")
 		{
 			return make_shared<NaiveCalibrator>();
 		}
-		LOG(WARNING) << name_ << " is not supported now, do not use calibrator, return nullptr";
+		LOG(WARNING) << name << " is not supported now, do not use calibrator, return nullptr";
 		return nullptr;
+	}
+
+	static CalibratorPtr CreateCalibrator(string name, string path)
+	{
+		CalibratorPtr calibrator = CreateCalibrator(name);
+		if (calibrator != nullptr)
+		{
+			calibrator->Load(path);
+		}
+		return calibrator;
 	}
 protected:
 private:

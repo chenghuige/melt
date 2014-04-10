@@ -17,6 +17,8 @@
 #include "common_util.h"
 #include "serialize_util.h"
 
+#include "Prediction/Normalization/NormalizerFactory.h"
+#include "Prediction/Calibrate/CalibratorFactory.h"
 #include "Prediction/Instances/Instance.h"
 #include "Prediction/Normalization/Normalizer.h"
 #include "Prediction/Calibrate/Calibrator.h"
@@ -30,10 +32,15 @@ namespace gezi {
 	{
 	public:
 		Predictor() = default;
+		virtual ~Predictor() {}
 		Predictor(NormalizerPtr normalizer, CalibratorPtr calibrator)
 			:_normalizer(normalizer), _calibrator(calibrator)
 		{
 
+		}
+		virtual string Name()
+		{
+			return "";
 		}
 		//输出未经Calibrator矫正的数值 -n,+n 0表示分界 越高越倾向positive
 		Float Output(Instance& instance)
@@ -116,26 +123,28 @@ namespace gezi {
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			//ar & _normalizeCopy;
-			//ar & _normalizer;
-			//ar & _calibrator;
 		}
 
-		/*void Deseralize(string infile)
+		virtual void Save(string path)
 		{
-			serialize_util::load(infile, *this);
-		}*/
-
-		void Save()
-		{
-			//serialize_util::save(*this, "a");
-			_normalizer->Save();
-			_calibrator->Save();
+			try_create_dir(path);
+			write_file(Name(), path + "/model.name.txt");
+			SAVE_SHARED_PTR(_normalizer);
+			SAVE_SHARED_PTR(_calibrator);
 		}
-		void Load()
+
+		virtual void Load(string path)
 		{
-			_normalizer->Load();
-			_calibrator->Load();
+			string normalizerName = read_file(OBJ_NAME_PATH(_normalizer));
+			if (!normalizerName.empty())
+			{
+				_normalizer = NormalizerFactory::CreateNormalizer(normalizerName, OBJ_PATH(_normalizer));
+			}
+			string calibratorName = read_file(OBJ_NAME_PATH(_calibrator));
+			if (!calibratorName.empty())
+			{
+				_calibrator = CalibratorFactory::CreateCalibrator(calibratorName, OBJ_PATH(_calibrator));
+			}
 		}
 
 	protected:

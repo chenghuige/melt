@@ -19,6 +19,7 @@ namespace gezi {
 	class AffineNormalizer : public Normalizer
 	{
 	public:
+		virtual ~AffineNormalizer() {}
 		AffineNormalizer()
 		{
 			_func = [this](int index, Float& value)
@@ -45,7 +46,7 @@ namespace gezi {
 			};
 		}
 
-		virtual void Load(string infile) override
+		virtual void LoadText(string infile) override
 		{
 			svec lines = read_lines(infile);
 			CHECK_GT(lines.size(), 0) << infile;
@@ -65,7 +66,7 @@ namespace gezi {
 			AffineInit();
 		}
 
-		virtual void Save(string outfile) override
+		virtual void SaveText(string outfile) override
 		{
 			ofstream ofs(outfile);
 			ofs << "NormalizerType=" << Name() << endl;
@@ -75,6 +76,18 @@ namespace gezi {
 			{
 				ofs << _offsets[i] << "\t" << _scales[i] << endl;
 			}
+		}
+
+		virtual void Save(string path) override
+		{
+			VLOG(0) << "AffineNomralizer save " << path;
+			serialize_util::save(*this, path);
+		}
+
+		virtual void Load(string path) override
+		{
+			VLOG(0) << "AffineNomralizer load " << path;
+			serialize_util::load(*this, path);
 		}
 
 		virtual void Begin() override

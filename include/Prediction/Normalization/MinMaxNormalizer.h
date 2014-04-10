@@ -22,9 +22,9 @@ namespace gezi {
 	{
 	public:
 		MinMaxNormalizer() = default;
-		MinMaxNormalizer(string infile)
-		{//通过文本载入Normalzier
-			AffineNormalizer::Load(infile); //@FIXME构造函数调用虚函数? 
+		MinMaxNormalizer(string path)
+		{
+			Load(path);
 		}
 
 		virtual string Name() override

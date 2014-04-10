@@ -35,6 +35,22 @@ namespace gezi {
 				}
 			};
 		}
+
+		BinNormalizer(string path)
+		{
+			Load(path);
+		}
+
+		virtual void Load(string path) override
+		{
+			serialize_util::load(*this, path);
+		}
+
+		virtual void Save(string path) override
+		{
+			serialize_util::save(*this, path);
+		}
+
 		virtual string Name() override
 		{
 			return "BinNormalizer";

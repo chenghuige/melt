@@ -21,7 +21,7 @@ namespace gezi {
 	class CalibratorStore
 	{
 	public:
-		Calibrator()
+		CalibratorStore()
 		{
 			rand = make_shared<Random>(RandSeed());
 		}
@@ -137,13 +137,19 @@ namespace gezi {
 	class Calibrator
 	{
 	public:
+		virtual ~Calibrator() {}
 		/// Given a classifier output, produce the probability
 		virtual Float PredictProbability(Float output)
 		{
 			return 0.5;
 		}
 
-		virtual void Save(string file)
+		virtual void Save(string path)
+		{
+
+		}
+
+		virtual void Load(string path) 
 		{
 
 		}
@@ -180,23 +186,13 @@ namespace gezi {
 		void serialize(Archive &ar, const unsigned int version)
 		{
 		}
-		void Save()
-		{
-			serialize_util::save(*this, "c");
-		}
-
-		void Load()
-		{
-			serialize_util::load(*this, "c");
-		}
-
 	};
 	typedef shared_ptr<Calibrator> CalibratorPtr;
 
 	class CalibratorWrapper : public Calibrator
 	{
 	public:
-		
+		virtual ~CalibratorWrapper() {}
 		/// Training calibrators:  provide the classifier output and the class label
 		virtual void ProcessTrainingExample(Float output, bool clicked, Float weight) override
 		{

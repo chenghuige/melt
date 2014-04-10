@@ -30,6 +30,7 @@ namespace gezi {
 			Affine,
 			Bin
 		};
+		virtual ~Normalizer() { }
 		Normalizer()
 		{
 			ParseArgs();
@@ -40,13 +41,22 @@ namespace gezi {
 
 		}
 
-		//Ð´ÈëÎÄ±¾
-		virtual void Save(string outfile)
+		virtual void Save(string path)
 		{
 
 		}
 
-		virtual void Load(string infile)
+		virtual void Load(string path)
+		{
+
+		}
+
+		virtual void SaveText(string outfile)
+		{
+
+		}
+
+		virtual void LoadText(string infile)
 		{
 
 		}
@@ -261,15 +271,7 @@ namespace gezi {
 			ar & _normType;
 			ar & _trunct;
 		}
-		void Save()
-		{
-			serialize_util::save(*this, "b");
-		}
-
-		void Load()
-		{
-			serialize_util::load(*this, "b");
-		}
+		
 	protected:
 		int _numFeatures = 0;
 		svec _featureNames;

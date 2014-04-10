@@ -33,7 +33,7 @@ namespace gezi {
 			{
 				return make_shared<GaussianNormalizer>();
 			}
-			if (name == "bin" || name = "binnormalizer")
+			if (name == "bin" || name == "binnormalizer")
 			{
 				return make_shared<BinNormalizer>();
 			}

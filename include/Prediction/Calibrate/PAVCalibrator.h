@@ -18,7 +18,6 @@
 #include "Prediction/Calibrate/Calibrator.h"
 namespace gezi {
 
-//@FIXME 确认结果不对AUC不对  TLC结果正常
 class PAVCalibrator : public CalibratorWrapper
 {
 public:
@@ -33,12 +32,22 @@ public:
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			ar & maxX;
+			ar & minX;
 			ar & maxX;
 			ar & val;
 			ar & n;
 		}
 	};
+
+	virtual void Load(string path) override
+	{
+		serialize_util::load(*this, path);
+	}
+
+	virtual void Save(string path) override
+	{
+		serialize_util::save(*this, path);
+	}
 
 	virtual Float PredictProbability(Float score) override
 	{
@@ -61,6 +70,7 @@ public:
 	{
 		return "PAVCalibrator";
 	}
+
 protected:
 	// build up the piecwise approximation
 	// go through data in d_i.score sorted order for any out of order pairs (i.e. Target[i] > Target[i-1])

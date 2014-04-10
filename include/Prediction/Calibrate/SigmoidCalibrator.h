@@ -34,6 +34,16 @@ public:
 		return "SigmoidCalibrator/PlattCalibrator";
 	}
 
+	virtual void Load(string path) override
+	{
+		serialize_util::load(*this, path);
+	}
+
+	virtual void Save(string path) override
+	{
+		serialize_util::save(*this, path);
+	}
+
 protected:
 
 	//@TODO understand
@@ -194,6 +204,7 @@ protected:
 		Pval(paramB);
 	}
 
+	
 	friend class boost::serialization::access;
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)

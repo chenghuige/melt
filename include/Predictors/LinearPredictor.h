@@ -35,16 +35,28 @@ namespace gezi {
 
 		}
 
-		LinearPredictor(string modelFile,
-			string normalizerFile = "",
-			string calibratorFile = "")
+		LinearPredictor(string path)
 		{
 
 		}
 
-		void Load(string dir)
+		virtual string Name() override
 		{
+			return "LinearPredictor";
+		}
 
+		virtual void Save(string path) override
+		{
+			Predictor::Save(path);
+			string modelFile = path + "/model";
+			serialize_util::save(*this, modelFile);
+		}
+
+		virtual void Load(string path) override
+		{
+			Predictor::Load(path);
+			string modelFile = path + "/model";
+			serialize_util::load(*this, modelFile);
 		}
 
 		friend class boost::serialization::access;

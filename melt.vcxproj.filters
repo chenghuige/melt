@@ -155,5 +155,8 @@
     <ClInclude Include="include\Prediction\Calibrate\PAVCalibrator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Predictors\PredictorFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

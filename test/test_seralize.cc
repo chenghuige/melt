@@ -23,6 +23,8 @@
 #include "MLCore/TrainerFactory.h"
 #include "Prediction/Instances/instances_util.h"
 
+#include "Predictors/PredictorFactory.h"
+
 
 using namespace std;
 using namespace gezi;
@@ -102,20 +104,12 @@ TEST(predict, func)
 		}
 		trainer->Train(instances);
 		auto predictor = trainer->CreatePredictor();
-
-		shared_ptr<LinearPredictor> p = dynamic_pointer_cast<LinearPredictor>(predictor);
-		//serialize_util::save(*p, "0.model");
-		p->Save();
+		predictor->Save("predictor");
 	}
 	{
-		LinearPredictor predictor;
-		predictor.Load();
-		Pval(predictor._normalizer->_numFeatures);
-
-		//serialize_util::load(predictor, "0.model");
+		auto predictor = PredictorFactory::LoadPredictor("predictor");
 		auto testInstances = create_instances("../data/feature.txt");
 		CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
-		CHECK_EQ(instances.schema == testInstances.schema, 1);
 		ofstream ofs("./0.inst.txt");
 		ofs << "Instance\tTrue\tAssigned\tOutput\tProbability" << endl;
 		int idx = 0;
