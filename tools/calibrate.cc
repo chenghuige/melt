@@ -31,7 +31,7 @@ void run()
 {
 	SigmoidCalibrator calibrator;
 	{
-		ifstream ifs(FLAGS_i);
+		ifstream ifs(FLAGS_in);
 		string line;
 		while (getline(ifs, line))
 		{
