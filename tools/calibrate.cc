@@ -36,9 +36,11 @@ void run()
 		while (getline(ifs, line))
 		{
 			string label_, output_;
-			split(line, "\t ", label_, output_);
+			split(line, ' ', label_, output_);
 			double label = DOUBLE(label_);
 			double output = DOUBLE(output_);
+			Pval(label);
+			Pval(output);
 			calibrator.ProcessTrainingExample(output, label > 0, 1);
 		}
 	}
@@ -51,7 +53,7 @@ void run()
 		while (getline(ifs, line))
 		{
 			string label_, output_;
-			split(line, "\t ", label_, output_);
+			split(line, ' ', label_, output_);
 			double output = DOUBLE(output_);
 			double prob = calibrator.PredictProbability(output);
 			ofs << label_ << "\t" << output_ << "\t" << prob << endl;
