@@ -282,7 +282,8 @@ namespace gezi {
 		
 		//----------------------------args begin
 		//|if feature is out of bounds, threshold at 0/1, or return values below 0 and above 1?
-		bool _trunct = false; //@TODO 似乎只有MinMax才可能越界吧
+		//bool _trunct = false; //@TODO 似乎只有MinMax才可能越界吧
+		bool _trunct = true;
 		uint64 _maxNormalizationExamples = 1000000;//numNorm|
 		//-----------------------------args end
 		uint64 _numProcessedInstances = 1; //处理的instance数目
