@@ -33,16 +33,12 @@ void run()
 	{
 		ifstream ifs(FLAGS_in);
 		string line;
-		Pval(ifs.is_open());
 		while (getline(ifs, line))
 		{
-			Pval(line);
 			string label_, output_;
 			split(line, ' ', label_, output_);
 			double label = DOUBLE(label_);
 			double output = DOUBLE(output_);
-			Pval(label);
-			Pval(output);
 			calibrator.ProcessTrainingExample(output, label > 0, 1);
 		}
 	}
