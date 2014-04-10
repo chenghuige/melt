@@ -109,7 +109,7 @@ namespace gezi {
 				if (!_cmd.foldsSequential)
 					instances.Randomize(rng);
 				ivec instanceFoldIndices = CVFoldCreator::CreateFoldIndices(instances, _cmd, rng);
-#pragma omp parallel for 
+//#pragma omp parallel for 
 				for (size_t foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
 				{
 					string instfile = (format("%s/%d_%d_%d.inst.txt") % _cmd.resultDir % _cmd.resultIndex
@@ -140,7 +140,7 @@ namespace gezi {
 				}
 			}
 			string command = _cmd.evaluate + instFile;
-			#pragma omp critical
+			//#pragma omp critical
 			{
 				system(command.c_str());
 			}
@@ -173,7 +173,7 @@ namespace gezi {
 			string outfile, ofstream& ofs)
 		{
 			Test(instances, predictor, outfile);
-			#pragma omp critical
+			//#pragma omp critical
 			{
 				Test(instances, predictor, ofs);
 			}
