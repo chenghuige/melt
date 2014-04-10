@@ -16,6 +16,7 @@
 
 #include "common_util.h"
 #include "random_util.h"
+#include "Prediction/Instances/Instances.h"
 namespace gezi {
 
 	class CalibratorStore
