@@ -48,6 +48,11 @@ namespace gezi {
 		Melt()
 		{
 			ParseArguments();
+			if (_cmd.randSeed == 0)
+			{
+				_cmd.randSeed == random_seed();
+			}
+			Pval(_cmd.randSeed);
 		}
 		~Melt()
 		{
@@ -101,8 +106,8 @@ namespace gezi {
 			ofstream ofs(instFile);
 			WriteInstFileHeader(ofs);
 
-			const int randomStep = 10000;
-			//const int randomStep = 1;
+			//const int randomStep = 10000;
+			const int randomStep = 1;
 			for (size_t runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
 			{
 				LOG(INFO) << "The " << runIdx << " round";

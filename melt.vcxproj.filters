@@ -42,6 +42,9 @@
     <ClCompile Include="test\test_seralize.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tools\calibrate.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MLCore\IPredictor.h">

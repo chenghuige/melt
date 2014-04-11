@@ -74,6 +74,7 @@
     <ClCompile Include="test\test_parse_input.cc" />
     <ClCompile Include="test\test_seralize.cc" />
     <ClCompile Include="test\test_vector.cc" />
+    <ClCompile Include="tools\calibrate.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MLCore\IPredictor.h" />
