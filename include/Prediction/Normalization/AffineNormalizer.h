@@ -68,8 +68,9 @@ namespace gezi {
 
 		virtual void SaveText(string outfile) override
 		{
+			VLOG(0) << "AffineNormalizer save as text to " << outfile;
 			ofstream ofs(outfile);
-			ofs << "NormalizerType=" << Name() << endl;
+			ofs << "NormalizerName=" << Name() << endl;
 			ofs << "Trunct=" << (int)_trunct << endl;
 			ofs << "FeatureNum=" << _numFeatures << endl;
 			for (int i = 0; i < _numFeatures; i++)

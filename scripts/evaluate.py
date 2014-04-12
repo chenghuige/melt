@@ -133,8 +133,8 @@ def parse_input(input):
     line_list = [line.strip().split() for line in lines]
     label_list = [int(float((l[label_idx]))) for l in line_list]
   
-    #predicts = [float(l[probability_idx]) for l in line_list] 
-    predicts = [float(l[output_idx]) for l in line_list] 
+    predicts = [float(l[probability_idx]) for l in line_list] 
+    #predicts = [float(l[output_idx]) for l in line_list] 
     predict_list = [int(item >= FLAGS.thre) for item in predicts]
     return label_list, predicts, predict_list 
   except Exception:

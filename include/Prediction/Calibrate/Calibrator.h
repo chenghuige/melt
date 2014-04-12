@@ -155,6 +155,11 @@ namespace gezi {
 
 		}
 
+		virtual void SaveText(string file)
+		{
+
+		}
+
 		virtual string Name()
 		{
 			return "Calibrator";
@@ -164,10 +169,9 @@ namespace gezi {
 		void Train(Instances& instances, MarginFunc marginFunc)
 		{
 			ProgressBar pb(Name() + " calibrating", instances.Count());
-			int num = 0;
 			for (InstancePtr instance : instances)
 			{
-				pb.progress(num++);
+				++pb;
 				ProcessTrainingExample(marginFunc(instance), instance->label > 0, instance->weight);
 			}
 			FinishTraining();

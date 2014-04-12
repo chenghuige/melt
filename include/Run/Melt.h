@@ -41,6 +41,8 @@
 
 #include "MLCore/Predictor.h"
 
+#include "Prediction/Instances/instances_util.h"
+
 namespace gezi {
 	class Melt
 	{
@@ -48,10 +50,6 @@ namespace gezi {
 		Melt()
 		{
 			ParseArguments();
-			if (_cmd.randSeed == 0)
-			{
-				_cmd.randSeed == random_seed();
-			}
 			Pval(_cmd.randSeed);
 		}
 		~Melt()
@@ -106,6 +104,13 @@ namespace gezi {
 			ofstream ofs(instFile);
 			WriteInstFileHeader(ofs);
 
+			if (_cmd.preNormalize)
+			{
+				NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
+				CHECK_NE(normalizer.get(), NULL);
+				Pval(normalizer->Name());
+				normalizer->RunNormalize(instances);
+			}
 			//const int randomStep = 10000;
 			const int randomStep = 1;
 			for (size_t runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
@@ -114,6 +119,7 @@ namespace gezi {
 				RandomEngine rng = random_engine(_cmd.randSeed, runIdx * randomStep);
 				if (!_cmd.foldsSequential)
 					instances.Randomize(rng);
+
 				ivec instanceFoldIndices = CVFoldCreator::CreateFoldIndices(instances, _cmd, rng);
 #pragma omp parallel for 
 				for (size_t foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
@@ -125,7 +131,8 @@ namespace gezi {
 					CVFoldCreator::CreateFolds(instances, _cmd.trainProportion,
 						instanceFoldIndices, foldIdx, _cmd.numFolds, trainData, testData,
 						random_engine(_cmd.randSeed, runIdx * randomStep));
-					LOG(INFO) << "Folds " << foldIdx << " are trained with " << trainData.Size() << " instances, and tested on " << testData.Size() << " instances";
+
+					VLOG(0) << "Folds " << foldIdx << " are trained with " << trainData.Size() << " instances, and tested on " << testData.Size() << " instances";
 #ifndef NDEBUG
 					PVAL3(trainData[0]->name, trainData.PositiveCount(), trainData.NegativeCount());
 					PVAL3(testData[0]->name, testData.PositiveCount(), testData.NegativeCount());
@@ -146,7 +153,7 @@ namespace gezi {
 				}
 			}
 			string command = _cmd.evaluate + instFile;
-			#pragma omp critical
+#pragma omp critical
 			{
 				system(command.c_str());
 			}
@@ -179,7 +186,7 @@ namespace gezi {
 			string outfile, ofstream& ofs)
 		{
 			Test(instances, predictor, outfile);
-			#pragma omp critical
+#pragma omp critical
 			{
 				Test(instances, predictor, ofs);
 			}
@@ -286,6 +293,7 @@ namespace gezi {
 			}
 		}
 
+		//只是为了输出normalize后的数据 查看normalize后效果
 		void RunNormalizeInstances()
 		{
 			Noticer nt("NormalizeInstances!");
@@ -302,7 +310,8 @@ namespace gezi {
 			Pval(normalizer->Name());
 			normalizer->RunNormalize(instances);
 			normalizer->Save(normalizerFile);
-			//@TODO instances_util.h 完成Instances写出
+			FileFormat fileFormat = get_value(_formats, _cmd.outputFileFormat, FileFormat::Unknown);
+			write(instances, outfile, fileFormat);
 		}
 
 		void RunCheckData()
@@ -375,7 +384,7 @@ namespace gezi {
 
 	protected:
 	private:
-		
+
 		MeltArguments _cmd;
 		map<string, RunType> _commands = {
 			{ "cv", RunType::EVAL },
@@ -393,6 +402,15 @@ namespace gezi {
 			{ "fss", RunType::FEATURE_STATUS },
 			{ "showfeatures", RunType::SHOW_FEATURES },
 			{ "sf", RunType::SHOW_FEATURES }
+		};
+
+		map<string, FileFormat> _formats = {
+			{ "unknown", FileFormat::Unknown },
+			{ "dense", FileFormat::Dense },
+			{ "sparse", FileFormat::Sparse },
+			{ "text", FileFormat::Text },
+			{ "libsvm", FileFormat::LibSVM },
+			{ "arff", FileFormat::Arff }
 		};
 	};
 } //end of namespace gezi

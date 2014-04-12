@@ -41,7 +41,7 @@ public:
 
 	int NumFeatures() const
 	{
-		return features.length;
+		return features.Length();
 	}
 
 	void SelectFeatures(const BitArray& includedFeatures)
@@ -101,6 +101,7 @@ public:
 	Float label = -1.0;
 	string name;
 	svec names;
+	svec attributes;
 	string metaData;
 	bool sparse = false;
 	Float weight = 1.0;

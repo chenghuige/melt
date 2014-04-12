@@ -63,11 +63,9 @@ namespace gezi {
 				BeginTrainingIteration();
 
 				ProgressBar pb(instances.Count());
-				int num = 0;
 				for (InstancePtr instance : instances)
 				{
-					pb.progress(num);
-					num++;
+					++pb;
 					continueTraining = ProcessTrainingInstance(instance);
 					if (!continueTraining)
 						break;

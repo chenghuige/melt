@@ -63,6 +63,18 @@ namespace gezi {
 		{
 			_normalizeCopy = normalizeCopy;
 		}
+
+		
+		void SetNormalizer(NormalizerPtr normalizer)
+		{
+			_normalizer = normalizer;
+		}
+
+		void SetCalibrator(CalibratorPtr calibrator)
+		{
+			_calibrator = calibrator;
+		}
+
 	protected:
 		virtual void Initialize(Instances& instances)
 		{
@@ -77,10 +89,12 @@ namespace gezi {
 		{
 
 		}
+
 	protected:
 		HeaderSchema _trainingSchema;
 
 		RandomPtr _rand = nullptr;
+		RandomRangePtr _randRange = nullptr;
 		NormalizerPtr _normalizer = nullptr;
 		CalibratorPtr _calibrator = nullptr;
 

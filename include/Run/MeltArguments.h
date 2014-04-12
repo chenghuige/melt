@@ -25,11 +25,11 @@ namespace gezi {
 		int numFolds = 5;
 		int numRuns = 1;
 		int numThreads = 0;
-		int randSeed = 0;
+		unsigned randSeed = 0;
 		string datafile = "";
-		string outfile = ""; //o|specify the output file
-		string normalizerfile = ""; //nf|normalzier output file
-		string testDatafile = ""; //test|Data file used for test
+		string outfile = ""; //o| specify the output file
+		string normalizerfile = ""; //nf| normalzier output file
+		string testDatafile = ""; //test| Data file used for test
 		string validationDatafile = "";
 		string modelfile = "";
 		string modelfileCode = "";
@@ -46,9 +46,13 @@ namespace gezi {
 
 		string evaluate = "python ./scripts/evaluate.py ";
 
+		bool preNormalize = false;
+
 		//----------分类器公用选项
-		bool normalizeFeatures = true; //norm:Normalize features?
-		string normalizerName = "MinMax"; //Which normalizer?
+		bool normalizeFeatures = true; //norm| Normalize features?
+		string normalizerName = "MinMax"; //| Which normalizer?
+
+		string outputFileFormat = "unknown";//oformat| output file format
 	};
 }  //----end of namespace gezi
 

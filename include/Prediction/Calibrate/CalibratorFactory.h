@@ -26,7 +26,7 @@ public:
 	static CalibratorPtr CreateCalibrator(string name)
 	{
 		boost::to_lower(name);
-		if (name == "sigmoid" || name == "platt" || name == "sigmoidcalibrator/plattcalibrator")
+		if (contains(name, "sigmoid") || contains(name, "platt"))
 		{
 			return make_shared<SigmoidCalibrator>();
 		}

@@ -31,7 +31,7 @@ public:
 
 	virtual string Name() override
 	{
-		return "SigmoidCalibrator/PlattCalibrator";
+		return "Sigmoid/PlattCalibrator";
 	}
 
 	virtual void Load(string path) override
@@ -42,6 +42,15 @@ public:
 	virtual void Save(string path) override
 	{
 		serialize_util::save(*this, path);
+	}
+
+	virtual void SaveText(string file) override
+	{
+		VLOG(0) << Name() << " save ast text to " << file;
+		ofstream ofs(file);
+		ofs << "CalibratorName=" << Name() << endl;
+		ofs << "paramA=" << paramA << endl;
+		ofs << "paramB=" << paramB << endl;
 	}
 
 protected:

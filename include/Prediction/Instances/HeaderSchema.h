@@ -17,11 +17,29 @@
 #include "common_util.h"
 namespace gezi
 {
-	//这个是用于判断输入文本对应是稀疏还是Dense
-	enum class InstanceType
+	//默认支持的格式对应的 输入 输出 Instances 的文本格式
+	//对应其它支持的模式比如text, libsvm 采用命令行设置确认
+	enum class FileFormat
 	{
-		Dense = 0,
-		Sparse
+		Unknown = 0,
+		Dense,
+		Sparse,  // 1230 1:3
+		SparseNoLenth, // 1:3
+		Text,
+		LibSVM,
+		Arff
+	};
+
+	enum class ColumnType
+	{
+		Unknown = 0,
+		Feature,
+		Name,
+		Label,
+		Weight,
+		Attribute,
+		Category,  //暂不支持
+		Text       //暂不支持
 	};
 
 	//所有header 以及其它非 instance内部数据的 整体信息 都在这里 Instances里面只要schema和data
@@ -74,20 +92,22 @@ namespace gezi
 			hasHeader = hasHeader_;
 		}
 
-		InstanceType GetInstanceType() const
+		FileFormat GetFileFormat() const
 		{
-			return instanceType;
+			return fileFormat;
 		}
 	public:
 		svec featureNames;
 		svec attributeNames;
 		svec tagNames;
 		string headerStr;
+		vector<ColumnType> cloumnTypes; //for writting instances
 		bool hasHeader = false;
 		bool hasWeights = false;
 		string groupKey;
-		InstanceType instanceType;
+		FileFormat fileFormat;
 		string instanceNameHeaderString = "Instance";
+		bool normalized = false;
 	};
 
 }  //----end of namespace gezi

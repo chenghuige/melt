@@ -149,9 +149,18 @@ namespace gezi {
 			return from(*this) >> where([](const InstancePtr& a) { return a->IsDense(); })
 				>> count();
 		}
+
+		void SetNormalized(bool norm = true)
+		{
+			schema.normalized = norm;
+		}
+
+		bool IsNormalized()
+		{
+			return schema.normalized == true;
+		}
 	public:
 		HeaderSchema schema;
-		bool normalized = false;
 	};
 
 }  //----end of namespace gezi

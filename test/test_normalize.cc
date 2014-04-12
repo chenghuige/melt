@@ -21,9 +21,9 @@ using namespace std;
 using namespace gezi;
 DEFINE_int32(level, 0, "min log level");
 DEFINE_int32(idx, 0, "min log level");
-DEFINE_string(i, "", "input");
-DEFINE_string(o, "", "output");
-DEFINE_string(type, "simple", "");
+DECLARE_string(i);
+//DEFINE_string(o, "", "output");
+//DEFINE_string(type, "simple", "");
 
 TEST(test_normalize, func)
 {

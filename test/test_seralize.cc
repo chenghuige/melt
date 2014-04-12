@@ -105,6 +105,7 @@ TEST(predict, func)
 		trainer->Train(instances);
 		auto predictor = trainer->CreatePredictor();
 		predictor->Save("predictor");
+		predictor->SaveText();
 	}
 	{
 		auto predictor = PredictorFactory::LoadPredictor("predictor");

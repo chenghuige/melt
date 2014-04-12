@@ -26,21 +26,13 @@
 #define PREDICTION__INSTANCES__INSTANCE_PARSER_H_
 
 #include "common_util.h"
-#include "Prediction/Instances/Instances.h"
 #include "RegexSearcher.h"
+#include "Identifer.h"
+#include "Prediction/Instances/Instances.h"
 
 namespace gezi {
 
-	enum class ColumnType
-	{
-		Feature = 0,
-		Name,
-		Label,
-		Weight,
-		Attribute,
-		Category
-	};
-
+	//不做clear清理工作每次 create 一个新的InstanceParser使用即可
 	class InstanceParser
 	{
 	public:
@@ -123,7 +115,7 @@ namespace gezi {
 			{
 				_sep = " ";
 			}
-			
+
 
 			if (!_args.attrsIdx.empty())
 			{
@@ -254,11 +246,11 @@ namespace gezi {
 		}
 		bool IsSparse()
 		{
-			return _instanceType == InstanceType::Sparse;
+			return !IsDense();
 		}
 		bool IsDense()
 		{
-			return _instanceType == InstanceType::Dense;
+			return _fileFormat == FileFormat::Dense;
 		}
 		void InitColumnTypes(svec& lines)
 		{
@@ -284,7 +276,7 @@ namespace gezi {
 				_labelIdx = _args.labelIdx;
 			}
 
-			if (startswith(_firstColums[0], "#"))
+			if (startswith(_firstColums[0], '#'))
 			{
 				_hasHeader = true;
 				_columnTypes[0] = ColumnType::Name;
@@ -303,7 +295,7 @@ namespace gezi {
 				_firstColums = split(lines[_hasHeader], _sep);
 			}
 
-			if (startswith(_firstColums[0], "_"))
+			if (startswith(_firstColums[0], '_'))
 			{
 				{
 					_columnTypes[0] = ColumnType::Name;
@@ -322,6 +314,7 @@ namespace gezi {
 			}
 		}
 
+		//实际上Dense,Sparse格式 在这里完成了设置, SparseNoLength, Text将会在create instances中设置
 		void InitNames()
 		{
 			if (_hasHeader)
@@ -348,7 +341,7 @@ namespace gezi {
 			else
 			{
 				int i = 0;
-				if (_instanceType == InstanceType::Dense)
+				if (_fileFormat == FileFormat::Dense)
 				{
 					for (auto type : _columnTypes)
 					{
@@ -361,8 +354,8 @@ namespace gezi {
 					}
 					_featureNum = _instances.FeatureNum();
 				}
-				else
-				{
+				else if (_fileFormat == FileFormat::Sparse)
+				{ //注意已经解析首个数据行 获取到 特征数目了 但是注意 SparseNoLength, Text获取不到
 					for (int i = 0; i < _featureNum; i++)
 					{
 						string name = "f" + STR(i);
@@ -372,6 +365,24 @@ namespace gezi {
 			}
 		}
 
+		void SetSparseFeatureNames()
+		{
+			if (!_hasHeader)
+			{
+				for (int i = 0; i < _featureNum; i++)
+				{
+					string name = "f" + STR(i);
+					_instances.schema.featureNames.push_back(name);
+				}
+			}
+		}
+		void SetTextFeatureNames()
+		{
+			if (!_hasHeader)
+			{
+				_instances.schema.featureNames = GetIdentifer().keys();
+			}
+		}
 		void CreateInstancesFromDenseFormat(svec& lines, uint64 start)
 		{
 			uint64 end = start + _instanceNum;
@@ -404,6 +415,10 @@ namespace gezi {
 						break;
 					case ColumnType::Weight:
 						instance.weight = DOUBLE(item);
+						break;
+					case ColumnType::Attribute:
+						instance.attributes.push_back(item);
+						break;
 					default:
 						break;
 					}
@@ -468,6 +483,9 @@ namespace gezi {
 						case ColumnType::Weight:
 							instance.weight = DOUBLE(item);
 							break;
+						case ColumnType::Attribute:
+							instance.attributes.push_back(item);
+							break;
 						default:
 							break;
 						}
@@ -486,12 +504,90 @@ namespace gezi {
 			}
 		}
 
-		InstanceType GetInstanceType(string line)
+		void CreateInstancesFromSparseNoLengthFormat(svec& lines, uint64 start)
+		{
+			uint64 end = start + _instanceNum;
+			int maxIndex = 0;
+#pragma omp parallel for 
+			for (uint64 i = start; i < end; i++)
+			{
+				string line = lines[i];
+				_instances[i - start] = make_shared<Instance>();
+				Instance& instance = *_instances[i - start];
+				Vector& features = instance.features;
+				svec l = split(line, _sep);
+
+				for (size_t j = 0; j < l.size(); j++)
+				{
+					string item = l[j];
+					string index_, value_;
+					bool ret = split(item, ':', index_, value_);
+					if (ret)
+					{
+						int index = INT(index_); Float value = DOUBLE(value_);
+						if (_selectedArray[index])
+							features.Add(index, value);
+#pragma omp critical
+						{
+							if (index > maxIndex)
+							{
+								maxIndex = index;
+							}
+						}
+					}
+					else
+					{
+						//@TODO 暂时没有检查格式正确性 要求的是 所有非:的数据 都在后面 如果不符合会越界
+						switch (_columnTypes[j])
+						{
+						case ColumnType::Name:
+							instance.names.push_back(item);
+							break;
+						case ColumnType::Label:
+							instance.label = DOUBLE(item);
+							break;
+						case ColumnType::Weight:
+							instance.weight = DOUBLE(item);
+							break;
+						case ColumnType::Attribute:
+							instance.attributes.push_back(item);
+							break;
+						default:
+							break;
+						}
+					}
+				}
+				instance.name = join(instance.names, _args.ncsep);
+			}
+			_featureNum = maxIndex + 1;
+			SetSparseFeatureNames();
+#pragma omp parallel for 
+			for (uint64 i = 0; i < _instanceNum; i++)
+			{
+				Vector& features = _instances[i]->features;
+				features.SetLength(_featureNum);
+				if (_args.keepDense)
+				{
+					features.ToDense();
+				}
+				else if (!_args.keepSparse)
+				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
+					features.Densify(0.5);
+				}
+			}
+		}
+
+		FileFormat GetFileFormat(string line)
 		{
 			for (int i = 0; i < _columnNum; i++)
 			{
 				if (_columnTypes[i] == ColumnType::Feature)
 				{
+					if (contains(_firstColums[i], ':'))
+					{
+						return FileFormat::SparseNoLenth;
+					}
+
 					int j = i + 1;
 					while (j < _columnNum && _columnTypes[j] != ColumnType::Feature)
 					{
@@ -500,19 +596,19 @@ namespace gezi {
 
 					if (j == _columnNum)
 					{
-						return InstanceType::Dense;
+						return FileFormat::Dense;
 					}
 					else
 					{
-						if (contains(_firstColums[j], ":"))
+						if (contains(_firstColums[j], ':'))
 						{
 							_featureNum = INT(_firstColums[i]);
 							_columnTypes[i] = ColumnType::Attribute;
-							return InstanceType::Sparse;
+							return FileFormat::Sparse;
 						}
 						else
 						{
-							return InstanceType::Dense;
+							return FileFormat::Dense;
 						}
 					}
 				}
@@ -523,24 +619,26 @@ namespace gezi {
 		void SetHeaderSchema(string line)
 		{
 			_instances.SetHeader(line, _hasHeader);
-			_instances.schema.instanceType = _instanceType;
+			_instances.schema.fileFormat = _fileFormat;
 			_instances.schema.hasWeights = _hasWeight;
+			_instances.schema.cloumnTypes = _columnTypes;
 		}
 
 		//获取列信息，名字，是dense还是sparse表示
 		void ParseFirstLine(svec lines)
 		{
 			string line = lines[0];
-			_firstColums = split(line, _sep + " ");
+			_firstColums = split(line, _sep);
 			_columnNum = _firstColums.size();
-			Pval(_columnNum);
+			PVAL(_columnNum);
 			if (_columnNum < 2)
 			{
 				LOG(FATAL) << "The header must at least has label and one feature";
 			}
 			_columnTypes.resize(_columnNum, ColumnType::Feature);
 			InitColumnTypes(lines);
-			_instanceType = GetInstanceType(lines[_hasHeader]);
+			//libsvm格式已经特殊处理 这里可能的是 normal, text
+			_fileFormat = _format == "text" ? FileFormat::Text : GetFileFormat(lines[_hasHeader]);
 			InitNames();
 			SetHeaderSchema(line);
 		}
@@ -574,18 +672,18 @@ namespace gezi {
 			{
 				LOG(FATAL) << "Fail to load data file! " << dataFile << " is empty!";
 			}
-			
+
 			_instanceNum = lines.size();
 			_instances.resize(_instanceNum, nullptr);
 
 			_hasHeader = false;
 			_instances.SetHeader("", _hasHeader);
-			_instanceType = InstanceType::Sparse;
-			_instances.schema.instanceType = _instanceType;
+			_fileFormat = FileFormat::LibSVM;
+			_instances.schema.fileFormat = _fileFormat;
 			_hasWeight = false;
 			_instances.schema.hasWeights = _hasWeight;
 
-			ivec maxIndices(_instanceNum, 1);
+			int maxIndex = 1;
 #pragma omp parallel for 
 			for (uint64 i = 0; i < _instanceNum; i++)
 			{
@@ -593,7 +691,7 @@ namespace gezi {
 				_instances[i] = make_shared<Instance>();
 				Instance& instance = *_instances[i];
 				Vector& features = instance.features;
-				svec l = split(line, _sep);
+				svec l = split(line, ' '); //libsvm 是用空格分开
 				for (size_t j = 0; j < l.size(); j++)
 				{
 					string item = l[j];
@@ -605,14 +703,17 @@ namespace gezi {
 					string index_, value_;
 					split(item, ':', index_, value_);
 					int index = INT(index_); Float value = DOUBLE(value_);
-					if (index > maxIndices[i])
+#pragma omp critical
 					{
-						maxIndices[i] = index;
+						if (index > maxIndex)
+						{
+							maxIndex = index;
+						}
 					}
 					features.Add(index - 1, value); //libsvm 是1开始 melt/tlc内部0开始处理
 				}
 			}
-			_featureNum = ufo::max(maxIndices);
+			_featureNum = maxIndex;
 			for (int i = 0; i < _featureNum; i++)
 			{
 				string name = "f" + STR(i);
@@ -629,7 +730,7 @@ namespace gezi {
 				}
 				else if (!_args.keepSparse)
 				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
-					features.Densify();
+					features.Densify(0.5);
 				}
 			}
 
@@ -637,6 +738,152 @@ namespace gezi {
 			return move(_instances);
 		}
 
+		//训练文本解析
+		Instances&& ParseTextForTrain(svec& lines, uint64 start)
+		{
+			Timer timer;
+			uint64 end = start + _instanceNum;
+#pragma omp parallel for 
+			for (uint64 i = start; i < end; i++)
+			{
+				string line = lines[i];
+				_instances[i - start] = make_shared<Instance>();
+				Instance& instance = *_instances[i - start];
+				Vector& features = instance.features;
+				svec l = split(line, _sep);
+
+				for (size_t j = 0; j < l.size(); j++)
+				{
+					string item = l[j];
+					string key, value_;
+					int index; Float value;
+					bool ret = split(item, ':', key, value_);
+					if (ret)
+					{
+						value = DOUBLE(value_);
+#pragma  omp critical
+						{
+							//输入需要保证没有重复的key
+							index = GetIdentifer().add(key);
+						}
+						if (_selectedArray[index])
+							features.Add(index, value);
+					}
+					else
+					{
+						//@TODO 暂时没有检查格式正确性 要求的是 所有非:的数据 都在后面
+						switch (_columnTypes[j])
+						{
+						case ColumnType::Name:
+							instance.names.push_back(item);
+							break;
+						case ColumnType::Label:
+							instance.label = DOUBLE(item);
+							break;
+						case ColumnType::Weight:
+							instance.weight = DOUBLE(item);
+							break;
+						case ColumnType::Attribute:
+							instance.attributes.push_back(item);
+							break;
+						default:
+							break;
+						}
+					}
+				}
+				instance.name = join(instance.names, _args.ncsep);
+			}
+			_featureNum = GetIdentifer().size();
+			SetTextFeatureNames();
+#pragma omp parallel for 
+			for (uint64 i = 0; i < _instanceNum; i++)
+			{
+				Vector& features = _instances[i]->features;
+				features.SetLength(_featureNum);
+				if (_args.keepDense)
+				{
+					features.ToDense();
+				}
+				else if (!_args.keepSparse)
+				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
+					features.Densify(0.5);
+				}
+			}
+		}
+
+		//测试文本解析
+		void ParseTextForTest(svec& lines, uint64 start)
+		{
+			Timer timer;
+			_featureNum = GetIdentifer().size();
+			SetTextFeatureNames();
+			uint64 end = start + _instanceNum;
+#pragma omp parallel for 
+			for (uint64 i = start; i < end; i++)
+			{
+				string line = lines[i];
+				_instances[i - start] = make_shared<Instance>(_featureNum);
+				Instance& instance = *_instances[i - start];
+				Vector& features = instance.features;
+				svec l = split(line, _sep);
+
+				for (size_t j = 0; j < l.size(); j++)
+				{
+					string item = l[j];
+					string key, value_;
+					bool ret = split(item, ':', key, value_);
+					if (ret)
+					{
+						int index = GetIdentifer().id(key); Float value = DOUBLE(value_);
+						if (index != Identifer::null_id() && _selectedArray[index])
+							features.Add(index, value);
+					}
+					else
+					{
+						//@TODO 暂时没有检查格式正确性 要求的是 所有非:的数据 都在后面
+						switch (_columnTypes[j])
+						{
+						case ColumnType::Name:
+							instance.names.push_back(item);
+							break;
+						case ColumnType::Label:
+							instance.label = DOUBLE(item);
+							break;
+						case ColumnType::Weight:
+							instance.weight = DOUBLE(item);
+							break;
+						case ColumnType::Attribute:
+							instance.attributes.push_back(item);
+							break;
+						default:
+							break;
+						}
+					}
+				}
+				if (_args.keepDense)
+				{
+					features.ToDense();
+				}
+				else if (!_args.keepSparse)
+				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
+					features.Densify(0.5);
+				}
+
+				instance.name = join(instance.names, _args.ncsep);
+			}
+		}
+
+		//1 张无忌:3.5 小甜甜:2.0 
+		void CreateInstancesFromTextFormat(svec& lines, uint64 start)
+		{
+			int times = TextFormatParsedTime();
+			if (times == 0)
+				ParseTextForTrain(lines, start);
+			else
+				ParseTextForTest(lines, start);
+		}
+
+		//默认推荐格式解析
 		Instances&& ParseNormal(string dataFile)
 		{
 			Timer timer;
@@ -674,13 +921,23 @@ namespace gezi {
 			_instances.resize(_instanceNum, nullptr);
 
 			timer.restart();
-			if (_instanceType == InstanceType::Dense)
+
+			switch (_fileFormat)
 			{
+			case FileFormat::Dense:
 				CreateInstancesFromDenseFormat(lines, _hasHeader);
-			}
-			else
-			{
+				break;
+			case FileFormat::Sparse:
 				CreateInstancesFromSparseFormat(lines, _hasHeader);
+				break;
+			case FileFormat::SparseNoLenth:
+				CreateInstancesFromSparseNoLengthFormat(lines, _hasHeader);
+				break;
+			case FileFormat::Text:
+				break;
+			default:
+				LOG(WARNING) << "well not supported file format ?";
+				break;
 			}
 
 			PVAL_(timer.elapsed_ms(), "CreateInstances");
@@ -688,20 +945,17 @@ namespace gezi {
 			PrintInfo();
 			return move(_instances);
 		}
+
 		Instances&& Parse(string dataFile)
 		{
 			//-----------------判断输入文件类型
-			if (_format == "normal")
-			{
-				return ParseNormal(dataFile);
-			}
-			else if (_format == "libsvm")
-			{
+			if (_format == "libsvm")
+			{//只能特殊处理 外部确认 因为libsvm 是1开始index 
 				return ParseLibSVM(dataFile);
 			}
 			else
 			{
-				LOG(FATAL) << "Not supported input format: " << _format;
+				return ParseNormal(dataFile);
 			}
 		}
 
@@ -711,6 +965,21 @@ namespace gezi {
 			_headerColums.clear();
 			_columnNum = 0;
 		}
+
+		//注意这个设计 一个global的identifer 同时意味生命期 最多两次parse text格式文本
+		//parse 一次 比如 train, cross fold, 两次train test 不会更多次
+		static Identifer& GetIdentifer()
+		{
+			static Identifer _identifer;
+			return _identifer;
+		}
+
+		static int TextFormatParsedTime()
+		{
+			static int time = 0;
+			return time++;
+		}
+
 	protected:
 	private:
 		Instances _instances;
@@ -718,7 +987,7 @@ namespace gezi {
 		int _featureNum = 0;
 		bool _hasHeader = false;
 		bool _hasWeight = false;
-		InstanceType _instanceType = InstanceType::Dense;
+		FileFormat _fileFormat = FileFormat::Dense;
 
 		svec _firstColums;
 		svec _headerColums;

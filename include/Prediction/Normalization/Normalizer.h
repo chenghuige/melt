@@ -63,7 +63,7 @@ namespace gezi {
 
 		virtual string Name()
 		{
-			return "Not specified";
+			return "Normalizer";
 		}
 
 		/// Process next initialization example
@@ -144,7 +144,7 @@ namespace gezi {
 			ProgressBar pb(Name() + " prepare", len);
 			for (uint64 i = 0; i < len; i++)
 			{
-				pb.progress(i);
+				++pb;
 				Process(instances[i]->features);
 			}
 			Finish();
@@ -158,7 +158,7 @@ namespace gezi {
 		}
 		void Normalize(Instances& instances)
 		{
-			if (!instances.normalized)
+			if (!instances.IsNormalized())
 			{
 				Noticer nt("Normalize");
 #pragma omp parallel for //omp not work for foreach loop ? @TODO
@@ -167,7 +167,7 @@ namespace gezi {
 					Normalize(instances[i]->features);
 				}
 			}
-			instances.normalized = true;
+			instances.SetNormalized();
 		}
 
 		//@TODO move to MinMax ?

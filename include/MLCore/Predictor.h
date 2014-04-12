@@ -38,10 +38,11 @@ namespace gezi {
 		{
 
 		}
-		virtual string Name()
+		virtual string Name() 
 		{
-			return "";
+			return "Predictor";
 		}
+
 		//输出未经Calibrator矫正的数值 -n,+n 0表示分界 越高越倾向positive
 		Float Output(Instance& instance)
 		{
@@ -67,8 +68,10 @@ namespace gezi {
 					return Margin(temp);
 				}
 			}
-
-			return 0;
+			else
+			{
+				return Margin(features);
+			}
 		}
 
 		//输出经Calibrator矫正的数值 [0,1], 输出值表示结果倾向positive的概率
@@ -127,6 +130,8 @@ namespace gezi {
 
 		virtual void Save(string path)
 		{
+			VLOG(0) << "Save " << Name() << " to folder " << path;
+			_path = path;
 			try_create_dir(path);
 			write_file(Name(), path + "/model.name.txt");
 			SAVE_SHARED_PTR(_normalizer);
@@ -147,6 +152,19 @@ namespace gezi {
 			}
 		}
 
+		//SaveText是可选的 如果要使用 务必先调用Save 因为加载至使用Load
+		virtual void SaveText(string path)
+		{
+
+		}
+
+		void SaveText()
+		{
+			SaveText(_path + "/model.txt");
+			SAVE_SHARED_PTR_ASTEXT(_normalizer);
+			SAVE_SHARED_PTR_ASTEXT(_calibrator);
+		}
+
 	protected:
 		virtual Float Margin(const Vector& features)
 		{
@@ -156,6 +174,8 @@ namespace gezi {
 		bool _normalizeCopy = false;
 		NormalizerPtr _normalizer = nullptr;
 		CalibratorPtr _calibrator = nullptr;
+
+		string _path;
 	};
 	typedef shared_ptr<Predictor> PredictorPtr;
 }  //----end of namespace gezi

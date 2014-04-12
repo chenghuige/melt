@@ -27,10 +27,12 @@ namespace gezi {
 		//训练器中使用构造
 		LinearPredictor(const Vector& weights, Float bias,
 			NormalizerPtr normalizer, CalibratorPtr calibrator,
-			const svec& featureNames)
+			const svec& featureNames, 
+			string name = "LinearPredictor")
 			:Predictor(normalizer, calibrator),
 			_weights(weights), _bias(bias),
-			_featureNames(featureNames)
+			_featureNames(featureNames),
+			_name(name)
 		{
 
 		}
@@ -42,7 +44,7 @@ namespace gezi {
 
 		virtual string Name() override
 		{
-			return "LinearPredictor";
+			return _name;
 		}
 
 		virtual void Save(string path) override
@@ -57,6 +59,19 @@ namespace gezi {
 			Predictor::Load(path);
 			string modelFile = path + "/model";
 			serialize_util::load(*this, modelFile);
+		}
+
+		//SaveText是可选的 如果要使用 务必先调用Save 因为加载至使用Load
+		virtual void SaveText(string path)
+		{
+			ofstream ofs(path);
+			ofs << "ModelName=" << Name() << endl;
+			ofs << "FeatureNum=" << _featureNames.size() << endl;
+			_weights.ForEachNonZero([&ofs,this](int index, Float value)
+			{
+				ofs << index << "\t" << _featureNames[index] << "\t" << value << endl;
+			});
+			ofs << _featureNames.size() << "\t" << "Bias" << "\t" << _bias;
 		}
 
 		friend class boost::serialization::access;
@@ -78,6 +93,8 @@ namespace gezi {
 		Vector _weights;
 		Float _bias;
 		svec _featureNames;
+
+		string _name = "LinearPredictor";
 	};
 
 }  //----end of namespace gezi

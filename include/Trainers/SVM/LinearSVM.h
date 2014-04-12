@@ -33,6 +33,7 @@ namespace gezi {
 		LinearSVM()
 		{
 			ParseArgs();
+			PVAL(_args.randSeed);
 			_rand = make_shared<Random>(random_engine(_args.randSeed));
 			if (_args.normalizeFeatures)
 			{
@@ -61,7 +62,7 @@ namespace gezi {
 			bool normalizeFeatures = true; //norm|Normalize features
 			string normalizerName = "MinMax"; //normalizer|Which normalizer?
 			
-			int randSeed = 0;//rs|controls wether the expermient can reproduce, 0 means not reproduce
+			unsigned randSeed = 0;//rs|controls wether the expermient can reproduce, 0 means not reproduce
 			
 			bool calibrateOutput = true; //calibrate| use calibrator to gen probability?
 			string calibratorName = "sigmoid"; //calibrator| sigmoid/platt naive pav
@@ -73,6 +74,7 @@ namespace gezi {
 		virtual void Initialize(Instances& instances) override
 		{
 			numFeatures = instances.FeatureNum();
+			_randRange = make_shared<RandomRange>(instances.Count());
 
 			if (_args.initialWeightsString.size() > 0)
 			{
@@ -93,7 +95,7 @@ namespace gezi {
 			}
 
 			// weight initialization -- done unless we have initialized before
-			if (_weights.length == 0)
+			if (_weights.Length() == 0)
 			{
 				// We want a dense vector, to prevent memory creation during training
 				// unless we have a lot of features
@@ -137,7 +139,7 @@ namespace gezi {
 			//--- 将所有数据归一化 和TLC策略不同 TLC将normalize混在训练过程中(主要可能是兼容streaming模式)
 			//特别是hadoop scope训练  @TODO  也许这里也会变化
 			//如果不是类似交叉验证 比如就是训练测试 默认是 no normalize copy
-			if (_normalizer != nullptr)
+			if (_normalizer != nullptr && !instances.IsNormalized())
 			{
 				if (!_normalizeCopy)
 					_normalizer->RunNormalize(instances);
@@ -166,14 +168,15 @@ namespace gezi {
 			ProgressBar pb("LinearSVM training", _args.numIterations);
 			for (int iter = 0; iter < _args.numIterations; iter++)
 			{
-				pb.progress(iter);
+				++pb;
 				BeginTrainingIteration();
 
 				if (_args.sampleSize == 0)
 				{ // rate sampling
 					for (int i = 0; i < instances.Count() * _args.sampleRate; i++)
 					{
-						currentIdx = _rand->Next(instances.Count());
+						//currentIdx = _randRange->Next(instances.Count());
+						currentIdx = _randRange->Next();
 						//@TODO densify() ? before process ? 
 						ProcessDataInstance(instances[currentIdx]);
 					}
@@ -182,7 +185,8 @@ namespace gezi {
 				{ // size sampling  当前走这里
 					for (int i = 0; i < _args.sampleSize; i++)
 					{
-						currentIdx = _rand->Next(instances.Count());
+						//currentIdx = _randRange->Next(instances.Count());
+						currentIdx = _randRange->Next();
 						ProcessDataInstance(instances[currentIdx]);
 					}
 				}
@@ -265,7 +269,7 @@ namespace gezi {
 		{
 			++numIterExamples;
 
-			if (_normalizer != nullptr && _normalizeCopy)
+			if (_normalizer != nullptr && !instance->normalized && _normalizeCopy)
 			{
 				instance = _normalizer->NormalizeCopy(instance);
 			}
@@ -307,7 +311,8 @@ namespace gezi {
 					}
 					else
 					{ // need to replace random one
-						int idxToReplace = _rand->Next(_args.sampleSize);
+						//int idxToReplace = _randRange->Next(_args.sampleSize);
+						int idxToReplace = _randRange->Next();
 						weightUpdates[idxToReplace] = move(currentWeightUpdate);
 						biasUpdates[idxToReplace] = currentBiasUpdate;
 					}
@@ -392,7 +397,8 @@ namespace gezi {
 			_weights.MakeDense();
 			return make_shared<LinearPredictor>(_weights, _bias, 
 				_normalizer, _calibrator, 
-				_featureNames);
+				_featureNames,
+				"LinearSVM");
 		}
 
 	protected:

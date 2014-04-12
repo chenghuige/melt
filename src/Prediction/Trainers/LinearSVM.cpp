@@ -18,7 +18,7 @@
 
 DECLARE_bool(calibrate);
 DECLARE_string(calibrator);
-DECLARE_int32(rs);
+DECLARE_uint64(rs);
 
 DECLARE_bool(norm);
 DECLARE_string(normalizer);

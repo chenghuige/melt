@@ -17,7 +17,7 @@ DEFINE_bool(foldSeq, false, "foldSequence: instances sequentially during cross -
 // learning curve experiments are done via trainProportion
 DEFINE_double(tp, 1.0, "trainProportion: Fraction of training data to use (if < 1.0), or max training items");
 
-DEFINE_int32(rs, 0, "0 means random, 1 means can reproduce | randSeed: controls wether the expermient can reproduce");
+DEFINE_uint64(rs, 0, "0 means random, 1 means can reproduce | randSeed: controls wether the expermient can reproduce");
 DEFINE_int32(nt, 0, "num of threads, default 0 means use threads num according to processor num");
 
 DEFINE_string(i, "", "datafile: Input data file used for train or cross validation, you can also put data file just after exe like: ./melt datafile");
@@ -42,7 +42,9 @@ DEFINE_string(fn, "", "featureName:");
 
 DEFINE_bool(calibrate, true, "calibrateOutput: use calibrator to gen probability?");
 DEFINE_string(calibrator, "sigmoid", "calibratorName: sigmoid/platt naive pav");
+DEFINE_bool(pn, false, "preNormalize:");
 
+DEFINE_string(oformat, "unknown", "ouput file format if unknow using it's input format");
 
 namespace gezi {
 	void Melt::ParseArguments()
@@ -60,7 +62,13 @@ namespace gezi {
 		_cmd.modelfileText = FLAGS_mt;
 		_cmd.numFolds = FLAGS_k;
 		_cmd.numRuns = FLAGS_nr;
+
+		if (FLAGS_rs == 0)
+		{
+			FLAGS_rs = random_seed();
+		}
 		_cmd.randSeed = FLAGS_rs;
+		
 		_cmd.stratify = FLAGS_strat;
 		_cmd.numThreads = FLAGS_nt;
 		_cmd.foldsSequential = FLAGS_foldSeq;
@@ -74,6 +82,10 @@ namespace gezi {
 		_cmd.resultDir = FLAGS_rd;
 		_cmd.resultIndex = FLAGS_ri;
 
+
+		_cmd.preNormalize = FLAGS_pn;
 		//_cmd.evaluate = FLAGS_ev;
+
+		_cmd.outputFileFormat = FLAGS_oformat;
 	}
 } //end of namespace gezi

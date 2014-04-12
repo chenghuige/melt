@@ -41,7 +41,7 @@ namespace gezi {
 				ProgressBar pb(instanceNum);
 				for (uint64 i = 0; i < instanceNum; i++)
 				{
-					pb.progress(i);
+					++pb;
 					const InstancePtr& instance = instances[i];
 					if (instance->IsPositive())
 					{

@@ -27,6 +27,7 @@ DEFINE_bool(sparse, false, "keep sparse");
 DEFINE_bool(dense, false, "keep dense");
 DEFINE_string(format, "normal", "support melt/tlc format as normal, also support libSVM, may support weka/arff, malloc format later");
 
+
 namespace gezi {
 
 	void InstanceParser::ParseArguments()

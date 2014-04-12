@@ -77,13 +77,14 @@ namespace gezi {
 				for (int j = 0; j < numBins; j++)
 					binValues[i][j] = (Float)j / numBins;
 
+			uint64 totalSize = _numFeatures * _numProcessedInstances;
 			// pre-compute the normalization range for each feature
-			//ProgressBar pb("BinNormalizer finish", _numFeatures);
+			ProgressBar pb("BinNormalizer finish", _numFeatures);
 			//@TODO 动态调整线程数目 确保内存正常 command可以输入一个最大可用内存G
-#pragma omp parallel for num_threads(4) //4可以作为变量吗@TODO
+#pragma omp parallel for firstprivate(pb)  
 			for (int i = 0; i < _numFeatures; i++)
 			{
-				//pb.progress(i);
+				++pb;
 				values[i].resize(_numProcessedInstances, 0); //后面填充0
 				binUpperBounds[i] = find_bins(values[i], numBins);
 				if (binUpperBounds[i][0] == binUpperBounds[i].back())
@@ -105,7 +106,10 @@ namespace gezi {
 					for (int j = 0; j < numBinsActual; j++)
 						binValues[i][j] = (Float)j / (numBinsActual - 1);
 				}
-				free_memory(values[i]); //释放空间  @TODO 直接用一块儿内存 value[] 其余的拷贝过去 不用释放 效率对比?
+				if (totalSize > 10000000) //@TODO
+				{
+					free_memory(values[i]); //释放空间  @TODO 直接用一块儿内存 value[] 其余的拷贝过去 不用释放 效率对比?
+				}
 			}
 		}
 		friend class boost::serialization::access;
