@@ -48,12 +48,12 @@ namespace gezi {
 
 		virtual void Load(string path)
 		{
-
+			VLOG(0) << Name() << " load from " << path;
 		}
 
-		virtual void SaveText(string outfile)
+		virtual void SaveText(string file)
 		{
-
+			VLOG(0) << Name() << " save as text to " << file;
 		}
 
 		virtual void LoadText(string infile)

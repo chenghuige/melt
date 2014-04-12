@@ -31,9 +31,9 @@ namespace gezi {
 		string normalizerfile = ""; //nf| normalzier output file
 		string testDatafile = ""; //test| Data file used for test
 		string validationDatafile = "";
-		string modelfile = "";
-		string modelfileCode = "";
-		string modelfileText = "";
+		string modelFolder = "model"; //m|
+		bool modelfileCode = false; //mc|
+		bool modelfileText = false; //mt|
 		string featureName = ""; //fn|
 		bool stratify = false;
 		bool foldsSequential = false;

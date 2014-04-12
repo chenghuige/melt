@@ -54,6 +54,8 @@ namespace gezi {
 			bool keepSparse = false; //sparse|
 			bool keepDense = false; //dense|
 			string inputFormat = "normal";//format|support melt/tlc format as normal, also support libSVM, may support weka/arff, malloc format later
+
+			string resultDir = "";//rd|
 		};
 
 		InstanceParser()
@@ -809,6 +811,7 @@ namespace gezi {
 					features.Densify(0.5);
 				}
 			}
+			GetIdentifer().save(_args.resultDir + "/identifer.txt");
 		}
 
 		//测试文本解析
@@ -816,6 +819,14 @@ namespace gezi {
 		{
 			Timer timer;
 			_featureNum = GetIdentifer().size();
+			if (_featureNum == 0)
+			{ //可能RunTest模式 需要加载词表
+				string path = _args.resultDir + "/identifer.txt";
+				InstanceParser::GetIdentifer().load(path);
+				_featureNum = GetIdentifer().size();
+				CHECK(_featureNum != 0) << "No identifer in memory or to load from disk " << path;
+			}
+			
 			SetTextFeatureNames();
 			uint64 end = start + _instanceNum;
 #pragma omp parallel for 

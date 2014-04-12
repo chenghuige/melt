@@ -42,6 +42,7 @@
 #include "MLCore/Predictor.h"
 
 #include "Prediction/Instances/instances_util.h"
+#include "Predictors/PredictorFactory.h"
 
 namespace gezi {
 	class Melt
@@ -69,7 +70,8 @@ namespace gezi {
 			NORMALIZE,
 			CHECK_DATA,
 			FEATURE_STATUS,
-			SHOW_FEATURES
+			SHOW_FEATURES,
+			CONVERT
 		};
 
 		MeltArguments& Cmd()
@@ -89,15 +91,6 @@ namespace gezi {
 
 		void RunCrossValidation(Instances& instances)
 		{
-			////----------------------------先统一归一化, 会改变instances 逻辑可能稍有不同
-			////比如TLC 可能是 5 fold验证 那么只用4个 数据 做norm
-			//TrainerPtr trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
-			//NormalizerPtr normalizer = trainer->GetNormalizer();
-			//if (normalizer != nullptr)
-			//{
-			//	normalizer->RunNormalize(instances);
-			//}
-
 			//--------------------------- 输出文件头
 			try_create_dir(_cmd.resultDir);
 			string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
@@ -111,8 +104,8 @@ namespace gezi {
 				Pval(normalizer->Name());
 				normalizer->RunNormalize(instances);
 			}
-			//const int randomStep = 10000;
-			const int randomStep = 1;
+			const int randomStep = 10000;
+			//const int randomStep = 1;
 			for (size_t runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
 			{
 				LOG(INFO) << "The " << runIdx << " round";
@@ -126,36 +119,40 @@ namespace gezi {
 				{
 					string instfile = (format("%s/%d_%d_%d.inst.txt") % _cmd.resultDir % _cmd.resultIndex
 						% runIdx % foldIdx).str();
+
 					Instances trainData, testData;
 					//只是trainProportion < 1 才需要rng
 					CVFoldCreator::CreateFolds(instances, _cmd.trainProportion,
 						instanceFoldIndices, foldIdx, _cmd.numFolds, trainData, testData,
 						random_engine(_cmd.randSeed, runIdx * randomStep));
 
-					VLOG(0) << "Folds " << foldIdx << " are trained with " << trainData.Size() << " instances, and tested on " << testData.Size() << " instances";
-#ifndef NDEBUG
-					PVAL3(trainData[0]->name, trainData.PositiveCount(), trainData.NegativeCount());
-					PVAL3(testData[0]->name, testData.PositiveCount(), testData.NegativeCount());
-#endif // !NDEBUG
+					if (foldIdx == 0)
+					{
+						VLOG(0) << "Folds " << foldIdx << " are trained with " << trainData.Size() << " instances, and tested on " << testData.Size() << " instances";
+						Pval3(trainData[0]->name, trainData.PositiveCount(), trainData.NegativeCount());
+						Pval3(testData[0]->name, testData.PositiveCount(), testData.NegativeCount());
+					}
+
 					//------------------------------------Train
 					TrainerPtr trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
 					trainer->SetNormalizeCopy();
 					trainer->Train(trainData);
 					PredictorPtr predictor = trainer->CreatePredictor();
 					predictor->SetNormalizeCopy();
+
 					//@TODO 每个test 输出一个inst 文件也 然后每个给出一个结果
 					LOG(INFO) << "-------------------------------------Testing";
 					Test(testData, predictor, instfile, ofs);
 					string command = _cmd.evaluate + instfile;
 					{
-						system(command.c_str());
+						EXECUTE(command);
 					}
 				}
 			}
 			string command = _cmd.evaluate + instFile;
 #pragma omp critical
 			{
-				system(command.c_str());
+				EXECUTE(command);
 			}
 		}
 
@@ -164,10 +161,6 @@ namespace gezi {
 			Noticer nt((format("%d fold cross-validation") % _cmd.numFolds).str());
 			//----------------------------check if command ok
 			CHECK_GE(_cmd.numFolds, 2) << "The number of folds must be at least 2 for cross validation";
-			if (!_cmd.modelfile.empty() || !_cmd.modelfileCode.empty() || !_cmd.modelfileText.empty())
-			{
-				LOG(FATAL) << "You cannot specify a model file to output when running cross-validation";
-			}
 			//-----------------------------parse input
 			Instances instances = create_instances(_cmd.datafile);
 			CHECK_GT(instances.Count(), 0) << "Read 0 instances, aborting experiment";
@@ -229,47 +222,82 @@ namespace gezi {
 
 		void RunTrain()
 		{
-			Noticer nt("Train!");
-			auto instances = create_instances(_cmd.datafile);
-			CHECK_GT(instances.Count(), 0) << "Read 0 test instances, aborting experiment";
-			auto predictor = Train(instances);
-
-			try_create_dir(_cmd.resultDir);
-			string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
-
-			LOG(INFO) << "-------------------------------------Testing";
-			auto testInstances = create_instances(_cmd.datafile);
-			CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
-			Test(testInstances, predictor, instFile);
-			string command = _cmd.evaluate + instFile;
-			system(command.c_str());
-			//save predictor
+			PredictorPtr predictor;
+			{
+				Noticer nt("Train!");
+				auto instances = create_instances(_cmd.datafile);
+				CHECK_GT(instances.Count(), 0) << "Read 0 test instances, aborting experiment";
+				predictor = Train(instances);
+			}
+			{
+				Noticer nt("Test itself!");
+				try_create_dir(_cmd.resultDir);
+				string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
+				auto testInstances = create_instances(_cmd.datafile);
+				CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
+				Test(testInstances, predictor, instFile);
+				string command = _cmd.evaluate + instFile;
+				EXECUTE(command);
+			}
+			{
+				Noticer nt("Write train result!");
+				predictor->Save(_cmd.resultDir + "/" + _cmd.modelFolder);
+				if (_cmd.modelfileText)
+				{
+					predictor->SaveText();
+				}
+			}
 		}
 
 		void RunTest()
 		{
 			Noticer nt("Test!");
 			//------load predictor
+			auto predictor = PredictorFactory::LoadPredictor(_cmd.resultDir + "/" + _cmd.modelFolder);
 			//------test
+			try_create_dir(_cmd.resultDir);
+			string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
+
+			//hack for text input format //Not tested correctness yet
+			InstanceParser::TextFormatParsedTime(); //++ pared text from time这样表示需要使用词表数据
+			auto testInstances = create_instances(_cmd.testDatafile);
+			CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
+			Test(testInstances, predictor, instFile);
+			string command = _cmd.evaluate + instFile;
+			EXECUTE(command);
 		}
 
 		void RunTrainTest()
 		{
 			Noticer nt("TrainTest!");
-			auto instances = create_instances(_cmd.datafile);
-			CHECK_GT(instances.Count(), 0) << "Read 0 train instances, aborting experiment";
-			auto predictor = Train(instances);
+			PredictorPtr predictor;
+			Instances instances;
+			{
+				Noticer nt("Train!");
+				instances = create_instances(_cmd.datafile);
+				CHECK_GT(instances.Count(), 0) << "Read 0 train instances, aborting experiment";
+				predictor = Train(instances);
+			}
+			{
+				Noticer nt("Test!");
+				try_create_dir(_cmd.resultDir);
+				string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
 
-			try_create_dir(_cmd.resultDir);
-			string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
-
-			LOG(INFO) << "-------------------------------------Testing";
-			auto testInstances = create_instances(_cmd.testDatafile);
-			CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
-			CHECK_EQ(instances.schema == testInstances.schema, 1);
-			Test(testInstances, predictor, instFile);
-			string command = _cmd.evaluate + instFile;
-			system(command.c_str());
+				auto testInstances = create_instances(_cmd.testDatafile);
+				CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
+				CHECK_EQ(instances.schema == testInstances.schema, 1);
+				Test(testInstances, predictor, instFile);
+				string command = _cmd.evaluate + instFile;
+				EXECUTE(command);
+			}
+			{
+				Noticer nt("Write train result!");
+				predictor->Save(_cmd.resultDir + "/" + _cmd.modelFolder);
+				if (_cmd.modelfileText)
+				{
+					predictor->SaveText();
+				}
+			}
 		}
 
 		void RunFeatureSelection()
@@ -309,7 +337,7 @@ namespace gezi {
 			CHECK_NE(normalizer.get(), NULL);
 			Pval(normalizer->Name());
 			normalizer->RunNormalize(instances);
-			normalizer->Save(normalizerFile);
+			normalizer->SaveText(normalizerFile);
 			FileFormat fileFormat = get_value(_formats, _cmd.outputFileFormat, FileFormat::Unknown);
 			write(instances, outfile, fileFormat);
 		}
@@ -331,6 +359,26 @@ namespace gezi {
 			Instances instances = create_instances(_cmd.datafile);
 			FeatureStatus::GenMeanVarInfo(instances, outfile, _cmd.featureName);
 		}
+
+		//输入文件转换后输出
+		void RunConvert()
+		{
+			FileFormat fileFormat = get_value(_formats, _cmd.outputFileFormat, FileFormat::Unknown);
+			Instances instances = create_instances(_cmd.datafile);
+			if (fileFormat == FileFormat::Unknown)
+			{
+				LOG(WARNING) << "Not specified ouput file format, do nothing";
+			}
+			else if (fileFormat == instances.schema.fileFormat)
+			{
+				LOG(WARNING) << "Specified ouput file format is the same as input , do nothing";
+			}
+			else
+			{
+				write(instances, _cmd.outfile, fileFormat);
+			}
+		}
+
 		void RunExperiments()
 		{
 			PVAL(omp_get_num_procs());
@@ -374,6 +422,9 @@ namespace gezi {
 			case RunType::SHOW_FEATURES:
 				RunShowFeatures();
 				break;
+			case RunType::CONVERT:
+				RunConvert();
+				break;
 			case RunType::UNKNOWN:
 			default:
 				LOG(WARNING) << commandStr << " is not supported yet ";
@@ -401,7 +452,8 @@ namespace gezi {
 			{ "featurestatus", RunType::FEATURE_STATUS },
 			{ "fss", RunType::FEATURE_STATUS },
 			{ "showfeatures", RunType::SHOW_FEATURES },
-			{ "sf", RunType::SHOW_FEATURES }
+			{ "sf", RunType::SHOW_FEATURES },
+			{ "convert", RunType::CONVERT }
 		};
 
 		map<string, FileFormat> _formats = {

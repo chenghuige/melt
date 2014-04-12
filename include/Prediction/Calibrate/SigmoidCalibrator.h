@@ -36,6 +36,7 @@ public:
 
 	virtual void Load(string path) override
 	{
+		Calibrator::Load(path);
 		serialize_util::load(*this, path);
 	}
 
@@ -46,7 +47,7 @@ public:
 
 	virtual void SaveText(string file) override
 	{
-		VLOG(0) << Name() << " save ast text to " << file;
+		Calibrator::SaveText(file);
 		ofstream ofs(file);
 		ofs << "CalibratorName=" << Name() << endl;
 		ofs << "paramA=" << paramA << endl;

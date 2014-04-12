@@ -69,6 +69,7 @@ namespace gezi {
 				break;
 			}
 		}
+		ofs << endl;
 		instance.features.Clear();
 	}
 	inline void write_dense(Instances& instances, string outfile)
@@ -138,6 +139,7 @@ namespace gezi {
 			ofs << "\t" << instance.features.indices[featureIdx++] << ":" << instance.features.values[featureIdx++];
 		}
 
+		ofs << endl;
 		instance.features.Clear();
 	}
 

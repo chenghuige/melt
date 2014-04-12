@@ -140,6 +140,7 @@ namespace gezi {
 
 		virtual void Load(string path)
 		{
+			VLOG(0) << Name() << " load from " << path;
 			string normalizerName = read_file(OBJ_NAME_PATH(_normalizer));
 			if (!normalizerName.empty())
 			{
@@ -153,9 +154,9 @@ namespace gezi {
 		}
 
 		//SaveText是可选的 如果要使用 务必先调用Save 因为加载至使用Load
-		virtual void SaveText(string path)
+		virtual void SaveText(string file)
 		{
-
+			VLOG(0) << Name() << " save as text to " << file;
 		}
 
 		void SaveText()

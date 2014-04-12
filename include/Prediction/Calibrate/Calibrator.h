@@ -150,14 +150,14 @@ namespace gezi {
 
 		}
 
-		virtual void Load(string path) 
+		virtual void Load(string path)
 		{
-
+			VLOG(0) << Name() << " load from " << path;
 		}
 
 		virtual void SaveText(string file)
 		{
-
+			VLOG(0) << Name() << " save as text to " << file;
 		}
 
 		virtual string Name()
@@ -177,7 +177,7 @@ namespace gezi {
 			FinishTraining();
 		}
 
-		virtual void ProcessTrainingExample(Float output, bool clicked, Float weight) 
+		virtual void ProcessTrainingExample(Float output, bool clicked, Float weight)
 		{
 
 		}
@@ -221,7 +221,7 @@ namespace gezi {
 
 	protected:
 
-		virtual void TrainModel(CalibratorStore& data) 
+		virtual void TrainModel(CalibratorStore& data)
 		{
 
 		}
