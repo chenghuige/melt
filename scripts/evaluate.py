@@ -11,12 +11,20 @@
 #                  TODO understancd other output of tlc and add more
 # ==============================================================================
 
-import sys,os,glob
+import sys
+import os
+import glob
 from gflags import *
+import pylab as pl
+
+#hack for some machine sklearn/externals/joblib/parallel.py:41: UserWarning: This platform lacks a functioning sem_open implementation, therefore, the required synchronization primitives needed will not function, see issue 3770..  joblib will operate in serial mode
 import warnings
 warnings.filterwarnings("ignore") 
-#import pylab as pl
-#import matplotlib.pyplot as pl
+#hack for cxfreeze
+import sklearn.utils.sparsetools._graph_validation
+from scipy.sparse.csgraph import _validation
+from sklearn.utils import lgamma
+
 from sklearn.metrics import roc_curve, auc
 from sklearn.metrics import precision_recall_curve
 
@@ -27,6 +35,21 @@ DEFINE_integer('max_num', 20, 'most to deal')
 DEFINE_string('regex', '', 'use regex to find files to deal')
 DEFINE_string('column', 'probability', 'score index name')
 
+from matplotlib.ticker import MultipleLocator, FormatStrFormatter  
+  
+#---------------------------------------------------  
+  
+xmajorLocator   = MultipleLocator(0.1) 
+xmajorFormatter = FormatStrFormatter('%1.1f') 
+xminorLocator   = MultipleLocator(0.01) 
+   
+ymajorLocator   = MultipleLocator(0.02) 
+ymajorFormatter = FormatStrFormatter('%1.3f')
+yminorLocator   = MultipleLocator(0.01)
+
+_width = 20
+_height = 10
+_dpi = 1
 #confusion matrix, auc, roc curve
 def evaluate(label_list, predicts, predict_list, file_name):
     #---------------------------------confusion table
@@ -53,8 +76,12 @@ def evaluate(label_list, predicts, predict_list, file_name):
     pratio = num_pos * 1.0 / total_instance
     
     #true positive rate
-    tpr = tp * 1.0 / num_pos
-    tnr = tn * 1.0 / num_neg
+    tpr = 1
+    tnr = 1
+    if num_pos != 0:
+      tpr = tp * 1.0 / num_pos
+    if num_neg != 0:
+      tnr = tn * 1.0 / num_neg
     
     #num of predicted positive
     num_pp = tp + fp
@@ -84,10 +111,9 @@ def evaluate(label_list, predicts, predict_list, file_name):
      PRECISION [%.4f] (%d/%d)   %.4f(%d/%d)
     
     OVERALL 0/1 ACCURACY:        %.4f (%d/%d)
-    """%(pratio, num_pos, num_pos, num_neg, tp, fn, tpr, tp, num_pos, fp, tn, tnr, tn, num_neg, 1 - tnr, tpa, tp, num_pp, tna, tn, num_pn, accuracy, ok_num, total_instance)
+    """ % (pratio, num_pos, num_pos, num_neg, tp, fn, tpr, tp, num_pos, fp, tn, tnr, tn, num_neg, 1 - tnr, tpa, tp, num_pp, tna, tn, num_pn, accuracy, ok_num, total_instance)
     
     #----------------------------------------------------- auc area
-    #from sklearn.metrics import roc_auc_score
     #auc = roc_auc_score(label_list, predicts)
     
     fpr_, tpr_, thresholds = roc_curve(label_list, predicts)
@@ -100,18 +126,19 @@ def evaluate(label_list, predicts, predict_list, file_name):
     NEG. PRECISION:      %.4f
     NEG. RECALL:         %.4f
     AUC:                [%.4f]
-    """%(accuracy, tpa, tpr, tna, tnr, roc_auc)
+    """ % (accuracy, tpa, tpr, tna, tnr, roc_auc)
     
-    #------------------------------------------------------roc curve 
+    #------------------------------------------------------roc curve
     #pl.clf()
-    #pl.plot(fpr_, tpr_, label='%s: (area = %0.4f)' % (file_name, roc_auc))
-    #pl.plot([0, 1], [0, 1], 'k--')
-    #pl.xlim([0.0, 1.0])
-    #pl.ylim([0.0, 1.0])
-    #pl.xlabel('False Positive Rate')
-    #pl.ylabel('True Positive Rate')
-    #pl.title('Roc Curve:')
-    #pl.legend(loc="lower right") 
+    pl.plot(fpr_, tpr_, label='%s: (area = %0.4f)' % (file_name, roc_auc))
+    pl.plot([0, 1], [0, 1], 'k--')
+    pl.xlim([0.0, 0.01])
+    pl.ylim([0.0, 1.0])
+    pl.grid(True) 
+    pl.xlabel('False Positive Rate')
+    pl.ylabel('True Positive Rate')
+    pl.title('Roc Curve:')
+    pl.legend(loc="upper right") 
 
 def parse_input(input):
   lines = open(input).readlines()
@@ -125,12 +152,12 @@ def parse_input(input):
   for i in range(len(names)):
     if (names[i].lower() == 'label' or names[i].lower() == 'true'):
       label_idx = i
-    if (names[i].lower() == 'output'):
-      output_idx = i
+    if (names[i].lower() == 'output'): 
+    	output_idx = i
     if (names[i].lower() == FLAGS.column.lower()):
       probability_idx = i
   try:
-    line_list = [line.strip().split() for line in lines]
+    line_list = [line.strip().split('\t') for line in lines]
     label_list = [int(float((l[label_idx]))) for l in line_list]
   
     predicts = [float(l[probability_idx]) for l in line_list] 
@@ -147,13 +174,23 @@ def precision_recall(label_list, predicts, file_name):
   area = auc(recall, precision)
   #print("Area Under Curve: %0.2f" % area)
   #pl.clf()
-  #pl.plot(recall, precision, label='%s (area = %0.4f)'%(file_name, area))
-  #pl.xlabel('Recall')
-  #pl.ylabel('Precision')
-  #pl.ylim([0.0, 1.05])
-  #pl.xlim([0.0, 1.0])
-  #pl.title('Precision-Recall curve')
-  #pl.legend(loc="lower left")
+  pl.plot(recall, precision, label='%s (area = %0.4f)' % (file_name, area))
+ 
+  pl.ylim([0.0, 1.0])
+  pl.xlim([0.0, 1.0])
+  pl.subplot(121).xaxis.set_major_locator(xmajorLocator)  
+  pl.subplot(121).xaxis.set_major_formatter(xmajorFormatter)  
+  
+  pl.subplot(121).yaxis.set_major_locator(ymajorLocator)  
+  pl.subplot(121).yaxis.set_major_formatter(ymajorFormatter)  
+  
+  pl.subplot(121).xaxis.grid(True, which='major')  
+  pl.subplot(121).yaxis.grid(True, which='major') 
+  #pl.grid(True)
+  pl.xlabel('Recall (TPR)')
+  pl.ylabel('Precision (Positive pridictive value)')
+  pl.title('Precision-Recall curve')
+  pl.legend(loc="lower left")
 
 def main(argv):
   try:
@@ -169,7 +206,7 @@ def main(argv):
   except Exception:
     pass
   #---------------------------------thre
-  print "Thre: %.4f"%FLAGS.thre
+  print "Thre: %.4f" % FLAGS.thre
   #---------------------------------deal input
   l = []
   if (FLAGS.regex != ""):
@@ -184,13 +221,13 @@ def main(argv):
     if (len(l) > FLAGS.max_num):
       l = l[:FLAGS.max_num]
     #deal with more than 1 input
-    #f = pl.figure("Model Evaluation",figsize=(32,12), dpi = 100)
-    #f.add_subplot(1, 2, 1)
+    f = pl.figure("Model Evaluation",figsize=(_width, _height), dpi = _dpi)
+    f.add_subplot(1, 2, 0)
     for input in l:
       print "--------------- " + input
       label_list, predicts, predict_list = parse_input(input)
       evaluate(label_list, predicts, predict_list, input)
-    #f.add_subplot(1, 2, 0)
+    f.add_subplot(1, 2, 1)
     for input in l:
       label_list, predicts, predict_list = parse_input(input)
       precision_recall(label_list, predicts, input)
@@ -201,8 +238,8 @@ def main(argv):
       #FLAGS.show = True
     print "--------------- " + input
     label_list, predicts, predict_list = parse_input(input)
-    #f = pl.figure(figsize=(32,12))
-    #f.add_subplot(1, 2, 1)
+    f = pl.figure(figsize=(_width, _height))
+    f.add_subplot(1, 2, 0)
     evaluate(label_list, predicts, predict_list, input)
     
     print "--------------- " + input2
@@ -213,15 +250,15 @@ def main(argv):
       label_list2, predicts2, predict_list2 = parse_input(input2)
       evaluate(label_list2, predicts2, predict_list2, input2)
   
-    #f.add_subplot(1, 2, 0)
+    f.add_subplot(1, 2, 1)
     precision_recall(label_list, predicts, input)
   
     if (input2 != ""):  
       precision_recall(label_list2, predicts2, input2)
 
-  #pl.savefig(FLAGS.image)
-  #if (FLAGS.show):
-  #  pl.show()
+  pl.savefig(FLAGS.image)
+  if (FLAGS.show):
+    pl.show()
   
     
 if __name__ == "__main__":  
