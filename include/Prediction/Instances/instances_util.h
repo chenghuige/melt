@@ -204,7 +204,7 @@ namespace gezi {
 				ofs << index << " " << value << ",";
 			});
 			int index = instance->features.Length();
-			ofs << index << " " << instance->IsNegative();
+			ofs << index << " " << types[instance->IsPositive()];
 			ofs << "}" << endl;
 		}
 	}
@@ -231,6 +231,7 @@ namespace gezi {
 			write_libsvm(instances, outfile);
 			break;
 		case FileFormat::Arff:
+			write_arff(instances, outfile);
 			break;
 		default:
 			break;

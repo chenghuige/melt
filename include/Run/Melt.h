@@ -334,8 +334,12 @@ namespace gezi {
 		void RunNormalizeInstances()
 		{
 			Noticer nt("NormalizeInstances!");
+			NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
+			CHECK_NE(normalizer.get(), NULL);
+			Pval(normalizer->Name());
+
 			string infile = _cmd.datafile;
-			string suffix = "normed";
+			string suffix = normalizer->Name() + ".normed";
 			string outfile = _cmd.outfile.empty() ? GetOutputFileName(infile, suffix) : _cmd.outfile;
 			Pval(outfile);
 			string normalizerFile = _cmd.normalizerfile.empty() ?
@@ -344,9 +348,7 @@ namespace gezi {
 			Pval(normalizerFile);
 
 			Instances instances = create_instances(_cmd.datafile);
-			NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
-			CHECK_NE(normalizer.get(), NULL);
-			Pval(normalizer->Name());
+			
 			normalizer->RunNormalize(instances);
 			normalizer->SaveText(normalizerFile);
 			FileFormat fileFormat = get_value(_formats, _cmd.outputFileFormat, FileFormat::Unknown);
