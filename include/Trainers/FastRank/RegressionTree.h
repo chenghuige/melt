@@ -37,19 +37,33 @@ namespace gezi {
 		Float GetOutput(const Vector& features) const
 		{
 			int node = 0;
+			svec paths;
 			while (node >= 0)
 			{
-				PVAL4(node, _featureNames[_splitFeature[node]], features[_splitFeature[node]], _threshold[node]);
 				if (features[_splitFeature[node]] <= _threshold[node])
 				{
+#ifdef _DEBUG
+					paths.push_back(_featureNames[_splitFeature[node]] + " " +
+						features[_splitFeature[node]] + " <= " + _threshold[node]);
+#endif // _DEBUG
 					node = _lteChild[node];
 				}
 				else
 				{
+#ifdef _DEBUG
+					paths.push_back(_featureNames[_splitFeature[node]] + " " +
+						features[_splitFeature[node]] + " > " + _threshold[node]);
+#endif // _DEBUG
 					node = _gtChild[node];
 				}
 			}
-			PVAL2(~node, _leafValue[~node]);
+#ifdef _DEBUG
+			if (_leafValue[~node] > 0)
+			{
+				PVEC(paths);
+				Pval_(_leafValue[~node], "PositiveOutput:");
+			}
+#endif // _DEBUG
 			return _leafValue[~node];
 		}
 
@@ -65,7 +79,7 @@ namespace gezi {
 		dvec _previousLeafValue;
 		ivec _splitFeature;
 		dvec _splitGain;
-		dvec _threshold; 
+		dvec _threshold;
 		double _weight = 1.0;
 		svec& _featureNames;
 	};

@@ -11,7 +11,7 @@
  *
  *  ==============================================================================
  */
-
+#define _DEBUG
 #define private public
 #define protected public
 #include "common_util.h"
