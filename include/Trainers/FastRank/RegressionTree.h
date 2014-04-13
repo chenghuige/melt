@@ -30,6 +30,18 @@ namespace gezi {
 		{
 
 		}
+#ifdef _DEBUG
+		struct DebugNode
+		{
+			int id;
+			svec paths;
+			double score;
+			bool operator < (const DebugNode& other) const
+			{
+				return score > other.score;
+			}
+		};
+#endif
 
 	public:
 
@@ -37,13 +49,12 @@ namespace gezi {
 		Float GetOutput(const Vector& features) const
 		{
 			int node = 0;
-			svec paths;
 			while (node >= 0)
 			{
 				if (features[_splitFeature[node]] <= _threshold[node])
 				{
 #ifdef _DEBUG
-					paths.push_back(_featureNames[_splitFeature[node]] + " " +
+					_debugNode.paths.push_back(_featureNames[_splitFeature[node]] + " " +
 						STR(features[_splitFeature[node]]) + " <= " + STR(_threshold[node]));
 #endif // _DEBUG
 					node = _lteChild[node];
@@ -51,17 +62,18 @@ namespace gezi {
 				else
 				{
 #ifdef _DEBUG
-					paths.push_back(_featureNames[_splitFeature[node]] + " " +
+					_debugNode.paths.push_back(_featureNames[_splitFeature[node]] + " " +
 						STR(features[_splitFeature[node]]) + " > " + STR(_threshold[node]));
 #endif // _DEBUG
 					node = _gtChild[node];
 				}
 			}
 #ifdef _DEBUG
-			if (_leafValue[~node] > 0)
 			{
-				PVEC(paths);
-				Pval_(_leafValue[~node], "PositiveOutput:");
+				_debugNode.score = _leafValue[~node];
+				//PVEC(paths);
+				//Pval_(_leafValue[~node], "PositiveOutput:");
+				_debugNode
 			}
 #endif // _DEBUG
 			return _leafValue[~node];
@@ -70,6 +82,10 @@ namespace gezi {
 	protected:
 	private:
 	public:
+#ifdef _DEBUG
+		DebugNode _debugNode;
+#endif // _DEBUG
+
 		dvec _gainPValue;
 		ivec _gtChild;
 		dvec _leafValue;

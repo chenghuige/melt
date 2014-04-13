@@ -143,15 +143,37 @@ namespace gezi {
 		virtual Float Margin(Vector& features) override
 		{
 			Float result = 0;
-//#pragma omp parallel for reduction(+: result)
+#pragma omp parallel for reduction(+: result)
 			for (size_t i = 0; i < _trees.size(); i++)
 			{
 				result += _trees[i].GetOutput(features);
-				PVAL(result);
+#ifdef _DEBUG
+#pragma  omp critical
+				{
+					if (_trees[i]._debugNode.score > 0)
+					{
+						_trees[i]._debugNode.id = i;
+						_debugNodes.emplace_back(_trees[i]._debugNode);
+					}
+				}
+#endif // _DEBUG
 			}
+
+#ifdef _DEBUG
+			sort(_debugNodes.begin(), _debugNodes.end());
+			for (RegressionTree::DebugNode& node : _debugNodes)
+			{
+				VLOG(3) << node.id << " " << node.score << " ";
+				PVEC(node.paths);
+			}
+#endif // _DEBUG
 			return result;
 		}
 	private:
+#ifdef _DEBUG
+		vector<RegressionTree::DebugNode> _debugNodes;
+#endif // _DEBUG
+
 		vector<RegressionTree> _trees;
 		Identifer _identifer;
 	};
