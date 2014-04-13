@@ -96,7 +96,9 @@ namespace gezi {
 					string splits = parse_string_param("SplitFeatures=", lines[i++]);
 					tree._splitFeature = from(split(splits, '\t')) >> select([&fnames, this](string a)
 					{
-						return _identifer.id(fnames[INT(split(a, ':')[1]) - 1]);
+						int index = _identifer.id(fnames[INT(split(a, ':')[1]) - 1]);
+						CHECK_GE(index, 0);
+						return index;
 					}) >> to_vector();
 
 					i += 2;
@@ -133,6 +135,7 @@ namespace gezi {
 			}
 			double paramB = -parse_double_param("Bias=", lines[i]);
 			double paramA = -parse_double_param("Weights=", lines[i + 3]);
+			PVAL2(paramA, paramB);
 			_calibrator = make_shared<SigmoidCalibrator>(paramA, paramB);
 		}
 	protected:
