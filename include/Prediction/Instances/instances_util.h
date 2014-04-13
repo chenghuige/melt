@@ -180,9 +180,33 @@ namespace gezi {
 		}
 	}
 
-	inline void write_arff(Instances& instances, string outfile)
+	inline void write_arff(Instances& instances, string outfile, string relation = "table")
 	{
+		ofstream ofs(outfile);
+		//----------arff header
+		ofs << "@relation " << relation << "\n" << endl;
+		for (string name : instances.schema.featureNames)
+		{
+			ofs << "@attribute " << name << " numeric" << endl;
+		}
 
+		ofs << "@attribute class {" << "negative,positive" << "}\n" << endl;
+
+		ofs << "@data\n" << endl;
+
+		//----------write body
+		svec types = { "negative", "positive" };
+		for (InstancePtr instance : instances)
+		{
+			ofs << "{";
+			instance->features.ForEachNonZero([&ofs](int index, Float value)
+			{
+				ofs << index << " " << value << ",";
+			});
+			int index = instance->features.Length();
+			ofs << index << " " << instance->IsNegative();
+			ofs << "}" << endl;
+		}
 	}
 
 	inline void write(Instances& instances, string outfile, FileFormat format)

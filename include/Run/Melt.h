@@ -392,14 +392,56 @@ namespace gezi {
 			}
 			else
 			{
-				write(instances, _cmd.outfile, fileFormat);
+				if (!_cmd.outfile.empty())
+				{
+					write(instances, _cmd.outfile, fileFormat);
+				}
+				else
+				{
+					string outfile = fileFormat == FileFormat::Arff ?
+						boost::replace_last_copy(_cmd.datafile, ".txt", "") + ".arff" :
+						GetOutputFileName(_cmd.datafile, "converted");
+					if (fileFormat == FileFormat::Arff)
+						LOG(INFO) << "Writting to arff file " << outfile;
+					else
+						LOG(WARNING) << "Not specify the out file name so write to " << outfile;
+					write(instances, outfile, fileFormat);
+				}
 			}
 		}
 
+		void SplitDataByLabel(Instances& instances)
+		{
+			Instances posInstances(instances.schema);
+			Instances negInstances(instances.schema);
+			for (InstancePtr instance : instances)
+			{
+				if (instance->IsPositive())
+					posInstances.push_back(instance);
+				else
+					negInstances.push_back(instance);
+			}
+			{
+				string outfile = GetOutputFileName(_cmd.datafile, "pos");
+				Pval(outfile);
+				write(posInstances, outfile);
+			}
+			{
+				string outfile = GetOutputFileName(_cmd.datafile, "neg");
+				Pval(outfile);
+				write(negInstances, outfile);
+			}
+		}
 		//当前复用cross fold思路 
 		void RunSplitData()
 		{
 			auto instances = create_instances(_cmd.datafile);
+			if (_cmd.commandInput.empty())
+			{
+				LOG(INFO) << "No input assume to split by label";
+				SplitDataByLabel(instances);
+				return;
+			}
 			RandomEngine rng = random_engine(_cmd.randSeed);
 			if (!_cmd.foldsSequential)
 				instances.Randomize(rng);
@@ -470,7 +512,7 @@ namespace gezi {
 			uint64 posAdjustedNum = negNum / negPart * posPart;
 
 			string infile = _cmd.datafile;
-			string suffix = _cmd.commandInput;
+			string suffix = replace(_cmd.commandInput, ':', '-');
 			string outfile = GetOutputFileName(infile, suffix);
 			if (posAdjustedNum == posNum)
 			{
@@ -486,15 +528,15 @@ namespace gezi {
 					int negCount = 0;
 					for (InstancePtr instance : instances)
 					{
-						if (negCount >= negAdjustedNum)
-						{
-							continue;
-						}
-						newInstances.push_back(instance);
 						if (instance->IsNegative())
 						{
+							if (negCount >= negAdjustedNum)
+							{
+								continue;
+							}
 							negCount++;
 						}
+						newInstances.push_back(instance);
 					}
 				}
 				else
@@ -503,15 +545,15 @@ namespace gezi {
 					int posCount = 0;
 					for (InstancePtr instance : instances)
 					{
-						if (posCount >= posAdjustedNum)
-						{
-							continue;
-						}
-						newInstances.push_back(instance);
 						if (instance->IsPositive())
 						{
+							if (posCount >= posAdjustedNum)
+							{
+								continue;
+							}
 							posCount++;
 						}
+						newInstances.push_back(instance);
 					}
 				}
 				Pval(outfile);
