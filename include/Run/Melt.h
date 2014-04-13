@@ -440,7 +440,7 @@ namespace gezi {
 			{
 				string suffix = STR(i) + "_" + STR(partNum);
 				string outfile = GetOutputFileName(infile, suffix);
-
+				Pval(outfile);
 				write(parts[i], outfile);
 			}
 		}
@@ -513,6 +513,7 @@ namespace gezi {
 						}
 					}
 				}
+				Pval(outfile);
 				write(newInstances, outfile);
 			}
 		}
