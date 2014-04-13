@@ -30,7 +30,7 @@ DEFINE_string(type, "simple", "");
 TEST(fastrank_loadtlc, func)
 {
 	FastRankPredictor predictor;
-	predictor.Load(FLAGS_i);
+	predictor.LoadText(FLAGS_i);
 
 	Vector fe(FLAGS_fe);
 
@@ -40,6 +40,8 @@ TEST(fastrank_loadtlc, func)
 	double probablity = predictor.Predict(fe, out);
 
 	Pval2(out, probablity);
+
+
 }
 
 int main(int argc, char *argv[])

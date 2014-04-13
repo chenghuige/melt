@@ -30,7 +30,8 @@ namespace gezi {
 			return "FastRankPredictor";
 		}
 
-		virtual void Load(string file) override
+		//Load Tlc format的文本模型文件
+		virtual void LoadText(string file) override
 		{
 			LoadSave::Load(file);
 
@@ -138,6 +139,20 @@ namespace gezi {
 			PVAL2(paramA, paramB);
 			_calibrator = make_shared<SigmoidCalibrator>(paramA, paramB);
 		}
+
+		virtual void Save(string path) override
+		{
+			Predictor::Save(path);
+			string modelFile = path + "/model";
+			serialize_util::save(*this, modelFile);
+		}
+
+		virtual void Load(string path) override
+		{
+			Predictor::Load(path);
+			string modelFile = path + "/model";
+			serialize_util::load(*this, modelFile);
+		}
 	protected:
 		//注意都是非稀疏的输入应该 稀疏会影响速度 但是不影响结果 而且对于线上 即使稀疏快一点 也无所谓了...
 		virtual Float Margin(Vector& features) override
@@ -168,6 +183,15 @@ namespace gezi {
 			}
 #endif // _DEBUG
 			return result;
+		}
+
+		friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive &ar, const unsigned int version)
+		{
+			ar & boost::serialization::base_object<Predictor>(*this);
+			ar & _trees;
+			ar & _identifer;
 		}
 	private:
 #ifdef _DEBUG

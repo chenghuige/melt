@@ -81,6 +81,24 @@ namespace gezi {
 	protected:
 	private:
 	public:
+		friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive &ar, const unsigned int version)
+		{
+			ar & _gainPValue;
+			ar & _gtChild;
+			ar & _leafValue;
+			ar & _lteChild;
+			ar & _maxOutput;
+			ar & _numLeaves;
+			ar & _previousLeafValue;
+			ar & _splitFeature;
+			ar & _splitGain;
+			ar & _threshold;
+			ar & _weight;
+
+			ar & _featureNames;
+		}
 #ifdef _DEBUG
 		DebugNode _debugNode;
 #endif // _DEBUG
