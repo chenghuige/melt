@@ -268,7 +268,7 @@ namespace gezi {
 
 			//hack for text input format //Not tested correctness yet
 			InstanceParser::TextFormatParsedTime(); //++ pared text from time这样表示需要使用词表数据
-			string testDataFile = _cmd.testDatafile.empty() ? _cmd.testDatafile : _cmd.datafile;
+			string testDatafile = _cmd.testDatafile.empty() ? _cmd.testDatafile : _cmd.datafile;
 			auto testInstances = create_instances(testDatafile);
 			CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
 			Test(testInstances, predictor, instFile);
