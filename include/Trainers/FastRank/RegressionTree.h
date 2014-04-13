@@ -26,7 +26,7 @@ namespace gezi {
 		RegressionTree& operator = (const RegressionTree&) = default;
 
 		RegressionTree(svec& featureNames)
-			:_featureNames(featureNames)
+			:_featureNames(&featureNames)
 		{
 
 		}
@@ -54,7 +54,7 @@ namespace gezi {
 				if (features[_splitFeature[node]] <= _threshold[node])
 				{
 #ifdef _DEBUG
-					_debugNode.paths.push_back(_featureNames[_splitFeature[node]] + " " +
+					_debugNode.paths.push_back((*_featureNames)[_splitFeature[node]] + " " +
 						STR(features[_splitFeature[node]]) + " <= " + STR(_threshold[node]));
 #endif // _DEBUG
 					node = _lteChild[node];
@@ -62,7 +62,7 @@ namespace gezi {
 				else
 				{
 #ifdef _DEBUG
-					_debugNode.paths.push_back(_featureNames[_splitFeature[node]] + " " +
+					_debugNode.paths.push_back((*_featureNames)[_splitFeature[node]] + " " +
 						STR(features[_splitFeature[node]]) + " > " + STR(_threshold[node]));
 #endif // _DEBUG
 					node = _gtChild[node];
@@ -114,7 +114,7 @@ namespace gezi {
 		dvec _splitGain;
 		dvec _threshold;
 		double _weight = 1.0;
-		svec& _featureNames;
+		svec* _featureNames;
 	};
 
 }  //----end of namespace gezi

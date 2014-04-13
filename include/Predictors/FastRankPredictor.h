@@ -152,6 +152,10 @@ namespace gezi {
 			Predictor::Load(path);
 			string modelFile = path + "/model";
 			serialize_util::load(*this, modelFile);
+			for (auto tree : _trees)
+			{
+				tree._featureNames = &_identifer.keys();
+			}
 		}
 	protected:
 		//注意都是非稀疏的输入应该 稀疏会影响速度 但是不影响结果 而且对于线上 即使稀疏快一点 也无所谓了...
