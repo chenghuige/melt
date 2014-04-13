@@ -32,7 +32,6 @@ TEST(fastrank_loadtlc, func)
 	FastRankPredictor predictor;
 	predictor.LoadText(FLAGS_i);
 
-	//注意如果稀疏构造 必须用const 否则调用Float& opeartor[]
 	Vector fe(FLAGS_fe);
 
 	Pval(fe[137]);
@@ -41,7 +40,6 @@ TEST(fastrank_loadtlc, func)
 	double probablity = predictor.Predict(fe, out);
 
 	Pval2(out, probablity);
-
 
 }
 
