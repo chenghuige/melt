@@ -73,7 +73,6 @@ namespace gezi {
 				_debugNode.score = _leafValue[~node];
 				//PVEC(paths);
 				//Pval_(_leafValue[~node], "PositiveOutput:");
-				_debugNode
 			}
 #endif // _DEBUG
 			return _leafValue[~node];

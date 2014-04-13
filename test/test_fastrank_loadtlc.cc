@@ -39,7 +39,7 @@ TEST(fastrank_loadtlc, func)
 	double out;
 	double probablity = predictor.Predict(fe, out);
 
-	Pval2(out, probability);
+	Pval2(out, probablity);
 }
 
 int main(int argc, char *argv[])
