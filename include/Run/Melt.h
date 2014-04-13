@@ -409,7 +409,7 @@ namespace gezi {
 				LOG(WARNING) << "Need input like -ci 1:1  -ci 1:3:2";
 				return;
 			}
-			ivec segs = from(segs_) << select()[](string a) { return INT(a); } << to_vec();
+			ivec segs = from(segs_) >> select([](string a) { return INT(a); }) >> to_vector();
 			_cmd.numFolds = sum(segs);
 			Pval(_cmd.numFolds);
 			ivec instanceFoldIndices = CVFoldCreator::CreateFoldIndices(instances, _cmd, rng);
