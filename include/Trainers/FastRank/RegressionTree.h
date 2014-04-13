@@ -44,7 +44,7 @@ namespace gezi {
 				{
 #ifdef _DEBUG
 					paths.push_back(_featureNames[_splitFeature[node]] + " " +
-						features[_splitFeature[node]] + " <= " + _threshold[node]);
+						STR(features[_splitFeature[node]]) + " <= " + STR(_threshold[node]));
 #endif // _DEBUG
 					node = _lteChild[node];
 				}
@@ -52,7 +52,7 @@ namespace gezi {
 				{
 #ifdef _DEBUG
 					paths.push_back(_featureNames[_splitFeature[node]] + " " +
-						features[_splitFeature[node]] + " > " + _threshold[node]);
+						STR(features[_splitFeature[node]]) + " > " + STR(_threshold[node]));
 #endif // _DEBUG
 					node = _gtChild[node];
 				}
