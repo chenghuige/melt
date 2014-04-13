@@ -20,10 +20,12 @@ namespace gezi {
 	{
 	public:
 		~RegressionTree() = default;
+		RegressionTree() = default;
 		RegressionTree(RegressionTree&&) = default;
 		RegressionTree& operator = (RegressionTree&&) = default;
 		RegressionTree(const RegressionTree&) = default;
 		RegressionTree& operator = (const RegressionTree&) = default;
+
 
 		RegressionTree(svec& featureNames)
 			:_featureNames(&featureNames)
