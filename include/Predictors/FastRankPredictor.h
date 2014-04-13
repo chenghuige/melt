@@ -148,7 +148,7 @@ namespace gezi {
 #pragma?omp parallel?for reduction(+: result)
 			for (size_t i = 0; i < _trees.size(); i++)
 			{
-				result += _trees.GetOutput(features);
+				result += _trees[i].GetOutput(features);
 			}
 		}
 	private:
