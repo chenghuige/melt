@@ -94,7 +94,7 @@ namespace gezi {
 
 		static string GetOutputFileName(string infile, string suffix)
 		{
-			return endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", suffix + ".txt") : infile + suffix;
+			return endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", "." + suffix + ".txt") : infile + "." + suffix;
 		}
 
 		void RunCrossValidation(Instances& instances)
@@ -334,7 +334,7 @@ namespace gezi {
 		{
 			Noticer nt("NormalizeInstances!");
 			string infile = _cmd.datafile;
-			string suffix = ".normed";
+			string suffix = "normed";
 			string outfile = _cmd.outfile.empty() ? GetOutputFileName(infile, suffix) : _cmd.outfile;
 			Pval(outfile);
 			string normalizerFile = _cmd.normalizerfile.empty() ?
@@ -369,7 +369,7 @@ namespace gezi {
 		{
 			Noticer nt("FeatureStatus!");
 			string infile = _cmd.datafile;
-			string suffix = "./featurestatus";
+			string suffix = "featurestatus";
 			string outfile = _cmd.outfile.empty() ? GetOutputFileName(infile, suffix)
 				: _cmd.outfile;
 			Instances instances = create_instances(_cmd.datafile);
