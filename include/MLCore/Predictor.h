@@ -166,7 +166,7 @@ namespace gezi {
 		}
 
 	protected:
-		virtual Float Margin(const Vector& features)
+		virtual Float Margin(Vector& features)
 		{
 			return 0;
 		}

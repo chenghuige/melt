@@ -34,7 +34,7 @@ namespace gezi {
 	public:
 
 		//输入特征 遍历树 输出叶子节点的数值
-		Float GetOutput(Vector& features)
+		Float GetOutput(const Vector& features) const
 		{
 			int node = 0;
 			while (node >= 0)

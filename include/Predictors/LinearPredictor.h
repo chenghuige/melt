@@ -84,7 +84,7 @@ namespace gezi {
 		}
 
 	protected:
-		virtual Float Margin(const Vector& features) override
+		virtual Float Margin(Vector& features) override
 		{
 			return _bias + dot(_weights, features);
 		}

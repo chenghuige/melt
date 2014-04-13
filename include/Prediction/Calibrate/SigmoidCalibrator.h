@@ -24,6 +24,14 @@ class SigmoidCalibrator : public CalibratorWrapper
 {
 public:
 
+	SigmoidCalibrator() = default;
+
+	SigmoidCalibrator(double a, double b)
+		:paramA(a), paramB(b)
+	{
+
+	}
+
 	virtual Float PredictProbability(Float output)
 	{
 		return sigmoid(output, paramA, paramB);

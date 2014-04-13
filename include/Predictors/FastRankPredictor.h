@@ -32,6 +32,8 @@ namespace gezi {
 
 		virtual void Load(string file) override
 		{
+			LoadSave::Load(file);
+
 			svec lines = read_lines(file);
 
 			size_t i = 0;
@@ -117,15 +119,36 @@ namespace gezi {
 				}
 			}
 
+			for (; i < lines.size(); i++)
+			{
+				if (startswith(lines[i], "[Evaluator:"))
+				{
+					i += 2;
+					break;
+				}
+			}
+
+			for (; i < lines.size(); i++)
+			{
+				if (startswith(lines[i], "[Evaluator:"))
+				{
+					i += 3;
+					break;
+				}
+			}
+			double paramB = -parse_double_param("Bias=", lines[i]);
+			double paramA = -parse_double_param("Weights=", lines[i + 3]);
+			_calibrator = make_shared<SigmoidCalibrator>(paramA, paramB);
 		}
 	protected:
-		virtual Float Margin(const Vector& features) override
+		//注意都是非稀疏的输入应该 稀疏会影响速度 但是不影响结果 而且对于线上 即使稀疏快一点 也无所谓了...
+		virtual Float Margin(Vector& features) override
 		{
 			Float result = 0;
-			#pragma?omp parallel?for reduction(+: sum)
+#pragma?omp parallel?for reduction(+: result)
 			for (size_t i = 0; i < _trees.size(); i++)
 			{
-
+				result += _trees.GetOutput(features);
 			}
 		}
 	private:
