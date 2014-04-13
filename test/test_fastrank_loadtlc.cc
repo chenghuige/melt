@@ -32,7 +32,8 @@ TEST(fastrank_loadtlc, func)
 	FastRankPredictor predictor;
 	predictor.LoadText(FLAGS_i);
 
-	Vector fe(FLAGS_fe);
+	//注意如果稀疏构造 必须用const
+	const Vector fe(FLAGS_fe);
 
 	Pval(fe[137]);
 
