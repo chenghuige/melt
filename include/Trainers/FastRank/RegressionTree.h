@@ -48,9 +48,6 @@ namespace gezi {
 					node = _gtChild[node];
 				}
 			}
-			Pval((~node));
-			Pval(_leafValue[~node]);
-			Pvec(_leafValue);
 			return _leafValue[~node];
 		}
 
