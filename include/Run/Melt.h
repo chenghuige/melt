@@ -61,17 +61,20 @@ namespace gezi {
 		enum class RunType
 		{
 			UNKNOWN = 0,
-			EVAL,
-			TRAIN,
-			TEST,
-			TRAIN_TEST,
-			FEATURE_SELECTION,
-			CREATE_INSTANCES,
-			NORMALIZE,
-			CHECK_DATA,
-			FEATURE_STATUS,
-			SHOW_FEATURES,
-			CONVERT
+			EVAL, //交叉验证
+			TRAIN, //训练
+			TEST,  //测试
+			TRAIN_TEST,  //训练+测试
+			FEATURE_SELECTION,  //特征选择  //参数选择放到外围python脚本 
+			CREATE_INSTANCES,  //将不符合normal格式的输入转换为符合的,例如catogry,text域的展开
+			NORMALIZE,  //进行归一化，输出结果到文本
+			CHECK_DATA, //检查数据 当前是进行minmax归一 提示无用特征
+			FEATURE_STATUS, //打印特征的均值方差信息　mean var
+			SHOW_FEATURES, //打印特征名
+			SHOW_INFOS, //展示输入数据的基本信息  特征数目，样本数目，正例比例
+			CONVERT, //对输入样本文件载入然后输出要求的格式 比如 dense -> sparse
+			SPLIT_DATA, //对输入样本进行切分  比如 1:1 1:3:2 同时保持每份中正反例比例维持和原始数据一致
+			CHANGE_RAIO //对输入样本进行正反例比例调整 比如 原始 1:30 调整为 1:1
 		};
 
 		MeltArguments& Cmd()
@@ -87,6 +90,11 @@ namespace gezi {
 				LOG(INFO) << setiosflags(ios::left) << setfill(' ') << setw(40)
 					<< item.first << " " << (int)item.second;
 			}
+		}
+
+		static string GetOutputFileName(string infile, string suffix)
+		{
+			return endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", suffix + ".txt") : infile + suffix;
 		}
 
 		void RunCrossValidation(Instances& instances)
@@ -326,11 +334,13 @@ namespace gezi {
 		{
 			Noticer nt("NormalizeInstances!");
 			string infile = _cmd.datafile;
-			string outfile = endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", ".normed.txt") : infile + ".normed";
+			string suffix = ".normed";
+			string outfile = _cmd.outfile.empty() ? GetOutputFileName(infile, suffix) : _cmd.outfile;
 			Pval(outfile);
 			string normalizerFile = _cmd.normalizerfile.empty() ?
 				(endswith(infile, ".txt") ?
 				boost::replace_last_copy(infile, ".txt", ".normalizer.txt") : infile + ".normalizer") : _cmd.normalizerfile;
+			Pval(normalizerFile);
 
 			Instances instances = create_instances(_cmd.datafile);
 			NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
@@ -350,11 +360,17 @@ namespace gezi {
 			normalizer->Prepare(instances);
 		}
 
+		void RunShowInfos()
+		{
+			auto instances = create_instances(_cmd.datafile); //内部打印信息
+		}
+
 		void RunFeatureStatus()
 		{
 			Noticer nt("FeatureStatus!");
 			string infile = _cmd.datafile;
-			string outfile = _cmd.outfile.empty() ? (endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", ".featurestatus.txt") : infile + ".featuestatus")
+			string suffix = "./featurestatus";
+			string outfile = _cmd.outfile.empty() ? GetOutputFileName(infile, suffix)
 				: _cmd.outfile;
 			Instances instances = create_instances(_cmd.datafile);
 			FeatureStatus::GenMeanVarInfo(instances, outfile, _cmd.featureName);
@@ -376,6 +392,128 @@ namespace gezi {
 			else
 			{
 				write(instances, _cmd.outfile, fileFormat);
+			}
+		}
+
+		//当前复用cross fold思路 
+		void RunSplitData()
+		{
+			auto instances = create_instances(_cmd.datafile);
+			RandomEngine rng = random_engine(_cmd.randSeed);
+			if (!_cmd.foldsSequential)
+				instances.Randomize(rng);
+			svec segs_ = split(_cmd.commandInput, ':');
+			int partNum = (int)segs_.size();
+			if (partNum <= 1)
+			{
+				LOG(WARNING) << "Need input like -ci 1:1  -ci 1:3:2";
+				return;
+			}
+			ivec segs = from(segs_) << select()[](string a) { return INT(a); } << to_vec();
+			_cmd.numFolds = sum(segs);
+			Pval(_cmd.numFolds);
+			ivec instanceFoldIndices = CVFoldCreator::CreateFoldIndices(instances, _cmd, rng);
+			vector<Instances> parts(partNum);
+
+			ivec maps(_cmd.numFolds);
+			int idx = 0;
+			for (int i = 0; i < partNum; i++)
+			{
+				for (int j = 0; j < (int)segs[i]; j++)
+				{
+					maps[idx++] = i;
+				}
+			}
+
+			for (int i = 0; i < partNum; i++)
+			{
+				parts[i].CopySchema(instances.schema);
+			}
+
+			for (size_t i = 0; i < instances.size(); i++)
+			{
+				parts[maps[instanceFoldIndices[i]]].push_back(instances[i]);
+			}
+
+			string infile = _cmd.datafile;
+			for (int i = 0; i < partNum; i++)
+			{
+				string suffix = STR(i) + "_" + STR(partNum);
+				string outfile = GetOutputFileName(infile, suffix);
+
+				write(parts[i], outfile);
+			}
+		}
+
+		//改变正反例的比例
+		void RunChangeRatio()
+		{
+			auto instances = create_instances(_cmd.datafile);
+			RandomEngine rng = random_engine(_cmd.randSeed);
+			if (!_cmd.foldsSequential)
+				instances.Randomize(rng);
+			svec segs = split(_cmd.commandInput, ':');
+			int partNum = (int)segs.size();
+			if (partNum != 2)
+			{
+				LOG(WARNING) << "Need input like -ci 1:2 -ci 1:2 the part num should be 2 not " << partNum;
+				return;
+			}
+
+			double posPart = DOUBLE(segs[0]);
+			double negPart = DOUBLE(segs[1]);
+
+			uint64 posNum = instances.PositiveCount();
+			uint64 negNum = instances.Count() - posNum;
+
+			uint64 posAdjustedNum = negNum / negPart * posPart;
+
+			string infile = _cmd.datafile;
+			string suffix = _cmd.commandInput;
+			string outfile = GetOutputFileName(infile, suffix);
+			if (posAdjustedNum == posNum)
+			{
+				LOG(WARNING) << "Need to do nothing";
+			}
+			else
+			{
+				Instances newInstances(instances.schema);
+				if (posAdjustedNum > posNum)
+				{
+					uint64 negAdjustedNum = posNum / posPart * negPart;
+					LOG(INFO) << "Shrink neg part num to " << negAdjustedNum;
+					int negCount = 0;
+					for (InstancePtr instance : instances)
+					{
+						if (negCount >= negAdjustedNum)
+						{
+							continue;
+						}
+						newInstances.push_back(instance);
+						if (instance->IsNegative())
+						{
+							negCount++;
+						}
+					}
+				}
+				else
+				{
+					LOG(INFO) << "Shrink pos part num to " << posAdjustedNum;
+					int posCount = 0;
+					for (InstancePtr instance : instances)
+					{
+						if (posCount >= posAdjustedNum)
+						{
+							continue;
+						}
+						newInstances.push_back(instance);
+						if (instance->IsPositive())
+						{
+							posCount++;
+						}
+					}
+				}
+				write(newInstances, outfile);
 			}
 		}
 
@@ -422,8 +560,17 @@ namespace gezi {
 			case RunType::SHOW_FEATURES:
 				RunShowFeatures();
 				break;
+			case RunType::SHOW_INFOS:
+				RunShowInfos();
+				break;
 			case RunType::CONVERT:
 				RunConvert();
+				break;
+			case RunType::SPLIT_DATA:
+				RunSplitData();
+				break;
+			case RunType::CHANGE_RAIO:
+				RunChangeRatio();
 				break;
 			case RunType::UNKNOWN:
 			default:
@@ -441,19 +588,28 @@ namespace gezi {
 			{ "cv", RunType::EVAL },
 			{ "eval", RunType::EVAL },
 			{ "train", RunType::TRAIN },
+			{ "tr", RunType::TRAIN },
 			{ "test", RunType::TEST },
+			{ "te", RunType::TEST },
 			{ "traintest", RunType::TRAIN_TEST },
 			{ "tt", RunType::TRAIN_TEST },
 			{ "featureselection", RunType::FEATURE_SELECTION },
 			{ "fs", RunType::FEATURE_SELECTION },
 			{ "createinstances", RunType::CREATE_INSTANCES },
+			{ "ci", RunType::CREATE_INSTANCES },
 			{ "norm", RunType::NORMALIZE },
 			{ "check", RunType::CHECK_DATA },
 			{ "featurestatus", RunType::FEATURE_STATUS },
 			{ "fss", RunType::FEATURE_STATUS },
 			{ "showfeatures", RunType::SHOW_FEATURES },
 			{ "sf", RunType::SHOW_FEATURES },
-			{ "convert", RunType::CONVERT }
+			{ "showinfos", RunType::SHOW_INFOS },
+			{ "si", RunType::SHOW_INFOS },
+			{ "convert", RunType::CONVERT },
+			{ "splitdata", RunType::SPLIT_DATA },
+			{ "sd", RunType::SPLIT_DATA },
+			{ "changeratio", RunType::CHANGE_RAIO },
+			{ "cr", RunType::CHANGE_RAIO }
 		};
 
 		map<string, FileFormat> _formats = {

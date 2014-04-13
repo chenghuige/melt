@@ -3,6 +3,7 @@
 #include "Run/Melt.h"
 
 DEFINE_string(c, "cv", "command: Options are: Train, Test, CV (cross validation), TrainTest, FeatureSelection, CreateInstances, Norm, Check");
+DEFINE_string(ci, "", "commandInput: Some commands need additional input like split data you need to iput like 1:1");
 DEFINE_string(cl, "LinearSVM", "classifierName: Classifier to use");
 DEFINE_string(cls, "", "classifierSettings: Classifier settings");
 
@@ -38,7 +39,7 @@ DEFINE_string(normalizer, "MinMax", "Which normalizer?");
 DEFINE_string(nf, "", "normalzierfile: specified the output normalzier text");
 
 DEFINE_string(fn, "", "featureName:");
-//DEFINE_string(ev, "python ./scripts/evaluate.py ", "evaluate: use what to evalute the result");
+//DEFINE_string(ev, "./tools/evaluate.simple/evaluate.simple ", "evaluate: use what to evalute the result");
 
 DEFINE_bool(calibrate, true, "calibrateOutput: use calibrator to gen probability?");
 DEFINE_string(calibrator, "sigmoid", "calibratorName: sigmoid/platt naive pav");
@@ -50,6 +51,7 @@ namespace gezi {
 	void Melt::ParseArguments()
 	{
 		_cmd.command = FLAGS_c;
+		_cmd.commandInput = FLAGS_ci;
 		_cmd.classifierName = FLAGS_cl;
 		_cmd.classifierSettings = FLAGS_cls;
 		_cmd.datafile = FLAGS_i;

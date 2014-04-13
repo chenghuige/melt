@@ -36,18 +36,19 @@ public:
 
 	virtual void Load(string path) override
 	{
-		Calibrator::Load(path);
+		LoadSave::Save(path);
 		serialize_util::load(*this, path);
 	}
 
 	virtual void Save(string path) override
 	{
+		LoadSave::Save(path);
 		serialize_util::save(*this, path);
 	}
 
 	virtual void SaveText(string file) override
 	{
-		Calibrator::SaveText(file);
+		LoadSave::SaveText(file);
 		ofstream ofs(file);
 		ofs << "CalibratorName=" << Name() << endl;
 		ofs << "paramA=" << paramA << endl;

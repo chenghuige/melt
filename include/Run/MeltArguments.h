@@ -19,7 +19,8 @@ namespace gezi {
 	struct MeltArguments
 	{
 		//c|Options are: Train, Test, CV (cross validation), TrainTest, FeatureSelection, CreateInstances
-		string command = "cv"; 
+		string command = "cv"; //c|
+		string commandInput = ""; //ci|
 		string classifierName = "LinearSvm";//cl|
 		string classifierSettings = ""; //cls|
 		int numFolds = 5;
@@ -44,7 +45,7 @@ namespace gezi {
 		string resultDir = "./result";
 		int resultIndex = 0;
 
-		string evaluate = "python ./scripts/evaluate.py ";
+		string evaluate = "./tools/evaluate.simple/evaluate.simple ";
 
 		bool preNormalize = false;
 

@@ -74,7 +74,7 @@ namespace gezi {
 		virtual void Initialize(Instances& instances) override
 		{
 			numFeatures = instances.FeatureNum();
-			_randRange = make_shared<RandomRange>(instances.Count());
+			_randRange = make_shared<RandomRange>(instances.Count(), random_engine(_args.randSeed));
 
 			if (_args.initialWeightsString.size() > 0)
 			{

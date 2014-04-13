@@ -22,9 +22,10 @@ namespace gezi {
 		return parser.Parse(infile);
 	}
 
+	//注意修改了intance 特别是最后clear了 sparse 转dense 暂未验证
 	inline void write_dense(Instance& instance, HeaderSchema& schema, ofstream& ofs)
 	{
-		instance.features.MakeDense();
+		instance.features.MakeDense(); //修改了 输入instance 如果不转换 []访问慢，这里也不便用ForEachAll
 		size_t featureIdx = 0, nameIdx = 0, attributeIdx = 0;
 		switch (schema.cloumnTypes[0])
 		{
@@ -70,8 +71,10 @@ namespace gezi {
 			}
 		}
 		ofs << endl;
-		instance.features.Clear();
+		instance.features.Clear(); //避免都转dense带来内存问题
 	}
+
+	//有heder dense 已经验证ok
 	inline void write_dense(Instances& instances, string outfile)
 	{
 		ofstream ofs(outfile);
@@ -85,9 +88,9 @@ namespace gezi {
 		}
 	}
 
+	//sparse 自己转换ok  但是要注意 如果是dense 转sparse 要确保 desne的feature 都是在其他属性后面的
 	inline void write_sparse(Instance& instance, HeaderSchema& schema, ofstream& ofs)
 	{
-		instance.features.MakeSparse();
 		size_t featureIdx = 0, nameIdx = 0, attributeIdx = 0;
 		switch (schema.cloumnTypes[0])
 		{
@@ -112,11 +115,12 @@ namespace gezi {
 
 		for (size_t i = 1; i < schema.cloumnTypes.size(); i++)
 		{
+			if (schema.cloumnTypes[i] == ColumnType::Feature)
+			{
+				break;
+			}
 			switch (schema.cloumnTypes[i])
 			{
-			case ColumnType::Feature:
-				ofs << "\t" << instance.features.indices[featureIdx++] << ":" << instance.features.values[featureIdx++];
-				break;
 			case ColumnType::Name:
 				ofs << "\t" << instance.names[nameIdx++];
 				break;
@@ -133,14 +137,11 @@ namespace gezi {
 				break;
 			}
 		}
-
-		for (; featureIdx < instance.features.indices.size(); featureIdx++)
+		instance.features.ForEachNonZero([&ofs](int index, Float value)
 		{
-			ofs << "\t" << instance.features.indices[featureIdx++] << ":" << instance.features.values[featureIdx++];
-		}
-
+			ofs << "\t" << index << ":" << value;
+		});
 		ofs << endl;
-		instance.features.Clear();
 	}
 
 	inline void write_sparse(Instances& instances, string outfile)
@@ -161,9 +162,22 @@ namespace gezi {
 
 	}
 
+	inline void write_libsvm(Instance& instance, HeaderSchema& schema, ofstream& ofs)
+	{
+		ofs << instance.label;
+		instance.features.ForEachNonZero([&ofs](int index, Float value)
+		{
+			ofs << " " << index + 1 << ":" << value;
+		});
+		ofs << endl;
+	}
 	inline void write_libsvm(Instances& instances, string outfile)
 	{
-
+		ofstream ofs(outfile);
+		for (InstancePtr instance : instances)
+		{
+			write_libsvm(*instance, instances.schema, ofs);
+		}
 	}
 
 	inline void write_arff(Instances& instances, string outfile)
@@ -190,6 +204,7 @@ namespace gezi {
 		case FileFormat::Text:
 			break;
 		case  FileFormat::LibSVM:
+			write_libsvm(instances, outfile);
 			break;
 		case FileFormat::Arff:
 			break;

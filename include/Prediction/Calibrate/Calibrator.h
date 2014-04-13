@@ -135,7 +135,7 @@ namespace gezi {
 	};
 
 	typedef shared_ptr<CalibratorStore> CalibratorStorePtr;
-	class Calibrator
+	class Calibrator : public LoadSave
 	{
 	public:
 		virtual ~Calibrator() {}
@@ -145,22 +145,7 @@ namespace gezi {
 			return 0.5;
 		}
 
-		virtual void Save(string path)
-		{
-
-		}
-
-		virtual void Load(string path)
-		{
-			VLOG(0) << Name() << " load from " << path;
-		}
-
-		virtual void SaveText(string file)
-		{
-			VLOG(0) << Name() << " save as text to " << file;
-		}
-
-		virtual string Name()
+		virtual string Name() override
 		{
 			return "Calibrator";
 		}

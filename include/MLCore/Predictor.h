@@ -28,7 +28,7 @@ namespace gezi {
 	//@TODO 多分类模型支持 重载 Fvec 或者Predict返回Fvec ?, Regression Rank等模型的支持
 	//@TODO TLC c#的那种接口的设计 能够迁移到c++吗
 	//var stronglyTypedPredictor = predictor as IPredictor<Instance, float>;
-	class Predictor
+	class Predictor : public LoadSave
 	{
 	public:
 		Predictor() = default;
@@ -38,7 +38,7 @@ namespace gezi {
 		{
 
 		}
-		virtual string Name() 
+		virtual string Name() override
 		{
 			return "Predictor";
 		}
@@ -128,9 +128,9 @@ namespace gezi {
 		{
 		}
 
-		virtual void Save(string path)
+		virtual void Save(string path) override
 		{
-			VLOG(0) << "Save " << Name() << " to folder " << path;
+			LoadSave::Save(path);
 			_path = path;
 			try_create_dir(path);
 			write_file(Name(), path + "/model.name.txt");
@@ -138,9 +138,9 @@ namespace gezi {
 			SAVE_SHARED_PTR(_calibrator);
 		}
 
-		virtual void Load(string path)
+		virtual void Load(string path) override
 		{
-			VLOG(0) << Name() << " load from " << path;
+			LoadSave::Load(path);
 			string normalizerName = read_file(OBJ_NAME_PATH(_normalizer));
 			if (!normalizerName.empty())
 			{
@@ -153,10 +153,9 @@ namespace gezi {
 			}
 		}
 
-		//SaveText是可选的 如果要使用 务必先调用Save 因为加载至使用Load
-		virtual void SaveText(string file)
+		virtual void SaveText(string file) override
 		{
-			VLOG(0) << Name() << " save as text to " << file;
+			LoadSave::SaveText(file);
 		}
 
 		void SaveText()

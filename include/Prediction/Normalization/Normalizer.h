@@ -22,7 +22,7 @@
 #include "feature/Feature.h" //@TODO remove
 namespace gezi {
 
-	class Normalizer
+	class Normalizer : public LoadSave
 	{
 	public:
 		enum class NormType
@@ -40,28 +40,8 @@ namespace gezi {
 		{
 
 		}
-
-		virtual void Save(string path)
-		{
-
-		}
-
-		virtual void Load(string path)
-		{
-			VLOG(0) << Name() << " load from " << path;
-		}
-
-		virtual void SaveText(string file)
-		{
-			VLOG(0) << Name() << " save as text to " << file;
-		}
-
-		virtual void LoadText(string infile)
-		{
-
-		}
-
-		virtual string Name()
+	
+		virtual string Name() override
 		{
 			return "Normalizer";
 		}

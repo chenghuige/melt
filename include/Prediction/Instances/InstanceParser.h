@@ -649,6 +649,7 @@ namespace gezi {
 		{
 			Pval(_instances.FeatureNum());
 			Pval(_instances.Count());
+			Pval(_instances.PositiveCount());
 			PVEC(_instances.schema.tagNames);
 			PVEC(_instances.schema.attributeNames);
 			PVAL(IsDense());

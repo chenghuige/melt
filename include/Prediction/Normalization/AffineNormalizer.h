@@ -68,7 +68,7 @@ namespace gezi {
 
 		virtual void SaveText(string outfile) override
 		{
-			Normalizer::SaveText(outfile);
+			LoadSave::SaveText(outfile);
 			ofstream ofs(outfile);
 			ofs << "NormalizerName=" << Name() << endl;
 			ofs << "Trunct=" << (int)_trunct << endl;
@@ -81,7 +81,7 @@ namespace gezi {
 
 		virtual void Save(string path) override
 		{
-			VLOG(0) << "AffineNomralizer save " << path;
+			LoadSave::Save(path);
 			serialize_util::save(*this, path);
 		}
 
