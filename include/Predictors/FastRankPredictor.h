@@ -163,7 +163,7 @@ namespace gezi {
 			sort(_debugNodes.begin(), _debugNodes.end());
 			for (RegressionTree::DebugNode& node : _debugNodes)
 			{
-				VLOG(3) << node.id << " " << node.score << " ";
+				VLOG(3) << node.id << "\t" << node.score << "\t" << node.paths.size();
 				PVEC(node.paths);
 			}
 #endif // _DEBUG
