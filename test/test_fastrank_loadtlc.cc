@@ -33,7 +33,7 @@ TEST(fastrank_loadtlc, func)
 	predictor.LoadText(FLAGS_i);
 
 	//注意如果稀疏构造 必须用const 否则调用Float& opeartor[]
-	const Vector fe(FLAGS_fe);
+	Vector fe(FLAGS_fe);
 
 	Pval(fe[137]);
 
