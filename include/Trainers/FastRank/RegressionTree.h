@@ -39,7 +39,7 @@ namespace gezi {
 			int node = 0;
 			while (node >= 0)
 			{
-				PVAL3(node, _featureNames[_splitFeature[node]], features[_splitFeature[node]], _threshold[node]);
+				PVAL4(node, _featureNames[_splitFeature[node]], features[_splitFeature[node]], _threshold[node]);
 				if (features[_splitFeature[node]] <= _threshold[node])
 				{
 					node = _lteChild[node];
