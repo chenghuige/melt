@@ -149,6 +149,7 @@ namespace gezi {
 			for (size_t i = 0; i < _trees.size(); i++)
 			{
 				result += _trees[i].GetOutput(features);
+				PVAL(result);
 			}
 			return result;
 		}
