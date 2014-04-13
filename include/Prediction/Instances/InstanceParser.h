@@ -437,8 +437,8 @@ namespace gezi {
 
 				if (!instance.names.empty())
 				{
-					if (startswith(instance.names[0], "_"))
-						instance.names[0] = instance.names[0].substr(1);
+					/*if (startswith(instance.names[0], "_"))
+						instance.names[0] = instance.names[0].substr(1);*/
 					instance.name = join(instance.names, _args.ncsep);
 				}
 			}

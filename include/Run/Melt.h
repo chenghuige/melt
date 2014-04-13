@@ -207,6 +207,11 @@ namespace gezi {
 				double output;
 				double probability = predictor->Predict(instance, output);
 				string name = instance->name.empty() ? STR(idx) : instance->name;
+				if (startswith(name, '_'))
+				{
+					name = name.substr(1);
+				}
+				
 				int assigned = output > 0 ? 1 : 0;
 				ofs << name << "\t" << instance->label << "\t"
 					<< assigned << "\t" << output << "\t"
