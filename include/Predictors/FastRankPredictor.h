@@ -94,7 +94,6 @@ namespace gezi {
 				{
 					RegressionTree tree(_identifer.keys());
 					string splits = parse_string_param("SplitFeatures=", lines[i++]);
-					PVAL(splits);
 					tree._splitFeature = from(split(splits, '\t')) >> select([&fnames, this](string a)
 					{
 						return _identifer.id(fnames[INT(split(a, ':')[1]) - 1]);
@@ -102,18 +101,14 @@ namespace gezi {
 
 					i += 2;
 					string lefts = parse_string_param("LTEChild=", lines[i++]);
-					PVAL(lefts);
 					tree._lteChild = from(split(lefts)) >> select([](string a) { return INT(a); }) >> to_vector();
 					string rights = parse_string_param("GTChild=", lines[i++]);
-					PVAL(rights);
 					tree._gtChild = from(split(rights)) >> select([](string a) { return INT(a); }) >> to_vector();
 
 					string thrsholds = parse_string_param("Threshold=", lines[i++]);
-					PVAL(thrsholds);
 					tree._threshold = from(split(thrsholds)) >> select([](string a) { return DOUBLE(a); }) >> to_vector();
 
 					string outputs = parse_string_param("Output=", lines[i++]);
-					PVAL(outputs);
 					tree._leafValue = from(split(outputs)) >> select([](string a) { return DOUBLE(a); }) >> to_vector();
 					_trees.emplace_back(tree);
 				}
@@ -149,7 +144,6 @@ namespace gezi {
 			for (size_t i = 0; i < _trees.size(); i++)
 			{
 				result += _trees[i].GetOutput(features);
-				PVAL(result);
 			}
 			return result;
 		}

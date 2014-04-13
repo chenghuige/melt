@@ -39,7 +39,6 @@ namespace gezi {
 			int node = 0;
 			while (node >= 0)
 			{
-				PVAL4(node, _featureNames[_splitFeature[node]], features[_splitFeature[node]], _threshold[node]);
 				if (features[_splitFeature[node]] <= _threshold[node])
 				{
 					node = _lteChild[node];
@@ -49,7 +48,6 @@ namespace gezi {
 					node = _gtChild[node];
 				}
 			}
-			PVAL2(~node, _leafValue[~node]);
 			return _leafValue[~node];
 		}
 
