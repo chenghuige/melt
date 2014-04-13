@@ -190,8 +190,8 @@ namespace gezi {
 		void serialize(Archive &ar, const unsigned int version)
 		{
 			ar & boost::serialization::base_object<Predictor>(*this);
-			ar & _trees;
 			ar & _identifer;
+			ar & _trees;
 		}
 	private:
 #ifdef _DEBUG
