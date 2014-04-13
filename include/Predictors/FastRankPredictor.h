@@ -145,7 +145,7 @@ namespace gezi {
 		virtual Float Margin(Vector& features) override
 		{
 			Float result = 0;
-#pragma omp parallel for reduction(+: result)
+//#pragma omp parallel for reduction(+: result)
 			for (size_t i = 0; i < _trees.size(); i++)
 			{
 				result += _trees[i].GetOutput(features);
