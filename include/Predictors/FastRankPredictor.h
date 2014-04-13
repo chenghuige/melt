@@ -148,6 +148,7 @@ namespace gezi {
 			{
 				result += _trees[i].GetOutput(features);
 			}
+			PVAL(result);
 			return result;
 		}
 	private:
