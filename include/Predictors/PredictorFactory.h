@@ -15,6 +15,7 @@
 #define PREDICTORS__PREDICTOR_FACTORY_H_
 
 #include "Predictors/LinearPredictor.h"
+#include "Predictors/FastRankPredictor.h"
 namespace gezi {
 
 class PredictorFactory 
@@ -23,10 +24,15 @@ public:
 	static PredictorPtr CreatePredictor(string name)
 	{
 		boost::to_lower(name);
-		if (name == "linearsvm" || name == "linear" || name == "linearpredictor")
+		if (contains(name, "linear"))
 		{
 			return make_shared<LinearPredictor>();
 		}
+		else if (contains(name, "fastrank"))
+		{
+			return make_shared<FastRankPredictor>();
+		}
+		
 		LOG(WARNING) << name << " is not supported now, return nullptr";
 		return nullptr;
 	}

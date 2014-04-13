@@ -15,8 +15,6 @@
 #define PREDICTORS__LINEAR_PREDICTOR_H_
 
 #include "MLCore/Predictor.h"
-#include "Prediction/Normalization/Normalizer.h"
-#include "Prediction/Calibrate/Calibrator.h"
 namespace gezi {
 
 	class LinearPredictor : public Predictor

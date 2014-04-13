@@ -70,6 +70,7 @@
     <ClCompile Include="src\Prediction\Trainers\LinearSVM.cpp" />
     <ClCompile Include="src\Run\Melt.cpp" />
     <ClCompile Include="test\test_fastrank_classification.cc" />
+    <ClCompile Include="test\test_fastrank_loadtlc.cc" />
     <ClCompile Include="test\test_normalize.cc" />
     <ClCompile Include="test\test_parse_input.cc" />
     <ClCompile Include="test\test_seralize.cc" />
@@ -104,6 +105,8 @@
     <ClInclude Include="include\Prediction\Normalization\MinMaxNormalizer.h" />
     <ClInclude Include="include\Prediction\Normalization\Normalizer.h" />
     <ClInclude Include="include\Prediction\Normalization\NormalizerFactory.h" />
+    <ClInclude Include="include\Predictors\BoostedTreePredictor.h" />
+    <ClInclude Include="include\Predictors\FastRankPredictor.h" />
     <ClInclude Include="include\Predictors\FastRank\FastRankClassification.h" />
     <ClInclude Include="include\Predictors\FastRank\FastRankRanking.h" />
     <ClInclude Include="include\Predictors\FastRank\FastRankRegression.h" />
@@ -113,6 +116,8 @@
     <ClInclude Include="include\Run\Melt.h" />
     <ClInclude Include="include\Run\MeltArguments.h" />
     <ClInclude Include="include\Tools\FeatureStatus.h" />
+    <ClInclude Include="include\Trainers\BoostedTree\RegressionTree.h" />
+    <ClInclude Include="include\Trainers\FastRank\RegressionTree.h" />
     <ClInclude Include="include\Trainers\SVM\LinearSVM.h" />
     <ClInclude Include="include\Utils\FeatureStatus.h" />
   </ItemGroup>

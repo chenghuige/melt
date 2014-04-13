@@ -161,5 +161,17 @@
     <ClInclude Include="include\Predictors\PredictorFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Predictors\BoostedTreePredictor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Predictors\FastRankPredictor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Trainers\BoostedTree\RegressionTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Trainers\FastRank\RegressionTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
