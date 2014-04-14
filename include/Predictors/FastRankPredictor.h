@@ -150,7 +150,7 @@ namespace gezi {
 			Predictor::Save(path);
 			string modelFile = path + "/model";
 			serialize_util::save(*this, modelFile);
-			using boost::filesystem;
+			using namespace boost::filesystem;
 			copy_file(_textModelPath, path + "/model.txt", copy_option::overwrite_if_exists);
 		}
 
