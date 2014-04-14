@@ -47,7 +47,9 @@ TEST(fastrank_loadtlc, func)
 
 	{
 		FastRankPredictor predictor;
+		LOG(INFO) << "before loading";
 		predictor.Load('./data/fastrank');
+		LOG(INFO) << "before predicting";
 		Vector fe(FLAGS_fe);
 
 		Pval(fe[137]);
