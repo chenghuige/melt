@@ -150,10 +150,13 @@ namespace gezi {
 			Predictor::Save(path);
 			string modelFile = path + "/model";
 			serialize_util::save(*this, modelFile);
+			using boost::filesystem;
+			copy_file(_textModelPath, path + "/model.txt", copy_option::overwrite_if_exists);
 		}
 
 		virtual void Load(string path) override
 		{
+			_textModelPath = path;
 			Predictor::Load(path);
 			string modelFile = path + "/model";
 			serialize_util::load(*this, modelFile);
@@ -209,6 +212,9 @@ namespace gezi {
 
 		vector<RegressionTree> _trees;
 		Identifer _identifer;
+
+		//temply used shared between load save function
+		string _textModelPath;
 	};
 
 }  //----end of namespace gezi
