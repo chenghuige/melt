@@ -48,7 +48,7 @@ namespace gezi {
 	public:
 
 		//输入特征 遍历树 输出叶子节点的数值
-		Float GetOutput(Vector& features) 
+		Float GetOutput(Vector& features)
 		{
 			int node = 0;
 			while (node >= 0)
@@ -57,7 +57,8 @@ namespace gezi {
 				{
 #ifdef _DEBUG
 					_debugNode.paths.push_back((*_featureNames)[_splitFeature[node]] + " " +
-						STR(features[_splitFeature[node]]) + " <= " + STR(_threshold[node]));
+						STR(features[_splitFeature[node]]) + " <= " + STR(_threshold[node]))
+						+ " " << STR(_splitGain[node]) + " " + STR(_gainPValue[node]);
 #endif // _DEBUG
 					node = _lteChild[node];
 				}
@@ -65,7 +66,8 @@ namespace gezi {
 				{
 #ifdef _DEBUG
 					_debugNode.paths.push_back((*_featureNames)[_splitFeature[node]] + " " +
-						STR(features[_splitFeature[node]]) + " > " + STR(_threshold[node]));
+						STR(features[_splitFeature[node]]) + " > " + STR(_threshold[node]))
+						+ " " << STR(_splitGain[node]) + " " + STR(_gainPValue[node]);
 #endif // _DEBUG
 					node = _gtChild[node];
 				}

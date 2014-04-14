@@ -102,7 +102,12 @@ namespace gezi {
 						return index;
 					}) >> to_vector();
 
-					i += 2;
+					string splitGains = parse_string_param("SplitGain=", lines[i++]);
+					tree._splitGain = from(split(splitGains)) >> select([](string a) { return DOUBLE(a); }) >> to_vector();
+					
+					string gainPvalues = parse_string_param("GainPValue=", lines[i++]);
+					tree._gainPValue = from(split(gainPvalues)) >> select([](string a) { return DOUBLE(a); }) >> to_vector();
+
 					string lefts = parse_string_param("LTEChild=", lines[i++]);
 					tree._lteChild = from(split(lefts)) >> select([](string a) { return INT(a); }) >> to_vector();
 					string rights = parse_string_param("GTChild=", lines[i++]);

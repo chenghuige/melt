@@ -29,18 +29,34 @@ DEFINE_string(type, "simple", "");
 
 TEST(fastrank_loadtlc, func)
 {
-	FastRankPredictor predictor;
-	predictor.LoadText(FLAGS_i);
+	{
+		FastRankPredictor predictor;
+		predictor.LoadText(FLAGS_i);
 
-	Vector fe(FLAGS_fe);
+		Vector fe(FLAGS_fe);
 
-	Pval(fe[137]);
+		Pval(fe[137]);
 
-	double out;
-	double probablity = predictor.Predict(fe, out);
+		double out;
+		double probablity = predictor.Predict(fe, out);
 
-	Pval2(out, probablity);
+		Pval2(out, probablity);
 
+		predictor.Save('./data/fastrank');
+	}
+
+	{
+		FastRankPredictor predictor;
+		predictor.Load('./data/fastrank');
+		Vector fe(FLAGS_fe);
+
+		Pval(fe[137]);
+
+		double out;
+		double probablity = predictor.Predict(fe, out);
+
+		Pval2(out, probablity);
+	}
 }
 
 int main(int argc, char *argv[])
