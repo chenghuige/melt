@@ -82,6 +82,15 @@ namespace gezi {
 			return _leafValue[~node];
 		}
 
+		void Print()
+		{
+
+		}
+
+		void Print(Vector& features)
+		{
+
+		}
 	protected:
 	private:
 	public:
