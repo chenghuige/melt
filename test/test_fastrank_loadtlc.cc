@@ -42,14 +42,12 @@ TEST(fastrank_loadtlc, func)
 
 		Pval2(out, probablity);
 
-		predictor.Save('./data/fastrank');
+		predictor.Save("./data/fastrank");
 	}
 
 	{
 		FastRankPredictor predictor;
-		LOG(INFO) << "before loading";
-		predictor.Load('./data/fastrank');
-		LOG(INFO) << "before predicting";
+		predictor.Load("./data/fastrank");
 		Vector fe(FLAGS_fe);
 
 		Pval(fe[137]);
