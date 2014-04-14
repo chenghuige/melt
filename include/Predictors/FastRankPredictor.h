@@ -33,6 +33,7 @@ namespace gezi {
 		//Load Tlc format的文本模型文件
 		virtual void LoadText(string file) override
 		{
+			_textModelPath = file;
 			LoadSave::Load(file);
 
 			svec lines = read_lines(file);
@@ -149,14 +150,15 @@ namespace gezi {
 		{
 			Predictor::Save(path);
 			string modelFile = path + "/model";
+			if (!_textModelPath.empty())
+			{ //Hack 拷贝模型文本文件 便于跟踪
+				copy_file(_textModelPath, path + "/model.txt");
+			}
 			serialize_util::save(*this, modelFile);
-			using namespace boost::filesystem;
-			copy_file(_textModelPath, path + "/model.txt", copy_option::overwrite_if_exists);
 		}
 
 		virtual void Load(string path) override
 		{
-			_textModelPath = path;
 			Predictor::Load(path);
 			string modelFile = path + "/model";
 			serialize_util::load(*this, modelFile);
