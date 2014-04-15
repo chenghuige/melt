@@ -37,8 +37,8 @@ void run(string modelText, string binModelPath)
 		double out2;
 		double probablity2 = predictor2->Predict(fe, out2);
 		Pval2(out2, probablity2);
-		CHECK_EQ(out, out2);
-		CHECK_EQ(probablity, probablity2);
+		CHECK_DOUBLE_EQ(out, out2);
+		CHECK_DOUBLE_EQ(probablity, probablity2);
 	}
 }
 

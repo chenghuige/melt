@@ -145,11 +145,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=120955aa2ed1047761a34877a1ce662d  COMAKE
+COMAKE_MD5=34fbb35c709e327aedb4e6a3843aa13e  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check .copy-so melt 
+all:comake2_makefile_check .copy-so melt libmelt.a 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -173,10 +173,13 @@ clean:ccpclean
 	rm -rf ld-linux-x86-64.so.2
 	rm -rf melt
 	rm -rf ./output/bin/melt
+	rm -rf libmelt.a
+	rm -rf ./output/lib/libmelt.a
 	rm -rf melt_melt.o
 	rm -rf src/Prediction/Instances/melt_InstanceParser.o
 	rm -rf src/Prediction/Trainers/melt_LinearSVM.o
 	rm -rf src/Run/melt_Melt.o
+	rm -rf src/Wrapper/melt_PredictorFactory.o
 
 .PHONY:dist
 dist:
@@ -295,6 +298,18 @@ melt:melt_melt.o \
 	mkdir -p ./output/bin
 	cp -f --link melt ./output/bin
 
+libmelt.a:src/Prediction/Instances/melt_InstanceParser.o \
+  src/Prediction/Trainers/melt_LinearSVM.o \
+  src/Run/melt_Melt.o \
+  src/Wrapper/melt_PredictorFactory.o
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibmelt.a[0m']"
+	ar crs libmelt.a src/Prediction/Instances/melt_InstanceParser.o \
+  src/Prediction/Trainers/melt_LinearSVM.o \
+  src/Run/melt_Melt.o \
+  src/Wrapper/melt_PredictorFactory.o
+	mkdir -p ./output/lib
+	cp -f --link libmelt.a ./output/lib
+
 melt_melt.o:melt.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt_melt.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o melt_melt.o melt.cc
@@ -310,6 +325,14 @@ src/Prediction/Trainers/melt_LinearSVM.o:src/Prediction/Trainers/LinearSVM.cpp
 src/Run/melt_Melt.o:src/Run/Melt.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Run/melt_Melt.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o src/Run/melt_Melt.o src/Run/Melt.cpp
+
+src/Wrapper/melt_PredictorFactory.o:src/Wrapper/PredictorFactory.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Wrapper/melt_PredictorFactory.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o src/Wrapper/melt_PredictorFactory.o src/Wrapper/PredictorFactory.cpp
 
 endif #ifeq ($(shell uname -m),x86_64)
 
