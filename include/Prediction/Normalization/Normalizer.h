@@ -16,10 +16,10 @@
 
 #ifndef PREDICTION__NORMALIZATION__NORMALIZER_H_
 #define PREDICTION__NORMALIZATION__NORMALIZER_H_
+
 #include "common_util.h"
 #include "Prediction/Instances/Instances.h"
 #include "Numeric/Vector/vector_util.h"
-#include "feature/Feature.h" //@TODO remove
 namespace gezi {
 
 	class Normalizer : public LoadSave
@@ -189,17 +189,6 @@ namespace gezi {
 					apply(vec, _shiftIndices, func);
 				}
 				vec.normalized = true;
-			}
-		}
-
-		//@TODO remove 在线 都按照sparse处理 归一化
-		template<typename Func>
-		void Normalize(Feature& feature, Func func)
-		{
-			if (!feature.normalized)
-			{
-				NormalizeSparseFast(feature, func);
-				feature.normalized = true;
 			}
 		}
 

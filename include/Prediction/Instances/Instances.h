@@ -13,9 +13,11 @@
 
 #ifndef PREDICTION__INSTANCES__INSTANCES_H_
 #define PREDICTION__INSTANCES__INSTANCES_H_
+#include "common_util.h"
 #include "Prediction/Instances/HeaderSchema.h"
 #include "Prediction/Instances/Instance.h"
 #include "random_util.h"
+
 namespace gezi {
 
 	struct Instances : public ListInstances
@@ -42,17 +44,17 @@ namespace gezi {
 			schema = schema_;
 		}
 
-		uint64 InstanceNum()
+		uint64 InstanceNum() const
 		{
 			return this->size();
 		}
 
-		uint64 Size()
+		uint64 Size() const
 		{
 			return this->size();
 		}
 
-		uint64 Count()
+		uint64 Count() const
 		{
 			return this->size();
 		}
@@ -67,7 +69,7 @@ namespace gezi {
 			return schema.NumFeatures();
 		}
 
-		svec FeatureNames() const
+		const svec& FeatureNames() const
 		{
 			return schema.featureNames;
 		}

@@ -1,8 +1,8 @@
 #COMAKE2 edit-mode: -*- Makefile -*-
 ####################64Bit Mode####################
 ifeq ($(shell uname -m),x86_64)
-CC=g++
-CXX=g++
+CC=../../../../../ps/se/toolchain/gcc_only_4.8.2/bin/g++
+CXX=../../../../../ps/se/toolchain/gcc_only_4.8.2/bin/g++
 CXXFLAGS=-g \
   -O4 \
   -pipe \
@@ -16,8 +16,7 @@ CXXFLAGS=-g \
   -fpermissive \
   -Wno-write-strings \
   -Wno-literal-suffix \
-  -Wno-unused-local-typedefs \
-  -fopenmp
+  -Wno-unused-local-typedefs
 CFLAGS=-g \
   -O4 \
   -pipe \
@@ -31,8 +30,7 @@ CFLAGS=-g \
   -fpermissive \
   -Wno-write-strings \
   -Wno-literal-suffix \
-  -Wno-unused-local-typedefs \
-  -fopenmp
+  -Wno-unused-local-typedefs
 CPPFLAGS=-D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\"
@@ -145,11 +143,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=34fbb35c709e327aedb4e6a3843aa13e  COMAKE
+COMAKE_MD5=f3aafdb6df2a1f0ed0cde7b2723a0030  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check .copy-so melt libmelt.a 
+all:comake2_makefile_check libmelt.a 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -169,16 +167,8 @@ ccpclean:
 .PHONY:clean
 clean:ccpclean
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mclean[0m']"
-	rm -rf .copy-so
-	rm -rf ld-linux-x86-64.so.2
-	rm -rf melt
-	rm -rf ./output/bin/melt
 	rm -rf libmelt.a
 	rm -rf ./output/lib/libmelt.a
-	rm -rf melt_melt.o
-	rm -rf src/Prediction/Instances/melt_InstanceParser.o
-	rm -rf src/Prediction/Trainers/melt_LinearSVM.o
-	rm -rf src/Run/melt_Melt.o
 	rm -rf src/Wrapper/melt_PredictorFactory.o
 
 .PHONY:dist
@@ -198,133 +188,11 @@ love:
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlove[0m']"
 	@echo "make love done"
 
-.copy-so:
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m.copy-so[0m']"
-	ln -s ../../../../../ps/se/toolchain/x86_64-unknown-linux-gnu-4.8.1-2.9-2.20-2.6.32/x86_64-unknown-linux-gnu/lib//ld-linux-x86-64.so.2 ld-linux-x86-64.so.2
-
-melt:melt_melt.o \
-  src/Prediction/Instances/melt_InstanceParser.o \
-  src/Prediction/Trainers/melt_LinearSVM.o \
-  src/Run/melt_Melt.o
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt[0m']"
-	$(CXX) melt_melt.o \
-  src/Prediction/Instances/melt_InstanceParser.o \
-  src/Prediction/Trainers/melt_LinearSVM.o \
-  src/Run/melt_Melt.o -Xlinker "-("  ../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
-  ../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
-  ../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
-  ../../../../../com/btest/gtest/output/lib/libgtest.a \
-  ../../../../../com/btest/gtest/output/lib/libgtest_main.a \
-  ../../../../../lib2-64/bsl/lib/libbsl.a \
-  ../../../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
-  ../../../../../lib2-64/bsl/lib/libbsl_archive.a \
-  ../../../../../lib2-64/bsl/lib/libbsl_buffer.a \
-  ../../../../../lib2-64/bsl/lib/libbsl_check_cast.a \
-  ../../../../../lib2-64/bsl/lib/libbsl_exception.a \
-  ../../../../../lib2-64/bsl/lib/libbsl_pool.a \
-  ../../../../../lib2-64/bsl/lib/libbsl_utils.a \
-  ../../../../../lib2-64/bsl/lib/libbsl_var.a \
-  ../../../../../lib2-64/bsl/lib/libbsl_var_implement.a \
-  ../../../../../lib2-64/bsl/lib/libbsl_var_utils.a \
-  ../../../../../lib2-64/ccode/lib/libulccode.a \
-  ../../../../../lib2-64/dict/lib/libuldict.a \
-  ../../../../../lib2-64/libcrf/lib/libcrf.a \
-  ../../../../../lib2-64/others-ex/lib/libullib_ex.a \
-  ../../../../../lib2-64/postag/lib/libpostag.a \
-  ../../../../../lib2-64/ullib/lib/libullib.a \
-  ../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../public/comlog-plugin/libcomlog.a \
-  ../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
-  ../../../../../public/configure/libconfig.a \
-  ../../../../../public/connectpool/libconnectpool.a \
-  ../../../../../public/odict/libodict.a \
-  ../../../../../public/spreg/libspreg.a \
-  ../../../../../public/uconv/libuconv.a \
-  ../../../../../quality/autotest/reportlib/cpp/libautotest.a \
-  ../../../../../third-64/boost/lib/libboost_atomic.a \
-  ../../../../../third-64/boost/lib/libboost_chrono.a \
-  ../../../../../third-64/boost/lib/libboost_context.a \
-  ../../../../../third-64/boost/lib/libboost_date_time.a \
-  ../../../../../third-64/boost/lib/libboost_exception.a \
-  ../../../../../third-64/boost/lib/libboost_filesystem.a \
-  ../../../../../third-64/boost/lib/libboost_graph.a \
-  ../../../../../third-64/boost/lib/libboost_locale.a \
-  ../../../../../third-64/boost/lib/libboost_math_c99.a \
-  ../../../../../third-64/boost/lib/libboost_math_c99f.a \
-  ../../../../../third-64/boost/lib/libboost_math_c99l.a \
-  ../../../../../third-64/boost/lib/libboost_math_tr1.a \
-  ../../../../../third-64/boost/lib/libboost_math_tr1f.a \
-  ../../../../../third-64/boost/lib/libboost_math_tr1l.a \
-  ../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
-  ../../../../../third-64/boost/lib/libboost_program_options.a \
-  ../../../../../third-64/boost/lib/libboost_python.a \
-  ../../../../../third-64/boost/lib/libboost_random.a \
-  ../../../../../third-64/boost/lib/libboost_regex.a \
-  ../../../../../third-64/boost/lib/libboost_serialization.a \
-  ../../../../../third-64/boost/lib/libboost_signals.a \
-  ../../../../../third-64/boost/lib/libboost_system.a \
-  ../../../../../third-64/boost/lib/libboost_test_exec_monitor.a \
-  ../../../../../third-64/boost/lib/libboost_thread.a \
-  ../../../../../third-64/boost/lib/libboost_timer.a \
-  ../../../../../third-64/boost/lib/libboost_unit_test_framework.a \
-  ../../../../../third-64/boost/lib/libboost_wave.a \
-  ../../../../../third-64/boost/lib/libboost_wserialization.a \
-  ../../../../../third-64/gflags/lib/libgflags.a \
-  ../../../../../third-64/gflags/lib/libgflags_nothreads.a \
-  ../../../../../third-64/glog/lib/libglog.a \
-  ../../../../../third-64/gtest/lib/libgtest.a \
-  ../../../../../third-64/gtest/lib/libgtest_main.a \
-  ../../../../../third-64/libcurl/lib/libcurl.a \
-  ../../../../../third-64/pcre/lib/libpcre.a \
-  ../../../../../third-64/pcre/lib/libpcrecpp.a \
-  ../../../../../third-64/pcre/lib/libpcreposix.a \
-  ../../../../../third-64/tcmalloc/lib/libprofiler.a \
-  ../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
-  ../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
-  ../../../../../third-64/tcmalloc/lib/libtcmalloc_debug.a \
-  ../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal.a \
-  ../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal_debug.a -lpthread \
-  -lcrypto \
-  -lrt \
-  -lssl \
-  -lldap \
-  -lcurl \
-  -ldl \
-  -rdynamic \
-  -lgomp \
-  -rdynamic \
-  -Wl,-rpath=../../../../../../ps/se/toolchain/x86_64-unknown-linux-gnu-4.8.1-2.9-2.20-2.6.32/x86_64-unknown-linux-gnu/lib/ \
-  -lgomp -Xlinker "-)" -o melt
-	mkdir -p ./output/bin
-	cp -f --link melt ./output/bin
-
-libmelt.a:src/Prediction/Instances/melt_InstanceParser.o \
-  src/Prediction/Trainers/melt_LinearSVM.o \
-  src/Run/melt_Melt.o \
-  src/Wrapper/melt_PredictorFactory.o
+libmelt.a:src/Wrapper/melt_PredictorFactory.o
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibmelt.a[0m']"
-	ar crs libmelt.a src/Prediction/Instances/melt_InstanceParser.o \
-  src/Prediction/Trainers/melt_LinearSVM.o \
-  src/Run/melt_Melt.o \
-  src/Wrapper/melt_PredictorFactory.o
+	ar crs libmelt.a src/Wrapper/melt_PredictorFactory.o
 	mkdir -p ./output/lib
 	cp -f --link libmelt.a ./output/lib
-
-melt_melt.o:melt.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt_melt.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o melt_melt.o melt.cc
-
-src/Prediction/Instances/melt_InstanceParser.o:src/Prediction/Instances/InstanceParser.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Prediction/Instances/melt_InstanceParser.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o src/Prediction/Instances/melt_InstanceParser.o src/Prediction/Instances/InstanceParser.cpp
-
-src/Prediction/Trainers/melt_LinearSVM.o:src/Prediction/Trainers/LinearSVM.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Prediction/Trainers/melt_LinearSVM.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o src/Prediction/Trainers/melt_LinearSVM.o src/Prediction/Trainers/LinearSVM.cpp
-
-src/Run/melt_Melt.o:src/Run/Melt.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Run/melt_Melt.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o src/Run/melt_Melt.o src/Run/Melt.cpp
 
 src/Wrapper/melt_PredictorFactory.o:src/Wrapper/PredictorFactory.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Wrapper/melt_PredictorFactory.o[0m']"

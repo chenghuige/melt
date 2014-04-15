@@ -8,7 +8,7 @@ RELATIVE_PATH='./'
 
 LEVEL=4
 #是否使用本地的gcc 比如本地安装了gcc 4.8.2使用本地的可以直接使用生成的bin文件 如./main
-GCC_LOCAL=1
+GCC_LOCAL=0
 print 'GCC_LOCAL: %d'%GCC_LOCAL 
 #是否使用高版本gcc 可以直接使用生成的bin文件 如./main 
 GCC_HIGH=1
@@ -112,7 +112,7 @@ CONFIGS('public/configure@base')
 CONFIGS('public/uconv@base')
 CONFIGS('app/search/sep/anti-spam/gezi@base')
 
-srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp'.replace('./',RELATIVE_PATH))
-Application('melt',Sources('melt.cc', srcs))
-srcs = srcs + ' ' + GLOB('./src/Wrapper/*.cpp')
+#srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp'.replace('./',RELATIVE_PATH))
+#Application('melt',Sources('melt.cc', srcs))
+srcs = GLOB('./src/Wrapper/*.cpp')
 StaticLibrary('melt',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
