@@ -25,7 +25,16 @@ DEFINE_int32(level, 0, "min log level");
 
 TEST(shared_predictors, func)
 {
+	{
+		auto predictor = PredictorFactory::LoadPredictor("../tools/model.fastrank/");
+		double out;
+		double probablity = predictor->Predict(fe, out);
+		Pval2(out, probablity);
 
+		Predictors p;
+		p.push_back(predictor);
+		Pval((p[0]->Predict(fe, out)));
+	}
 	Predictors p = wrapper::PredictorFactory::LoadPredictors();
 
 	SharedConf::init();
