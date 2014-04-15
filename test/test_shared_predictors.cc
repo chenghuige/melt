@@ -54,6 +54,14 @@ TEST(shared_predictors, func)
 			Pval2(out, probablity);
 		}
 	}
+	{
+		if (wrapper::SharedPredictors::Size() > 1)
+		{
+			double out;
+			double probablity = wrapper::SharedPredictors::Instance(1)->Predict(fe, out);
+			Pval2(out, probablity);
+		}
+	}
 }
 
 int main(int argc, char *argv[])
