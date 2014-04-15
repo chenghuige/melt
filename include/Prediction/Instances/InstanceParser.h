@@ -30,9 +30,6 @@
 #include "Identifer.h"
 #include "Prediction/Instances/Instances.h"
 
-//#undef  STR
-//#define STR boost::lexical_cast<std::string>
-
 namespace gezi {
 
 	//不做clear清理工作每次 create 一个新的InstanceParser使用即可
