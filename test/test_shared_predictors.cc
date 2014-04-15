@@ -17,6 +17,7 @@
 #define protected public
 #include "common_util.h"
 #include "Wrapper/SharedPredictors.h"
+#include "Wrapper/SharedPredictor.h"
 
 using namespace std;
 using namespace gezi;
