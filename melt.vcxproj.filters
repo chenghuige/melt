@@ -57,6 +57,12 @@
     <ClCompile Include="tools\fastrank_text2bin.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Wrapper\PredictorFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test\test_shared_predictors.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MLCore\IPredictor.h">
@@ -183,6 +189,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Trainers\FastRank\RegressionTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Wrapper\PredictorFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Wrapper\SharedPredictor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Wrapper\SharedPredictors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
