@@ -76,6 +76,9 @@
     <ClCompile Include="test\test_seralize.cc" />
     <ClCompile Include="test\test_vector.cc" />
     <ClCompile Include="tools\calibrate.cc" />
+    <ClCompile Include="tools\fastrank_predict.cc" />
+    <ClCompile Include="tools\fastrank_text2bin.cc" />
+    <ClCompile Include="tools\predict.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MLCore\IPredictor.h" />

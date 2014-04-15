@@ -44,8 +44,9 @@ public:
 
 	virtual void Load(string path) override
 	{
-		LoadSave::Save(path);
+		LoadSave::Load(path);
 		serialize_util::load(*this, path);
+		PVAL2(paramA, paramB);
 	}
 
 	virtual void Save(string path) override
@@ -176,7 +177,8 @@ protected:
 				for (CalibratorStore::Node& d_i : data.Nodes())
 				{
 					auto y = (d_i.target == 1) ? d_i.score : -d_i.score;
-					auto p = sigmoid(d_i.score, paramA, paramB);
+					//@FIXME 这个地方是不是应该是 y,tlc可能是出错了? 不过感觉不需要label啊 同样的一堆output 只是因为label不同 就要映射结果不同吗？ 这里实际y没有用上 但是感觉应该只和output有关系 @TODO
+					auto p = sigmoid(d_i.score, paramA, paramB); 
 					auto t = (d_i.target == 1) ? hiTarget : loTarget;
 					auto weight = d_i.weight;
 					pp[i] = p;

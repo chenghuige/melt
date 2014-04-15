@@ -56,18 +56,24 @@ namespace gezi {
 				if (features[_splitFeature[node]] <= _threshold[node])
 				{
 #ifdef _DEBUG
-					_debugNode.paths.push_back((*_featureNames)[_splitFeature[node]] + " " +
+					/*_debugNode.paths.push_back((*_featureNames)[_splitFeature[node]] + " " +
 						STR(features[_splitFeature[node]]) + " <= " + STR(_threshold[node])
-						+ " " + STR(_splitGain[node]) + " " + STR(_gainPValue[node]));
+						+ " " + STR(_splitGain[node]) + " " + STR(_gainPValue[node]));*/
+					string result = (format("%s %.5f <= %.5f") % (*_featureNames)[_splitFeature[node]] %
+						features[_splitFeature[node]] % _threshold[node]).str();
+					_debugNode.paths.push_back(result);
 #endif // _DEBUG
 					node = _lteChild[node];
 				}
 				else
 				{
 #ifdef _DEBUG
-					_debugNode.paths.push_back((*_featureNames)[_splitFeature[node]] + " " +
+					/*_debugNode.paths.push_back((*_featureNames)[_splitFeature[node]] + " " +
 						STR(features[_splitFeature[node]]) + " > " + STR(_threshold[node])
-						+ " " + STR(_splitGain[node]) + " " + STR(_gainPValue[node]));
+						+ " " + STR(_splitGain[node]) + " " + STR(_gainPValue[node]));*/
+					string result = (format("%s %.5f > %.5f") % (*_featureNames)[_splitFeature[node]] %
+						features[_splitFeature[node]] % _threshold[node]).str();
+					_debugNode.paths.push_back(result);
 #endif // _DEBUG
 					node = _gtChild[node];
 				}
@@ -75,22 +81,61 @@ namespace gezi {
 #ifdef _DEBUG
 			{
 				_debugNode.score = _leafValue[~node];
-				//PVEC(paths);
-				//Pval_(_leafValue[~node], "PositiveOutput:");
 			}
 #endif // _DEBUG
 			return _leafValue[~node];
 		}
 
-		void Print()
+		void Print(int node = 0, int depth = 0)
 		{
-
+			for (int i = 0; i < depth; i++)
+			{
+				cout << "|  ";
+			}
+			if (node < 0)
+			{
+				cout << _leafValue[~node] << endl;
+			}
+			else
+			{
+				cout << (*_featureNames)[_splitFeature[node]] << " <= " << _threshold[node] << " ?" << endl;
+				Print(_lteChild[node], depth + 1);
+				Print(_gtChild[node], depth + 1);
+			}
 		}
 
-		void Print(Vector& features)
+		void Print(Vector& features, int node = 0, int depth = 0, string suffix = "$")
 		{
+			for (int i = 0; i < depth; i++)
+			{
+				cout << "|  ";
+			}
+			cout << suffix;
 
+			if (node < 0)
+			{
+				if (!suffix.empty())
+					cout << "[" << _leafValue[~node] << "]" << endl;
+				else
+					cout << _leafValue[~node] << endl;
+			}
+			else
+			{
+				cout << format("%s %.5f <= %.5f ?") % (*_featureNames)[_splitFeature[node]] %
+					features[_splitFeature[node]] % _threshold[node] << endl;
+				string lsuffix = "", rsuffix = "";
+				if (!suffix.empty())
+				{
+					if (features[_splitFeature[node]] <= _threshold[node])
+						lsuffix = "$";
+					else
+						rsuffix = "$";
+				}
+				Print(features, _lteChild[node], depth + 1, lsuffix);
+				Print(features, _gtChild[node], depth + 1, rsuffix);
+			}
 		}
+
 	protected:
 	private:
 	public:

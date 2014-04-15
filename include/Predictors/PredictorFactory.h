@@ -47,6 +47,7 @@ public:
 		return predictor;
 	}
 
+	//Mostly used
 	static PredictorPtr LoadPredictor(string path)
 	{
 		string name = read_file(path + "/model.name.txt");
@@ -58,6 +59,15 @@ public:
 		return predictor;
 	}
 
+	static Predictors LoadPredictors(svec paths)
+	{
+		Predictors predictors;
+		for (string path : paths)
+		{
+			predictors.push_back(LoadPredictor(path));
+		}
+		return predictors;
+	}
 protected:
 private:
 

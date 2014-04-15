@@ -178,6 +178,7 @@ namespace gezi {
 		string _path;
 	};
 	typedef shared_ptr<Predictor> PredictorPtr;
+	typedef vector<PredictorPtr> Predictors;
 }  //----end of namespace gezi
 
 #endif  //----end of M_L_CORE__PREDICTOR_H_

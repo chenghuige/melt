@@ -45,6 +45,18 @@
     <ClCompile Include="tools\calibrate.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test\test_fastrank_loadtlc.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tools\predict.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tools\fastrank_predict.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tools\fastrank_text2bin.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MLCore\IPredictor.h">

@@ -30,6 +30,13 @@ namespace gezi {
 			return "FastRankPredictor";
 		}
 
+		FastRankPredictor() = default;
+
+		FastRankPredictor(string modelPath)
+		{
+			Load(modelPath);
+		}
+
 		//Load Tlc format的文本模型文件
 		virtual void LoadText(string file) override
 		{
@@ -93,6 +100,7 @@ namespace gezi {
 					}
 				}
 				int maxLeaves = parse_int_param("NumInternalNodes=", lines[i++]);
+				PVAL(maxLeaves);
 				{
 					RegressionTree tree(_identifer.keys());
 					string splits = parse_string_param("SplitFeatures=", lines[i++]);
@@ -105,7 +113,7 @@ namespace gezi {
 
 					string splitGains = parse_string_param("SplitGain=", lines[i++]);
 					tree._splitGain = from(split(splitGains)) >> select([](string a) { return DOUBLE(a); }) >> to_vector();
-					
+
 					string gainPvalues = parse_string_param("GainPValue=", lines[i++]);
 					tree._gainPValue = from(split(gainPvalues)) >> select([](string a) { return DOUBLE(a); }) >> to_vector();
 
@@ -142,7 +150,7 @@ namespace gezi {
 			}
 			double paramB = -parse_double_param("Bias=", lines[i]);
 			double paramA = -parse_double_param("Weights=", lines[i + 3]);
-			PVAL2(paramA, paramB);
+			Pval2(paramA, paramB);
 			_calibrator = make_shared<SigmoidCalibrator>(paramA, paramB);
 		}
 
@@ -179,7 +187,7 @@ namespace gezi {
 #ifdef _DEBUG
 #pragma  omp critical
 				{
-					if (_trees[i]._debugNode.score > 0)
+					//if (_trees[i]._debugNode.score > 0)
 					{
 						_trees[i]._debugNode.id = i;
 						_debugNodes.emplace_back(_trees[i]._debugNode);
@@ -189,11 +197,28 @@ namespace gezi {
 			}
 
 #ifdef _DEBUG
-			sort(_debugNodes.begin(), _debugNodes.end());
+			if (!_reverse)
+				sort(_debugNodes.begin(), _debugNodes.end());
+			else
+				sort(_debugNodes.begin(), _debugNodes.end(), [](const RegressionTree::DebugNode& l,
+				const RegressionTree::DebugNode& r)
+			{
+				return l.score < r.score;
+			});
+			int num = 0;
 			for (RegressionTree::DebugNode& node : _debugNodes)
 			{
-				VLOG(3) << node.id << "\t" << node.score << "\t" << node.paths.size();
-				PVEC(node.paths);
+				if (!_reverse && node.score > 0 || _reverse && node.score < 0)
+				{
+					VLOG(3) << "tree: " << node.id << "\t" << "score: " <<node.score << "\t" << "depth: " << node.paths.size();
+					PVEC(node.paths);
+				}
+				else
+				{
+					LOG(INFO) << "Total " << num << " trees show";
+					break;
+				}
+				num++;
 			}
 #endif // _DEBUG
 			return result;
@@ -207,9 +232,22 @@ namespace gezi {
 			ar & _identifer;
 			ar & _trees;
 		}
+
+		vector<RegressionTree>& Trees()
+		{
+			return _trees;
+		}
+#ifdef _DEBUG
+		void SetReverse(bool reverse = true)
+		{
+			_reverse = reverse;
+		}
+#endif // _DEBUG
+
 	private:
 #ifdef _DEBUG
 		vector<RegressionTree::DebugNode> _debugNodes;
+		bool _reverse = false;
 #endif // _DEBUG
 
 		vector<RegressionTree> _trees;

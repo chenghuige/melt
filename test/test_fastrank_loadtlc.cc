@@ -26,12 +26,14 @@ DECLARE_string(i);
 DECLARE_string(o);
 DEFINE_string(fe, "", "input feature");
 DEFINE_string(type, "simple", "");
+DEFINE_bool(r, false, "reverse: show trres from -.. to + .. if reverse == true");
 
 TEST(fastrank_loadtlc, func)
 {
 	{
 		FastRankPredictor predictor;
 		predictor.LoadText(FLAGS_i);
+		predictor.SetReverse(FLAGS_r);
 
 		Vector fe(FLAGS_fe);
 
@@ -42,21 +44,23 @@ TEST(fastrank_loadtlc, func)
 
 		Pval2(out, probablity);
 
-		predictor.Save("./data/fastrank");
+		predictor.Trees()[0].Print();
+		predictor.Trees()[0].Print(fe);
+		//predictor.Save("./data/fastrank");
 	}
 
-	{
-		FastRankPredictor predictor;
-		predictor.Load("./data/fastrank");
-		Vector fe(FLAGS_fe);
+	//{
+	//	FastRankPredictor predictor;
+	//	predictor.Load("./data/fastrank");
+	//	Vector fe(FLAGS_fe);
 
-		Pval(fe[137]);
+	//	Pval(fe[137]);
 
-		double out;
-		double probablity = predictor.Predict(fe, out);
+	//	double out;
+	//	double probablity = predictor.Predict(fe, out);
 
-		Pval2(out, probablity);
-	}
+	//	Pval2(out, probablity);
+	//}
 }
 
 int main(int argc, char *argv[])
