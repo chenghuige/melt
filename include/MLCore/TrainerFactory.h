@@ -15,7 +15,6 @@
 #define M_L_CORE__TRAINER_FACTORY_H_
 
 #include "MLCore/Trainer.h"
-#include "Trainers/SVM/LinearSVM.h"
 
 namespace gezi {
 

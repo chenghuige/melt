@@ -39,7 +39,7 @@ DEFINE_string(normalizer, "MinMax", "Which normalizer?");
 DEFINE_string(nf, "", "normalzierfile: specified the output normalzier text");
 
 DEFINE_string(fn, "", "featureName:");
-//DEFINE_string(ev, "./tools/evaluate.simple/evaluate.simple ", "evaluate: use what to evalute the result");
+DEFINE_string(ev, "evaluate.simple/evaluate.simple ", "evaluate: use what to evalute the result");
 
 DEFINE_bool(calibrate, true, "calibrateOutput: use calibrator to gen probability?");
 DEFINE_string(calibrator, "sigmoid", "calibratorName: sigmoid/platt naive pav");
@@ -86,7 +86,7 @@ namespace gezi {
 
 
 		_cmd.preNormalize = FLAGS_pn;
-		//_cmd.evaluate = FLAGS_ev;
+		_cmd.evaluate = FLAGS_ev;
 
 		_cmd.outputFileFormat = FLAGS_oformat;
 	}

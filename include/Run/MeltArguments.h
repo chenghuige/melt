@@ -45,7 +45,7 @@ namespace gezi {
 		string resultDir = "./result";
 		int resultIndex = 0;
 
-		string evaluate = "./tools/evaluate.simple/evaluate.simple ";
+		string evaluate = "evaluate.simple/evaluate.simple ";
 
 		bool preNormalize = false;
 
