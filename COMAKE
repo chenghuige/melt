@@ -111,7 +111,7 @@ CONFIGS('lib2-64/others-ex@base')
 CONFIGS('public/configure@base')
 CONFIGS('public/uconv@base')
 CONFIGS('app/search/sep/anti-spam/gezi@base')
-
+CONFIGS('myspace/sep/chenghuige/melt@base')
 #srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp'.replace('./',RELATIVE_PATH))
 #Application('melt',Sources('melt.cc', srcs))
 srcs = GLOB('./src/Wrapper/*.cpp')
