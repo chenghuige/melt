@@ -13,6 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{29769B6A-1325-4924-BEC6-416BBC1BDED0}</ProjectGuid>
     <RootNamespace>melt</RootNamespace>
+    <ProjectName>melt</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
