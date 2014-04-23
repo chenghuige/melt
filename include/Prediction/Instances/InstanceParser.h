@@ -889,7 +889,7 @@ namespace gezi {
 			}
 		}
 
-		//1 张无忌:3.5 小甜甜:2.0 
+		//1 张无忌:3.5 小甜甜:2.0  暂时没有测试 不推荐使用 尽量还是外部使用Identifer 脚本处理这些
 		void CreateInstancesFromTextFormat(svec& lines, uint64 start)
 		{
 			int times = TextFormatParsedTime();
@@ -950,6 +950,7 @@ namespace gezi {
 				CreateInstancesFromSparseNoLengthFormat(lines, _hasHeader);
 				break;
 			case FileFormat::Text:
+				CreateInstancesFromTextFormat(lines, _hasHeader);
 				break;
 			default:
 				LOG(WARNING) << "well not supported file format ?";

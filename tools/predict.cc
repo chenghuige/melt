@@ -30,6 +30,14 @@ void run(string modelPath, string feature)
 	double out;
 	double probablity = predictor->Predict(fe, out);
 	Pval2(out, probablity);
+	fe.MakeSparse();
+	LOG(INFO) << "After make sparse";
+	probablity = predictor->Predict(fe, out);
+	Pval2(out, probablity);
+	fe.MakeDense();
+	LOG(INFO) << "After make dense, notice for sparse will make length at most 1024000";
+	probablity = predictor->Predict(fe, out);
+	Pval2(out, probablity);
 }
 
 int main(int argc, char *argv[])

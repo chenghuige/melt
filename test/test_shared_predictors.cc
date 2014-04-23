@@ -12,7 +12,7 @@
  *  ==============================================================================
  */
 
-#define _DEBUG
+//#define _DEBUG
 #define private public
 #define protected public
 #include "common_util.h"
@@ -43,30 +43,45 @@ TEST(shared_predictors, func)
 	
 	{
 		double out;
-		double probablity = wrapper::SharedPredictor::Instance()->Predict(fe, out);
+		double probablity = SharedPredictor::Instance()->Predict(fe, out);
 		Pval2(out, probablity);
 	}*/
 	//{
-	//	if (wrapper::SharedPredictors::Size() > 1)
+	//	if (SharedPredictors::Size() > 1)
 	//	{
 	//		double out;
-	//		double probablity = wrapper::SharedPredictors::Instance(1)->Predict(fe, out);
+	//		double probablity = SharedPredictors::Instance(1)->Predict(fe, out);
 	//		Pval2(out, probablity);
 	//	}
 	//}
 	//{
-	//	if (wrapper::SharedPredictors::Size() > 1)
+	//	if (SharedPredictors::Size() > 1)
 	//	{
 	//		double out;
-	//		double probablity = wrapper::SharedPredictors::Instance(1)->Predict(fe, out);
+	//		double probablity = SharedPredictors::Instance(1)->Predict(fe, out);
 	//		Pval2(out, probablity);
 	//	}
 	//}
-
-	for (int i = 0; i < 1000; i++)
+	SharedConf::init();
+#pragma omp parallel	for
+	for (int i = 0; i < 100000; i++)
 	{
-		wrapper::SharedPredictors::Instance(1)->Predict(fe);
+		SharedPredictors::Instance(0)->Predict(fe);
 	}
+	Pval(SharedPredictors::Instance(0)->Predict(fe));
+}
+
+TEST(shared_predictors, perf)
+{
+	Vector fe("0,0,0,5.64897,1,0,1,1,0,1,6,10,6,0,6,2,0,0,1,0,0.693147,0,0,0.693147,6.85307,1.98208,5.51745,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.75,0.75,0,3.18324,0.16643,0,0,12,0,0.0769231,0.239049,0,0,3.18324,0.16643,4.4,0,0,0,4.4,14.0063,4.4,4.4,0,0,0,0,0,0,0,0,1,1,1,1,0.7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,10,-0.88,0,-0.88,-0.89,0.000111111,-3,0,-0.89,0.000111111,0,1,0,0,0,1,0,0,0,1,0,0,-0.89,-0.886667,-0.89,-0.888,1,1,1,1,1,1,1,1,1,1,0,0.00996016,0,10,0,2,0,0,0,0,0,0,2.5,5.75,0.1,1,0,1,0,0,0,0,0,0,0,0,1,0,10,10");
+
+	auto p = PredictorFactory::LoadPredictor("./model.fastrank");
+#pragma omp parallel	for
+	for (int i = 0; i < 100000; i++)
+	{
+		p->Predict(fe);
+	}
+	Pval(p->Predict(fe));
 }
 
 int main(int argc, char *argv[])

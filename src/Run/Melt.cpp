@@ -27,7 +27,7 @@ DEFINE_string(o, "", "outfile: specified output file(not modelfile)");
 DEFINE_string(test, "", "testDatafile: Data file used for test");
 DEFINE_string(valid, "", "Data file used for training validation (with IValidatingPredictor classifiers)");
 
-DEFINE_string(m, "model", "modelFolder under result folder");
+DEFINE_string(m, "model", "modelFolder");
 DEFINE_bool(mc, false, " modelfileCode:Gen model file to save in C++ code £¿ (for Train or TrainTest)");
 DEFINE_bool(mt, false, "modelfileText:  Gen model file to save in text format ? (for Train or TrainTest");
 
@@ -39,7 +39,8 @@ DEFINE_string(normalizer, "MinMax", "Which normalizer?");
 DEFINE_string(nf, "", "normalzierfile: specified the output normalzier text");
 
 DEFINE_string(fn, "", "featureName:");
-DEFINE_string(ev, "evaluate.simple/evaluate.simple ", "evaluate: use what to evalute the result");
+//@FIXME
+DEFINE_string(ev, "~/rsc/app/search/sep/anti-spam/melt/tools/evaluate/evaluate ", "evaluate: use what to evalute the result");
 
 DEFINE_bool(calibrate, true, "calibrateOutput: use calibrator to gen probability?");
 DEFINE_string(calibrator, "sigmoid", "calibratorName: sigmoid/platt naive pav");

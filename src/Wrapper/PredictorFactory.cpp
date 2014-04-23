@@ -19,26 +19,28 @@ DEFINE_string(model_dir, "", "首个模型dir 如果不为空则覆盖conf中配置");
 namespace gezi {
 	namespace wrapper {
 
-		static Predictors PredictorFactory::LoadPredictors()
-		{
-			Predictors predictors;
-			if (!FLAGS_model_dir.empty())
-			{
-				predictors.push_back(gezi::PredictorFactory::LoadPredictor(FLAGS_model_dir));
-				return predictors;
-			}
-			string section = "Predictor";
-			int model_cnt = 1;
-			SCONF(model_cnt);
-			for (int i = 0; i < model_cnt; i++)
-			{
-				string name = (format("model_%d_dir") % i).str();
-				string modelDir;
-				gezi::set_val(gezi::SharedConf::conf(), section, gezi::conf_trim(name), modelDir);
-				predictors.push_back(gezi::PredictorFactory::LoadPredictor(modelDir));
-			}
-			return predictors;
-		}
+		//Predictors PredictorFactory::LoadPredictors()
+		//{
+		//	gezi::PredictorFactory::LoadPredictor("./model.fastrank");
+		//	Predictors predictors;
+		//	if (!FLAGS_model_dir.empty())
+		//	{
+		//		predictors.push_back(gezi::PredictorFactory::LoadPredictor(FLAGS_model_dir));
+		//		return predictors;
+		//	}
+		//	string section = "Predictor";
+		//	int model_cnt = 1;
+		//	SCONF(model_cnt);
+		//	for (int i = 0; i < model_cnt; i++)
+		//	{
+		//		string name = (format("model_%d_dir") % i).str();
+		//		string modelDir;
+		//		gezi::set_val(gezi::SharedConf::conf(), section, gezi::conf_trim(name), modelDir);
+		//		//predictors.push_back(gezi::PredictorFactory::LoadPredictor(modelDir));
+		//		gezi::PredictorFactory::LoadPredictor(modelDir);
+		//	}
+		//	return predictors;
+		//}
 
 	}  //----end of namespace wrapper
 }  //----end of namespace gezi

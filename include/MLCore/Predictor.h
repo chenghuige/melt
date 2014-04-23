@@ -43,6 +43,11 @@ namespace gezi {
 			return "Predictor";
 		}
 
+		string Path()
+		{
+			return _path;
+		}
+
 		//输出未经Calibrator矫正的数值 -n,+n 0表示分界 越高越倾向positive
 		Float Output(Instance& instance)
 		{
@@ -140,6 +145,7 @@ namespace gezi {
 
 		virtual void Load(string path) override
 		{
+			_path = path;
 			LoadSave::Load(path);
 			string normalizerName = read_file(OBJ_NAME_PATH(_normalizer));
 			if (!normalizerName.empty())

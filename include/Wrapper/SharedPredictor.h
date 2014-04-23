@@ -17,19 +17,22 @@
 
 #include "Wrapper/PredictorFactory.h"
 namespace gezi {
-namespace wrapper {
 
-class SharedPredictor
-{
-public:
-	static PredictorPtr& Instance()
+	//支持懒汉和饿汉模式
+	class SharedPredictor
 	{
-		static PredictorPtr predictor = PredictorFactory::LoadPredictors()[0];
-		return predictor;
-	}
-};
+	public:
+		static PredictorPtr& Instance()
+		{
+			static PredictorPtr predictor = wrapper::PredictorFactory::LoadPredictors()[0];
+			return predictor;
+		}
 
-}  //----end of namespace wrapper
+		static void Init()
+		{
+			Instance();
+		}
+	};
 }  //----end of namespace gezi
 
 #endif  //----end of WRAPPER__SHARED_PREDICTOR_H_

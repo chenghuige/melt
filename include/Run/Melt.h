@@ -254,7 +254,7 @@ namespace gezi {
 			}
 			{
 				Noticer nt("Write train result!");
-				predictor->Save(_cmd.resultDir + "/" + _cmd.modelFolder);
+				predictor->Save(_cmd.modelFolder);
 				if (_cmd.modelfileText)
 				{
 					predictor->SaveText();
@@ -264,9 +264,9 @@ namespace gezi {
 
 		void RunTest()
 		{
-			Noticer nt("Test!");
+			Noticer nt("Test! with model from " + _cmd.modelFolder);
 			//------load predictor
-			auto predictor = PredictorFactory::LoadPredictor(_cmd.resultDir + "/" + _cmd.modelFolder);
+			auto predictor = PredictorFactory::LoadPredictor(_cmd.modelFolder);
 			//------test
 			try_create_dir(_cmd.resultDir);
 			string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
@@ -306,7 +306,7 @@ namespace gezi {
 			}
 			{
 				Noticer nt("Write train result!");
-				predictor->Save(_cmd.resultDir + "/" + _cmd.modelFolder);
+				predictor->Save(_cmd.modelFolder);
 				if (_cmd.modelfileText)
 				{
 					predictor->SaveText();
