@@ -99,6 +99,7 @@ INCPATHS('./ ./include/'.replace('./', RELATIVE_PATH))
 
 #ÒÀÀµÄ£¿é
 #CONFIGS('third-64/openssl@base')
+CONFIGS('ps/se/toolchain@base')
 #CONFIGS('third-64/zlib@base')
 CONFIGS('third-64/boost@base')
 #CONFIGS('third-gcc4/boost@base')

@@ -80,6 +80,10 @@ DEP_INCPATH=-I../../../../../app/search/sep/anti-spam/gezi \
   -I../../../../../myspace/sep/chenghuige/melt-train/include \
   -I../../../../../myspace/sep/chenghuige/melt-train/output \
   -I../../../../../myspace/sep/chenghuige/melt-train/output/include \
+  -I../../../../../ps/se/toolchain \
+  -I../../../../../ps/se/toolchain/include \
+  -I../../../../../ps/se/toolchain/output \
+  -I../../../../../ps/se/toolchain/output/include \
   -I../../../../../public/comlog-plugin \
   -I../../../../../public/comlog-plugin/include \
   -I../../../../../public/comlog-plugin/output \
@@ -147,7 +151,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=2d9bdc046f844a1c92968b36e67524e8  COMAKE
+COMAKE_MD5=b07659f5b97eeb41e7eb20db3dc6a1e5  COMAKE
 
 
 .PHONY:all
