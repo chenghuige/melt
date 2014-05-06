@@ -15,6 +15,11 @@
 #define PREDICTION__NORMALIZATION__BIN_NORMALIZER_H_
 #include "Matrix.h"
 #include "Prediction/Normalization/Normalizer.h"
+#ifdef _OPENMP
+#include <omp.h>
+#else
+#define omp_get_num_threads() 1
+#endif
 namespace gezi {
 
 	class BinNormalizer : public Normalizer
@@ -80,7 +85,6 @@ namespace gezi {
 			uint64 totalSize = _numFeatures * _numProcessedInstances;
 			// pre-compute the normalization range for each feature
 			ProgressBar pb("BinNormalizer finish", _numFeatures);
-			//@TODO 动态调整线程数目 确保内存正常 command可以输入一个最大可用内存G
 #pragma omp parallel for firstprivate(pb)  
 			for (int i = 0; i < _numFeatures; i++)
 			{
@@ -93,7 +97,7 @@ namespace gezi {
 				}
 				else if (binUpperBounds[i][0] < 0)
 				{
-					#pragma omp critical					{
+#pragma omp critical					{
 						_shiftIndices.push_back(i);
 					}
 				}
@@ -111,6 +115,12 @@ namespace gezi {
 					free_memory(values[i]); //释放空间  @TODO 直接用一块儿内存 value[] 其余的拷贝过去 不用释放 效率对比?
 				}
 			}
+#pragma omp parallel
+#pragma omp master
+			{
+				if (omp_get_num_threads() > 1)
+					sort(_shiftIndices.begin(), _shiftIndices.end());
+			}
 		}
 		friend class boost::serialization::access;
 		template<class Archive>
@@ -122,14 +132,19 @@ namespace gezi {
 			ar & binValues;
 			ar & _included;
 		}
-	protected:
-	private:
+
+		const Fmat& BinUpperBounds() const
+		{
+			return binUpperBounds;
+		}
+
+	public:
 		//------------args begin
 		int numBins = 1000; //n|Max number of bins
 		//------------args end
-
 		// min/max values and ranges for all features
 		Fmat binUpperBounds;
+	private:
 		Fmat binValues;
 		Fmat values; //no need to serialize
 

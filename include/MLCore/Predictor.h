@@ -171,6 +171,16 @@ namespace gezi {
 			SAVE_SHARED_PTR_ASTEXT(_calibrator);
 		}
 
+		NormalizerPtr GetNormalizer()
+		{
+			return _normalizer;
+		}
+
+		CalibratorPtr GetCalibrator()
+		{
+			return _calibrator;
+		}
+
 	protected:
 		virtual Float Margin(Vector& features)
 		{

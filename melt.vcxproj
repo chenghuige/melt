@@ -69,8 +69,11 @@
     <ClCompile Include="melt.cc" />
     <ClCompile Include="src\Prediction\Instances\InstanceParser.cpp" />
     <ClCompile Include="src\Prediction\Trainers\LinearSVM.cpp" />
+    <ClCompile Include="src\PythonWrapper\Predictor.cpp" />
+    <ClCompile Include="src\PythonWrapper\PredictorFactory.cpp" />
     <ClCompile Include="src\Run\Melt.cpp" />
     <ClCompile Include="src\Wrapper\PredictorFactory.cpp" />
+    <ClCompile Include="test\test_bins.cc" />
     <ClCompile Include="test\test_fastrank_classification.cc" />
     <ClCompile Include="test\test_fastrank_loadtlc.cc" />
     <ClCompile Include="test\test_normalize.cc" />
@@ -118,6 +121,8 @@
     <ClInclude Include="include\Predictors\FastRank\FastRankRegression.h" />
     <ClInclude Include="include\Predictors\LinearPredictor.h" />
     <ClInclude Include="include\Predictors\PredictorFactory.h" />
+    <ClInclude Include="include\PythonWrapper\Predictor.h" />
+    <ClInclude Include="include\PythonWrapper\PredictorFactory.h" />
     <ClInclude Include="include\Run\CVFoldCreator.h" />
     <ClInclude Include="include\Run\Melt.h" />
     <ClInclude Include="include\Run\MeltArguments.h" />
