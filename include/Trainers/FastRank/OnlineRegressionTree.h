@@ -1,7 +1,7 @@
 /**
  *  ==============================================================================
  *
- *          \file   Trainers/FastRank/RegressionTree.h
+ *          \file   Trainers/FastRank/OnlineRegressionTree.h
  *
  *        \author   chenghuige
  *
@@ -11,23 +11,23 @@
  *  ==============================================================================
  */
 
-#ifndef TRAINERS_FASTRANK__REGRESSION_TREE_H_
-#define TRAINERS_FASTRANK__REGRESSION_TREE_H_
+#ifndef TRAINERS_FASTRANK__ONLINE_REGRESSION_TREE_H_
+#define TRAINERS_FASTRANK__ONLINE_REGRESSION_TREE_H_
 #include "common_util.h"
 namespace gezi {
 	//只是读入 通过TLC文本文件
-	class RegressionTree
+	class OnlineRegressionTree
 	{
 	public:
-		~RegressionTree() = default;
-		RegressionTree() = default;
-		RegressionTree(RegressionTree&&) = default;
-		RegressionTree& operator = (RegressionTree&&) = default;
-		RegressionTree(const RegressionTree&) = default;
-		RegressionTree& operator = (const RegressionTree&) = default;
+		~OnlineRegressionTree() = default;
+		OnlineRegressionTree() = default;
+		OnlineRegressionTree(OnlineRegressionTree&&) = default;
+		OnlineRegressionTree& operator = (OnlineRegressionTree&&) = default;
+		OnlineRegressionTree(const OnlineRegressionTree&) = default;
+		OnlineRegressionTree& operator = (const OnlineRegressionTree&) = default;
 
 
-		RegressionTree(svec& featureNames)
+		OnlineRegressionTree(svec& featureNames)
 			:_featureNames(&featureNames)
 		{
 
@@ -136,8 +136,6 @@ namespace gezi {
 			}
 		}
 
-	protected:
-	private:
 	public:
 		friend class boost::serialization::access;
 		template<class Archive>
@@ -160,7 +158,7 @@ namespace gezi {
 #ifdef _DEBUG
 		DebugNode _debugNode;
 #endif // _DEBUG
-
+	protected:
 		dvec _gainPValue;
 		ivec _gtChild;
 		dvec _leafValue;
@@ -177,4 +175,4 @@ namespace gezi {
 
 }  //----end of namespace gezi
 
-#endif  //----end of TRAINERS_FASTRANK__REGRESSION_TREE_H_
+#endif  //----end of TRAINERS_FASTRANK__ONLINE_REGRESSION_TREE_H_
