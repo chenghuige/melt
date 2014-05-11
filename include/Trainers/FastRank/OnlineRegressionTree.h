@@ -141,12 +141,13 @@ namespace gezi {
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
+			ar & NumLeaves;
+
 			ar & _gainPValue;
 			ar & _gtChild;
 			ar & _leafValue;
 			ar & _lteChild;
 			ar & _maxOutput;
-			ar & _numLeaves;
 			ar & _previousLeafValue;
 			ar & _splitFeature;
 			ar & _splitGain;
@@ -158,13 +159,15 @@ namespace gezi {
 #ifdef _DEBUG
 		DebugNode _debugNode;
 #endif // _DEBUG
+		public:
+			int NumLeaves = 1;
 	protected:
 		dvec _gainPValue;
 		ivec _gtChild;
 		dvec _leafValue;
 		ivec _lteChild;
 		double _maxOutput = 0;
-		int _numLeaves = 1;
+	
 		dvec _previousLeafValue;
 		ivec _splitFeature;
 		dvec _splitGain;

@@ -22,6 +22,7 @@
 #endif
 namespace gezi {
 
+	//完全copy tlc,事实上及时0需要被用到计算binValue也可以进行首个0 binValue计算值缓存，如果稀疏的话优化速度@TODO
 	class BinNormalizer : public Normalizer
 	{
 	public:

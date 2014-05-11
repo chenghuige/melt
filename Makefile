@@ -120,10 +120,6 @@ DEP_INCPATH=-I../../../../../app/search/sep/anti-spam/gezi \
   -I../../../../../third-64/glog/include \
   -I../../../../../third-64/glog/output \
   -I../../../../../third-64/glog/output/include \
-  -I../../../../../third-64/gtest \
-  -I../../../../../third-64/gtest/include \
-  -I../../../../../third-64/gtest/output \
-  -I../../../../../third-64/gtest/output/include \
   -I../../../../../third-64/libcurl \
   -I../../../../../third-64/libcurl/include \
   -I../../../../../third-64/libcurl/output \
@@ -147,7 +143,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=c1ed36dfaf8fa6eeb4ad36be80cdebc8  COMAKE
+COMAKE_MD5=6124a4400cd6236d990cfe3df0286098  COMAKE
 
 
 .PHONY:all
@@ -174,6 +170,8 @@ clean:ccpclean
 	rm -rf libmelt.a
 	rm -rf ./output/lib/libmelt.a
 	rm -rf src/Wrapper/melt_PredictorFactory.o
+	rm -rf src/Prediction/Instances/melt_InstanceParser.o
+	rm -rf src/Run/melt_Melt.o
 
 .PHONY:dist
 dist:
@@ -192,9 +190,13 @@ love:
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlove[0m']"
 	@echo "make love done"
 
-libmelt.a:src/Wrapper/melt_PredictorFactory.o
+libmelt.a:src/Wrapper/melt_PredictorFactory.o \
+  src/Prediction/Instances/melt_InstanceParser.o \
+  src/Run/melt_Melt.o
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibmelt.a[0m']"
-	ar crs libmelt.a src/Wrapper/melt_PredictorFactory.o
+	ar crs libmelt.a src/Wrapper/melt_PredictorFactory.o \
+  src/Prediction/Instances/melt_InstanceParser.o \
+  src/Run/melt_Melt.o
 	mkdir -p ./output/lib
 	cp -f --link libmelt.a ./output/lib
 
@@ -205,6 +207,22 @@ src/Wrapper/melt_PredictorFactory.o:src/Wrapper/PredictorFactory.cpp
   -DVERSION=\"1.9.8.7\" \
   -O3 \
   -DNDEBUG $(CXXFLAGS)  -o src/Wrapper/melt_PredictorFactory.o src/Wrapper/PredictorFactory.cpp
+
+src/Prediction/Instances/melt_InstanceParser.o:src/Prediction/Instances/InstanceParser.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Prediction/Instances/melt_InstanceParser.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o src/Prediction/Instances/melt_InstanceParser.o src/Prediction/Instances/InstanceParser.cpp
+
+src/Run/melt_Melt.o:src/Run/Melt.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Run/melt_Melt.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o src/Run/melt_Melt.o src/Run/Melt.cpp
 
 endif #ifeq ($(shell uname -m),x86_64)
 

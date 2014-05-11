@@ -18,7 +18,7 @@
 #define PREDICTORS__FAST_RANK_PREDICTOR_H_
 #include "Identifer.h"
 #include "MLCore/Predictor.h"
-#include "Trainers/FastRank/RegressionTree.h"
+#include "Trainers/FastRank/OnlineRegressionTree.h"
 namespace gezi {
 
 	//hack 当前未实现Fastrank的训练 所以这里实际Load 是Load Tlc format的文本模型文件
@@ -102,7 +102,7 @@ namespace gezi {
 				int maxLeaves = parse_int_param("NumInternalNodes=", lines[i++]);
 				PVAL(maxLeaves);
 				{
-					RegressionTree tree(_identifer.keys());
+					OnlineRegressionTree tree(_identifer.keys());
 					string splits = parse_string_param("SplitFeatures=", lines[i++]);
 					tree._splitFeature = from(split(splits, '\t')) >> select([&fnames, this](string a)
 					{
@@ -195,22 +195,21 @@ namespace gezi {
 				}
 #endif // _DEBUG
 			}
-
 #ifdef _DEBUG
 			if (!_reverse)
 				sort(_debugNodes.begin(), _debugNodes.end());
 			else
-				sort(_debugNodes.begin(), _debugNodes.end(), [](const RegressionTree::DebugNode& l,
-				const RegressionTree::DebugNode& r)
+				sort(_debugNodes.begin(), _debugNodes.end(), [](const OnlineRegressionTree::DebugNode& l,
+				const OnlineRegressionTree::DebugNode& r)
 			{
 				return l.score < r.score;
 			});
 			int num = 0;
-			for (RegressionTree::DebugNode& node : _debugNodes)
+			for (OnlineRegressionTree::DebugNode& node : _debugNodes)
 			{
 				if (!_reverse && node.score > 0 || _reverse && node.score < 0)
 				{
-					VLOG(3) << "tree: " << node.id << "\t" << "score: " <<node.score << "\t" << "depth: " << node.paths.size();
+					VLOG(3) << "tree: " << node.id << "\t" << "score: " << node.score << "\t" << "depth: " << node.paths.size();
 					PVEC(node.paths);
 				}
 				else
@@ -233,7 +232,7 @@ namespace gezi {
 			ar & _trees;
 		}
 
-		vector<RegressionTree>& Trees()
+		vector<OnlineRegressionTree>& Trees()
 		{
 			return _trees;
 		}
@@ -246,11 +245,11 @@ namespace gezi {
 
 	private:
 #ifdef _DEBUG
-		vector<RegressionTree::DebugNode> _debugNodes;
+		vector<OnlineRegressionTree::DebugNode> _debugNodes;
 		bool _reverse = false;
 #endif // _DEBUG
 
-		vector<RegressionTree> _trees;
+		vector<OnlineRegressionTree> _trees;
 		Identifer _identifer;
 
 		//temply used shared between load save function

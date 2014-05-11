@@ -118,7 +118,7 @@ namespace gezi {
 			}
 			else
 			{
-				THROW("calibrator is nullptr");
+				return 1.0 / (1.0 + exp(-output));
 			}
 		}
 
