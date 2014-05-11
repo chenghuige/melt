@@ -13,7 +13,7 @@
 
 #ifndef WRAPPER__PREDICTOR_FACTORY_H_
 #define WRAPPER__PREDICTOR_FACTORY_H_
-#include "Predictors/PredictorFactory.h"
+#include "MLCore/PredictorFactory.h"
 #include "conf_util.h"
 DECLARE_string(model_dir);
 namespace gezi {

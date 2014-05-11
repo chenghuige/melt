@@ -16,7 +16,7 @@
 #define protected public
 #include "common_util.h"
 #include "Predictors/FastRankPredictor.h"
-#include "Predictors/PredictorFactory.h"
+#include "MLCore/PredictorFactory.h"
 using namespace std;
 using namespace gezi;
 DEFINE_int32(level, 0, "min log level");

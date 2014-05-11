@@ -23,7 +23,7 @@
 #include "MLCore/TrainerFactory.h"
 #include "Prediction/Instances/instances_util.h"
 
-#include "Predictors/PredictorFactory.h"
+#include "MLCore/PredictorFactory.h"
 
 
 using namespace std;

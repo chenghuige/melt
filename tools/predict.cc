@@ -16,7 +16,7 @@
 #define protected public
 #include "common_util.h"
 
-#include "Predictors/PredictorFactory.h"
+#include "MLCore/PredictorFactory.h"
 
 using namespace std;
 using namespace gezi;

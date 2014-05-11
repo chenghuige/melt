@@ -42,7 +42,7 @@
 #include "MLCore/Predictor.h"
 
 #include "Prediction/Instances/instances_util.h"
-#include "Predictors/PredictorFactory.h"
+#include "MLCore/PredictorFactory.h"
 
 namespace gezi {
 	class Melt
@@ -226,6 +226,7 @@ namespace gezi {
 			auto trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
 			if (trainer == nullptr)
 			{
+				LOG(WARNING) << _cmd.classifierName << " has not been supported yet";
 				return;
 			}
 			trainer->Train(instances);

@@ -12,7 +12,7 @@
  */
 
 #include "PythonWrapper/PredictorFactory.h"
-#include "Predictors/PredictorFactory.h"
+#include "MLCore/PredictorFactory.h"
 #include "MLCore/Predictor.h"
 namespace gezi {
 
