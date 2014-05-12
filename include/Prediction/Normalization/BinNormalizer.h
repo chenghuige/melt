@@ -86,12 +86,14 @@ namespace gezi {
 			uint64 totalSize = _numFeatures * _numProcessedInstances;
 			// pre-compute the normalization range for each feature
 			ProgressBar pb("BinNormalizer finish", _numFeatures);
-#pragma omp parallel for firstprivate(pb)  
+			BinFinder binFinder;
+#pragma omp parallel for firstprivate(pb) firstprivate(binFinder)
 			for (int i = 0; i < _numFeatures; i++)
 			{
 				++pb;
-				values[i].resize(_numProcessedInstances, 0); //后面填充0
-				binUpperBounds[i] = find_bins(values[i], numBins);
+				//values[i].resize(_numProcessedInstances, 0); //后面填充0
+				//binUpperBounds[i] = find_bins(values[i], numBins);
+				binFinder.FindBins(values[i], _numProcessedInstances, numBins);
 				if (binUpperBounds[i][0] == binUpperBounds[i].back())
 				{
 					_included[i] = false;
@@ -111,10 +113,10 @@ namespace gezi {
 					for (int j = 0; j < numBinsActual; j++)
 						binValues[i][j] = (Float)j / (numBinsActual - 1);
 				}
-				if (totalSize > 10000000) //@TODO
-				{
-					free_memory(values[i]); //释放空间  @TODO 直接用一块儿内存 value[] 其余的拷贝过去 不用释放 效率对比?
-				}
+				//if (totalSize > 10000000) //@TODO
+				//{
+				//	free_memory(values[i]); //释放空间  @TODO 直接用一块儿内存 value[] 其余的拷贝过去 不用释放 效率对比?
+				//}
 			}
 #pragma omp parallel
 #pragma omp master
