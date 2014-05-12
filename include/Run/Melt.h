@@ -84,10 +84,10 @@ namespace gezi {
 
 		void PrintCommands()
 		{
-			LOG(INFO) << "Supported commands now are below:";
+			VLOG(0) << "Supported commands now are below:";
 			for (auto item : _commands)
 			{
-				LOG(INFO) << setiosflags(ios::left) << setfill(' ') << setw(40)
+				VLOG(0) << setiosflags(ios::left) << setfill(' ') << setw(40)
 					<< item.first << " " << (int)item.second;
 			}
 		}
@@ -116,13 +116,14 @@ namespace gezi {
 			//const int randomStep = 1;
 			for (size_t runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
 			{
-				LOG(INFO) << "The " << runIdx << " round";
+				VLOG(0) << "The " << runIdx << " round";
 				RandomEngine rng = random_engine(_cmd.randSeed, runIdx * randomStep);
 				if (!_cmd.foldsSequential)
 					instances.Randomize(rng);
 
 				ivec instanceFoldIndices = CVFoldCreator::CreateFoldIndices(instances, _cmd, rng);
-#pragma omp parallel for 
+				int threadNum = _cmd.numThreadsCV ? _cmd.numThreadsCV : get_num_threads();
+#pragma omp parallel for num_threads(threadNum)
 				for (size_t foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
 				{
 					string instfile = (format("%s/%d_%d_%d.inst.txt") % _cmd.resultDir % _cmd.resultIndex
@@ -149,7 +150,7 @@ namespace gezi {
 					predictor->SetNormalizeCopy();
 
 					//@TODO 每个test 输出一个inst 文件也 然后每个给出一个结果
-					LOG(INFO) << "-------------------------------------Testing";
+					VLOG(0) << "-------------------------------------Testing";
 					Test(testData, predictor, instfile, ofs);
 					string command = _cmd.evaluate + instfile;
 					{
@@ -410,7 +411,7 @@ namespace gezi {
 						boost::replace_last_copy(_cmd.datafile, ".txt", "") + ".arff" :
 						GetOutputFileName(_cmd.datafile, "converted");
 					if (fileFormat == FileFormat::Arff)
-						LOG(INFO) << "Writting to arff file " << outfile;
+						VLOG(0) << "Writting to arff file " << outfile;
 					else
 						LOG(WARNING) << "Not specify the out file name so write to " << outfile;
 					write(instances, outfile, fileFormat);
@@ -446,7 +447,7 @@ namespace gezi {
 			auto instances = create_instances(_cmd.datafile);
 			if (_cmd.commandInput.empty())
 			{
-				LOG(INFO) << "No input assume to split by label";
+				VLOG(0) << "No input assume to split by label";
 				SplitDataByLabel(instances);
 				return;
 			}
@@ -532,7 +533,7 @@ namespace gezi {
 				if (posAdjustedNum > posNum)
 				{
 					uint64 negAdjustedNum = posNum / posPart * negPart;
-					LOG(INFO) << "Shrink neg part num to " << negAdjustedNum;
+					VLOG(0) << "Shrink neg part num to " << negAdjustedNum;
 					int negCount = 0;
 					for (InstancePtr instance : instances)
 					{
@@ -549,7 +550,7 @@ namespace gezi {
 				}
 				else
 				{
-					LOG(INFO) << "Shrink pos part num to " << posAdjustedNum;
+					VLOG(0) << "Shrink pos part num to " << posAdjustedNum;
 					int posCount = 0;
 					for (InstancePtr instance : instances)
 					{

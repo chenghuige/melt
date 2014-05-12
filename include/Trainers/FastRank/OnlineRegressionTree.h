@@ -16,9 +16,11 @@
 #include "common_util.h"
 namespace gezi {
 	//只是读入 通过TLC文本文件
+	class FastRankPredictor;
 	class OnlineRegressionTree
 	{
 	public:
+		friend class FastRankPredictor;
 		~OnlineRegressionTree() = default;
 		OnlineRegressionTree() = default;
 		OnlineRegressionTree(OnlineRegressionTree&&) = default;

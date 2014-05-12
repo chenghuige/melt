@@ -13,13 +13,10 @@
 
 #ifndef PREDICTION__NORMALIZATION__BIN_NORMALIZER_H_
 #define PREDICTION__NORMALIZATION__BIN_NORMALIZER_H_
+#include "common_util.h"
 #include "Matrix.h"
 #include "Prediction/Normalization/Normalizer.h"
-#ifdef _OPENMP
-#include <omp.h>
-#else
-#define omp_get_num_threads() 1
-#endif
+#include "Numeric/BinFinder.h"
 namespace gezi {
 
 	//完全copy tlc,事实上及时0需要被用到计算binValue也可以进行首个0 binValue计算值缓存，如果稀疏的话优化速度@TODO

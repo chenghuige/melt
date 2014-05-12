@@ -26,6 +26,7 @@ namespace gezi {
 		int numFolds = 5;
 		int numRuns = 1;
 		int numThreads = 0;
+		int numThreadsCV = 0;
 		unsigned randSeed = 0;
 		string datafile = "";
 		string outfile = ""; //o| specify the output file

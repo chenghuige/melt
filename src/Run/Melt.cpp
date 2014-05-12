@@ -20,7 +20,7 @@ DEFINE_double(tp, 1.0, "trainProportion: Fraction of training data to use (if < 
 
 DEFINE_uint64(rs, 0, "0 means random, 1 means can reproduce | randSeed: controls wether the expermient can reproduce");
 DEFINE_int32(nt, 0, "num of threads, default 0 means use threads num according to processor num");
-
+DEFINE_int32(ntc, 0, "num of threads use for cross validation, default 0 means use threads num according to processor num");
 DEFINE_string(i, "", "datafile: Input data file used for train or cross validation, you can also put data file just after exe like: ./melt datafile");
 DEFINE_string(o, "", "outfile: specified output file(not modelfile)");
 
@@ -74,6 +74,7 @@ namespace gezi {
 		
 		_cmd.stratify = FLAGS_strat;
 		_cmd.numThreads = FLAGS_nt;
+		_cmd.numThreadsCV = FLAGS_ntc;
 		_cmd.foldsSequential = FLAGS_foldSeq;
 		_cmd.trainProportion = FLAGS_tp;
 
