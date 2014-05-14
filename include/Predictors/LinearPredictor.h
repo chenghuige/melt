@@ -27,9 +27,8 @@ namespace gezi {
 			NormalizerPtr normalizer, CalibratorPtr calibrator,
 			const svec& featureNames, 
 			string name = "LinearPredictor")
-			:Predictor(normalizer, calibrator),
+			:Predictor(normalizer, calibrator, featureNames),
 			_weights(weights), _bias(bias),
-			_featureNames(featureNames),
 			_name(name)
 		{
 
@@ -80,7 +79,6 @@ namespace gezi {
 			ar & boost::serialization::base_object<Predictor>(*this);
 			ar & _weights;
 			ar & _bias;
-			ar & _featureNames;
 		}
 
 	protected:
@@ -91,7 +89,6 @@ namespace gezi {
 	private:
 		Vector _weights;
 		Float _bias;
-		svec _featureNames;
 
 		string _name = "LinearPredictor";
 	};

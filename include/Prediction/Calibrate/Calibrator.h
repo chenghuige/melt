@@ -153,11 +153,36 @@ namespace gezi {
 		template<typename MarginFunc>
 		void Train(Instances& instances, MarginFunc marginFunc)
 		{
-			ProgressBar pb(Name() + " calibrating", instances.Count());
+			ProgressBar pb(instances.Count(), Name() + " calibrating");
 			for (InstancePtr instance : instances)
 			{
 				++pb;
 				ProcessTrainingExample(marginFunc(instance), instance->label > 0, instance->weight);
+			}
+			FinishTraining();
+		}
+
+		void Train(const dvec& scores, const BitArray& labels, const dvec& weights)
+		{
+			int len = scores.size();
+			ProgressBar pb(len, Name() + " calibrating");
+			for (int i = 0; i < len; i++)
+			{
+				++pb;
+				Float weight = weights.empty() ? 1 : weights[i];
+				ProcessTrainingExample(scores[i], labels[i], weight);
+			}
+			FinishTraining();
+		}
+
+		void Train(const dvec& scores, const BitArray& labels)
+		{
+			int len = scores.size();
+			ProgressBar pb(len, Name() + " calibrating");
+			for (int i = 0; i < len; i++)
+			{
+				++pb;
+				ProcessTrainingExample(scores[i], labels[i], 1);
 			}
 			FinishTraining();
 		}

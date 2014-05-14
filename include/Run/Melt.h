@@ -122,10 +122,9 @@ namespace gezi {
 					instances.Randomize(rng);
 
 				ivec instanceFoldIndices = CVFoldCreator::CreateFoldIndices(instances, _cmd, rng);
-				int threadNum = _cmd.numThreadsCV ? _cmd.numThreadsCV : get_num_threads();
-#pragma omp parallel for num_threads(threadNum)
 				for (size_t foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
 				{
+					VLOG(0) << "Croos validaion foldIdx " << foldIdx;
 					string instfile = (format("%s/%d_%d_%d.inst.txt") % _cmd.resultDir % _cmd.resultIndex
 						% runIdx % foldIdx).str();
 
@@ -153,6 +152,7 @@ namespace gezi {
 					VLOG(0) << "-------------------------------------Testing";
 					Test(testData, predictor, instfile, ofs);
 					string command = _cmd.evaluate + instfile;
+#pragma omp critical
 					{
 						EXECUTE(command);
 					}
@@ -203,8 +203,10 @@ namespace gezi {
 		void Test(Instances& instances, PredictorPtr predictor, ofstream& ofs)
 		{
 			int idx = 0;
+			ProgressBar pb(instances.Count(), "Testing");
 			for (InstancePtr instance : instances)
 			{
+				++pb;
 				double output;
 				double probability = predictor->Predict(instance, output);
 				string name = instance->name.empty() ? STR(idx) : instance->name;
@@ -212,11 +214,14 @@ namespace gezi {
 				{
 					name = name.substr(1);
 				}
-				
+
 				int assigned = output > 0 ? 1 : 0;
 				ofs << name << "\t" << instance->label << "\t"
 					<< assigned << "\t" << output << "\t"
 					<< probability << endl;
+				VLOG(6) << name << "\t" << instance->label << "\t"
+					<< assigned << "\t" << output << "\t"
+					<< probability;
 				idx++;
 			}
 		}
@@ -355,7 +360,7 @@ namespace gezi {
 			Pval(normalizerFile);
 
 			Instances instances = create_instances(_cmd.datafile);
-			
+
 			normalizer->RunNormalize(instances);
 			normalizer->SaveText(normalizerFile);
 			FileFormat fileFormat = get_value(_formats, _cmd.outputFileFormat, FileFormat::Unknown);
@@ -572,11 +577,11 @@ namespace gezi {
 
 		void RunExperiments()
 		{
-			PVAL(omp_get_num_procs());
 			if (_cmd.numThreads)
 			{
 				omp_set_num_threads(_cmd.numThreads);
 			}
+			Pval(get_num_threads());
 			//Ω‚Œˆ√¸¡Óƒ£ Ω
 			string commandStr = erase(boost::to_lower_copy(_cmd.command), "_-");
 			Pval(commandStr);
@@ -635,7 +640,6 @@ namespace gezi {
 
 	protected:
 	private:
-
 		MeltArguments _cmd;
 		map<string, RunType> _commands = {
 			{ "cv", RunType::EVAL },

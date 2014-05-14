@@ -33,11 +33,18 @@ namespace gezi {
 	public:
 		Predictor() = default;
 		virtual ~Predictor() {}
-		Predictor(NormalizerPtr normalizer, CalibratorPtr calibrator)
-			:_normalizer(normalizer), _calibrator(calibrator)
+		Predictor(NormalizerPtr normalizer, CalibratorPtr calibrator, const svec& featureNames)
+			:_normalizer(normalizer), _calibrator(calibrator), _featureNames(featureNames)
 		{
 
 		}
+
+		Predictor(NormalizerPtr normalizer, CalibratorPtr calibrator, svec&& featureNames)
+			:_normalizer(normalizer), _calibrator(calibrator), _featureNames(featureNames)
+		{
+
+		}
+
 		virtual string Name() override
 		{
 			return "Predictor";
@@ -126,13 +133,7 @@ namespace gezi {
 		{
 			_normalizeCopy = normalizeCopy;
 		}
-
-		friend class boost::serialization::access;
-		template<class Archive>
-		void serialize(Archive &ar, const unsigned int version)
-		{
-		}
-
+	
 		virtual void Save(string path) override
 		{
 			LoadSave::Save(path);
@@ -181,6 +182,13 @@ namespace gezi {
 			return _calibrator;
 		}
 
+		friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive &ar, const unsigned int version)
+		{
+			ar & _featureNames;
+		}
+
 	protected:
 		virtual Float Margin(Vector& features)
 		{
@@ -190,6 +198,8 @@ namespace gezi {
 		bool _normalizeCopy = false;
 		NormalizerPtr _normalizer = nullptr;
 		CalibratorPtr _calibrator = nullptr;
+
+		svec _featureNames;
 
 		string _path;
 	};

@@ -32,6 +32,13 @@ namespace gezi {
 
 		FastRankPredictor() = default;
 
+		FastRankPredictor(vector<OnlineRegressionTree>& trees, CalibratorPtr calibrator, 
+			svec&& featureNames)
+			:Predictor(nullptr, calibrator, featureNames)
+		{
+			_trees.swap(trees);
+		}
+
 		FastRankPredictor(string modelPath)
 		{
 			Load(modelPath);
@@ -40,6 +47,8 @@ namespace gezi {
 		//Load Tlc format的文本模型文件
 		virtual void LoadText(string file) override
 		{
+			Identifer identifer;
+
 			_textModelPath = file;
 			LoadSave::Load(file);
 
@@ -58,7 +67,7 @@ namespace gezi {
 			Pval(featureNum);
 			for (int j = 0; j < featureNum; j++)
 			{
-				_identifer.add(lines[i++]);
+				identifer.add(lines[i++]);
 			}
 
 			for (; i < lines.size(); i++)
@@ -102,11 +111,11 @@ namespace gezi {
 				int maxLeaves = parse_int_param("NumInternalNodes=", lines[i++]);
 				PVAL(maxLeaves);
 				{
-					OnlineRegressionTree tree(_identifer.keys());
+					OnlineRegressionTree tree(identifer.keys());
 					string splits = parse_string_param("SplitFeatures=", lines[i++]);
-					tree._splitFeature = from(split(splits, '\t')) >> select([&fnames, this](string a)
+					tree._splitFeature = from(split(splits, '\t')) >> select([&](string a)
 					{
-						int index = _identifer.id(fnames[INT(split(a, ':')[1]) - 1]);
+						int index = identifer.id(fnames[INT(split(a, ':')[1]) - 1]);
 						CHECK_GE(index, 0);
 						return index;
 					}) >> to_vector();
@@ -148,6 +157,11 @@ namespace gezi {
 					break;
 				}
 			}
+
+			//--------------设置特征名称
+			_featureNames = move(identifer.keys());
+
+			//-------------calibrator
 			double paramB = -parse_double_param("Bias=", lines[i]);
 			double paramA = -parse_double_param("Weights=", lines[i + 3]);
 			Pval2(paramA, paramB);
@@ -172,7 +186,7 @@ namespace gezi {
 			serialize_util::load(*this, modelFile);
 			for (auto tree : _trees)
 			{
-				tree._featureNames = &_identifer.keys();
+				tree._featureNames = &_featureNames;
 			}
 		}
 	protected:
@@ -228,7 +242,6 @@ namespace gezi {
 		void serialize(Archive &ar, const unsigned int version)
 		{
 			ar & boost::serialization::base_object<Predictor>(*this);
-			ar & _identifer;
 			ar & _trees;
 		}
 
@@ -250,7 +263,6 @@ namespace gezi {
 #endif // _DEBUG
 
 		vector<OnlineRegressionTree> _trees;
-		Identifer _identifer;
 
 		//temply used shared between load save function
 		string _textModelPath;

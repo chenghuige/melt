@@ -155,21 +155,20 @@ namespace gezi {
 			ar & _splitGain;
 			ar & _threshold;
 			ar & _weight;
-
-			ar & _featureNames;
+			//ar & _featureNames; //不要序列化指针
 		}
 #ifdef _DEBUG
 		DebugNode _debugNode;
 #endif // _DEBUG
-		public:
-			int NumLeaves = 1;
+	public:
+		int NumLeaves = 1;
 	protected:
 		dvec _gainPValue;
 		ivec _gtChild;
 		dvec _leafValue;
 		ivec _lteChild;
 		double _maxOutput = 0;
-	
+
 		dvec _previousLeafValue;
 		ivec _splitFeature;
 		dvec _splitGain;
