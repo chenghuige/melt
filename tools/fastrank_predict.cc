@@ -19,7 +19,7 @@
 using namespace std;
 using namespace gezi;
 
-DEFINE_int32(level, 0, "min log level");
+DEFINE_int32(vl, 0, "vlog level");
 DEFINE_bool(r, false, "reverse: show trees from -.. to + .. if reverse == true");
 DEFINE_int32(t, -1, "tree index to print");
 
@@ -45,7 +45,8 @@ int main(int argc, char *argv[])
 	int s = google::ParseCommandLineFlags(&argc, &argv, false);
 	if (FLAGS_log_dir.empty())
 		FLAGS_logtostderr = true;
-	FLAGS_minloglevel = FLAGS_level;
+	if (FLAGS_v == 0)
+		FLAGS_v = FLAGS_vl;
 
 	string modelPath = argv[s];
 	string feature;

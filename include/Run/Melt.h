@@ -459,16 +459,25 @@ namespace gezi {
 			RandomEngine rng = random_engine(_cmd.randSeed);
 			if (!_cmd.foldsSequential)
 				instances.Randomize(rng);
-			svec segs_ = split(_cmd.commandInput, ':');
-			int partNum = (int)segs_.size();
-			if (partNum <= 1)
+
+			ivec segs;
+			try
 			{
-				LOG(WARNING) << "Need input like -ci 1:1  -ci 1:3:2";
-				return;
+				segs.resize(boost::lexical_cast<int>(_cmd.commandInput), 1);
 			}
-			ivec segs = from(segs_) >> select([](string a) { return INT(a); }) >> to_vector();
+			catch (...)
+			{
+				svec segs_ = split(_cmd.commandInput, ':');
+				if (segs_.size() <= 1)
+				{
+					LOG(WARNING) << "Need input like -ci 1:1  -ci 1:3:2 or -ci 5";
+					return;
+				}
+				segs = from(segs_) >> select([](string a) { return INT(a); }) >> to_vector();
+			}
 			_cmd.numFolds = sum(segs);
 			Pval(_cmd.numFolds);
+			int partNum = segs.size();
 			ivec instanceFoldIndices = CVFoldCreator::CreateFoldIndices(instances, _cmd, rng);
 			vector<Instances> parts(partNum);
 

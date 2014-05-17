@@ -184,7 +184,7 @@ namespace gezi {
 			Predictor::Load(path);
 			string modelFile = path + "/model";
 			serialize_util::load(*this, modelFile);
-			for (auto tree : _trees)
+			for (auto& tree : _trees)
 			{
 				tree._featureNames = &_featureNames;
 			}
@@ -221,7 +221,7 @@ namespace gezi {
 			int num = 0;
 			for (OnlineRegressionTree::DebugNode& node : _debugNodes)
 			{
-				if (!_reverse && node.score > 0 || _reverse && node.score < 0)
+				if (!_reverse && node.score >= 0 || _reverse && node.score <= 0)
 				{
 					VLOG(3) << "tree: " << node.id << "\t" << "score: " << node.score << "\t" << "depth: " << node.paths.size();
 					PVEC(node.paths);

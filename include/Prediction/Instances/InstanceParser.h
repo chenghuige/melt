@@ -92,6 +92,7 @@ namespace gezi {
 					result.push_back(INT(item));
 				}
 			}
+			return result;
 		}
 		void InitParam()
 		{
@@ -698,7 +699,7 @@ namespace gezi {
 				_instances[i] = make_shared<Instance>();
 				Instance& instance = *_instances[i];
 				Vector& features = instance.features;
-				svec l = split(line, ' '); //libsvm 是用空格分开
+				svec l = split(line, "\t "); //libsvm 是用空格分开
 				for (size_t j = 0; j < l.size(); j++)
 				{
 					string item = l[j];
