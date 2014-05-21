@@ -16,6 +16,7 @@
 
 
 #include "Wrapper/PredictorFactory.h"
+#include "Wrapper/SharedPredictors.h"
 namespace gezi {
 
 	//支持懒汉和饿汉模式
@@ -24,8 +25,7 @@ namespace gezi {
 	public:
 		static PredictorPtr& Instance()
 		{
-			static PredictorPtr predictor = wrapper::PredictorFactory::LoadPredictors()[0];
-			return predictor;
+			return SharedPredictors::Instance();
 		}
 
 		static void Init()
