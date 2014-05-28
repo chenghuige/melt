@@ -102,7 +102,7 @@ INCPATHS('./ ./include/'.replace('./', RELATIVE_PATH))
 #CONFIGS('third-64/zlib@base')
 ImportConfigsFrom('../')
 CONFIGS('third-64/gtest@base')
-CONFIGS('myspace/sep/chenghuige/melt-train@base')
+#CONFIGS('myspace/sep/chenghuige/melt-train@base')
 
 srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp'.replace('./',RELATIVE_PATH))
 Application('melt', Sources('melt.cc', srcs))
