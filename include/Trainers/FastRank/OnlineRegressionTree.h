@@ -164,15 +164,14 @@ namespace gezi {
 		int NumLeaves = 1;
 	protected:
 		dvec _gainPValue;
+		ivec _lteChild;
 		ivec _gtChild;
 		dvec _leafValue;
-		ivec _lteChild;
-		double _maxOutput = 0;
-
-		dvec _previousLeafValue;
+		dvec _threshold;
 		ivec _splitFeature;
 		dvec _splitGain;
-		dvec _threshold;
+		double _maxOutput = 0;
+		dvec _previousLeafValue;
 		double _weight = 1.0;
 		svec* _featureNames;
 	};

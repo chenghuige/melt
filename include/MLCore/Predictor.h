@@ -91,6 +91,7 @@ namespace gezi {
 		{
 			return Predict(instance.features);
 		}
+
 		Float Predict(InstancePtr instance)
 		{
 			return Predict(instance->features);
@@ -133,7 +134,7 @@ namespace gezi {
 		{
 			_normalizeCopy = normalizeCopy;
 		}
-	
+
 		virtual void Save(string path) override
 		{
 			LoadSave::Save(path);
