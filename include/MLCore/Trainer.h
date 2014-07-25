@@ -35,6 +35,8 @@ namespace gezi {
 			InnerTrain(instances);
 
 			Finalize(instances);
+
+			VLOG(0) << GetParam() << endl;
 		}
 
 		const HeaderSchema& TrainingSchema() const
@@ -42,7 +44,12 @@ namespace gezi {
 			return _trainingSchema;
 		}
 
-		virtual PredictorPtr CreatePredictor() = 0;
+		virtual PredictorPtr CreatePredictor() = 0; //@TODO 也许应该在这强制加入Predictor::SetParam
+
+		virtual string GetParam()
+		{
+			return "";
+		}
 
 		RandomPtr GetRandom()
 		{

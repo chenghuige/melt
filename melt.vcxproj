@@ -81,6 +81,7 @@
     <ClCompile Include="test\test_seralize.cc" />
     <ClCompile Include="test\test_shared_predictors.cc" />
     <ClCompile Include="test\test_vector.cc" />
+    <ClCompile Include="tools3\fastrank_predict.cc" />
     <ClCompile Include="tools\calibrate.cc" />
     <ClCompile Include="tools\fastrank_predict.cc" />
     <ClCompile Include="tools\fastrank_text2bin.cc" />

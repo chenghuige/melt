@@ -10,12 +10,12 @@
  *  \Description: 机器学习工具库melt 最外层RunExperiments 对应melt.cc
  *  @TODO cmmand处理 脚本统一化 增加原名和简称两种FLAGS同时存在
  *  @TODO 数据分割  train  test // validate ?
- *  @TODO 数据shrink  去掉特定的pos 或者 特定的 neg 使得 正反比例达到预设比如 1:1 1:2 先随机数据 然后舍弃部分index 顺序即可
+ *  @TODO 数据shrink  去掉特定的pos 或者 特定的 neg 使得 正反比例达到预设比如 1:1 1:2 先随机数据 然后舍弃部分index 顺序即可 done
  *  暂时 不支持missing feature, class feature, text feature
  * 初步只实现
  * 1. 输入解析 done
  * 2. Instances 数据结构 稀疏 Dense 自动转换  Done
- * 3. Normalization 当前实现了 MinMax @TODO Gussian and Bin
+ * 3. Normalization 当前实现了 MinMax @TODO Gussian and Bin  done
  * 4. 训练支持 Cross Fold 随机cross 已实现 , test 还未实现
  *    尽快实现完整的 train, test, train-test, cross fold
  * 5. @TODO 特征evaluatore 组合特征 判断效果
@@ -44,6 +44,8 @@
 #include "Prediction/Instances/instances_util.h"
 #include "MLCore/PredictorFactory.h"
 
+#include "Utils/performance_evaluate.h"
+
 namespace gezi {
 	class Melt
 	{
@@ -61,7 +63,8 @@ namespace gezi {
 		enum class RunType
 		{
 			UNKNOWN = 0,
-			EVAL, //交叉验证
+			EVAL, //交叉验证,默认执行的command
+			EVAL_PARAM, //交叉验证 但是只输出auc的值,主要用于检测不同参数效果对比
 			TRAIN, //训练
 			TEST,  //测试
 			TRAIN_TEST,  //训练+测试
@@ -75,6 +78,12 @@ namespace gezi {
 			CONVERT, //对输入样本文件载入然后输出要求的格式 比如 dense -> sparse
 			SPLIT_DATA, //对输入样本进行切分  比如 1:1 1:3:2 同时保持每份中正反例比例维持和原始数据一致
 			CHANGE_RAIO //对输入样本进行正反例比例调整 比如 原始 1:30 调整为 1:1
+		};
+
+		enum class CrossValidationType
+		{
+			DEFAULT = 0, //默认生成instance文件，调用外部python脚本处理instance文件生成evaluate结果
+			AUC = 1 //不生成instance文件,只是内部计算auc或者其它evaluate数据@TODO,用于参数选取
 		};
 
 		MeltArguments& Cmd()
@@ -97,7 +106,7 @@ namespace gezi {
 			return endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", "." + suffix + ".txt") : infile + "." + suffix;
 		}
 
-		void RunCrossValidation(Instances& instances)
+		void RunCrossValidation(Instances& instances, CrossValidationType cvType)
 		{
 			//--------------------------- 输出文件头
 			try_create_dir(_cmd.resultDir);
@@ -114,6 +123,12 @@ namespace gezi {
 			}
 			const int randomStep = 10000;
 			//const int randomStep = 1;
+			BinaryClassficationEvaluatorPtr evaluator = nullptr;
+			if (cvType == CrossValidationType::AUC)
+			{
+				evaluator = make_shared<AucEvaluator>();
+			}
+			string trainerParam;
 			for (size_t runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
 			{
 				VLOG(0) << "The " << runIdx << " round";
@@ -134,6 +149,8 @@ namespace gezi {
 						instanceFoldIndices, foldIdx, _cmd.numFolds, trainData, testData,
 						random_engine(_cmd.randSeed, runIdx * randomStep));
 
+					//------------------------------------Train
+					TrainerPtr trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
 					if (foldIdx == 0)
 					{
 						VLOG(0) << "Folds " << foldIdx << " are trained with " << trainData.Size() << " instances, and tested on " << testData.Size() << " instances";
@@ -141,31 +158,54 @@ namespace gezi {
 						Pval3(testData[0]->name, testData.PositiveCount(), testData.NegativeCount());
 					}
 
-					//------------------------------------Train
-					TrainerPtr trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
 					trainer->SetNormalizeCopy();
 					trainer->Train(trainData);
 					PredictorPtr predictor = trainer->CreatePredictor();
 					predictor->SetNormalizeCopy();
 
-					//@TODO 每个test 输出一个inst 文件也 然后每个给出一个结果
-					VLOG(0) << "-------------------------------------Testing";
-					Test(testData, predictor, instfile, ofs);
-					string command = _cmd.evaluate + instfile;
-#pragma omp critical
+					if (cvType == CrossValidationType::DEFAULT)
 					{
-						EXECUTE(command);
+						//@TODO 每个test 输出一个inst 文件也 然后每个给出一个结果
+						VLOG(0) << "-------------------------------------Testing";
+						Test(testData, predictor, instfile, ofs);
+						string command = _cmd.evaluate + instfile;
+#pragma omp critical
+						{
+							EXECUTE(command);
+						}
+					}
+					else if (cvType == CrossValidationType::AUC)
+					{
+						Test(testData, predictor, evaluator);
+					}
+					else
+					{
+						LOG(ERROR) << "Not supported crosss validation type"; 
+						return;
+					}
+					if (foldIdx == 0)
+					{
+						trainerParam = trainer->GetParam();
 					}
 				}
 			}
-			string command = _cmd.evaluate + instFile;
-#pragma omp critical
+
+			if (cvType == CrossValidationType::DEFAULT)
 			{
-				EXECUTE(command);
+				string command = _cmd.evaluate + instfile;
+#pragma omp critical
+				{
+					EXECUTE(command);
+				}
+			}
+			else if (cvType == CrossValidationType::AUC)
+			{
+				double aucScore = evaluator->Finish();
+				cout << aucScore << "\t" << trainerParam << endl; 
 			}
 		}
 
-		void RunCrossValidation()
+		void RunCrossValidation(CrossValidationType cvType = CrossValidationType::DEFAULT)
 		{
 			Noticer nt((format("%d fold cross-validation") % _cmd.numFolds).str());
 			//----------------------------check if command ok
@@ -175,7 +215,7 @@ namespace gezi {
 			CHECK_GT(instances.Count(), 0) << "Read 0 instances, aborting experiment";
 			instances.PrintSummary();
 			//------------------------------run
-			RunCrossValidation(instances);
+			RunCrossValidation(instances, cvType);
 		}
 
 		void WriteInstFileHeader(ofstream& ofs)
@@ -226,6 +266,18 @@ namespace gezi {
 			}
 		}
 
+
+		//AUC test
+		void Test(Instances& instances, PredictorPtr predictor, 
+			BinaryClassficationEvaluatorPtr evaluator)
+		{
+			for (InstancePtr instance : instances)
+			{
+				double probability = predictor->Predict(instance);
+				evaluator->Add(instance->label, probability, instance->weight);
+			}
+		}
+
 		PredictorPtr Train(Instances& instances)
 		{
 			Pval(_cmd.classifierName);
@@ -237,6 +289,7 @@ namespace gezi {
 			}
 			trainer->Train(instances);
 			auto predictor = trainer->CreatePredictor();
+			predictor->SetParam(trainer->GetParam());
 			return predictor;
 		}
 
@@ -600,6 +653,9 @@ namespace gezi {
 			case RunType::EVAL:
 				RunCrossValidation();
 				break;
+			case  RunType::EVAL_PARAM:
+				RunCrossValidation(CrossValidationType::AUC);
+				break;
 			case RunType::TRAIN:
 				RunTrain();
 				break;
@@ -653,6 +709,8 @@ namespace gezi {
 		map<string, RunType> _commands = {
 			{ "cv", RunType::EVAL },
 			{ "eval", RunType::EVAL },
+			{ "eval_param", RunType::EVAL_PARAM },
+			{ "cv2", RunType::EVAL_PARAM },
 			{ "train", RunType::TRAIN },
 			{ "tr", RunType::TRAIN },
 			{ "test", RunType::TEST },

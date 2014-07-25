@@ -55,6 +55,16 @@ namespace gezi {
 			return _path;
 		}
 
+		void SetParam(string param)
+		{
+			_param = param;
+		}
+
+		string GetParam()
+		{
+			return _param;
+		}
+
 		//输出未经Calibrator矫正的数值 -n,+n 0表示分界 越高越倾向positive
 		Float Output(Instance& instance)
 		{
@@ -86,10 +96,35 @@ namespace gezi {
 			}
 		}
 
+
+		Float Output(Fvec& values)
+		{
+			Vector features(values);
+			return Output(features);
+		}
+
+		Float Output(ivec& indices, Fvec& values)
+		{
+			Vector features(indices, values);
+			return Output(features);
+		}
+
 		//输出经Calibrator矫正的数值 [0,1], 输出值表示结果倾向positive的概率
 		Float Predict(Instance& instance)
 		{
 			return Predict(instance.features);
+		}
+
+		Float Predict(Fvec& values)
+		{
+			Vector features(values);
+			return Predict(features);
+		}
+
+		Float Predict(ivec& indices, Fvec& values)
+		{
+			Vector features(indices, values);
+			return Predict(features);
 		}
 
 		Float Predict(InstancePtr instance)
@@ -118,6 +153,18 @@ namespace gezi {
 			return Predict(output);
 		}
 
+		Float Predict(Fvec& values, Float& output)
+		{
+			Vector features(values);
+			return Predict(features, output);
+		}
+
+		Float Predict(ivec& indices, Fvec& values, Float& output)
+		{
+			Vector features(indices, values);
+			return Predict(features, output);
+		}
+
 		Float Predict(Float output)
 		{
 			if (_calibrator != nullptr)
@@ -141,6 +188,7 @@ namespace gezi {
 			_path = path;
 			try_create_dir(path);
 			write_file(Name(), path + "/model.name.txt");
+			write_file(_param, path + "/model.param.txt");
 			SAVE_SHARED_PTR(_normalizer);
 			SAVE_SHARED_PTR(_calibrator);
 		}
@@ -148,8 +196,9 @@ namespace gezi {
 		virtual void Load(string path) override
 		{
 			_path = path;
+			_param = read_file(OBJ_NAME_PATH(_param));
 			LoadSave::Load(path);
-			string normalizerName = read_file(OBJ_NAME_PATH(_normalizer));
+			string normalizerName = read_file(path + "/model.param.txt");
 			if (!normalizerName.empty())
 			{
 				_normalizer = NormalizerFactory::CreateNormalizer(normalizerName, OBJ_PATH(_normalizer));
@@ -195,6 +244,8 @@ namespace gezi {
 		{
 			return 0;
 		}
+
+
 	protected:
 		bool _normalizeCopy = false;
 		NormalizerPtr _normalizer = nullptr;
@@ -203,6 +254,7 @@ namespace gezi {
 		svec _featureNames;
 
 		string _path;
+		string _param;
 	};
 	typedef shared_ptr<Predictor> PredictorPtr;
 	typedef vector<PredictorPtr> Predictors;

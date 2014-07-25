@@ -189,6 +189,47 @@ namespace gezi {
 				tree._featureNames = &_featureNames;
 			}
 		}
+
+		void FeatureGainPrint(Vector& features, int level = 0)
+		{
+			VLOG(level) << "Per feature gain for this predict:\n" <<
+				ToGainSummary(features);
+		}
+
+		map<int, double> GainMap(Vector& features)
+		{
+			map<int, double> m;
+			if (_trees.empty())
+			{
+				return m;
+			}
+
+			for (auto& tree : _trees)
+			{
+				tree.GainMap(features, m);
+			}
+			
+			return m;
+		}
+
+		string ToGainSummary(Vector& features)
+		{
+			map<int, double> m = GainMap(features);
+	
+			vector<pair<int, double> > sortedByGain;
+			sort_map_by_absvalue_reverse(m, sortedByGain);
+
+			stringstream ss;
+			int id = 0;
+			for (auto item : sortedByGain)
+			{
+				ss << setiosflags(ios::left) << setfill(' ') << setw(40)
+					<< STR(id++) + ":" + _featureNames[item.first]
+					<< "\t" << m[item.first]
+					<< endl;
+			}
+			return ss.str();
+		}
 	protected:
 		//注意都是非稀疏的输入应该 稀疏会影响速度 但是不影响结果 而且对于线上 即使稀疏快一点 也无所谓了...
 		virtual Float Margin(Vector& features) override
@@ -228,7 +269,7 @@ namespace gezi {
 				}
 				else
 				{
-					LOG(INFO) << "Total " << num << " trees show";
+					VLOG(1) << "Total " << num << " trees show";
 					break;
 				}
 				num++;

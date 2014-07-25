@@ -674,7 +674,7 @@ namespace gezi {
 		Instances&& ParseLibSVM(string dataFile)
 		{
 			Timer timer;
-			vector<string> lines = read_lines(dataFile);
+			vector<string> lines = read_lines(dataFile, "//");
 			Pval_(timer.elapsed_ms(), "read_lines");
 			if (lines.empty())
 			{
@@ -706,6 +706,10 @@ namespace gezi {
 					if (j == 0)
 					{
 						instance.label = DOUBLE(item);
+						if (instance.label == -1)
+						{
+							instance.label = 0;
+						}
 						continue;
 					}
 					string index_, value_;
@@ -904,7 +908,7 @@ namespace gezi {
 		Instances&& ParseNormal(string dataFile)
 		{
 			Timer timer;
-			vector<string> lines = read_lines(dataFile);
+			vector<string> lines = read_lines(dataFile, "//");
 			PVAL_(timer.elapsed_ms(), "read_lines");
 			if (lines.empty())
 			{

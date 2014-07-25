@@ -88,6 +88,30 @@ namespace gezi {
 			return _leafValue[~node];
 		}
 
+		void GainMap(Vector& features, map<int, double>& m)
+		{
+			if (NumLeaves == 1)
+			{
+				return;
+			}
+			int node = 0, preNode = 0;
+			while (node >= 0)
+			{
+				preNode = node;
+				if (features[_splitFeature[node]] <= _threshold[node])
+				{
+					node = _lteChild[node];
+				}
+				else
+				{
+					node = _gtChild[node];
+				}
+
+				double nowValue = node >= 0 ? _previousLeafValue[node] : _leafValue[~node];
+				add_value(m, _splitFeature[preNode], nowValue - _previousLeafValue[preNode]);
+			}
+		}
+
 		void Print(int node = 0, int depth = 0)
 		{
 			for (int i = 0; i < depth; i++)
