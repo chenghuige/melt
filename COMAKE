@@ -116,3 +116,6 @@ CONFIGS('app/search/sep/anti-spam/gezi@base')
 #Application('melt',Sources('melt.cc', srcs))
 srcs = GLOB('./src/Wrapper/*.cpp ./src/Prediction/Instances/*.cpp ./src/Run/*.cpp')
 StaticLibrary('melt',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
+
+srcs = GLOB('./src/Simple/*.cpp')
+StaticLibrary('melt_predict',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))

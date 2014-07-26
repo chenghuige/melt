@@ -143,11 +143,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=6124a4400cd6236d990cfe3df0286098  COMAKE
+COMAKE_MD5=96c66a8843f093e3724a35454468e2ef  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check libmelt.a 
+all:comake2_makefile_check libmelt.a libmelt_predict.a 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -169,9 +169,13 @@ clean:ccpclean
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mclean[0m']"
 	rm -rf libmelt.a
 	rm -rf ./output/lib/libmelt.a
+	rm -rf libmelt_predict.a
+	rm -rf ./output/lib/libmelt_predict.a
 	rm -rf src/Wrapper/melt_PredictorFactory.o
 	rm -rf src/Prediction/Instances/melt_InstanceParser.o
 	rm -rf src/Run/melt_Melt.o
+	rm -rf src/Simple/melt_predict_Predictor.o
+	rm -rf src/Simple/melt_predict_PredictorFactory.o
 
 .PHONY:dist
 dist:
@@ -200,6 +204,14 @@ libmelt.a:src/Wrapper/melt_PredictorFactory.o \
 	mkdir -p ./output/lib
 	cp -f --link libmelt.a ./output/lib
 
+libmelt_predict.a:src/Simple/melt_predict_Predictor.o \
+  src/Simple/melt_predict_PredictorFactory.o
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibmelt_predict.a[0m']"
+	ar crs libmelt_predict.a src/Simple/melt_predict_Predictor.o \
+  src/Simple/melt_predict_PredictorFactory.o
+	mkdir -p ./output/lib
+	cp -f --link libmelt_predict.a ./output/lib
+
 src/Wrapper/melt_PredictorFactory.o:src/Wrapper/PredictorFactory.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Wrapper/melt_PredictorFactory.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
@@ -223,6 +235,22 @@ src/Run/melt_Melt.o:src/Run/Melt.cpp
   -DVERSION=\"1.9.8.7\" \
   -O3 \
   -DNDEBUG $(CXXFLAGS)  -o src/Run/melt_Melt.o src/Run/Melt.cpp
+
+src/Simple/melt_predict_Predictor.o:src/Simple/Predictor.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Simple/melt_predict_Predictor.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o src/Simple/melt_predict_Predictor.o src/Simple/Predictor.cpp
+
+src/Simple/melt_predict_PredictorFactory.o:src/Simple/PredictorFactory.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Simple/melt_predict_PredictorFactory.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o src/Simple/melt_predict_PredictorFactory.o src/Simple/PredictorFactory.cpp
 
 endif #ifeq ($(shell uname -m),x86_64)
 

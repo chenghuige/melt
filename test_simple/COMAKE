@@ -1,1 +1,26 @@
-Application('test_predict',Sources('test_predict.cc',srcs), OutputPath('./bin'))
+#edit-mode: -*- python -*-
+#coding:gbk
+
+WORKROOT('../../../../../../')
+
+CopyUsingHardLink(True)
+
+CPPFLAGS('-D_GNU_SOURCE -D__STDC_LIMIT_MACROS -DVERSION=\"1.9.8.7\"')
+
+CFLAGS('-g -O3 -pipe -W -Wall -fPIC')
+
+CXXFLAGS('-g -O3 -pipe -fPIC -fpermissive')
+
+IDLFLAGS('--compack')
+
+UBRPCFLAGS('--compack')
+
+INCPATHS('../include/')
+
+#CONFIGS('third-64/boost third-64/gflags third-64/glog public/comlog-plugin lib2-64/ullib lib2-64/ccode public/odict lib2-64/ullib lib2-64/ccode lib2-64/wordseg lib2-64/postag lib2-64/dict ps/se/dict-set lib2-64/libcrf lib2-64/others-ex public/idlcompiler public/nshead')
+
+LDFLAGS('-lpthread -lcrypto -lrt')
+
+LIBS('../libmelt_predict.a')
+
+Application('test_predict',Sources('test_predict.cc'))
