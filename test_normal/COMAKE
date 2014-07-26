@@ -1,0 +1,35 @@
+#edit-mode: -*- python -*-
+#coding:gbk
+
+WORKROOT('../../../../../../')
+
+GCC_VERSION='4.8.2'
+GCC_BIN='../../../../../../ps/se/toolchain/gcc_only_%s/bin/g++'%(GCC_VERSION)
+print 'GCC_BIN: %s'%GCC_BIN
+CC(GCC_BIN)
+CXX(GCC_BIN)
+
+CopyUsingHardLink(True)
+
+CPPFLAGS('-D_GNU_SOURCE -D__STDC_LIMIT_MACROS -DVERSION=\"1.9.8.7\"')
+
+GCC_FLAGS = '-std=c++11 -fpermissive -Wno-write-strings -Wno-literal-suffix -Wno-unused-local-typedefs -Wunused-parameter -Wunknown-pragmas'
+
+CFLAGS('-g -O3 -pipe -W -Wall -fPIC', GCC_FLAGS)
+CXXFLAGS('-g -O3 -pipe -W -Wall -fPIC', GCC_FLAGS)
+
+IDLFLAGS('--compack')
+UBRPCFLAGS('--compack')
+
+INCPATHS('../include/')
+
+CONFIGS('ps/se/toolchain@base')
+CONFIGS('third-64/boost@base')
+CONFIGS('third-64/glog@base')
+CONFIGS('app/search/sep/anti-spam/gezi@base')
+
+LDFLAGS('-lpthread -static-libgcc -static-libstdc++')
+
+LIBS('../libmelt_predict.a')
+
+Application('test_predict',Sources('test_predict.cc'))
