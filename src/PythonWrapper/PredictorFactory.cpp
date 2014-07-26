@@ -16,12 +16,12 @@
 #include "MLCore/Predictor.h"
 namespace gezi {
 	namespace py {
-		PredictorPtr _predictor;
-		Predictor PredictorFactory::LoadPredictor(string path)
+		vector<PredictorPtr> _predictors;
+		Predictor PredictorFactory::LoadPredictor(std::string path)
 		{
-			_predictor = gezi::PredictorFactory::LoadPredictor(path);
+			_predictors.push_back(gezi::PredictorFactory::LoadPredictor(path));
 			Predictor predictor;
-			predictor._predictor = _predictor.get();
+			predictor._predictor = _predictors.back().get();
 			return predictor;
 		}
 	}
