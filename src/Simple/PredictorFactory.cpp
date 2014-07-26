@@ -22,13 +22,13 @@ namespace gezi {
 		Predictor PredictorFactory::LoadPredictor(std::string path)
 		{
 			PredictorPtr p = gezi::PredictorFactory::LoadPredictor(path);
-			Vector fe("");
-			Pval(p->Predict(fe));
 			vector<int> indices;
 			vector<double> values;
-			Pval(p->Output(indices, values));
+			Pval(p.get()->Output(indices, values));
 			Predictor predictor;
+			Pval(p.get());
 			predictor._predictor = p.get();
+			Pval(predictor._predictor);
 			return predictor;
 		}
 	}

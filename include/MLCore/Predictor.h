@@ -106,8 +106,6 @@ namespace gezi {
 		Float Output(ivec& indices, Fvec& values)
 		{
 			Vector features(indices, values);
-			Pval(features[0]);
-			Pval(Output(features));
 			return Output(features);
 		}
 
