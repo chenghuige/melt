@@ -109,10 +109,13 @@ namespace gezi {
 		void RunCrossValidation(Instances& instances, CrossValidationType cvType)
 		{
 			//--------------------------- 输出文件头
-			try_create_dir(_cmd.resultDir);
-			string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
-			ofstream ofs(instFile);
-			WriteInstFileHeader(ofs);
+			if (cvType == CrossValidationType::DEFAULT)
+			{
+				string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
+				try_create_dir(_cmd.resultDir);
+				ofstream ofs(instFile);
+				WriteInstFileHeader(ofs);
+			}
 
 			if (_cmd.preNormalize)
 			{
@@ -711,6 +714,8 @@ namespace gezi {
 			{ "eval", RunType::EVAL },
 			{ "eval_param", RunType::EVAL_PARAM },
 			{ "cv2", RunType::EVAL_PARAM },
+			{ "cv_param", RunType::EVAL_PARAM },
+			{ "auc", RunType::EVAL_PARAM },
 			{ "train", RunType::TRAIN },
 			{ "tr", RunType::TRAIN },
 			{ "test", RunType::TEST },
