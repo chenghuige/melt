@@ -1,0 +1,1388 @@
+D:\TLC\bin\Debug\TL.exe /c cv /k:5 W:\urate\app\search\sep\anti-spam\tieba-urate\exp\mis\reply.train\train.20140316.all\feature\feature.txt /cl FastRankBinaryClassification { /nl = 8 /mil = 50 /iter = 500 /lr = 0.062996 } /summary:+ /pr:W:\urate\app\search\sep\anti-spam\tieba-urate\exp\mis\reply.train\train.20140316.all\model\0.pr.txt /sf:W:\urate\app\search\sep\anti-spam\tieba-urate\exp\mis\reply.train\train.20140316.all\model\0.summary.txt /o:W:\urate\app\search\sep\anti-spam\tieba-urate\exp\mis\reply.train\train.20140316.all\model\0.inst.txt /rs:1 /tlc /trsess:1
+
+2014/3/20 16:20:42 Running a cross-validation experiment on 5 folds; multithreading=on; numRuns=1 over 100% of data
+			Precision-Recall results will be stored in W:\urate\app\search\sep\anti-spam\tieba-urate\exp\mis\reply.train\train.20140316.all\model\0.pr.txt
+In every fold, positives: 142 negatives: 2257 unlabeled: 0
+Folds are trained with 9599 instances, and tested on 2400 instances
+FastRankWrapper: Making per-feature arrays
+Changing data from row-wise to column-wise
+FastRankWrapper: Processed 9599 instances
+FastRankWrapper: Binning and forming Feature objects...
+Total machine count = 1, degenerate to single version.
+
+00:00:00.6876345:	Starting to train ...
+.................................................  50	2014/3/20 16:20:43
+..................................................  100	2014/3/20 16:20:43
+..................................................  150	2014/3/20 16:20:43
+..................................................  200	2014/3/20 16:20:43
+..................................................  250	2014/3/20 16:20:43
+..................................................  300	2014/3/20 16:20:43
+..................................................  350	2014/3/20 16:20:44
+..................................................  400	2014/3/20 16:20:44
+..................................................  450	2014/3/20 16:20:44
+..................................................  500	2014/3/20 16:20:44
+.
+double paramA = -0.241270541291349;
+double paramB = -1.0682288911869;
+
+Per-feature gain summary for the boosted tree ensemble:
+	UserInfo_MaxLevel	1
+	UserInfo_HasMobile	0.437800631243441
+	UserInfo_FollowedCount	0.421669791576175
+	LTrate_TrateMean5	0.414232195935733
+	UserInfo_UnameIsEnNum	0.414108607821751
+	LTrate_TrateMean4	0.385946188408135
+	TitleSim_AvgSimByForum	0.353204720586975
+	RepeatString_CnRatio	0.306102375009295
+	UserInfo_FollowCount	0.266182061396015
+	TitleSim_AvgSimByThread	0.242754816729744
+	LTrate_TrateMean	0.227990607270612
+	RepeatString_ReplyTextLengthVar	0.219397382878238
+	ForumInfo_Level1Name22	0.217277855676285
+	LTrate_NowTrateScore	0.205201743230542
+	DictMatch_GrayTitleRatio2	0.197485889221706
+	LTrate_TrateMean2	0.168593512149097
+	RepeatString_TextLengthVar	0.160825901971576
+	ForumInfo_RankMean	0.15490261693098
+	DH_DH4	0.148298831597878
+	RepeatString_NowCnRatio	0.147658273990604
+	RepeatString_TextLengthMean	0.142405272048558
+	LTrate_TrateMean3	0.140791221775204
+	RepeatString_TextCnLengthMean	0.133697325326786
+	UserInfo_UnamePattern0	0.131185137978845
+	IPInfo_LocChanges	0.130818769158338
+	ForumInfo_RankInfo	0.129824152185665
+	UrlWeight_UrlScoreAvgMultTextLength	0.124515740383895
+	DictMatch_NowGrayContentCount2	0.121095738005421
+	UserInfo_HasSex	0.115972960228486
+	UserInfo_UnamePattern2	0.115535062139086
+	UserInfo_RegTime	0.115183332006377
+	RepeatString_ReplyTextLengthMean	0.113947323981405
+	ForumInfo_NowRank	0.111386893424471
+	DictMatch_BlackContentPerPost2	0.109354806243026
+	LTrate_TrateVar	0.109267271355852
+	ForumInfo_ForumInfo	0.105165640225876
+	UnusualCn_UnusualCnRatio	0.104224827087648
+	ForumInfo_Level1Name8	0.102482334345206
+	RepeatString_TextCnLengthVar	0.100494877214411
+	LTrate_ReplyTrateMean	0.100318634145931
+	Trate_TrateMean5	0.0935886837342288
+	UserInfo_FourmNum	0.0911530414345772
+	RepeatString_NowCnLength	0.0904247402966063
+	LTrate_ReplyTrateVar	0.0903630360327141
+	DictMatch_GrayContentPerPost2	0.087744366640101
+	DictMatch_BlackTitleRatio2	0.0876275228451731
+	Trate_TrateVar	0.0874811414719902
+	ContentSim_Top2ContentsSim	0.0871188660367834
+	UserInfo_NowLevel	0.0848854800666566
+	ContentSim_AvgSimByThread1	0.0814045214191984
+	UserInfo_LevelMean	0.0800771895371403
+	Trate_ReplyTrateVar	0.0787703220875804
+	DictMatch_GrayTitleRatio	0.0730982288256679
+	UserInfo_FollowFollowedRatio	0.0701457333885051
+	DictMatch_WhiteTitleRatio	0.0655696000634711
+	Time_Bins1	0.0654175863303444
+	ContentSim_AvgSimByForum	0.0652549295917712
+	UserInfo_IsGroupOwner	0.0641883371463515
+	LanguageModel_NowLastLmScore	0.0626797366196098
+	LanguageModel_NowFirstLmScore	0.0577610520433472
+	LanguageModel_LmScoreAvg	0.0568147055060962
+	LanguageModel_NowLmScore	0.0549572306684529
+	PostReplyRate_UniqeThreadNum	0.0547566733787403
+	LanguageModel_BadFirstLmScoreAvg	0.0535685272153245
+	IPInfo_IpPrefix3Changes	0.0530979700958785
+	IPInfo_RecentLocs	0.052654417580213
+	Time_NowTimeBin	0.0522844998731181
+	LanguageModel_BadLastLmScoreAvg	0.0512331283085949
+	RepeatString_NowLength	0.0492524003198753
+	UserInfo_UnamePattern1	0.0469695135777539
+	LanguageModel_BadLmScoreAvg	0.0455997214043814
+	Time_HoursCovered	0.0447689495167445
+	ForumInfo_Level2Info	0.044498473161827
+	DictMatch_GrayContentPerPost	0.0439163082496402
+	Trate_Bukets0	0.0434887436156511
+	DictMatch_TitleModifyRatio	0.0424473548723492
+	DictMatch_BlackContentPerPost	0.0420154530117203
+	ForumInfo_Level1Name19	0.0393624509933524
+	DictMatch_NowGrayTitleCount2	0.0385761141876106
+	Trate_TrateMean	0.036390160450302
+	ForumInfo_Level1Info	0.0343686624337118
+	ForumInfo_Level1Name18	0.0330145175177295
+	NumberWeight_NumRatio	0.032776189942704
+	Trate_TrateMean2	0.0304800334516012
+	ForumInfo_RankVar	0.0293176381450029
+	UrlWeight_UniqueUrlRatio	0.0287790677466932
+	NumberWeight_UniqueNumRatio	0.0285301213524532
+	DictMatch_BlackTitleRatio	0.0279944218091089
+	Time_Bins3	0.0270504855030625
+	ForumInfo_Level1Name2	0.0259767789704102
+	Time_Bins4	0.0254409844878999
+	DictMatch_NowBlackContentCount2	0.0252636235526194
+	DictMatch_NowBlackTitleCount2	0.0236957946564895
+	UrlWeight_AnyRatioMultTextLength	0.0235252739119342
+	Time_Bins5	0.0230397296399002
+	Time_Bins0	0.0226637717176835
+	Trate_ReplyTrateMean	0.0222271825298378
+	DictMatch_ContentModifyRatio	0.0210110294824572
+	MultiReplyTo_MultiReplyTo0	0.0203078782037149
+	Trate_TrateMean3	0.0182242274987776
+	UrlWeight_PicRatio	0.0182188701951649
+	IPInfo_RecentIpPrefix1	0.0174990728807875
+	IPInfo_RecentIpPrefix3	0.0172253740627196
+	ForumInfo_FormTitleMatchRatio	0.016849072219986
+	DictMatch_NowGrayContentCount	0.0167240191405187
+	LTrate_Bukets2	0.0156426721041702
+	UrlWeight_UrlScoreMax	0.0137223660864835
+	UserInfo_LevelVar	0.012933856607999
+	IPInfo_IpPrefix2Changes	0.0125792041318332
+	UserInfo_IsMale	0.012458810291884
+	UserInfo_HasBirth	0.0114876319687398
+	DictMatch_NowGrayTitleCount	0.0110202798230323
+	Time_Bins2	0.0107369134279889
+	LTrate_ThreadTrateMean	0.010363454832228
+	ForumInfo_Level1Name21	0.0103563716777933
+	LTrate_ThreadTrateVar	0.00751315781894372
+	DictMatch_NowBlackContentCount	0.00705557572275535
+	UrlWeight_PicRatioMultTextLength	0.00684741377567309
+	ForumInfo_Level1Name7	0.00565353494166846
+	Trate_PBukets0	0.00495825975324231
+	RepeatString_ThreadTextLengthVar	0.00434722602421213
+	IPInfo_IpChanges	0.00427600152025163
+	Trate_TrateMean4	0.00407291701625321
+	UserInfo_IsFemale	0
+	UserInfo_IsQQName	0
+	ForumInfo_Level1Name0	0
+	ForumInfo_Level1Name1	0
+	ForumInfo_Level1Name3	0
+	ForumInfo_Level1Name4	0
+	ForumInfo_Level1Name5	0
+	ForumInfo_Level1Name6	0
+	ForumInfo_Level1Name9	0
+	ForumInfo_Level1Name10	0
+	ForumInfo_Level1Name11	0
+	ForumInfo_Level1Name12	0
+	ForumInfo_Level1Name13	0
+	ForumInfo_Level1Name14	0
+	ForumInfo_Level1Name15	0
+	ForumInfo_Level1Name16	0
+	ForumInfo_Level1Name17	0
+	ForumInfo_Level1Name20	0
+	ForumInfo_Level1Name23	0
+	ForumInfo_Level1Name24	0
+	ForumInfo_Level1Name25	0
+	ForumInfo_Level1Name26	0
+	ForumInfo_Level1Name27	0
+	ForumInfo_Level1Name28	0
+	ContentSim_AvgSimByThread2	0
+	TitleSim_Top2TitleSim	0
+	RepeatString_ThreadTextLengthMean	0
+	UrlWeight_NowUrlScore	0
+	UrlWeight_NowHasVideo	0
+	UrlWeight_NowHasEmail	0
+	UrlWeight_NowHasPic	0
+	UrlWeight_UrlScoreAvg	0
+	UrlWeight_UrlScoreMin	0
+	UrlWeight_UrlRatio	0
+	UrlWeight_EmailRatio	0
+	UrlWeight_VideoRatio	0
+	UrlWeight_VideoRatioMultTextLength	0
+	UrlWeight_AnyRatio	0
+	UrlWeight_UniquePicRatio	0
+	UrlWeight_UniqueVideoRatio	0
+	NumberWeight_DeformNumRatio	0
+	UnusualChar_	0
+	UnusualCn_UnusualCnPostsRatio	0
+	DictMatch_NowBlackTitleCount	0
+	LanguageModel_FirstLmScoreAvg	0
+	LanguageModel_LastLmScoreAvg	0
+	Trate_TrateNum	0
+	Trate_NowTrateScore	0
+	Trate_NowThreadTrateScore	0
+	Trate_NowReplyTrateScore	0
+	Trate_ThreadTrateMean	0
+	Trate_ThreadTrateVar	0
+	Trate_Bukets1	0
+	Trate_Bukets2	0
+	Trate_Bukets3	0
+	Trate_TBukets0	0
+	Trate_TBukets1	0
+	Trate_TBukets2	0
+	Trate_TBukets3	0
+	Trate_PBukets1	0
+	Trate_PBukets2	0
+	Trate_PBukets3	0
+	LTrate_TrateNum	0
+	LTrate_NowThreadTrateScore	0
+	LTrate_NowReplyTrateScore	0
+	LTrate_Bukets0	0
+	LTrate_Bukets1	0
+	LTrate_Bukets3	0
+	LTrate_TBukets0	0
+	LTrate_TBukets1	0
+	LTrate_TBukets2	0
+	LTrate_TBukets3	0
+	LTrate_PBukets0	0
+	LTrate_PBukets1	0
+	LTrate_PBukets2	0
+	LTrate_PBukets3	0
+	IPInfo_RecentIps	0
+	IPInfo_RecentIpPrefix2	0
+	IPInfo_IpPrefix1Changes	0
+	IPInfo_ForeignIpRatio	0
+	PostReplyRate_ThreadRatio	0
+	PostReplyRate_PostsNum	0
+	PostReplyRate_ThreadNum	0
+	PostReplyRate_UniqeThreadRatio	0
+	Time_TimeSpan0	0
+	Time_TimeSpan1	0
+	Time_TimeSpan2	0
+	Time_TimeSpan3	0
+	Time_TimeSpan4	0
+	Time_TimeSpanAvg	0
+	Time_TimeSpanVar	0
+	DH_DH0	0
+	DH_DH1	0
+	DH_DH2	0
+	DH_DH3	0
+	Sundry_PostType	0
+	Sundry_HistorySize	0
+	Sundry_PostsNumLast_1440_Minutes	0
+	
+FastRankWrapper: Making per-feature arrays
+Changing data from row-wise to column-wise
+FastRankWrapper: Making per-feature arrays
+Changing data from row-wise to column-wise
+FastRankWrapper: Making per-feature arrays
+Changing data from row-wise to column-wise
+FastRankWrapper: Making per-feature arrays
+Changing data from row-wise to column-wise
+.FastRankWrapper: Processed 9600 instances
+FastRankWrapper: Binning and forming Feature objects...
+FastRankWrapper: Processed 9597 instances
+FastRankWrapper: Binning and forming Feature objects...
+FastRankWrapper: Processed 9600 instances
+FastRankWrapper: Binning and forming Feature objects...
+FastRankWrapper: Processed 9600 instances
+FastRankWrapper: Binning and forming Feature objects...
+.
+----------------------------------------------------------------------------------------
+TEST POSITIVE RATIO:	0.0592 (142/(142+2258))
+TRAIN POSITIVE RATIO:	0.0592
+
+Confusion table:
+         ||===============================|
+         ||            PREDICTED          |
+  TRUTH  ||    positive    |   negative   | RECALL
+         ||===============================|
+ positive||   95           |    47        | 0.6690 (95/142)
+ negative||   14           |    2244      | 0.9938 (2244/2258)
+         ||===============================|
+ PRECISION 0.8716 (95/109)   0.9795(2244/2291)
+
+OVERALL 0/1 ACCURACY:		0.9746 (2339/2400)
+LOG LOSS/instance:		0.14348633
+TEST-SET ENTROPY (prior LL/in):	0.32412798
+LOG-LOSS REDUCTION (RIG):	55.7316%
+   TRAIN-SET PRIOR LL/inst (train-test cross-entropy):			0.32412798
+   TRAIN-SET LL REDUCTION (trainRIG diagnostic, *not* for comparisons):	55.7316%
+AUC:				0.9769
+
+
+----------------------------------------------------------------------------------------
+Total machine count = 1, degenerate to single version.
+
+00:00:03.3280351:	Starting to train ...
+.................................................  50	2014/3/20 16:20:45
+..................................................  100	2014/3/20 16:20:45
+..................................................  150	2014/3/20 16:20:45
+..................................................  200	2014/3/20 16:20:46
+..................................................  250	2014/3/20 16:20:46
+..................................................  300	2014/3/20 16:20:46
+..................................................  350	2014/3/20 16:20:46
+..................................................  400	2014/3/20 16:20:46
+..................................................  450	2014/3/20 16:20:46
+..................................................  500	2014/3/20 16:20:46
+.Total machine count = 1, degenerate to single version.
+
+00:00:04.8176326:	Starting to train ...
+.......
+double paramA = -0.248240988210247;
+double paramB = -1.19882115762222;
+....
+Per-feature gain summary for the boosted tree ensemble:
+	UserInfo_MaxLevel	1
+	UserInfo_FollowedCount	0.435028889431241
+	LTrate_TrateMean4	0.414720972226897
+	LTrate_TrateMean5	0.414645181943073
+	RepeatString_CnRatio	0.323012156113765
+	LTrate_TrateMean	0.299807213639061
+	TitleSim_AvgSimByForum	0.293770837399731
+	UserInfo_FollowCount	0.267683222671689
+	UserInfo_HasMobile	0.266664601034133
+	UserInfo_UnameIsEnNum	0.250492983289937
+	LTrate_ReplyTrateMean	0.199377457930655
+	TitleSim_AvgSimByThread	0.198877707213614
+	ForumInfo_Level1Name22	0.191788821650379
+	DictMatch_GrayTitleRatio2	0.18574174580063
+	UserInfo_UnamePattern0	0.176701732095779
+	UserInfo_HasSex	0.175396009583404
+	ForumInfo_RankMean	0.171415268790848
+	LTrate_TrateMean2	0.170729646225542
+	UserInfo_FourmNum	0.16497450834947
+	LTrate_NowTrateScore	0.164823142787727
+	RepeatString_ReplyTextLengthVar	0.159648046229034
+	UserInfo_UnamePattern2	0.151443963228026
+	IPInfo_LocChanges	0.151052475576692
+	DH_DH4	0.134813500506108
+	DictMatch_GrayContentPerPost2	0.134773802978703
+	RepeatString_ReplyTextLengthMean	0.123603497156062
+	DictMatch_GrayTitleRatio	0.123467835749913
+	RepeatString_TextCnLengthVar	0.114666580730017
+	RepeatString_TextLengthVar	0.113360842411715
+	ForumInfo_ForumInfo	0.111863590760302
+	ForumInfo_Level1Name8	0.110065505493741
+	RepeatString_TextLengthMean	0.109539381113478
+	LTrate_TrateVar	0.108065124527569
+	RepeatString_NowCnRatio	0.107111253186682
+	RepeatString_TextCnLengthMean	0.106174814737629
+	UrlWeight_UrlScoreAvgMultTextLength	0.10424709542097
+	DictMatch_BlackContentPerPost2	0.102710435407197
+	UserInfo_LevelMean	0.101093139004162
+	LTrate_ReplyTrateVar	0.100229303409443
+	UnusualCn_UnusualCnRatio	0.0988874563344673
+	DictMatch_BlackTitleRatio2	0.0976789950571437
+	UserInfo_RegTime	0.096643836982794
+	IPInfo_IpPrefix3Changes	0.0878903812899963
+	Trate_TrateVar	0.0837874406090387
+	ContentSim_AvgSimByThread1	0.0808852644152772
+	RepeatString_NowCnLength	0.0770868990312494
+	NumberWeight_UniqueNumRatio	0.0717585231472402
+	UserInfo_IsFemale	0.0708935462548612
+	LanguageModel_LmScoreAvg	0.0706018944188451
+	LanguageModel_NowLastLmScore	0.0685560484623881
+	LanguageModel_NowFirstLmScore	0.0682965008746096
+	ForumInfo_NowRank	0.0675791196699569
+	LTrate_TrateMean3	0.0663010944687335
+	RepeatString_NowLength	0.0621933418584463
+	DictMatch_NowGrayContentCount2	0.0617933480744786
+	ContentSim_Top2ContentsSim	0.0612137489591963
+	Trate_ReplyTrateVar	0.0594911904727808
+	PostReplyRate_UniqeThreadNum	0.0588646570023377
+	Trate_TrateMean5	0.0582904068074715
+	LanguageModel_BadFirstLmScoreAvg	0.0579577929141147
+	Trate_TrateMean2	0.0576186029676804
+	LanguageModel_BadLmScoreAvg	0.0563864846349727
+	UserInfo_NowLevel	0.0544381517362311
+	LanguageModel_NowLmScore	0.0518039682864116
+	UserInfo_FollowFollowedRatio	0.0508603514268933
+	UrlWeight_UniqueUrlRatio	0.0490716816326873
+	Time_Bins1	0.0480408963192138
+	DictMatch_WhiteTitleRatio	0.0479711783338261
+	Time_Bins3	0.0478087392154704
+	UserInfo_UnamePattern1	0.0471602742423608
+	UserInfo_IsMale	0.0470492585889935
+	UserInfo_LevelVar	0.0460206231504661
+	DictMatch_BlackContentPerPost	0.0455452783109506
+	ContentSim_AvgSimByForum	0.044674541857312
+	ForumInfo_RankInfo	0.0438431398333088
+	ForumInfo_Level1Name19	0.0433618031240973
+	ForumInfo_Level1Name18	0.0411718616308106
+	ForumInfo_FormTitleMatchRatio	0.0398332749216559
+	DictMatch_GrayContentPerPost	0.0378834885311578
+	UserInfo_IsGroupOwner	0.0327782933073171
+	Trate_TrateMean	0.0323347088522098
+	LanguageModel_BadLastLmScoreAvg	0.0322164215351247
+	Time_Bins4	0.0321073227615149
+	Time_HoursCovered	0.0319703282929485
+	Trate_ReplyTrateMean	0.030604661426998
+	ForumInfo_RankVar	0.0296639396342069
+	ForumInfo_Level2Info	0.0290719374496569
+	Time_NowTimeBin	0.0267450800635464
+	MultiReplyTo_MultiReplyTo0	0.0245305255705223
+	DictMatch_BlackTitleRatio	0.0233281062772808
+	UserInfo_HasBirth	0.0208303875453898
+	IPInfo_IpPrefix2Changes	0.0183514750739266
+	ForumInfo_Level1Name7	0.017983478095397
+	Trate_TrateMean3	0.0173290379806832
+	IPInfo_IpChanges	0.0170741504247895
+	NumberWeight_NumRatio	0.0158363518784661
+	LTrate_ThreadTrateMean	0.0154199294767031
+	ContentSim_AvgSimByThread2	0.0152031646406025
+	IPInfo_RecentLocs	0.0140160735192308
+	DictMatch_ContentModifyRatio	0.0139521329326794
+	ForumInfo_Level1Info	0.0135584494879938
+	Time_Bins5	0.0121419300263141
+	DictMatch_NowBlackContentCount2	0.0118928617074294
+	UserInfo_IsQQName	0.0117581633612313
+	UrlWeight_UrlScoreMax	0.0100546256664358
+	Time_Bins2	0.00907700023757995
+	DictMatch_NowGrayTitleCount	0.00838580124056876
+	UnusualChar_	0.00834280104614661
+	ForumInfo_Level1Name10	0.00535667267128997
+	DictMatch_NowGrayTitleCount2	0.00535391794346655
+	ForumInfo_Level1Name17	0.00532689208471788
+	IPInfo_RecentIpPrefix3	0.00519714340864919
+	Trate_PBukets1	0.00417818365490954
+	ForumInfo_Level1Name3	0.00390635384386012
+	ForumInfo_Level1Name0	0
+	ForumInfo_Level1Name1	0
+	ForumInfo_Level1Name2	0
+	ForumInfo_Level1Name4	0
+	ForumInfo_Level1Name5	0
+	ForumInfo_Level1Name6	0
+	ForumInfo_Level1Name9	0
+	ForumInfo_Level1Name11	0
+	ForumInfo_Level1Name12	0
+	ForumInfo_Level1Name13	0
+	ForumInfo_Level1Name14	0
+	ForumInfo_Level1Name15	0
+	ForumInfo_Level1Name16	0
+	ForumInfo_Level1Name20	0
+	ForumInfo_Level1Name21	0
+	ForumInfo_Level1Name23	0
+	ForumInfo_Level1Name24	0
+	ForumInfo_Level1Name25	0
+	ForumInfo_Level1Name26	0
+	ForumInfo_Level1Name27	0
+	ForumInfo_Level1Name28	0
+	TitleSim_Top2TitleSim	0
+	RepeatString_ThreadTextLengthMean	0
+	RepeatString_ThreadTextLengthVar	0
+	UrlWeight_NowUrlScore	0
+	UrlWeight_NowHasVideo	0
+	UrlWeight_NowHasEmail	0
+	UrlWeight_NowHasPic	0
+	UrlWeight_UrlScoreAvg	0
+	UrlWeight_UrlScoreMin	0
+	UrlWeight_UrlRatio	0
+	UrlWeight_PicRatio	0
+	UrlWeight_PicRatioMultTextLength	0
+	UrlWeight_EmailRatio	0
+	UrlWeight_VideoRatio	0
+	UrlWeight_VideoRatioMultTextLength	0
+	UrlWeight_AnyRatio	0
+	UrlWeight_AnyRatioMultTextLength	0
+	UrlWeight_UniquePicRatio	0
+	UrlWeight_UniqueVideoRatio	0
+	NumberWeight_DeformNumRatio	0
+	UnusualCn_UnusualCnPostsRatio	0
+	DictMatch_NowBlackTitleCount	0
+	DictMatch_NowBlackTitleCount2	0
+	DictMatch_NowBlackContentCount	0
+	DictMatch_NowGrayContentCount	0
+	DictMatch_TitleModifyRatio	0
+	LanguageModel_FirstLmScoreAvg	0
+	LanguageModel_LastLmScoreAvg	0
+	Trate_TrateNum	0
+	Trate_NowTrateScore	0
+	Trate_NowThreadTrateScore	0
+	Trate_NowReplyTrateScore	0
+	Trate_ThreadTrateMean	0
+	Trate_ThreadTrateVar	0
+	Trate_Bukets0	0
+	Trate_Bukets1	0
+	Trate_Bukets2	0
+	Trate_Bukets3	0
+	Trate_TBukets0	0
+	Trate_TBukets1	0
+	Trate_TBukets2	0
+	Trate_TBukets3	0
+	Trate_PBukets0	0
+	Trate_PBukets2	0
+	Trate_PBukets3	0
+	Trate_TrateMean4	0
+	LTrate_TrateNum	0
+	LTrate_NowThreadTrateScore	0
+	LTrate_NowReplyTrateScore	0
+	LTrate_ThreadTrateVar	0
+	LTrate_Bukets0	0
+	LTrate_Bukets1	0
+	LTrate_Bukets2	0
+	LTrate_Bukets3	0
+	LTrate_TBukets0	0
+	LTrate_TBukets1	0
+	LTrate_TBukets2	0
+	LTrate_TBukets3	0
+	LTrate_PBukets0	0
+	LTrate_PBukets1	0
+	LTrate_PBukets2	0
+	LTrate_PBukets3	0
+	IPInfo_RecentIps	0
+	IPInfo_RecentIpPrefix2	0
+	IPInfo_RecentIpPrefix1	0
+	IPInfo_IpPrefix1Changes	0
+	IPInfo_ForeignIpRatio	0
+	PostReplyRate_ThreadRatio	0
+	PostReplyRate_PostsNum	0
+	PostReplyRate_ThreadNum	0
+	PostReplyRate_UniqeThreadRatio	0
+	Time_TimeSpan0	0
+	Time_TimeSpan1	0
+	Time_TimeSpan2	0
+	Time_TimeSpan3	0
+	Time_TimeSpan4	0
+	Time_TimeSpanAvg	0
+	Time_TimeSpanVar	0
+	Time_Bins0	0
+	DH_DH0	0
+	DH_DH1	0
+	DH_DH2	0
+	DH_DH3	0
+	Sundry_PostType	0
+	Sundry_HistorySize	0
+	Sundry_PostsNumLast_1440_Minutes	0
+	
+......................................  50	2014/3/20 16:20:47
+...................................................  100	2014/3/20 16:20:47
+...................................................  150	2014/3/20 16:20:47
+...........
+----------------------------------------------------------------------------------------
+TEST POSITIVE RATIO:	0.0592 (142/(142+2257))
+TRAIN POSITIVE RATIO:	0.0592
+
+Confusion table:
+         ||===============================|
+         ||            PREDICTED          |
+  TRUTH  ||    positive    |   negative   | RECALL
+         ||===============================|
+ positive||   98           |    44        | 0.6901 (98/142)
+ negative||   22           |    2235      | 0.9903 (2235/2257)
+         ||===============================|
+ PRECISION 0.8167 (98/120)   0.9807(2235/2279)
+
+OVERALL 0/1 ACCURACY:		0.9725 (2333/2399)
+LOG LOSS/instance:		0.19679007
+TEST-SET ENTROPY (prior LL/in):	0.32422640
+LOG-LOSS REDUCTION (RIG):	39.3047%
+   TRAIN-SET PRIOR LL/inst (train-test cross-entropy):			0.32422641
+   TRAIN-SET LL REDUCTION (trainRIG diagnostic, *not* for comparisons):	39.3047%
+AUC:				0.9736
+
+
+----------------------------------------------------------------------------------------
+.......................................  200	2014/3/20 16:20:47
+..................................................  250	2014/3/20 16:20:48
+..................................................  300	2014/3/20 16:20:48
+..................................................  350	2014/3/20 16:20:48
+..................................................  400	2014/3/20 16:20:48
+..................................................  450	2014/3/20 16:20:48
+..................................................  500	2014/3/20 16:20:48
+.Total machine count = 1, degenerate to single version.
+
+00:00:06.7388008:	Starting to train ...
+..........
+double paramA = -0.255825009108299;
+double paramB = -1.16790435105847;
+....
+Per-feature gain summary for the boosted tree ensemble:
+	UserInfo_MaxLevel	1
+	LTrate_TrateMean5	0.591105952298781
+	UserInfo_UnameIsEnNum	0.408374246515267
+	UserInfo_FollowedCount	0.405616236763659
+	UserInfo_HasMobile	0.373332480460754
+	TitleSim_AvgSimByForum	0.306474041907811
+	RepeatString_CnRatio	0.2932572728088
+	UserInfo_FollowCount	0.263015160908805
+	TitleSim_AvgSimByThread	0.250461096462048
+	LTrate_TrateMean4	0.244970587802067
+	ForumInfo_Level1Name22	0.223609016183994
+	DictMatch_GrayTitleRatio2	0.216381694812663
+	RepeatString_ReplyTextLengthVar	0.209877650036729
+	LTrate_TrateMean	0.207608319619775
+	ForumInfo_RankMean	0.197291184152757
+	LTrate_TrateMean2	0.189785346071519
+	LTrate_NowTrateScore	0.183805692717531
+	DH_DH4	0.160649696699831
+	UserInfo_UnamePattern0	0.159983046337423
+	DictMatch_GrayContentPerPost2	0.151400730921778
+	IPInfo_LocChanges	0.150997520476645
+	RepeatString_TextCnLengthMean	0.150219483902458
+	UserInfo_UnamePattern2	0.148456538705859
+	UrlWeight_UrlScoreAvgMultTextLength	0.144191998488134
+	RepeatString_ReplyTextLengthMean	0.140102149419425
+	ForumInfo_ForumInfo	0.138623437159371
+	UserInfo_RegTime	0.135819936068942
+	UnusualCn_UnusualCnRatio	0.131004130965629
+	ForumInfo_Level1Name8	0.123927296036478
+	RepeatString_TextLengthMean	0.122980484806046
+	LTrate_TrateVar	0.122652463347007
+	RepeatString_TextLengthVar	0.121529380964717
+	LTrate_ReplyTrateMean	0.121156668831857
+	ForumInfo_NowRank	0.117307621686334
+	LTrate_ReplyTrateVar	0.110924191102587
+	UserInfo_HasSex	0.107297275840972
+	ContentSim_AvgSimByThread1	0.107296151509761
+	DictMatch_BlackTitleRatio2	0.107012275412443
+	UserInfo_LevelMean	0.106763663665875
+	LTrate_TrateMean3	0.106070539545605
+	RepeatString_TextCnLengthVar	0.105324589530788
+	RepeatString_NowCnRatio	0.104856780071287
+	ForumInfo_RankInfo	0.104446612878978
+	Trate_TrateVar	0.103138832101292
+	DictMatch_GrayTitleRatio	0.103099890454444
+	UserInfo_UnamePattern1	0.0889912418060468
+	UserInfo_NowLevel	0.0881223073461817
+	LanguageModel_BadFirstLmScoreAvg	0.0860830356496456
+	LanguageModel_NowFirstLmScore	0.0855888021540878
+	DictMatch_BlackContentPerPost2	0.0854787391379933
+	NumberWeight_UniqueNumRatio	0.0815824731905528
+	RepeatString_NowCnLength	0.0814994245717381
+	RepeatString_NowLength	0.0785453718861546
+	UserInfo_IsFemale	0.076503637724091
+	UserInfo_IsGroupOwner	0.0759838951672574
+	DictMatch_WhiteTitleRatio	0.0737449708461358
+	DictMatch_NowGrayContentCount2	0.0713894673177762
+	Trate_TrateMean	0.0712403883340525
+	ForumInfo_RankVar	0.0696939848076481
+	ContentSim_Top2ContentsSim	0.0674570973093205
+	Trate_TrateMean5	0.0629702916605516
+	LanguageModel_NowLastLmScore	0.0620633261210924
+	LanguageModel_LmScoreAvg	0.0572049198776861
+	PostReplyRate_UniqeThreadNum	0.0565962873014074
+	ContentSim_AvgSimByForum	0.054962965700368
+	LanguageModel_BadLmScoreAvg	0.0547952565197924
+	LanguageModel_BadLastLmScoreAvg	0.0488902126302672
+	DictMatch_GrayContentPerPost	0.0478392920462636
+	UserInfo_FollowFollowedRatio	0.0477890307617596
+	UserInfo_LevelVar	0.0477360649365364
+	IPInfo_IpPrefix3Changes	0.0473607735980397
+	DictMatch_BlackContentPerPost	0.0466707839593678
+	ForumInfo_Level1Name19	0.0460124588755355
+	LanguageModel_NowLmScore	0.0453412411839217
+	Time_Bins1	0.0436394833122555
+	Time_NowTimeBin	0.0434809370584671
+	Trate_ReplyTrateVar	0.0379890524235906
+	MultiReplyTo_MultiReplyTo0	0.0365378835697943
+	ForumInfo_Level2Info	0.0361750253684988
+	DictMatch_ContentModifyRatio	0.0346566058663145
+	UrlWeight_UniqueUrlRatio	0.033763754152883
+	ForumInfo_Level1Info	0.0337079031950911
+	Time_Bins4	0.0331118246092137
+	ForumInfo_Level1Name18	0.0308849509229078
+	IPInfo_IpPrefix2Changes	0.0297515079536855
+	ForumInfo_Level1Name7	0.0290313245941722
+	Time_Bins5	0.0272133401623607
+	Time_Bins3	0.0258209576540592
+	DictMatch_TitleModifyRatio	0.0213407179615483
+	UserInfo_IsMale	0.0205206997892225
+	ForumInfo_FormTitleMatchRatio	0.0203980058225045
+	DictMatch_NowGrayTitleCount2	0.0198883793063076
+	Trate_ReplyTrateMean	0.0191177032921979
+	IPInfo_RecentLocs	0.0180862931405309
+	Time_Bins0	0.0179675633657645
+	DictMatch_NowGrayContentCount	0.0179092917814426
+	Time_HoursCovered	0.0176329359838302
+	DictMatch_BlackTitleRatio	0.0160347171874906
+	ForumInfo_Level1Name10	0.0119914016716847
+	Trate_TrateMean2	0.0111483885120438
+	LTrate_Bukets2	0.0111134344836577
+	Trate_ThreadTrateMean	0.0109018162818146
+	LTrate_ThreadTrateMean	0.0102469301536265
+	UrlWeight_UrlScoreMax	0.0100744575243205
+	Time_Bins2	0.00918697336887348
+	NumberWeight_NumRatio	0.00738001372956817
+	ForumInfo_Level1Name2	0.00664034687127137
+	UrlWeight_PicRatioMultTextLength	0.00592913204859154
+	DictMatch_NowGrayTitleCount	0.00578098709198566
+	UrlWeight_UrlRatio	0.00550898232547786
+	IPInfo_RecentIpPrefix3	0.00471029066189397
+	DictMatch_NowBlackContentCount	0.0041500708755886
+	NumberWeight_DeformNumRatio	0.00411304046444488
+	ForumInfo_Level1Name21	0.00384300285170274
+	UserInfo_HasBirth	0
+	UserInfo_FourmNum	0
+	UserInfo_IsQQName	0
+	ForumInfo_Level1Name0	0
+	ForumInfo_Level1Name1	0
+	ForumInfo_Level1Name3	0
+	ForumInfo_Level1Name4	0
+	ForumInfo_Level1Name5	0
+	ForumInfo_Level1Name6	0
+	ForumInfo_Level1Name9	0
+	ForumInfo_Level1Name11	0
+	ForumInfo_Level1Name12	0
+	ForumInfo_Level1Name13	0
+	ForumInfo_Level1Name14	0
+	ForumInfo_Level1Name15	0
+	ForumInfo_Level1Name16	0
+	ForumInfo_Level1Name17	0
+	ForumInfo_Level1Name20	0
+	ForumInfo_Level1Name23	0
+	ForumInfo_Level1Name24	0
+	ForumInfo_Level1Name25	0
+	ForumInfo_Level1Name26	0
+	ForumInfo_Level1Name27	0
+	ForumInfo_Level1Name28	0
+	ContentSim_AvgSimByThread2	0
+	TitleSim_Top2TitleSim	0
+	RepeatString_ThreadTextLengthMean	0
+	RepeatString_ThreadTextLengthVar	0
+	UrlWeight_NowUrlScore	0
+	UrlWeight_NowHasVideo	0
+	UrlWeight_NowHasEmail	0
+	UrlWeight_NowHasPic	0
+	UrlWeight_UrlScoreAvg	0
+	UrlWeight_UrlScoreMin	0
+	UrlWeight_PicRatio	0
+	UrlWeight_EmailRatio	0
+	UrlWeight_VideoRatio	0
+	UrlWeight_VideoRatioMultTextLength	0
+	UrlWeight_AnyRatio	0
+	UrlWeight_AnyRatioMultTextLength	0
+	UrlWeight_UniquePicRatio	0
+	UrlWeight_UniqueVideoRatio	0
+	UnusualChar_	0
+	UnusualCn_UnusualCnPostsRatio	0
+	DictMatch_NowBlackTitleCount	0
+	DictMatch_NowBlackTitleCount2	0
+	DictMatch_NowBlackContentCount2	0
+	LanguageModel_FirstLmScoreAvg	0
+	LanguageModel_LastLmScoreAvg	0
+	Trate_TrateNum	0
+	Trate_NowTrateScore	0
+	Trate_NowThreadTrateScore	0
+	Trate_NowReplyTrateScore	0
+	Trate_ThreadTrateVar	0
+	Trate_Bukets0	0
+	Trate_Bukets1	0
+	Trate_Bukets2	0
+	Trate_Bukets3	0
+	Trate_TBukets0	0
+	Trate_TBukets1	0
+	Trate_TBukets2	0
+	Trate_TBukets3	0
+	Trate_PBukets0	0
+	Trate_PBukets1	0
+	Trate_PBukets2	0
+	Trate_PBukets3	0
+	Trate_TrateMean3	0
+	Trate_TrateMean4	0
+	LTrate_TrateNum	0
+	LTrate_NowThreadTrateScore	0
+	LTrate_NowReplyTrateScore	0
+	LTrate_ThreadTrateVar	0
+	LTrate_Bukets0	0
+	LTrate_Bukets1	0
+	LTrate_Bukets3	0
+	LTrate_TBukets0	0
+	LTrate_TBukets1	0
+	LTrate_TBukets2	0
+	LTrate_TBukets3	0
+	LTrate_PBukets0	0
+	LTrate_PBukets1	0
+	LTrate_PBukets2	0
+	LTrate_PBukets3	0
+	IPInfo_RecentIps	0
+	IPInfo_RecentIpPrefix2	0
+	IPInfo_RecentIpPrefix1	0
+	IPInfo_IpChanges	0
+	IPInfo_IpPrefix1Changes	0
+	IPInfo_ForeignIpRatio	0
+	PostReplyRate_ThreadRatio	0
+	PostReplyRate_PostsNum	0
+	PostReplyRate_ThreadNum	0
+	PostReplyRate_UniqeThreadRatio	0
+	Time_TimeSpan0	0
+	Time_TimeSpan1	0
+	Time_TimeSpan2	0
+	Time_TimeSpan3	0
+	Time_TimeSpan4	0
+	Time_TimeSpanAvg	0
+	Time_TimeSpanVar	0
+	DH_DH0	0
+	DH_DH1	0
+	DH_DH2	0
+	DH_DH3	0
+	Sundry_PostType	0
+	Sundry_HistorySize	0
+	Sundry_PostsNumLast_1440_Minutes	0
+	
+...................................  50	2014/3/20 16:20:49
+...................................................  100	2014/3/20 16:20:49
+..................................................  150	2014/3/20 16:20:49
+...........................
+----------------------------------------------------------------------------------------
+TEST POSITIVE RATIO:	0.0591 (142/(142+2260))
+TRAIN POSITIVE RATIO:	0.0592
+
+Confusion table:
+         ||===============================|
+         ||            PREDICTED          |
+  TRUTH  ||    positive    |   negative   | RECALL
+         ||===============================|
+ positive||   99           |    43        | 0.6972 (99/142)
+ negative||   17           |    2243      | 0.9925 (2243/2260)
+         ||===============================|
+ PRECISION 0.8534 (99/116)   0.9812(2243/2286)
+
+OVERALL 0/1 ACCURACY:		0.9750 (2342/2402)
+LOG LOSS/instance:		0.14523408
+TEST-SET ENTROPY (prior LL/in):	0.32393133
+LOG-LOSS REDUCTION (RIG):	55.1652%
+   TRAIN-SET PRIOR LL/inst (train-test cross-entropy):			0.32393139
+   TRAIN-SET LL REDUCTION (trainRIG diagnostic, *not* for comparisons):	55.1652%
+AUC:				0.9751
+
+
+----------------------------------------------------------------------------------------
+........................  200	2014/3/20 16:20:49
+..................................................  250	2014/3/20 16:20:49
+..................................................  300	2014/3/20 16:20:49
+..................................................  350	2014/3/20 16:20:50
+..................................................  400	2014/3/20 16:20:50
+..................................................  450	2014/3/20 16:20:50
+..................................................  500	2014/3/20 16:20:50
+.Total machine count = 1, degenerate to single version.
+
+00:00:08.6096170:	Starting to train ...
+..........
+double paramA = -0.241810616894974;
+double paramB = -1.08458622864398;
+......
+Per-feature gain summary for the boosted tree ensemble:
+	UserInfo_MaxLevel	1
+	LTrate_TrateMean5	0.486287204713054
+	UserInfo_FollowedCount	0.418211790403811
+	UserInfo_UnameIsEnNum	0.368316746115797
+	TitleSim_AvgSimByForum	0.311463226846131
+	UserInfo_HasMobile	0.311092411994059
+	RepeatString_CnRatio	0.279079631940811
+	Trate_ReplyTrateVar	0.25267363288178
+	LTrate_TrateMean2	0.252130550678231
+	UserInfo_FollowCount	0.24759135230914
+	TitleSim_AvgSimByThread	0.235863218284113
+	ForumInfo_Level1Name22	0.221342969177414
+	LTrate_TrateMean4	0.217877385497926
+	DictMatch_GrayTitleRatio2	0.202162012444369
+	LTrate_NowTrateScore	0.200059825597237
+	RepeatString_ReplyTextLengthVar	0.197102783660723
+	LTrate_TrateMean3	0.192086767034828
+	ForumInfo_RankMean	0.189698634718486
+	RepeatString_TextLengthVar	0.188069702525851
+	DH_DH4	0.187137419373641
+	ForumInfo_ForumInfo	0.159244270427319
+	UserInfo_UnamePattern0	0.158510884825008
+	UserInfo_HasSex	0.146123615187392
+	IPInfo_LocChanges	0.143399007293022
+	UserInfo_UnamePattern2	0.143107309378331
+	RepeatString_TextCnLengthMean	0.137817787530111
+	UnusualCn_UnusualCnRatio	0.134493154790656
+	RepeatString_ReplyTextLengthMean	0.132779386968562
+	RepeatString_NowCnRatio	0.130894805961285
+	ForumInfo_Level1Name8	0.120487709573298
+	RepeatString_TextLengthMean	0.11883124979381
+	DictMatch_GrayContentPerPost2	0.114467318982791
+	RepeatString_TextCnLengthVar	0.112888892725022
+	DictMatch_NowGrayContentCount2	0.111523789702738
+	UserInfo_RegTime	0.104593563348865
+	DictMatch_BlackContentPerPost2	0.103811591247214
+	LanguageModel_LmScoreAvg	0.100636780292949
+	Trate_TrateMean	0.100397761374471
+	DictMatch_BlackTitleRatio2	0.0985579874506739
+	LTrate_TrateMean	0.0982669394526434
+	ForumInfo_NowRank	0.0940674694546777
+	LTrate_TrateVar	0.0916897124212057
+	UserInfo_UnamePattern1	0.0888467835958257
+	LTrate_ReplyTrateMean	0.0811439703764491
+	UserInfo_IsFemale	0.0810919345697908
+	Trate_TrateVar	0.0809785349319865
+	RepeatString_NowLength	0.0803853077764296
+	LanguageModel_NowLmScore	0.079481084303409
+	UserInfo_FollowFollowedRatio	0.0793674249177975
+	UserInfo_NowLevel	0.0776724150597126
+	ForumInfo_RankVar	0.0773265809221382
+	LanguageModel_NowLastLmScore	0.0771176054013858
+	UserInfo_LevelMean	0.0759388653996364
+	LTrate_ReplyTrateVar	0.0750197415422435
+	UrlWeight_UrlScoreAvgMultTextLength	0.0747672764240404
+	UrlWeight_UrlScoreMin	0.0696403510644484
+	Time_Bins4	0.0695484545911504
+	LanguageModel_NowFirstLmScore	0.067293883021944
+	LanguageModel_BadFirstLmScoreAvg	0.064296507886965
+	IPInfo_IpPrefix3Changes	0.0620833606436279
+	ContentSim_AvgSimByForum	0.0620610723385424
+	ForumInfo_Level1Info	0.0614466347363555
+	DictMatch_BlackContentPerPost	0.061277224376042
+	ContentSim_AvgSimByThread1	0.061146670115124
+	Trate_TrateMean2	0.0598922935497358
+	RepeatString_NowCnLength	0.0595023053173021
+	NumberWeight_UniqueNumRatio	0.0581408282257997
+	LanguageModel_BadLmScoreAvg	0.055737216450479
+	NumberWeight_NumRatio	0.055341681672164
+	UserInfo_FourmNum	0.055130921695234
+	DictMatch_GrayTitleRatio	0.0540228883151729
+	UserInfo_IsGroupOwner	0.0534603300843888
+	DictMatch_WhiteTitleRatio	0.0452802948692057
+	PostReplyRate_UniqeThreadNum	0.0437067288479094
+	ForumInfo_Level1Name18	0.0433095808253068
+	ForumInfo_RankInfo	0.0425621801466221
+	Time_Bins1	0.0421865021764235
+	LanguageModel_BadLastLmScoreAvg	0.0402380653707477
+	IPInfo_RecentIpPrefix3	0.0393351032390871
+	Time_NowTimeBin	0.0392219554548414
+	ContentSim_Top2ContentsSim	0.0387748886554464
+	DictMatch_ContentModifyRatio	0.037937018975615
+	ForumInfo_Level2Info	0.0371884232308487
+	Trate_TrateMean5	0.034523538837717
+	UserInfo_LevelVar	0.0344723551681484
+	Time_HoursCovered	0.0344013274726853
+	DictMatch_GrayContentPerPost	0.033575137462767
+	MultiReplyTo_MultiReplyTo0	0.0297350894875558
+	Time_Bins5	0.0269844937092114
+	DictMatch_BlackTitleRatio	0.0259767046338931
+	IPInfo_IpPrefix2Changes	0.024732792342574
+	ForumInfo_Level1Name7	0.0242391379087881
+	ForumInfo_Level1Name19	0.0241561345899452
+	Trate_Bukets1	0.0238301110202571
+	Trate_ReplyTrateMean	0.0215091011574878
+	UrlWeight_UniqueUrlRatio	0.0200908843071292
+	UserInfo_IsMale	0.0171460679416914
+	DictMatch_NowBlackContentCount2	0.0169714767144691
+	IPInfo_RecentIpPrefix1	0.0167140361978951
+	ForumInfo_Level1Name10	0.0153804225516942
+	ContentSim_AvgSimByThread2	0.0144840573247377
+	Time_Bins2	0.0141763655380685
+	IPInfo_RecentLocs	0.0139882974558659
+	Time_Bins3	0.012138571135274
+	ForumInfo_FormTitleMatchRatio	0.0116813622191026
+	Trate_TrateMean4	0.0110193764195415
+	Trate_Bukets0	0.00970149997298341
+	DictMatch_NowBlackTitleCount	0.00943663926043635
+	ForumInfo_Level1Name3	0.00937345251432454
+	LTrate_ThreadTrateMean	0.00906089381130746
+	DictMatch_NowBlackContentCount	0.00841883466081089
+	UrlWeight_UrlRatio	0.00730870245149745
+	ForumInfo_Level1Name2	0.00693375898991127
+	UserInfo_HasBirth	0.00660621181638203
+	ForumInfo_Level1Name21	0.00574692874899799
+	DictMatch_TitleModifyRatio	0.00545655700738411
+	UrlWeight_AnyRatio	0.0051946853838905
+	Trate_TrateMean3	0.00438024225561418
+	LTrate_Bukets2	0.00390430617172877
+	DictMatch_NowGrayContentCount	0.00344775924224577
+	UserInfo_IsQQName	0
+	ForumInfo_Level1Name0	0
+	ForumInfo_Level1Name1	0
+	ForumInfo_Level1Name4	0
+	ForumInfo_Level1Name5	0
+	ForumInfo_Level1Name6	0
+	ForumInfo_Level1Name9	0
+	ForumInfo_Level1Name11	0
+	ForumInfo_Level1Name12	0
+	ForumInfo_Level1Name13	0
+	ForumInfo_Level1Name14	0
+	ForumInfo_Level1Name15	0
+	ForumInfo_Level1Name16	0
+	ForumInfo_Level1Name17	0
+	ForumInfo_Level1Name20	0
+	ForumInfo_Level1Name23	0
+	ForumInfo_Level1Name24	0
+	ForumInfo_Level1Name25	0
+	ForumInfo_Level1Name26	0
+	ForumInfo_Level1Name27	0
+	ForumInfo_Level1Name28	0
+	TitleSim_Top2TitleSim	0
+	RepeatString_ThreadTextLengthMean	0
+	RepeatString_ThreadTextLengthVar	0
+	UrlWeight_NowUrlScore	0
+	UrlWeight_NowHasVideo	0
+	UrlWeight_NowHasEmail	0
+	UrlWeight_NowHasPic	0
+	UrlWeight_UrlScoreAvg	0
+	UrlWeight_UrlScoreMax	0
+	UrlWeight_PicRatio	0
+	UrlWeight_PicRatioMultTextLength	0
+	UrlWeight_EmailRatio	0
+	UrlWeight_VideoRatio	0
+	UrlWeight_VideoRatioMultTextLength	0
+	UrlWeight_AnyRatioMultTextLength	0
+	UrlWeight_UniquePicRatio	0
+	UrlWeight_UniqueVideoRatio	0
+	NumberWeight_DeformNumRatio	0
+	UnusualChar_	0
+	UnusualCn_UnusualCnPostsRatio	0
+	DictMatch_NowGrayTitleCount	0
+	DictMatch_NowBlackTitleCount2	0
+	DictMatch_NowGrayTitleCount2	0
+	LanguageModel_FirstLmScoreAvg	0
+	LanguageModel_LastLmScoreAvg	0
+	Trate_TrateNum	0
+	Trate_NowTrateScore	0
+	Trate_NowThreadTrateScore	0
+	Trate_NowReplyTrateScore	0
+	Trate_ThreadTrateMean	0
+	Trate_ThreadTrateVar	0
+	Trate_Bukets2	0
+	Trate_Bukets3	0
+	Trate_TBukets0	0
+	Trate_TBukets1	0
+	Trate_TBukets2	0
+	Trate_TBukets3	0
+	Trate_PBukets0	0
+	Trate_PBukets1	0
+	Trate_PBukets2	0
+	Trate_PBukets3	0
+	LTrate_TrateNum	0
+	LTrate_NowThreadTrateScore	0
+	LTrate_NowReplyTrateScore	0
+	LTrate_ThreadTrateVar	0
+	LTrate_Bukets0	0
+	LTrate_Bukets1	0
+	LTrate_Bukets3	0
+	LTrate_TBukets0	0
+	LTrate_TBukets1	0
+	LTrate_TBukets2	0
+	LTrate_TBukets3	0
+	LTrate_PBukets0	0
+	LTrate_PBukets1	0
+	LTrate_PBukets2	0
+	LTrate_PBukets3	0
+	IPInfo_RecentIps	0
+	IPInfo_RecentIpPrefix2	0
+	IPInfo_IpChanges	0
+	IPInfo_IpPrefix1Changes	0
+	IPInfo_ForeignIpRatio	0
+	PostReplyRate_ThreadRatio	0
+	PostReplyRate_PostsNum	0
+	PostReplyRate_ThreadNum	0
+	PostReplyRate_UniqeThreadRatio	0
+	Time_TimeSpan0	0
+	Time_TimeSpan1	0
+	Time_TimeSpan2	0
+	Time_TimeSpan3	0
+	Time_TimeSpan4	0
+	Time_TimeSpanAvg	0
+	Time_TimeSpanVar	0
+	Time_Bins0	0
+	DH_DH0	0
+	DH_DH1	0
+	DH_DH2	0
+	DH_DH3	0
+	Sundry_PostType	0
+	Sundry_HistorySize	0
+	Sundry_PostsNumLast_1440_Minutes	0
+	
+.................................  50	2014/3/20 16:20:51
+...................................................  100	2014/3/20 16:20:51
+..................................................  150	2014/3/20 16:20:51
+............................................
+----------------------------------------------------------------------------------------
+TEST POSITIVE RATIO:	0.0592 (142/(142+2257))
+TRAIN POSITIVE RATIO:	0.0592
+
+Confusion table:
+         ||===============================|
+         ||            PREDICTED          |
+  TRUTH  ||    positive    |   negative   | RECALL
+         ||===============================|
+ positive||   111          |    31        | 0.7817 (111/142)
+ negative||   16           |    2241      | 0.9929 (2241/2257)
+         ||===============================|
+ PRECISION 0.8740 (111/127)  0.9864(2241/2272)
+
+OVERALL 0/1 ACCURACY:		0.9804 (2352/2399)
+LOG LOSS/instance:		0.12423303
+TEST-SET ENTROPY (prior LL/in):	0.32422640
+LOG-LOSS REDUCTION (RIG):	61.6832%
+   TRAIN-SET PRIOR LL/inst (train-test cross-entropy):			0.32422641
+   TRAIN-SET LL REDUCTION (trainRIG diagnostic, *not* for comparisons):	61.6832%
+AUC:				0.9766
+
+
+----------------------------------------------------------------------------------------
+.......  200	2014/3/20 16:20:51
+..................................................  250	2014/3/20 16:20:51
+..................................................  300	2014/3/20 16:20:51
+..................................................  350	2014/3/20 16:20:52
+..................................................  400	2014/3/20 16:20:52
+..................................................  450	2014/3/20 16:20:52
+..................................................  500	2014/3/20 16:20:52
+.
+double paramA = -0.253031019087981;
+double paramB = -1.16521765440861;
+
+Per-feature gain summary for the boosted tree ensemble:
+	UserInfo_MaxLevel	1
+	LTrate_TrateMean5	0.42439960816698
+	UserInfo_FollowedCount	0.383334298959822
+	TitleSim_AvgSimByForum	0.346940712649409
+	UserInfo_HasMobile	0.318882975414001
+	UserInfo_UnameIsEnNum	0.310994555299927
+	LTrate_ReplyTrateMean	0.293533599758304
+	LTrate_TrateMean4	0.287114264406671
+	UserInfo_FollowCount	0.286102817587601
+	RepeatString_CnRatio	0.265257397843983
+	TitleSim_AvgSimByThread	0.24332264969524
+	DictMatch_GrayTitleRatio2	0.223383966081033
+	UserInfo_FourmNum	0.218545461979551
+	UserInfo_UnamePattern0	0.192207154512197
+	RepeatString_ReplyTextLengthVar	0.191371122971915
+	LTrate_TrateMean2	0.18594950224214
+	ForumInfo_Level1Name22	0.181730033862797
+	IPInfo_LocChanges	0.176429893974939
+	RepeatString_TextLengthVar	0.175222434794702
+	ForumInfo_RankMean	0.163370094814552
+	DH_DH4	0.160686686039321
+	UserInfo_UnamePattern2	0.133428811329352
+	RepeatString_NowCnRatio	0.130938751665975
+	ForumInfo_ForumInfo	0.129453990983228
+	DictMatch_BlackTitleRatio2	0.123719349486377
+	UserInfo_UnamePattern1	0.121038553432173
+	LTrate_TrateVar	0.119652838668504
+	UserInfo_RegTime	0.119441767302621
+	RepeatString_TextCnLengthMean	0.118186949483576
+	DictMatch_BlackContentPerPost2	0.115262054311777
+	LTrate_TrateMean	0.114698279493466
+	LTrate_TrateMean3	0.111859892724426
+	RepeatString_TextLengthMean	0.111723173136786
+	ForumInfo_NowRank	0.111659814363361
+	UserInfo_HasSex	0.111467342658747
+	ForumInfo_Level1Name8	0.109471301945447
+	UnusualCn_UnusualCnRatio	0.106584734355333
+	LTrate_NowTrateScore	0.10596830361223
+	UserInfo_IsFemale	0.10239670315011
+	RepeatString_ReplyTextLengthMean	0.100901996319799
+	Trate_TrateMean5	0.100305721985277
+	ContentSim_AvgSimByForum	0.0990021950826672
+	UrlWeight_UrlScoreAvgMultTextLength	0.0971907948228956
+	DictMatch_GrayContentPerPost2	0.0902984754274662
+	RepeatString_NowCnLength	0.0896987965543294
+	ContentSim_AvgSimByThread1	0.0890562054115049
+	NumberWeight_NumRatio	0.0792413518508228
+	DictMatch_NowGrayContentCount2	0.0746419320700912
+	UserInfo_NowLevel	0.0746146678777844
+	ContentSim_Top2ContentsSim	0.068645923235277
+	LanguageModel_LmScoreAvg	0.0648910661214177
+	UserInfo_LevelMean	0.064080315717554
+	UserInfo_IsGroupOwner	0.0621470784007776
+	DictMatch_GrayContentPerPost	0.0621213573673486
+	DictMatch_GrayTitleRatio	0.0614760433147901
+	Trate_TrateVar	0.0608227205090631
+	Time_Bins1	0.0594926963933803
+	NumberWeight_UniqueNumRatio	0.0572161492905816
+	LanguageModel_BadLmScoreAvg	0.0570328230059275
+	ForumInfo_RankInfo	0.0544177056092407
+	LanguageModel_NowFirstLmScore	0.0531240380152162
+	PostReplyRate_UniqeThreadNum	0.0528730382571139
+	RepeatString_NowLength	0.0521958801344284
+	LanguageModel_BadFirstLmScoreAvg	0.0516972284343587
+	RepeatString_TextCnLengthVar	0.0495934827384359
+	UserInfo_FollowFollowedRatio	0.0492564447922766
+	LanguageModel_NowLastLmScore	0.0489044924168817
+	Trate_PBukets0	0.0482718710701844
+	LanguageModel_BadLastLmScoreAvg	0.0471010420490105
+	Trate_TrateMean2	0.0461494491821738
+	UserInfo_LevelVar	0.0455857916082007
+	LTrate_ReplyTrateVar	0.0449722619765445
+	ForumInfo_Level1Name18	0.0447716207555268
+	LanguageModel_NowLmScore	0.0446137710270291
+	DictMatch_NowGrayTitleCount2	0.0416348040520399
+	Time_Bins4	0.0397380456735953
+	Time_Bins3	0.0365153999133935
+	IPInfo_IpPrefix3Changes	0.0361537194507169
+	Trate_ReplyTrateVar	0.0349266657095801
+	DictMatch_BlackContentPerPost	0.0322874350910154
+	LTrate_ThreadTrateMean	0.0314632985994426
+	ForumInfo_Level2Info	0.0300559470632709
+	ForumInfo_Level1Info	0.0273230854932755
+	UrlWeight_UniqueUrlRatio	0.0271037979343921
+	ForumInfo_RankVar	0.026930865800817
+	Trate_TrateMean	0.0264344953758037
+	IPInfo_IpPrefix2Changes	0.0260189876976461
+	DictMatch_WhiteTitleRatio	0.0259446458325176
+	ForumInfo_Level1Name10	0.0249384126159826
+	DictMatch_TitleModifyRatio	0.0240924643759013
+	DictMatch_BlackTitleRatio	0.0236369480227269
+	Time_NowTimeBin	0.0234895047658083
+	Time_HoursCovered	0.0222636084585235
+	UserInfo_IsMale	0.0222350310494765
+	Trate_ReplyTrateMean	0.0201279119367003
+	IPInfo_IpPrefix1Changes	0.0199932406006353
+	Time_Bins5	0.0189199277838692
+	IPInfo_RecentIpPrefix3	0.018663750064436
+	IPInfo_RecentLocs	0.0185225953496618
+	ForumInfo_FormTitleMatchRatio	0.0183778509962996
+	Time_Bins2	0.0172439665653748
+	UserInfo_HasBirth	0.0166057652637229
+	DictMatch_NowGrayTitleCount	0.0162023261370527
+	Time_Bins0	0.0150192153306546
+	LTrate_Bukets2	0.0147157685113139
+	IPInfo_RecentIps	0.0145279243358165
+	DictMatch_NowGrayContentCount	0.0133430399378344
+	NumberWeight_DeformNumRatio	0.0113764321146818
+	DictMatch_NowBlackContentCount	0.011150613282361
+	UrlWeight_PicRatioMultTextLength	0.00988419121473783
+	ForumInfo_Level1Name2	0.00945348397214272
+	ForumInfo_Level1Name21	0.00942744474707448
+	ContentSim_AvgSimByThread2	0.00798125578971531
+	UnusualChar_	0.00740687674508652
+	IPInfo_RecentIpPrefix2	0.00739588821558918
+	UrlWeight_UrlScoreMax	0.00661343954592214
+	Trate_TrateMean4	0.00632152792100057
+	MultiReplyTo_MultiReplyTo0	0.0062603045969119
+	DictMatch_NowBlackTitleCount2	0.00613220392258893
+	RepeatString_ThreadTextLengthMean	0.00608987779613368
+	ForumInfo_Level1Name19	0.00519041655774041
+	Trate_PBukets1	0.00409138967261106
+	Trate_TrateMean3	0.00401076536970975
+	IPInfo_IpChanges	0.0034988478959128
+	UserInfo_IsQQName	0
+	ForumInfo_Level1Name0	0
+	ForumInfo_Level1Name1	0
+	ForumInfo_Level1Name3	0
+	ForumInfo_Level1Name4	0
+	ForumInfo_Level1Name5	0
+	ForumInfo_Level1Name6	0
+	ForumInfo_Level1Name7	0
+	ForumInfo_Level1Name9	0
+	ForumInfo_Level1Name11	0
+	ForumInfo_Level1Name12	0
+	ForumInfo_Level1Name13	0
+	ForumInfo_Level1Name14	0
+	ForumInfo_Level1Name15	0
+	ForumInfo_Level1Name16	0
+	ForumInfo_Level1Name17	0
+	ForumInfo_Level1Name20	0
+	ForumInfo_Level1Name23	0
+	ForumInfo_Level1Name24	0
+	ForumInfo_Level1Name25	0
+	ForumInfo_Level1Name26	0
+	ForumInfo_Level1Name27	0
+	ForumInfo_Level1Name28	0
+	TitleSim_Top2TitleSim	0
+	RepeatString_ThreadTextLengthVar	0
+	UrlWeight_NowUrlScore	0
+	UrlWeight_NowHasVideo	0
+	UrlWeight_NowHasEmail	0
+	UrlWeight_NowHasPic	0
+	UrlWeight_UrlScoreAvg	0
+	UrlWeight_UrlScoreMin	0
+	UrlWeight_UrlRatio	0
+	UrlWeight_PicRatio	0
+	UrlWeight_EmailRatio	0
+	UrlWeight_VideoRatio	0
+	UrlWeight_VideoRatioMultTextLength	0
+	UrlWeight_AnyRatio	0
+	UrlWeight_AnyRatioMultTextLength	0
+	UrlWeight_UniquePicRatio	0
+	UrlWeight_UniqueVideoRatio	0
+	UnusualCn_UnusualCnPostsRatio	0
+	DictMatch_NowBlackTitleCount	0
+	DictMatch_NowBlackContentCount2	0
+	DictMatch_ContentModifyRatio	0
+	LanguageModel_FirstLmScoreAvg	0
+	LanguageModel_LastLmScoreAvg	0
+	Trate_TrateNum	0
+	Trate_NowTrateScore	0
+	Trate_NowThreadTrateScore	0
+	Trate_NowReplyTrateScore	0
+	Trate_ThreadTrateMean	0
+	Trate_ThreadTrateVar	0
+	Trate_Bukets0	0
+	Trate_Bukets1	0
+	Trate_Bukets2	0
+	Trate_Bukets3	0
+	Trate_TBukets0	0
+	Trate_TBukets1	0
+	Trate_TBukets2	0
+	Trate_TBukets3	0
+	Trate_PBukets2	0
+	Trate_PBukets3	0
+	LTrate_TrateNum	0
+	LTrate_NowThreadTrateScore	0
+	LTrate_NowReplyTrateScore	0
+	LTrate_ThreadTrateVar	0
+	LTrate_Bukets0	0
+	LTrate_Bukets1	0
+	LTrate_Bukets3	0
+	LTrate_TBukets0	0
+	LTrate_TBukets1	0
+	LTrate_TBukets2	0
+	LTrate_TBukets3	0
+	LTrate_PBukets0	0
+	LTrate_PBukets1	0
+	LTrate_PBukets2	0
+	LTrate_PBukets3	0
+	IPInfo_RecentIpPrefix1	0
+	IPInfo_ForeignIpRatio	0
+	PostReplyRate_ThreadRatio	0
+	PostReplyRate_PostsNum	0
+	PostReplyRate_ThreadNum	0
+	PostReplyRate_UniqeThreadRatio	0
+	Time_TimeSpan0	0
+	Time_TimeSpan1	0
+	Time_TimeSpan2	0
+	Time_TimeSpan3	0
+	Time_TimeSpan4	0
+	Time_TimeSpanAvg	0
+	Time_TimeSpanVar	0
+	DH_DH0	0
+	DH_DH1	0
+	DH_DH2	0
+	DH_DH3	0
+	Sundry_PostType	0
+	Sundry_HistorySize	0
+	Sundry_PostsNumLast_1440_Minutes	0
+	
+..
+----------------------------------------------------------------------------------------
+TEST POSITIVE RATIO:	0.0592 (142/(142+2257))
+TRAIN POSITIVE RATIO:	0.0592
+
+Confusion table:
+         ||===============================|
+         ||            PREDICTED          |
+  TRUTH  ||    positive    |   negative   | RECALL
+         ||===============================|
+ positive||   102          |    40        | 0.7183 (102/142)
+ negative||   25           |    2232      | 0.9889 (2232/2257)
+         ||===============================|
+ PRECISION 0.8031 (102/127)  0.9824(2232/2272)
+
+OVERALL 0/1 ACCURACY:		0.9729 (2334/2399)
+LOG LOSS/instance:		0.19368078
+TEST-SET ENTROPY (prior LL/in):	0.32422640
+LOG-LOSS REDUCTION (RIG):	40.2637%
+   TRAIN-SET PRIOR LL/inst (train-test cross-entropy):			0.32422641
+   TRAIN-SET LL REDUCTION (trainRIG diagnostic, *not* for comparisons):	40.2637%
+AUC:				0.9738
+
+
+----------------------------------------------------------------------------------------
+
+R	P	R_stdev	P_stdev
+0.014	1.000	0.000	0.000	
+0.056	1.000	0.000	0.000	
+0.104	0.987	0.003	0.027	
+0.152	0.982	0.003	0.022	
+0.203	0.960	0.007	0.033	
+0.251	0.962	0.008	0.032	
+0.303	0.956	0.009	0.028	
+0.356	0.955	0.008	0.023	
+0.400	0.947	0.012	0.029	
+0.452	0.930	0.008	0.017	
+0.504	0.930	0.011	0.021	
+0.552	0.922	0.011	0.019	
+0.600	0.897	0.020	0.029	
+0.651	0.880	0.018	0.025	
+0.706	0.849	0.033	0.039	
+0.752	0.828	0.023	0.025	
+0.803	0.765	0.021	0.020	
+0.851	0.682	0.016	0.013	
+0.901	0.549	0.016	0.010	
+0.951	0.326	0.009	0.003	
+1.000	0.059	0.000	0.000	
+
+OVERALL RESULTS
+---------------------------------------
+ACCURACY:            0.9751 (0.0028)
+POS. PRECISION:      0.8438 (0.0289)
+POS. RECALL:         0.7113 (0.0386)
+NEG. PRECISION:      0.9820 (0.0024)
+NEG. RECALL:         0.9917 (0.0018)
+LOG-LOSS:            0.1607 (0.0292)
+LOG-LOSS REDUCTION: 50.4297 (8.9921)
+AUC:                 0.9752 (0.0014)
+
+---------------------------------------
+2014/3/20 16:20:53	 Time elapsed(s): 16.389
