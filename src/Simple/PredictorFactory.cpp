@@ -19,16 +19,12 @@
 #include "MLCore/Predictor.h"
 namespace gezi {
 	namespace simple {
+		PredictorPtr _predictor;
 		Predictor PredictorFactory::LoadPredictor(std::string path)
 		{
-			PredictorPtr p = gezi::PredictorFactory::LoadPredictor(path);
-			vector<int> indices;
-			vector<double> values;
-			Pval(p.get()->Output(indices, values));
+			_predictor = gezi::PredictorFactory::LoadPredictor(path);
 			Predictor predictor;
-			Pval(p.get());
-			predictor._predictor = p.get();
-			Pval(predictor._predictor);
+			predictor._predictor = _predictor.get();
 			return predictor;
 		}
 	}

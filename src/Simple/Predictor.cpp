@@ -32,8 +32,6 @@ namespace gezi {
 
 		double Predictor::Output(std::vector<int>& indices, std::vector<double>& values)
 		{
-			Pval(_predictor);
-			Pval((static_cast<gezi::Predictor*>(_predictor)));
 			return (static_cast<gezi::Predictor*>(_predictor))->Output(indices, values);
 		}
 
