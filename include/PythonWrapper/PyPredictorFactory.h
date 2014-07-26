@@ -1,20 +1,19 @@
 /**
  *  ==============================================================================
  *
- *          \file   PyPredictorFactory.h
+ *          \file   PythonWrapper/PyPredictorFactory.h
  *
  *        \author   chenghuige
  *
- *          \date   2014-07-26 09:04:34.217769
+ *          \date   2014-07-26 09:07:10.116873
  *
  *  \Description:
  *  ==============================================================================
  */
 
-#ifndef PY_PREDICTOR_FACTORY_H_
-#define PY_PREDICTOR_FACTORY_H_
+#ifndef PYTHON_WRAPPER__PY_PREDICTOR_FACTORY_H_
+#define PYTHON_WRAPPER__PY_PREDICTOR_FACTORY_H_
 
-namespace gezi {
 
 class PyPredictorFactory 
 {
@@ -25,6 +24,5 @@ private:
 
 };
 
-}  //----end of namespace gezi
 
-#endif  //----end of PY_PREDICTOR_FACTORY_H_
+#endif  //----end of PYTHON_WRAPPER__PY_PREDICTOR_FACTORY_H_
