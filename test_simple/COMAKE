@@ -3,6 +3,12 @@
 
 WORKROOT('../../../../../../')
 
+GCC_VERSION='4.8.2'
+GCC_BIN='../../../../../../ps/se/toolchain/gcc_only_%s/bin/g++'%(GCC_VERSION)
+print 'GCC_BIN: %s'%GCC_BIN
+CC(GCC_BIN)
+CXX(GCC_BIN)
+
 CopyUsingHardLink(True)
 
 CPPFLAGS('-D_GNU_SOURCE -D__STDC_LIMIT_MACROS -DVERSION=\"1.9.8.7\"')
@@ -12,18 +18,15 @@ CFLAGS('-g -O3 -pipe -W -Wall -fPIC')
 CXXFLAGS('-g -O3 -pipe -fPIC -fpermissive')
 
 IDLFLAGS('--compack')
-
 UBRPCFLAGS('--compack')
 
 INCPATHS('../include/')
 
-#CONFIGS('third-64/boost third-64/gflags third-64/glog public/comlog-plugin lib2-64/ullib lib2-64/ccode public/odict lib2-64/ullib lib2-64/ccode lib2-64/wordseg lib2-64/postag lib2-64/dict ps/se/dict-set lib2-64/libcrf lib2-64/others-ex public/idlcompiler public/nshead')
+CONFIGS('ps/se/toolchain@base')
+CONFIGS('third-64/boost@base')
+CONFIGS('third-64/glog@base')
+LDFLAGS('-lpthread -static-libgcc -static-libstdc++')
 
-CONFIGS('third-64/boost')
-CONFIGS('third-64/glog')
-
-LDFLAGS('-lpthread -lcrypto -lrt')
-
-LIBS('../libmelt_predict.a')
+LIBS('./libmelt_predict.a')
 
 Application('test_predict',Sources('test_predict.cc'))
