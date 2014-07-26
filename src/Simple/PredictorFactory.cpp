@@ -22,6 +22,8 @@ namespace gezi {
 		Predictor PredictorFactory::LoadPredictor(std::string path)
 		{
 			PredictorPtr p = gezi::PredictorFactory::LoadPredictor(path);
+			Vector fe("");
+			Pval(p->Predict(fe));
 			Predictor predictor;
 			predictor._predictor = p.get();
 			return predictor;
