@@ -109,11 +109,12 @@ namespace gezi {
 		void RunCrossValidation(Instances& instances, CrossValidationType cvType)
 		{
 			//--------------------------- 输出文件头
+			string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
+			ofstream ofs;
 			if (cvType == CrossValidationType::DEFAULT)
 			{
-				string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
 				try_create_dir(_cmd.resultDir);
-				ofstream ofs(instFile);
+				ofs.open(instFile);
 				WriteInstFileHeader(ofs);
 			}
 
