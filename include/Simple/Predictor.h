@@ -35,7 +35,7 @@ namespace gezi {
 			double Predict(std::vector<int>& indices, std::vector<double>& values);
 			double Predict(std::vector<int>& indices, std::vector<double>& values, double& output);
 
-		private:
+		public:
 			void* _predictor;
 		};
 	}
