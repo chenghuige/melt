@@ -192,7 +192,7 @@ namespace gezi {
 
 			if (cvType == CrossValidationType::DEFAULT)
 			{
-				string command = _cmd.evaluate + instfile;
+				string command = _cmd.evaluate + instFile;
 #pragma omp critical
 				{
 					EXECUTE(command);
