@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 
 		double output = predictor.Output(indices, values);
 
-		cout << "output: " << probability << endl;
+		cout << "output: " << output << endl;
 	}
 
 
