@@ -15,15 +15,13 @@
 #include "MLCore/PredictorFactory.h"
 #include "MLCore/Predictor.h"
 namespace gezi {
-
-	PyPredictor PyPredictorFactory::LoadPredictor(string path)
-	{
-		PredictorPtr p = gezi::PredictorFactory::LoadPredictor(path);
-		Vector fe("");
-		Pval(p->Output(fe));
-		PyPredictor p2;
-		p2._predictor = p.get();
-		return p2;
+	namespace py {
+		Predictor PredictorFactory::LoadPredictor(string path)
+		{
+			PredictorPtr p = gezi::PredictorFactory::LoadPredictor(path);
+			Predictor predictor;
+			predictor._predictor = p.get();
+			return predictor;
+		}
 	}
-
 }  //----end of namespace gezi

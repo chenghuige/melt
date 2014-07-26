@@ -11,18 +11,23 @@
  *  ==============================================================================
  */
 
-#ifndef PREDICTOR_CPP_
-#define PREDICTOR_CPP_
+#include "Simple/Predictor.h"
+#include "MLCore/Predictor.h"
+namespace gezi {
+	namespace simple {
+		double Predictor::Output(std::vector<double>& values)
+		{
+			return (static_cast<gezi::Predictor*>(_predictor))->Output(values);
+		}
 
+		double Predictor::Predict(std::vector<double>& values)
+		{
+			return  (static_cast<gezi::Predictor*>(_predictor))->Predict(values);
+		}
 
-class Predictor 
-{
-public:
-
-protected:
-private:
-
-};
-
-
-#endif  //----end of PREDICTOR_CPP_
+		double Predictor::Predict(std::vector<double>& values, Float& output)
+		{
+			return  (static_cast<gezi::Predictor*>(_predictor))->Predict(values, output);
+		}
+	}
+}  //----end of namespace gezi

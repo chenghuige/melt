@@ -14,15 +14,17 @@
 #ifndef PREDICTOR_FACTORY_CPP_
 #define PREDICTOR_FACTORY_CPP_
 
-
-class PredictorFactory 
-{
-public:
-
-protected:
-private:
-
-};
-
-
-#endif  //----end of PREDICTOR_FACTORY_CPP_
+#include "Simple/PredictorFactory.h"
+#include "MLCore/PredictorFactory.h"
+#include "MLCore/Predictor.h"
+namespace gezi {
+	namespace simple {
+		Predictor PredictorFactory::LoadPredictor(string path)
+		{
+			PredictorPtr p = gezi::PredictorFactory::LoadPredictor(path);
+			Predictor predictor;
+			predictor._predictor = p.get();
+			return predictor;
+		}
+	}
+}  //----end of namespace gezi

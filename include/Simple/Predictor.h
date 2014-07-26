@@ -7,7 +7,7 @@
  *
  *          \date   2014-07-26 09:32:30.332895
  *
- *  \Description:
+ *  \Description:  Simple主要是为了向后兼容· 提供不需要高版本gcc依赖的接口
  *  ==============================================================================
  */
 
@@ -22,7 +22,6 @@ namespace gezi {
 		class Predictor
 		{
 		public:
-
 			//----------------输入向量稠密表示,推荐,一般速度会更快(如gbdt预测)
 			//输出回归实数值
 			double Output(std::vector<double>& values);
