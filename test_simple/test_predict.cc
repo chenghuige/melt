@@ -24,14 +24,12 @@ int main(int argc, char *argv[])
 	Predictor predictor = PredictorFactory::LoadPredictor("./thread.model");
 
 	{
-		int indices_[4] = { 1, 3, 5, 7 };
-		double values_[4] = { 1.2, 3.1, 4.2, 1.1 };
-		vector<int> indices(indices_, indices_ + 4);
-		vector<double> values(values_, values_ + 4);
+		vector<int> indices;
+		vector<double> values;
 
-		double probability = predictor.Predict(indices, values);
+		double output = predictor.Output(indices, values);
 
-		cout << "probability: " << probability << endl;
+		cout << "output: " << probability << endl;
 	}
 
 

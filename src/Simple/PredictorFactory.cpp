@@ -24,6 +24,9 @@ namespace gezi {
 			PredictorPtr p = gezi::PredictorFactory::LoadPredictor(path);
 			Vector fe("");
 			Pval(p->Predict(fe));
+			vector<int> indices;
+			vector<double> values;
+			Pval(p->Output(indices, values));
 			Predictor predictor;
 			predictor._predictor = p.get();
 			return predictor;
