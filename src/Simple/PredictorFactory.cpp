@@ -19,7 +19,7 @@
 #include "MLCore/Predictor.h"
 namespace gezi {
 	namespace simple {
-		Predictor PredictorFactory::LoadPredictor(string path)
+		Predictor PredictorFactory::LoadPredictor(std::string path)
 		{
 			PredictorPtr p = gezi::PredictorFactory::LoadPredictor(path);
 			Predictor predictor;
