@@ -16,17 +16,17 @@
 #include "common_def.h"
 #include "Numeric/Vector/Vector.h"
 namespace gezi {
-
-	class PyPredictor
-	{
-	public:
-		Float Output(Vector& features);
-		Float Predict(Vector& features);
-		Float Predict(Vector& features, Float& output);
-	public:
-		void* _predictor;
-	};
-
+	namespace py {
+		class Predictor
+		{
+		public:
+			Float Output(Vector& features);
+			Float Predict(Vector& features);
+			Float Predict(Vector& features, Float& output);
+		public:
+			void* _predictor;
+		};
+	}
 }  //----end of namespace gezi
 
 #endif  //----end of PYTHON_WRAPPER__PREDICTOR_H_

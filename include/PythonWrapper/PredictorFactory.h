@@ -15,13 +15,13 @@
 #define PYTHON_WRAPPER__PREDICTOR_FACTORY_H_
 #include "PythonWrapper/Predictor.h"
 namespace gezi {
-
-	class PyPredictorFactory
-	{
-	public:
-		static PyPredictor LoadPredictor(string path);
-	};
-
+	namespace py {
+		class PyPredictorFactory
+		{
+		public:
+			static PyPredictor LoadPredictor(string path);
+		};
+	}
 }  //----end of namespace gezi
 
 #endif  //----end of PYTHON_WRAPPER__PREDICTOR_FACTORY_H_
