@@ -14,17 +14,15 @@
 #ifndef SIMPLE__PREDICTOR_FACTORY_H_
 #define SIMPLE__PREDICTOR_FACTORY_H_
 
+#include "Simple/Predictor.h"
 namespace gezi {
-
-class PredictorFactory 
-{
-public:
-
-protected:
-private:
-
-};
-
+	namespace simple {
+		class PredictorFactory
+		{
+		public:
+			static Predictor LoadPredictor(string path);
+		};
+	}
 }  //----end of namespace gezi
 
 #endif  //----end of SIMPLE__PREDICTOR_FACTORY_H_
