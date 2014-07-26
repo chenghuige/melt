@@ -25,7 +25,7 @@ namespace gezi {
 			return  (static_cast<gezi::Predictor*>(_predictor))->Predict(values);
 		}
 
-		double Predictor::Predict(std::vector<double>& values, Float& output)
+		double Predictor::Predict(std::vector<double>& values, double& output)
 		{
 			return  (static_cast<gezi::Predictor*>(_predictor))->Predict(values, output);
 		}
@@ -40,7 +40,7 @@ namespace gezi {
 			return  (static_cast<gezi::Predictor*>(_predictor))->Predict(indices, values);
 		}
 
-		double Predictor::Predict(std::vector<double>& indices, std::vector<double>& values, Float& output)
+		double Predictor::Predict(std::vector<double>& indices, std::vector<double>& values, double& output)
 		{
 			return  (static_cast<gezi::Predictor*>(_predictor))->Predict(indices, values, output);
 		}
