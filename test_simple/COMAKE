@@ -19,6 +19,9 @@ INCPATHS('../include/')
 
 #CONFIGS('third-64/boost third-64/gflags third-64/glog public/comlog-plugin lib2-64/ullib lib2-64/ccode public/odict lib2-64/ullib lib2-64/ccode lib2-64/wordseg lib2-64/postag lib2-64/dict ps/se/dict-set lib2-64/libcrf lib2-64/others-ex public/idlcompiler public/nshead')
 
+CONFIGS('third-64/boost')
+CONFIGS('third-64/glog')
+
 LDFLAGS('-lpthread -lcrypto -lrt')
 
 LIBS('../libmelt_predict.a')
