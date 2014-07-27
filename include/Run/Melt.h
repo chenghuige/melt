@@ -643,6 +643,7 @@ namespace gezi {
 
 		void RunExperiments()
 		{
+			Pval(omp_get_num_procs());
 			if (_cmd.numThreads)
 			{
 				omp_set_num_threads(_cmd.numThreads);
