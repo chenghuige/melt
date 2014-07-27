@@ -647,6 +647,10 @@ namespace gezi {
 			{
 				omp_set_num_threads(_cmd.numThreads);
 			}
+			else
+			{
+				omp_set_num_threads(omp_get_num_procs());
+			}
 			Pval(get_num_threads());
 			//½âÎöÃüÁîÄ£Ê½
 			string commandStr = erase(boost::to_lower_copy(_cmd.command), "_-");
