@@ -39,7 +39,7 @@ DEFINE_string(nf, "", "normalzierfile: specified the output normalzier text");
 
 DEFINE_string(fn, "", "featureName:");
 //@FIXME
-DEFINE_string(ev, "~/rsc/app/search/sep/anti-spam/melt/tools3/evaluate/evaluate ", "evaluate: use what to evalute the result");
+DEFINE_string(ev, "~/rsc/app/search/sep/anti-spam/melt/tools3/evaluate/evaluate", "evaluate: use what to evalute the result, notice if not find this one will try to use local evaluate");
 //DEFINE_string(ev, "./evaluate/evaluate ", "evaluate: use what to evalute the result");
 
 DEFINE_bool(calibrate, true, "calibrateOutput: use calibrator to gen probability?");
@@ -87,8 +87,16 @@ namespace gezi {
 
 
 		_cmd.preNormalize = FLAGS_pn;
-		_cmd.evaluate = FLAGS_ev;
+		if (!bfs::exists(FLAGS_ev))
+		{
+			_cmd.evaluate = "./evaluate/evaluate ";
+		}
+		else
+		{
+			_cmd.evaluate = FLAGS_ev + " ";
+		}
 
 		_cmd.outputFileFormat = FLAGS_oformat;
+
 	}
 } //end of namespace gezi
