@@ -39,7 +39,7 @@ DEFINE_string(nf, "", "normalzierfile: specified the output normalzier text");
 
 DEFINE_string(fn, "", "featureName:");
 //@FIXME
-DEFINE_string(ev, "~/rsc/app/search/sep/anti-spam/melt/tools/evaluate/evaluate ", "evaluate: use what to evalute the result");
+DEFINE_string(ev, "~/rsc/app/search/sep/anti-spam/melt/tools3/evaluate/evaluate ", "evaluate: use what to evalute the result");
 //DEFINE_string(ev, "./evaluate/evaluate ", "evaluate: use what to evalute the result");
 
 DEFINE_bool(calibrate, true, "calibrateOutput: use calibrator to gen probability?");
