@@ -89,7 +89,6 @@ namespace gezi {
 		_cmd.preNormalize = FLAGS_pn;
 		if (!bfs::exists(FLAGS_ev))
 		{
-			Pval(FLAGS_ev);
 			_cmd.evaluate = "./evaluate/evaluate ";
 		}
 		else
