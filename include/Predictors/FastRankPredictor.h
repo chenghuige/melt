@@ -225,7 +225,8 @@ namespace gezi {
 			{
 				ss << setiosflags(ios::left) << setfill(' ') << setw(40)
 					<< STR(id++) + ":" + _featureNames[item.first]
-					<< "\t" << m[item.first]
+					<< "\t" << m[item.first] 
+					<< "\t" << features[item.first]
 					<< endl;
 			}
 			return ss.str();
