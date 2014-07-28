@@ -37,6 +37,7 @@ void run(string modelPath, string feature)
 		predictor.Trees()[FLAGS_t].Print(fe);
 	}
 	predictor.FeatureGainPrint(fe);
+	Pval2(out, probablity);
 }
 
 
