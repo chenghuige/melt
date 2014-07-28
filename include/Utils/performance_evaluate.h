@@ -46,6 +46,7 @@ namespace gezi {
 			if (output != oldOut)
 			{
 				result += 0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos);
+				Pval((0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos)));
 				oldOut = output;
 				oldFalsePos = falsePos;
 				oldTruePos = truePos;
@@ -56,6 +57,7 @@ namespace gezi {
 				falsePos += weight;
 
 		}
+		Pval((0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos)));
 		result += 0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos);
 		Float AUC = result / (truePos * falsePos);
 		return AUC;
