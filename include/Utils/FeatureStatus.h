@@ -22,7 +22,12 @@ namespace gezi {
 	class FeatureStatus
 	{
 	public:
-		static void GenMeanVarInfo(const Instances& instances, string outFile, 
+
+		static void WriteResult(std::ostream& ofs)
+		{
+
+		}
+		static void GenMeanVarInfo(const Instances& instances, string outFile,
 			string featureName = "")
 		{
 			int featureNum = instances.FeatureNum();
@@ -85,12 +90,12 @@ namespace gezi {
 					{
 						pb.progress(i);
 						ofs << instances.FeatureNames()[i] << "\t"
-							<< means[i] << "\t"
-							<< posMeans[i] << "\t"
-							<< negMeans[i] << "\t"
-							<< vars[i] << "\t"
-							<< posVars[i] << "\t"
-							<< negVars[i] << "\t"
+							<< "mean:" << means[i] << "\t"
+							<< "posMean:" << posMeans[i] << "\t"
+							<< "negMean:" << negMeans[i] << "\t"
+							<< "var:" << vars[i] << "\t"
+							<< "posVar:" << posVars[i] << "\t"
+							<< "negVar:" << negVars[i] << "\t"
 							<< endl;
 					}
 				}
@@ -103,7 +108,7 @@ namespace gezi {
 							std::cout << "FeatureName\tMean\tPosMean\tNegMean\tVar\tPosVar\tNegVar" << endl;
 							std::cout << instances.FeatureNames()[i] << "\t"
 								<< "mean:" << means[i] << "\t"
-								<< "posMean:" <<posMeans[i] << "\t"
+								<< "posMean:" << posMeans[i] << "\t"
 								<< "negMean:" << negMeans[i] << "\t"
 								<< "var:" << vars[i] << "\t"
 								<< "posVar:" << posVars[i] << "\t"
