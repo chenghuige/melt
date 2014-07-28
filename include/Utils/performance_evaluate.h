@@ -21,6 +21,31 @@ namespace gezi {
 
 	//	第三种方法实际上和上述第二种方法是一样的，但是复杂度减小了。它也是首先对score从大到小排序，然后令最大score对应的sample 的rank为n，第二大score对应sample的rank为n - 1，以此类推。然后把所有的正类样本的rank相加，再减去正类样本的score为最 小的那M个值的情况。得到的就是所有的样本中有多少对正类样本的score大于负类样本的score。然后再除以M×N。即
 	//http://www.tuicool.com/articles/qYNNF3
+	/*2. 正样本M个，负样本N个，做交叉，总共会产生M*N个样本对，统计一下在这些样本对中有多少正样本的score大于负样本的score，例如有K对，那么AUC的值就是K / (M*N)
+
+		举例说明一下：
+
+		样本：y = 1，y = 1， y = 1， y = -1， y = -1， y = -1
+
+		模型1的预测：0.8，0.7，0.3，0.5，0.6，0.9
+
+		模型2的预测：0.1， 0.8， 0.9， 0.5， 0.85， 0.2
+
+		模型1：正样本score大于负样的对包括(y1, y4)(y1, y5)(y2, y4)(y2, y5)。所以AUC值为4 / 9
+
+		模型2：正样本score大于负样本的对包括(y2, y4)(y2, y6)(y3, y4)(y3, y5)(y3, y6)。所以AUC的值为5 / 9
+
+		所以模型2要比模型1好
+
+		这种算法的复杂度为O(n ^ 2)其中n = (M + N)也就是样本的数量
+
+		3. 方法3跟方法2是一样的，只不过做了一些处理减小了复杂度，首先按照score进行排序，得分最大的为n，第二大的为n - 1，依次类推，最小一个即为1，那么AUC的计算方法为：AUC = ((正样本的排序之和)-m*(m + 1) / 2) / (M*N)。
+
+		看公式有点抽象，用上面的例子解释一下
+
+		模型1：首先对预测的score进行排序，排序后的样本为：负（6），正（5），正（4），负（3），负（2），正（1）
+
+		AUC的值为：(（5 + 4 + 1） - 3 * （3 + 1） / 2) / (3 * 3) = 4 / 9。可以看到跟方法二的计算结果一致，我们看一下这个计算公式，首先分子上后面的部分M*（M + 1） / 2。是不是很熟悉，小学就知道，上底加下底括号起来除以2，既是求梯形的面积公式，也是求连续值的公式，例如1 + 2 + 3 + 4。在这里指的就是所有的正样本的得分都小于所有的负样本的得分的情况下，计算出来的值。前半部分指的是实际的情况下正样本的排序。应该比较好理解了吧*/
 	inline double auc(vector<std::tuple<int, Float, Float> >& results, bool needSort = true)
 	{
 		if (needSort)
@@ -47,6 +72,7 @@ namespace gezi {
 			{
 				result += 0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos);
 				Pval((0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos)));
+				Pval4(oldTruePos, truePos, oldFalsePos, falsePos);
 				oldOut = output;
 				oldFalsePos = falsePos;
 				oldTruePos = truePos;
@@ -55,7 +81,6 @@ namespace gezi {
 				truePos += weight;
 			else
 				falsePos += weight;
-
 		}
 		Pval((0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos)));
 		result += 0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos);
