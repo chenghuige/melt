@@ -27,24 +27,38 @@ DEFINE_string(type, "simple", "");
 
 TEST(auc, func)
 {
-	ifstream ifs(FLAGS_i);
-	string line;
-	int count = 0;
-
-	AucEvaluator evaluator;
-	while (getline(ifs, line))
+	if (!FLAGS_i.empty())
 	{
-		count++;
-		if (count == 1)
+		ifstream ifs(FLAGS_i);
+		string line;
+		int count = 0;
+
+		AucEvaluator evaluator;
+		while (getline(ifs, line))
 		{
-			continue;
+			count++;
+			if (count == 1)
+			{
+				continue;
+			}
+			svec vec = split(line, "\t ");
+			int label = INT(vec[1]);
+			double out = DOUBLE(vec[4]);
+			evaluator.Add(label, out);
 		}
-		svec vec = split(line, "\t ");
-		int label = INT(vec[1]);
-		double out = DOUBLE(vec[4]);
-		evaluator.Add(label, out);
+		Pval(evaluator.Finish());
 	}
-	Pval(evaluator.Finish());
+	else
+	{
+		AucEvaluator evaluator;
+		vector<int> labels = { 1, 1, 1, 0, 0, 0 };
+		vector<double> scores = { 0.8, 0.7, 0.3, 0.5, 0.6, 0.9 };
+		for (size_t i = 0; i < labels.size(); i++)
+		{
+			evaluator.Add(labels[i], scores[i]);
+		}
+		Pval(evaluator.Finish());
+	}
 }
 
 int main(int argc, char *argv[])
