@@ -198,7 +198,7 @@ namespace gezi {
 			_path = path;
 			_param = read_file(OBJ_NAME_PATH(_param));
 			LoadSave::Load(path);
-			string normalizerName = read_file(path + "/model.param.txt");
+			string normalizerName = read_file(OBJ_NAME_PATH(_normalizer));
 			if (!normalizerName.empty())
 			{
 				_normalizer = NormalizerFactory::CreateNormalizer(normalizerName, OBJ_PATH(_normalizer));
