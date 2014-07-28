@@ -42,6 +42,7 @@ namespace gezi {
 			int label = std::get<0>(item);
 			Float output = std::get<1>(item);
 			Float weight = std::get<2>(item);
+			Pval3(label, output, weight);
 			if (output != oldOut)
 			{
 				result += 0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos);
