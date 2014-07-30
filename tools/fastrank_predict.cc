@@ -22,12 +22,13 @@ using namespace gezi;
 DEFINE_int32(vl, 0, "vlog level");
 DEFINE_bool(r, false, "reverse: show trees from -.. to + .. if reverse == true");
 DEFINE_int32(t, -1, "tree index to print");
+DEFINE_int32(start_index, 0, "start from 0 default or start from 1 like libsvm");
 
 void run(string modelPath, string feature)
 {
 	FastRankPredictor predictor(modelPath);
 	predictor.SetReverse(FLAGS_r);
-	Vector fe(feature);
+	Vector fe(feature, FLAGS_start_index);
 	double out;
 	double probablity = predictor.Predict(fe, out);
 	Pval2(out, probablity);
@@ -35,6 +36,8 @@ void run(string modelPath, string feature)
 	{
 		predictor.Trees()[FLAGS_t].Print(fe);
 	}
+	predictor.FeatureGainPrint(fe);
+	Pval2(out, probablity);
 }
 
 

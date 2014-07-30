@@ -14,10 +14,10 @@
 #include "Prediction/Instances/InstanceParser.h"
 #include "common_util.h"
 
-DEFINE_int32(labelIdx, -1, "");
-DEFINE_int32(weightIdx, -1, "");
-DEFINE_string(nameIdx, "", ", seprated like 1,2,3, name filed will be shown in .inst.txt result file");
-DEFINE_string(attrIdx, "", "the same as nameIdx, attrIdx will be filed to be ignored");
+DEFINE_int32(label, -1, "");
+DEFINE_int32(weight, -1, "");
+DEFINE_string(name, "", ", seprated like 1,2,3, name filed will be shown in .inst.txt result file");
+DEFINE_string(attr, "", "the same as nameIdx, attrIdx will be filed to be ignored");
 DEFINE_bool(header, false, "no header by default");
 DEFINE_string(sep, "tab", "or space or something like , ; etc.");
 DEFINE_string(ncsep, "|", "contact names filed like pid|title|content 4003|good title|good content");
@@ -33,10 +33,10 @@ namespace gezi {
 
 	void InstanceParser::ParseArguments()
 	{
-		_args.labelIdx = FLAGS_labelIdx;
-		_args.weightIdx = FLAGS_weightIdx;
-		_args.namesIdx = FLAGS_nameIdx;
-		_args.attrsIdx = FLAGS_attrIdx;
+		_args.labelIdx = FLAGS_label;
+		_args.weightIdx = FLAGS_weight;
+		_args.namesIdx = FLAGS_name;
+		_args.attrsIdx = FLAGS_attr;
 		_args.hasHeader = FLAGS_header;
 		_args.sep = FLAGS_sep;
 		_args.ncsep = FLAGS_ncsep;

@@ -26,7 +26,7 @@ namespace gezi {
 			Predictor predictor;
 			predictor._predictor = _predictors.back().get();
 			return predictor;
-		}
+		} //@FIXME 为什么这里面需要vector来hold指针,如果直接内部一个shared ptr为甚返回的predictor会访问内部_predictor无效 已经被释放了呢 但是貌似直接输入参数引用的话ok,参考gezi test下面的test_shared_ptr.cc最后的用法,按说那个也是用普通指针去接的.get
 	}
 }  //----end of namespace gezi
 

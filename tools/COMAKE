@@ -79,7 +79,8 @@ UBRPCFLAGS('--compack')
 GCC_LDFLAGS=''
 if GCC_HIGH  == 1: 
 	if GCC_DYNAMIC  == 1:
-		GCC_LDFLAGS += ' -lgomp -rdynamic -Wl,-rpath=../../../../../../ps/se/toolchain/x86_64-unknown-linux-gnu-4.8.1-2.9-2.20-2.6.32/x86_64-unknown-linux-gnu/lib/'
+		#GCC_LDFLAGS += ' -lgomp -rdynamic -Wl,-rpath=../../../../../../ps/se/toolchain/x86_64-unknown-linux-gnu-4.8.1-2.9-2.20-2.6.32/x86_64-unknown-linux-gnu/lib/'
+		GCC_LDFLAGS += ' -lgomp -rdynamic -Wl,-rpath=./lib.tar.gz'
 		GCC_LDFLAGS += ' -lgomp'
 		if GCC_LOCAL != 1:
 			GCC_LDFLAGS += ' -Wl,--dynamic-linker=./ld-linux-x86-64.so.2 -L%s'%(LIBS_DIR)
@@ -102,7 +103,7 @@ INCPATHS('./ ./include/'.replace('./', RELATIVE_PATH))
 #CONFIGS('third-64/zlib@base')
 ImportConfigsFrom('../')
 CONFIGS('third-64/gtest@base')
-#CONFIGS('myspace/sep/chenghuige/melt-train@base')
+CONFIGS('myspace/sep/chenghuige/melt-train@base')
 
 srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp'.replace('./',RELATIVE_PATH))
 Application('melt', Sources('melt.cc', srcs))

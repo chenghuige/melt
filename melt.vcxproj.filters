@@ -72,25 +72,10 @@
     <ClCompile Include="tools3\fastrank_predict.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tools3\predict.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tools3\melt.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tools3\fastrank_text2bin.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test_simple\test_predict.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Simple\Predictor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Simple\PredictorFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_auc.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -237,21 +222,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Trainers\FastRank\OnlineRegressionTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MLCore\PredictorFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\PythonWrapper\PyPredictor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\PythonWrapper\PyPredictorFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Simple\Predictor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Simple\PredictorFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Utils\performance_evaluate.h">
