@@ -72,6 +72,8 @@
     <ClCompile Include="src\PythonWrapper\Predictor.cpp" />
     <ClCompile Include="src\PythonWrapper\PredictorFactory.cpp" />
     <ClCompile Include="src\Run\Melt.cpp" />
+    <ClCompile Include="src\Simple\Predictor.cpp" />
+    <ClCompile Include="src\Simple\PredictorFactory.cpp" />
     <ClCompile Include="src\Wrapper\PredictorFactory.cpp" />
     <ClCompile Include="test\test_bins.cc" />
     <ClCompile Include="test\test_fastrank_classification.cc" />
@@ -82,6 +84,7 @@
     <ClCompile Include="test\test_shared_predictors.cc" />
     <ClCompile Include="test\test_vector.cc" />
     <ClCompile Include="tools3\fastrank_predict.cc" />
+    <ClCompile Include="tools3\PLSA\plsa.cc" />
     <ClCompile Include="tools\calibrate.cc" />
     <ClCompile Include="tools\fastrank_predict.cc" />
     <ClCompile Include="tools\fastrank_text2bin.cc" />
@@ -128,6 +131,8 @@
     <ClInclude Include="include\Run\Melt.h" />
     <ClInclude Include="include\Run\MeltArguments.h" />
     <ClInclude Include="include\Tools\FeatureStatus.h" />
+    <ClInclude Include="include\TopicModel\PLSA\plsa.h" />
+    <ClInclude Include="include\TopicModel\PLSA\PLSAModel.h" />
     <ClInclude Include="include\Trainers\BoostedTree\RegressionTree.h" />
     <ClInclude Include="include\Trainers\FastRank\OnlineRegressionTree.h" />
     <ClInclude Include="include\Trainers\FastRank\RegressionTree.h" />

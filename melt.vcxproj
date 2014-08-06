@@ -66,6 +66,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="melt.cc" />
     <ClCompile Include="src\Prediction\Instances\InstanceParser.cpp" />
     <ClCompile Include="src\Prediction\Trainers\LinearSVM.cpp" />
     <ClCompile Include="src\PythonWrapper\Predictor.cpp" />
@@ -74,7 +75,6 @@
     <ClCompile Include="src\Simple\Predictor.cpp" />
     <ClCompile Include="src\Simple\PredictorFactory.cpp" />
     <ClCompile Include="src\Wrapper\PredictorFactory.cpp" />
-    <ClCompile Include="test\test_auc.cc" />
     <ClCompile Include="test\test_bins.cc" />
     <ClCompile Include="test\test_fastrank_classification.cc" />
     <ClCompile Include="test\test_fastrank_loadtlc.cc" />
@@ -83,11 +83,8 @@
     <ClCompile Include="test\test_seralize.cc" />
     <ClCompile Include="test\test_shared_predictors.cc" />
     <ClCompile Include="test\test_vector.cc" />
-    <ClCompile Include="test_simple\test_predict.cc" />
     <ClCompile Include="tools3\fastrank_predict.cc" />
-    <ClCompile Include="tools3\fastrank_text2bin.cc" />
-    <ClCompile Include="tools3\melt.cc" />
-    <ClCompile Include="tools3\predict.cc" />
+    <ClCompile Include="tools3\PLSA\plsa.cc" />
     <ClCompile Include="tools\calibrate.cc" />
     <ClCompile Include="tools\fastrank_predict.cc" />
     <ClCompile Include="tools\fastrank_text2bin.cc" />
@@ -99,7 +96,6 @@
     <ClInclude Include="include\MLCore\ITrainer.h" />
     <ClInclude Include="include\MLCore\ITrainerFactory.h" />
     <ClInclude Include="include\MLCore\Predictor.h" />
-    <ClInclude Include="include\MLCore\PredictorFactory.h" />
     <ClInclude Include="include\MLCore\Trainer.h" />
     <ClInclude Include="include\MLCore\TrainerFactory.h" />
     <ClInclude Include="include\Numeric\Vector\Vector.h" />
@@ -131,14 +127,12 @@
     <ClInclude Include="include\Predictors\PredictorFactory.h" />
     <ClInclude Include="include\PythonWrapper\Predictor.h" />
     <ClInclude Include="include\PythonWrapper\PredictorFactory.h" />
-    <ClInclude Include="include\PythonWrapper\PyPredictor.h" />
-    <ClInclude Include="include\PythonWrapper\PyPredictorFactory.h" />
     <ClInclude Include="include\Run\CVFoldCreator.h" />
     <ClInclude Include="include\Run\Melt.h" />
     <ClInclude Include="include\Run\MeltArguments.h" />
-    <ClInclude Include="include\Simple\Predictor.h" />
-    <ClInclude Include="include\Simple\PredictorFactory.h" />
     <ClInclude Include="include\Tools\FeatureStatus.h" />
+    <ClInclude Include="include\TopicModel\PLSA\plsa.h" />
+    <ClInclude Include="include\TopicModel\PLSA\PLSAModel.h" />
     <ClInclude Include="include\Trainers\BoostedTree\RegressionTree.h" />
     <ClInclude Include="include\Trainers\FastRank\OnlineRegressionTree.h" />
     <ClInclude Include="include\Trainers\FastRank\RegressionTree.h" />

@@ -19,7 +19,7 @@
 #include "MLCore/Predictor.h"
 namespace gezi {
 	namespace simple {
-		vector<PredictorPtr> _predictors;
+		vector<PredictorPtr> _predictors; //理论上来说不应该需要这个。。。 why not work without this?
 		Predictor PredictorFactory::LoadPredictor(std::string path)
 		{
 			_predictors.push_back(gezi::PredictorFactory::LoadPredictor(path));

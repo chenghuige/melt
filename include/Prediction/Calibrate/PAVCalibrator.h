@@ -41,6 +41,7 @@ public:
 
 	virtual void Load(string path) override
 	{
+		LoadSave::Load(path);
 		serialize_util::load(*this, path);
 	}
 
