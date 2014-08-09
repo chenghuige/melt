@@ -50,7 +50,7 @@ namespace gezi {
 			PLSAModel(string file)
 			{
 				serialize_util::load(_pzw, file);
-				NumTopics = _pzw._ncol;
+				NumTopics = _pzw._nrow;
 				Pval(NumTopics);
 			}
 
