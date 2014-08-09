@@ -35,6 +35,7 @@ void run()
 {
 	Identifer identifer;
 	identifer.Load(FLAGS_dict);
+	Pval(identifer.size());
 	PLSAModel plsaModel(FLAGS_tnum, identifer.size());
 
 	ifstream ifs(FLAGS_i);
