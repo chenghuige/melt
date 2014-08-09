@@ -44,7 +44,7 @@ namespace gezi {
 	namespace plsa {
 		struct DocInfo
 		{
-			int numWords;
+			int numWords = 0;
 			vector<pair<int, Float> > content;
 		};
 
@@ -99,20 +99,22 @@ namespace gezi {
 				NumDocs = docs.size();
 				Initialize();
 
+				ProgressBar pb(iterNum);
 				for (int iter = 0; iter < iterNum; iter++)
 				{
+					++pb;
 					_pzwTemp.zeroset();
 					gezi::zeroset(_pzVec);
 					for (int docId = 0; docId < NumDocs; docId++) //doc
 					{
 						//                Pval(did);
 						int numWords = docs[docId].numWords;
-						int numUniqeWords = docs.size();
-
+						const ContentVec& contents = docs[docId].content;
+						int numUniqeWords = contents.size();
 						//如果0个word那么该doc被忽略,另外短文本不会迭代超过文本word数目
 						if (numWords < 1 || numUniqeWords == iter)
 							continue;
-						const ContentVec& contents = docs[docId].content;
+						
 						//--------------------Estep for one doc
 						//p(z_k|w,d)
 						for (int i = 0; i < numUniqeWords; i++) //word
@@ -143,7 +145,7 @@ namespace gezi {
 								sum += score;
 								_pzwTemp(topicId, wordId) += score;
 							}
-							Pval(sum);
+							//Pval(sum);
 							_pzVec[topicId] += sum;
 							_pdz(docId, topicId) = sum / numWords; //p(z|d) update
 						}
@@ -164,7 +166,7 @@ namespace gezi {
 			* 展示某个topic id下面的top 20的支撑词
 			*/
 			template<typename _Dict>
-			void print_topic(int topicId, const _Dict& dict, int maxNum = 200)
+			void PrintTopic(int topicId, const _Dict& dict, ostream& ofs, int maxNum = 200)
 			{
 				int len = std::min(NumWords, maxNum);
 
@@ -173,10 +175,10 @@ namespace gezi {
 				{
 					vec.push_back(make_pair(i, _pzw(topicId, i)));
 				}
-				std::partial_sort(vec.begin(), vec.end(), [](const pair<int, Float>& l, const pair<int, Float>&r) { return l.second > r.second; });
+				std::partial_sort(vec.begin(), vec.begin() + maxNum, vec.end(), [](const pair<int, Float>& l, const pair<int, Float>& r) { return l.second > r.second; });
 				for (int i = 0; i < len; i++)
 				{
-					cout << dict.keys(vec[i].first) << vec[i].second << endl;
+					ofs << dict.key(vec[i].first) << vec[i].second << endl;
 				}
 			}
 
