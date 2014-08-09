@@ -44,15 +44,15 @@ namespace gezi {
 	namespace plsa {
 		struct DocInfo
 		{
-			int numWords = 0;
+			Float numWords = 0;
 			vector<pair<int, Float> > content;
 		};
 
 		typedef vector<pair<int, Float> > ContentVec;
-		class PLSAModel
+		class PLSATrainer
 		{
 		public:
-			PLSAModel(int numTopics, int numWords)
+			PLSATrainer(int numTopics, int numWords)
 				:NumTopics(numTopics), NumWords(numWords)
 			{
 

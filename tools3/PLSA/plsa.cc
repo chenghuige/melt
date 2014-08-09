@@ -15,7 +15,7 @@
 #define private public
 #define protected public
 #include "common_util.h"
-#include "TopicModel/PLSA/PLSAModel.h"
+#include "TopicModel/PLSA/PLSATrainer.h"
 using namespace std;
 using namespace gezi;
 using namespace gezi::plsa;
@@ -36,7 +36,7 @@ void run()
 	Identifer identifer;
 	identifer.Load(FLAGS_dict);
 	Pval(identifer.size());
-	PLSAModel plsaModel(FLAGS_tnum, identifer.size());
+	PLSATrainer plsaTrainer(FLAGS_tnum, identifer.size());
 
 	ifstream ifs(FLAGS_i);
 	string line;
@@ -63,15 +63,16 @@ void run()
 		docs.emplace_back(doc);
 	}
 
-	plsaModel.Train(docs, FLAGS_iter);
+	plsaTrainer.Train(docs, FLAGS_iter);
 
 	ofstream ofs("result.txt");
 	for (int i = 0; i < FLAGS_tnum; i++)
 	{
 		ofs << "Topic: " << i << endl;
-		plsaModel.PrintTopic(i, identifer, ofs);
+		plsaTrainer.PrintTopic(i, identifer, ofs);
 	}
 	
+	plsaTrainer.Save("pzw.idx");
 }
 
 int main(int argc, char *argv[])
