@@ -17,7 +17,7 @@
 #include "common_util.h"
 #include "Segmentor.h"
 #include "Identifer.h"
-#include "PLSAModel.h"
+#include "TopicModel/PLSA/PLSAModel.h"
 
 using namespace std;
 using namespace gezi;
