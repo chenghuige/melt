@@ -36,8 +36,8 @@ void run()
 	Identifer identifer;
 	identifer.Load("./identifer.bin");
 
-	Segmentor seg;
 	Segmentor::init();
+	Segmentor seg;
 
 	svec words = seg.segment(content);
 
