@@ -33,6 +33,12 @@ void run()
 {
 	string content = "月薪5000/月临时工公司直招 联系人张主管 联系电话15895436427";
 
+	if (!FLAGS_i.empty())
+	{
+		content = FLAGS_i;
+	}
+	
+
 	Identifer identifer;
 	identifer.Load("./identifer.bin");
 
