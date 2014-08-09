@@ -47,6 +47,10 @@ namespace gezi {
 		{
 		public:
 		
+			PLSAModel()
+			{
+
+			}
 			PLSAModel(string file)
 			{
 				Load(file);
