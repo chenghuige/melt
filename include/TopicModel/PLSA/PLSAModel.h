@@ -42,157 +42,93 @@
 #include "Matrix.h"
 namespace gezi {
 	namespace plsa {
-		struct DocInfo
-		{
-			Float numWords = 0;
-			vector<pair<int, Float> > content;
-		};
 
-		typedef vector<pair<int, Float> > ContentVec;
-		class PLSATrainer
+		class PLSAModel
 		{
 		public:
-			PLSATrainer(int numTopics, int numWords)
-				:NumTopics(numTopics), NumWords(numWords)
+		
+			PLSAModel(string file)
 			{
-
-			}
-
-			void Initialize()
-			{
-				Pval3(NumWords, NumDocs, NumTopics);
-				_pdz.resize(NumDocs, NumWords, 0);
-				_pzw.resize(NumTopics, NumWords, 0);
-				for (int docId = 0; docId < NumDocs; docId++)
-				{
-					Float sum = 0.0;
-					for (int topicId = 0; topicId < NumTopics; topicId++)
-					{
-						_pdz(docId, topicId) = drand48() * drand48();
-						sum += _pdz(docId, topicId);
-					}
-					for (int topicId = 0; topicId < NumTopics; topicId++)
-					{
-						_pdz(docId, topicId) /= sum;
-					}
-				}
-				for (int topicId = 0; topicId < NumTopics; topicId++)
-				{
-					Float sum = 0.0;
-					for (int wordId = 0; wordId < NumWords; wordId++)
-					{
-						_pzw(topicId, wordId) = drand48() * drand48();
-						sum += _pzw(topicId, wordId);
-					}
-					for (int wordId = 0; wordId < NumWords; wordId++)
-					{
-						_pzw(topicId, wordId) /= sum;
-					}
-				}
-				_pzwTemp.resize(NumTopics, NumWords, 0);
-				_pzVec.resize(NumTopics, 0);
-				_pwz.resize(NumWords, NumTopics, 0);
-			}
-
-			void Train(const vector<DocInfo>& docs, int iterNum = 20)
-			{
-				NumDocs = docs.size();
-				Initialize();
-
-				ProgressBar pb(iterNum);
-				for (int iter = 0; iter < iterNum; iter++)
-				{
-					++pb;
-					_pzwTemp.zeroset();
-					gezi::zeroset(_pzVec);
-					for (int docId = 0; docId < NumDocs; docId++) //doc
-					{
-						//                Pval(did);
-						int numWords = docs[docId].numWords;
-						const ContentVec& contents = docs[docId].content;
-						int numUniqeWords = contents.size();
-						//如果0个word那么该doc被忽略,另外短文本不会迭代超过文本word数目
-						if (numWords < 1 || numUniqeWords == iter)
-							continue;
-						
-						//--------------------Estep for one doc
-						//p(z_k|w,d)
-						for (int i = 0; i < numUniqeWords; i++) //word
-						{
-							int wordId = contents[i].first;
-							//p(w,d)
-							Float pwd = 0;
-							for (int topicId = 0; topicId < NumTopics; topicId++)
-							{
-								pwd += _pdz(docId, topicId) * _pzw(topicId, wordId);
-							}
-							for (int topicId = 0; topicId < NumTopics; topicId++) //z topic
-							{
-								if (pwd)
-									_pwz(wordId, topicId) = (_pdz(docId, topicId) * _pzw(topicId, wordId)) / pwd;
-							}
-						}
-						//-------------------Mstep for one doc
-						//---p(z|d) and p(w|z) update,this will be updated after all doc processed in one step
-						for (int topicId = 0; topicId < NumTopics; topicId++)
-						{
-							Float sum = 0;
-							for (int i = 0; i < numUniqeWords; i++) //word
-							{
-								int wordId = contents[i].first;
-								Float weight = contents[i].second;
-								Float score = weight * _pwz(wordId, topicId);
-								sum += score;
-								_pzwTemp(topicId, wordId) += score;
-							}
-							//Pval(sum);
-							_pzVec[topicId] += sum;
-							_pdz(docId, topicId) = sum / numWords; //p(z|d) update
-						}
-					}
-					//after every doc is processed, now finish p(w|z)
-					for (int topicId = 0; topicId < NumTopics; topicId++)
-					{
-						for (int wordId = 0; wordId < NumWords; wordId++) //word
-						{
-							if (_pzVec[topicId])
-								_pzw(topicId, wordId) = _pzwTemp(topicId, wordId) / _pzVec[topicId];
-						}
-					}
-				}
+				serialize_util::load(_pzw, file);
+				NumTopics = _pzw._ncol;
+				Pval(NumTopics);
 			}
 
 			/**
-			* 展示某个topic id下面的top 20的支撑词
+			* 在线推理fold_in，这里输入的p(z|w)是压缩截断的倒排，比如每个word只保留top 20的topic加快计算速度
+			* @param content_vec
+			* @param pdz
+			* @param round
 			*/
-			template<typename _Dict>
-			void PrintTopic(int topicId, const _Dict& dict, ostream& ofs, int maxNum = 200)
+			template<typename T>
+			vector<Float> Inference(const std::vector<T>& contents, int numIters = 20)
 			{
-				int len = std::min(NumWords, maxNum);
+				Fvec pdz(NumTopics, 1.0 / NumTopics); //P(z|d)
 
-				vector<pair<int, Float> > vec;
-				for (int i = 0; i < NumWords; i++)
+				int numUniqeWords = contents.size();
+				Float numWords = 0;
+				for (int iter = 0; iter < numUniqeWords; iter++)
 				{
-					vec.push_back(make_pair(i, _pzw(topicId, i)));
+					numWords += contents[iter].second;
 				}
-				std::partial_sort(vec.begin(), vec.begin() + maxNum, vec.end(), [](const pair<int, Float>& l, const pair<int, Float>& r) { return l.second > r.second; });
-				for (int i = 0; i < len; i++)
+				if (!numWords)
 				{
-					ofs << dict.key(vec[i].first) << vec[i].second << endl;
+					return pdz;
 				}
+
+				//--------------------------init
+				//Float sum = 0;
+				ufo::Matrix<Float> pwz(numUniqeWords, NumTopics, 0);
+
+				//--------------------------infer
+				for (int iter = 0; iter < numIters; iter++)
+				{
+					//-----e-step calc pwz// p(z|w,d)
+					for (int i = 0; i < numUniqeWords; i++) //word
+					{
+						int wordId = contents[i].first;
+						//p(w,d)
+						Float pwd = 0;
+
+						for (int topicId = 0; topicId < NumTopics; topicId++)
+						{
+							pwd += pdz[topicId] * _pzw(topicId, wordId);
+						}
+					
+						for (int topicId = 0; topicId < NumTopics; topicId++) //z topic
+						{
+							if (pwd)
+								pwz(i, topicId) = (pdz[topicId] * _pzw(topicId, wordId)) / pwd;
+						}
+					}
+
+					vector<Float> tdz;
+					tdz.resize(NumTopics, 0);
+					for (int i = 0; i < numUniqeWords; i++)
+					{
+						int wordId = contents[i].first;
+						Float weight = contents[i].second;
+
+						for (int topicId = 0; topicId < NumTopics; topicId++)
+						{
+							tdz[topicId] += weight * pwz(i, topicId);
+						}
+					}
+
+					for (int topicId = 0; topicId < NumTopics; topicId++)
+					{
+						pdz[topicId] = tdz[topicId] / numWords; //FIXME nword == 0?
+					}
+				}
+
+				return pdz;
 			}
 
 		public:
 			int NumTopics;
-			int NumWords;
-			int NumDocs;
 		protected:
 		private:
-			ufo::Matrix<Float> _pdz; //p(z|d)
 			ufo::Matrix<Float> _pzw; //p(w|z)
-			ufo::Matrix<Float> _pzwTemp; //在MPI版本中这个是要传递的
-			vector<Float> _pzVec; //长度大小为NumTopics
-			ufo::Matrix<Float> _pwz; ///Estep p(z|d,w) 每个doc都需要 为了节省空间各个doc复用 所以doc间不能并行
 		};
 	} //----end of namespace plsa
 }  //----end of namespace gezi

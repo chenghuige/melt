@@ -69,13 +69,14 @@ namespace gezi {
 				_pwz.resize(NumWords, NumTopics, 0);
 			}
 
-			void Train(const vector<DocInfo>& docs, int iterNum = 20)
+
+			void Train(const vector<DocInfo>& docs, int numIters = 20)
 			{
 				NumDocs = docs.size();
 				Initialize();
 
-				ProgressBar pb(iterNum);
-				for (int iter = 0; iter < iterNum; iter++)
+				ProgressBar pb(numIters);
+				for (int iter = 0; iter < numIters; iter++)
 				{
 					++pb;
 					_pzwTemp.zeroset();
