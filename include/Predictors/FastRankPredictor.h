@@ -7,10 +7,8 @@
  *
  *          \date   2014-04-13 18:24:51.525674
  *
- *  \Description:  FastRank是暂时hack的 在实现训练之前 做一个读取结果能用于在线预测的
- *                 Predictor 里面用到的东西 尽量从简洁 够线上预测即可 放到FastRank目录
- *                 后续实现算法后 仍然保留这个 新实现的放在BoostedTree Predictor就叫为
- *                 BoostedTreePredictor 使用时候 fastrank boostedtree gbdt均可
+ *  \Description: 
+ *              
  *  ==============================================================================
  */
 
@@ -21,7 +19,6 @@
 #include "Trainers/FastRank/OnlineRegressionTree.h"
 namespace gezi {
 
-	//hack 当前未实现Fastrank的训练 所以这里实际Load 是Load Tlc format的文本模型文件
 	class FastRankPredictor : public Predictor
 	{
 	public:

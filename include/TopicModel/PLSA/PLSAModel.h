@@ -60,6 +60,7 @@ namespace gezi {
 
 			void Initialize()
 			{
+				Pval3(NumWords, NumDocs, NumTopics);
 				_pdz.resize(NumDocs, NumWords, 0);
 				_pzw.resize(NumTopics, NumWords, 0);
 				for (int docId = 0; docId < NumDocs; docId++)
