@@ -26,6 +26,11 @@ public:
 		return  GetPredictors()[index];
 	}
 
+	static PredictorPtr& LastInstance()
+	{
+		return  GetPredictors().back();
+	}
+
 	static Predictors& GetPredictors()
 	{
 		static Predictors _predictors = wrapper::PredictorFactory::LoadPredictors();
@@ -38,6 +43,11 @@ public:
 	}
 
 	static int Size()
+	{
+		return GetPredictors().size();
+	}
+
+	static int size()
 	{
 		return GetPredictors().size();
 	}

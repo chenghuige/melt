@@ -75,6 +75,24 @@ namespace gezi {
 			return Output(instance->features);
 		}
 
+		void Print(Vector& features, std::ostream& ofs = std::cout)
+		{
+			features.ForEachNonZero([this, &ofs](int index, Float value)
+			{ 
+				ofs << index << "\t" <<  _featureNames[index] << "\t" << value << std::endl; 
+			});
+		}
+
+		map<string, Float> ToNamedFeatures(Vector& features)
+		{
+			map<string, Float> namedFeatures;
+			features.ForEachNonZero([this, &namedFeatures](int index, Float value)
+			{
+				namedFeatures[_featureNames[index]] = value;
+			});
+			return namedFeatures;
+		}
+
 		Float Output(Vector& features)
 		{
 			if (_normalizer != nullptr && !features.normalized)
