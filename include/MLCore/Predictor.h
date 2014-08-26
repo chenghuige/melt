@@ -75,7 +75,7 @@ namespace gezi {
 			return Output(instance->features);
 		}
 
-		void Print(Vector& features, std::ostream& ofs = std::cout)
+		void Print(const Vector& features, std::ostream& ofs = std::cout)
 		{
 			features.ForEachNonZero([this, &ofs](int index, Float value)
 			{ 
@@ -83,7 +83,7 @@ namespace gezi {
 			});
 		}
 
-		map<string, Float> ToNamedFeatures(Vector& features)
+		map<string, Float> ToNamedFeatures(const Vector& features)
 		{
 			map<string, Float> namedFeatures;
 			features.ForEachNonZero([this, &namedFeatures](int index, Float value)
