@@ -205,7 +205,7 @@ namespace gezi {
 			else if (cvType == CrossValidationType::AUC)
 			{
 				double aucScore = evaluator->Finish();
-				cout << aucScore << "\t" << trainerParam << endl; 
+				cout << "aucScore: " << aucScore << "\t" << "trainerParam: " << trainerParam << endl; 
 			}
 		}
 
