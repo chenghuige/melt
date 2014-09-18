@@ -398,7 +398,7 @@ namespace gezi {
 				Vector& features = instance.features;
 				features.PrepareDense();
 				svec l = split(line, _sep);
-				CHECK_EQ(l.size(), _columnNum) << "has bad line"; //不允许有坏数据行
+				CHECK_EQ(l.size(), _columnNum) << "has bad line " << i; //不允许有坏数据行
 				int fidx = 0;
 				double value = 0;
 				for (int j = 0; j < _columnNum; j++)

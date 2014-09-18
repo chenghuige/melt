@@ -143,7 +143,7 @@ namespace gezi {
 				ivec instanceFoldIndices = CVFoldCreator::CreateFoldIndices(instances, _cmd, rng);
 				for (size_t foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
 				{
-					VLOG(0) << "Croos validaion foldIdx " << foldIdx;
+					VLOG(0) << "Cross validaion foldIdx " << foldIdx;
 					string instfile = (format("%s/%d_%d_%d.inst.txt") % _cmd.resultDir % _cmd.resultIndex
 						% runIdx % foldIdx).str();
 

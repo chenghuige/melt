@@ -97,6 +97,7 @@
     <ClInclude Include="include\MLCore\ITrainerFactory.h" />
     <ClInclude Include="include\MLCore\Predictor.h" />
     <ClInclude Include="include\MLCore\PredictorFactory.h" />
+    <ClInclude Include="include\MLCore\TextPredictor.h" />
     <ClInclude Include="include\MLCore\Trainer.h" />
     <ClInclude Include="include\MLCore\TrainerFactory.h" />
     <ClInclude Include="include\Numeric\Vector\Vector.h" />

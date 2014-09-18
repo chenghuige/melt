@@ -183,6 +183,18 @@ namespace gezi {
 			return Predict(features, output);
 		}
 
+		Float Predict(const map<int, double>& m)
+		{
+			Vector features(m);
+			return Predict(features);
+		}
+
+		Float Predict(const map<int, double>& m, Float& output)
+		{
+			Vector features(m);
+			return Predict(features, output);
+		}
+
 		Float Predict(Float output)
 		{
 			if (_calibrator != nullptr)

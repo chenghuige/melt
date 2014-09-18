@@ -242,5 +242,8 @@
     <ClInclude Include="include\MLCore\PredictorFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Predictors\RandomPredictor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

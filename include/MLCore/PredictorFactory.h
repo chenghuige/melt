@@ -59,7 +59,7 @@ public:
 		return predictor;
 	}
 
-	static Predictors LoadPredictors(svec paths)
+	static Predictors LoadPredictors(const svec& paths)
 	{
 		Predictors predictors;
 		for (string path : paths)
