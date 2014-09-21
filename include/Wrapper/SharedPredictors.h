@@ -21,6 +21,19 @@ namespace gezi {
 class SharedPredictors
 {
 public:
+	static PredictorPtr& Instance(string modelPath)
+	{
+		static map<string, PredictorPtr> _predictors;
+		auto iter = _predictors.find(modelPath);
+		if (iter != _predictors.end())
+		{
+			return iter->second;
+		}
+		else
+		{
+			return _predictors[modelPath] = PredictorFactory::LoadPredictor(modelPath);
+		}
+	}
 	static PredictorPtr& Instance(int index = 0)
 	{
 		return  GetPredictors()[index];

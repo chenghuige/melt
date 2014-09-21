@@ -34,16 +34,30 @@ public:
 		}
 	}
 
-	static double Predict(string title, string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor, int ngram = 3, string sep = "$#$")
+	static double Predict(string title, string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
+		int segType = SEG_BASIC, int ngram = 3, string sep = "$#$")
 	{
 		int wordNum = identifer.size();
 		map<int, double> m; //确保按key排序
 		Segmentor::Init();
-		svec twords = Segmentor::Segment(title, SEG_BASIC);
+		svec twords = Segmentor::Segment(title, segType);
 		Prase(twords, m, identifer, 0);
 
-		svec cwords = Segmentor::Segment(content, SEG_BASIC);
+		svec cwords = Segmentor::Segment(content, segType);
 		Prase(cwords, m, identifer, wordNum);
+
+		double score = predictor->Predict(m);
+		return score;
+	}
+
+	static double Predict(string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor, 
+		int segType = SEG_BASIC, int ngram = 3, string sep = "$#$")
+	{
+		int wordNum = identifer.size();
+		map<int, double> m; //确保按key排序
+		Segmentor::Init();
+		svec words = Segmentor::Segment(content, segType);
+		Prase(words, m, identifer, 0);
 
 		double score = predictor->Predict(m);
 		return score;

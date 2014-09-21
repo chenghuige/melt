@@ -63,6 +63,88 @@ namespace gezi {
 				Pval(NumTopics);
 			}
 
+			//@TODO 算法改为使用iterator模式的 这样map输入不需要转换
+			//end - begin .. fail
+			//template<typename Iter>
+			//vector<Float> Inference(Iter begin, Iter end, int numIters = 20)
+			//{
+			//	Fvec pdz(NumTopics, 1.0 / NumTopics); //P(z|d)
+
+			//	int numUniqeWords = end - begin;
+			//	Float numWords = 0;
+			//	for (int iter = 0; iter < numUniqeWords; iter++)
+			//	{
+			//		numWords += (begin + iter)->second;
+			//	}
+			//	if (!numWords)
+			//	{
+			//		return pdz;
+			//	}
+
+			//	//--------------------------init
+			//	//Float sum = 0;
+			//	ufo::Matrix<Float> pwz(numUniqeWords, NumTopics, 0);
+
+			//	//--------------------------infer
+			//	for (int iter = 0; iter < numIters; iter++)
+			//	{
+			//		//-----e-step calc pwz// p(z|w,d)
+			//		//for (int i = 0; i < numUniqeWords; i++) //word
+			//		for (Iter it = begin, i = 0; it != end; ++it, i++)
+			//		{
+			//			int wordId = it->first;
+			//			//p(w,d)
+			//			Float pwd = 0;
+
+			//			for (int topicId = 0; topicId < NumTopics; topicId++)
+			//			{
+			//				pwd += pdz[topicId] * _pzw(topicId, wordId);
+			//			}
+
+			//			for (int topicId = 0; topicId < NumTopics; topicId++) //z topic
+			//			{
+			//				if (pwd)
+			//					pwz(i, topicId) = (pdz[topicId] * _pzw(topicId, wordId)) / pwd;
+			//			}
+			//		}
+
+			//		vector<Float> tdz;
+			//		tdz.resize(NumTopics, 0);
+			//		for (int i = 0; i < numUniqeWords; i++)
+			//		{
+			//			Iter now = begin + i;
+			//			int wordId = now->first;
+			//			Float weight = now->second;
+
+			//			for (int topicId = 0; topicId < NumTopics; topicId++)
+			//			{
+			//				tdz[topicId] += weight * pwz(i, topicId);
+			//			}
+			//		}
+
+			//		for (int topicId = 0; topicId < NumTopics; topicId++)
+			//		{
+			//			pdz[topicId] = tdz[topicId] / numWords; //FIXME nword == 0?
+			//		}
+			//	}
+
+			//	return pdz;
+			//}
+
+			/*template<typename Container>
+			vector<Float> Inference(const Container& contents, int numIters = 20)
+			{
+				return Inference(contents.begin(), contents.end(), numIters);
+			}*/
+
+			template<typename Key, typename Value>
+			vector<Float> Inference(const map<Key, Value>& contents, int numIters = 20)
+			{
+				/*vector<pair<Key, Value> > vec = from(contents) >> to_vector();*/ //std::pair<const int, double>  可恶的const
+
+				auto vec = from(contents) >> to_vector();
+				return Inference(vec);
+			}
 			/**
 			* 在线推理fold_in，这里输入的p(z|w)是压缩截断的倒排，比如每个word只保留top 20的topic加快计算速度
 			* @param content_vec

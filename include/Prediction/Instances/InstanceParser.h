@@ -393,12 +393,20 @@ namespace gezi {
 			for (uint64 i = start; i < end; i++)
 			{
 				string line = lines[i];
+				svec l = split(line, _sep);
+				//CHECK_EQ(l.size(), _columnNum) << "has bad line " << i; //不允许有坏数据行
+				if (l.size() != _columnNum)
+				{
+					LOG(WARNING) << "has bad line " << i;
+					LOG(WARNING) << line;
+					continue;
+				}
+
 				_instances[i - start] = make_shared<Instance>(_featureNum);
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
 				features.PrepareDense();
-				svec l = split(line, _sep);
-				CHECK_EQ(l.size(), _columnNum) << "has bad line " << i; //不允许有坏数据行
+				
 				int fidx = 0;
 				double value = 0;
 				for (int j = 0; j < _columnNum; j++)
@@ -443,6 +451,7 @@ namespace gezi {
 					instance.name = join(instance.names, _args.ncsep);
 				}
 			}
+			ufo::erase(_instances, nullptr);
 		}
 
 		//@TODO Instance Next(string line) 支持streaming
