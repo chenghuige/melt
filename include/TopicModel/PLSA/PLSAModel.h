@@ -64,13 +64,12 @@ namespace gezi {
 			}
 
 			//@TODO 算法改为使用iterator模式的 这样map输入不需要转换
-			//end - begin .. fail
 			//template<typename Iter>
 			//vector<Float> Inference(Iter begin, Iter end, int numIters = 20)
 			//{
 			//	Fvec pdz(NumTopics, 1.0 / NumTopics); //P(z|d)
 
-			//	int numUniqeWords = end - begin;
+			//	int numUniqeWords = std::distance(begin, end);
 			//	Float numWords = 0;
 			//	for (int iter = 0; iter < numUniqeWords; iter++)
 			//	{

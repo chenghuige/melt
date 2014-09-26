@@ -682,6 +682,7 @@ namespace gezi {
 		//libsvm格式不支持过滤特征 仅仅为了方便一直使用libsvm的同学
 		Instances&& ParseLibSVM(string dataFile)
 		{
+			VLOG(0) << "Parsing libsvm format: " << dataFile;
 			Timer timer;
 			vector<string> lines = read_lines(dataFile, "//");
 			Pval_(timer.elapsed_ms(), "read_lines");
@@ -708,7 +709,7 @@ namespace gezi {
 				_instances[i] = make_shared<Instance>();
 				Instance& instance = *_instances[i];
 				Vector& features = instance.features;
-				svec l = split(line, "\t "); //libsvm 是用空格分开
+				svec l = split(line, "\t "); //libsvm 是用空格或者tab都有可能
 				for (size_t j = 0; j < l.size(); j++)
 				{
 					string item = l[j];

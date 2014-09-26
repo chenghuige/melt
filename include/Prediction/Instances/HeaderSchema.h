@@ -56,6 +56,11 @@ namespace gezi
 		//很遗憾 没有默认的
 		bool operator==(const HeaderSchema& other) const
 		{
+			if (fileFormat == FileFormat::LibSVM && other.fileFormat == FileFormat::LibSVM)
+			{
+				return true;
+			}
+			
 			return featureNames == other.featureNames && tagNames == other.tagNames;
 		}
 	public:
@@ -105,9 +110,10 @@ namespace gezi
 		bool hasHeader = false;
 		bool hasWeights = false;
 		string groupKey;
-		FileFormat fileFormat;
+		FileFormat fileFormat = FileFormat::Unknown;
 		string instanceNameHeaderString = "Instance";
 		bool normalized = false;
+		int numClasses = 2; //有几个分类 默认2分类 如果< 0则表示regression等非分类问题
 	};
 
 }  //----end of namespace gezi

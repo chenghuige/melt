@@ -91,6 +91,12 @@ public:
 		return label <= 0;
 	}
 
+	//wether label is unknown
+	bool IsUnknown()
+	{
+		return label == -std::numeric_limits<double>::infinity();
+	}
+
 	bool HasMissingFeatures()
 	{
 		return hasMissingFeatures;
@@ -98,7 +104,7 @@ public:
 
 	Vector features;
 	bool hasMissingFeatures = false;
-	Float label = -1.0;
+	Float label = -std::numeric_limits<double>::infinity();
 	string name;
 	svec names;
 	svec attributes;

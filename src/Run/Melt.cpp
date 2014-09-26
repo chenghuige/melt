@@ -29,6 +29,7 @@ DEFINE_string(valid, "", "Data file used for training validation (with IValidati
 DEFINE_string(m, "model", "modelFolder");
 DEFINE_bool(mc, false, " modelfileCode:Gen model file to save in C++ code £¿ (for Train or TrainTest)");
 DEFINE_bool(mt, false, "modelfileText:  Gen model file to save in text format ? (for Train or TrainTest");
+DEFINE_bool(ft, true, "when -c train will test the train data its self after training");
 
 DEFINE_string(rd, "./result", "resultDir: where to put the result data");
 DEFINE_int32(ri, 0, "resultIndex: the name ouf out file like 0.model.txt 0.model 0.inst.txt");
@@ -47,7 +48,7 @@ DEFINE_bool(calibrate, true, "calibrateOutput: use calibrator to gen probability
 DEFINE_string(calibrator, "sigmoid", "calibratorName: sigmoid/platt naive pav");
 DEFINE_bool(pn, false, "preNormalize:");
 
-DEFINE_string(oformat, "unknown", "ouput file format if unknow using it's input format");
+DEFINE_string(off, "unknown", "ouput_file_format: if unknow using it's input format");
 
 namespace gezi {
 	void Melt::ParseArguments()
@@ -58,6 +59,7 @@ namespace gezi {
 		_cmd.classifierSettings = FLAGS_cls;
 		_cmd.datafile = FLAGS_i;
 		_cmd.outfile = FLAGS_o;
+		_cmd.outDir = FLAGS_o;
 		_cmd.normalizerfile = FLAGS_nf;
 		_cmd.testDatafile = FLAGS_test;
 		_cmd.validationDatafile = FLAGS_valid;
@@ -66,6 +68,8 @@ namespace gezi {
 		_cmd.modelfileText = FLAGS_mt;
 		_cmd.numFolds = FLAGS_k;
 		_cmd.numRuns = FLAGS_nr;
+
+		_cmd.forceTest = FLAGS_ft;
 
 		if (FLAGS_rs == 0)
 		{
@@ -97,7 +101,7 @@ namespace gezi {
 			_cmd.evaluate = FLAGS_ev + " ";
 		}
 
-		_cmd.outputFileFormat = FLAGS_oformat;
+		_cmd.outputFileFormat = FLAGS_off;
 
 	}
 } //end of namespace gezi

@@ -77,6 +77,7 @@ namespace gezi {
 			SHOW_INFOS, //展示输入数据的基本信息  特征数目，样本数目，正例比例
 			CONVERT, //对输入样本文件载入然后输出要求的格式 比如 dense -> sparse
 			SPLIT_DATA, //对输入样本进行切分  比如 1:1 1:3:2 同时保持每份中正反例比例维持和原始数据一致
+			GEN_CROSS_DATA, //输出交叉验证的文本数据文件 方便对比其它机器学习工具的实验效果
 			CHANGE_RAIO //对输入样本进行正反例比例调整 比如 原始 1:30 调整为 1:1
 		};
 
@@ -101,9 +102,12 @@ namespace gezi {
 			}
 		}
 
-		static string GetOutputFileName(string infile, string suffix)
+		static string GetOutputFileName(string infile, string suffix, bool removeTxt = false)
 		{
-			return endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", "." + suffix + ".txt") : infile + "." + suffix;
+			if (!removeTxt)
+				return endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", "." + suffix + ".txt") : infile + "." + suffix;
+			else
+				return endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", "." + suffix) : infile + "." + suffix;
 		}
 
 		void RunCrossValidation(Instances& instances, CrossValidationType cvType)
@@ -184,7 +188,7 @@ namespace gezi {
 					}
 					else
 					{
-						LOG(ERROR) << "Not supported crosss validation type"; 
+						LOG(ERROR) << "Not supported crosss validation type";
 						return;
 					}
 					if (foldIdx == 0)
@@ -205,7 +209,7 @@ namespace gezi {
 			else if (cvType == CrossValidationType::AUC)
 			{
 				double aucScore = evaluator->Finish();
-				cout << "aucScore: " << aucScore << "\t" << "trainerParam: " << trainerParam << endl; 
+				cout << "aucScore: " << aucScore << "\t" << "trainerParam: " << trainerParam << endl;
 			}
 		}
 
@@ -272,7 +276,7 @@ namespace gezi {
 
 
 		//AUC test
-		void Test(Instances& instances, PredictorPtr predictor, 
+		void Test(Instances& instances, PredictorPtr predictor,
 			BinaryClassficationEvaluatorPtr evaluator)
 		{
 			for (InstancePtr instance : instances)
@@ -306,6 +310,7 @@ namespace gezi {
 				CHECK_GT(instances.Count(), 0) << "Read 0 test instances, aborting experiment";
 				predictor = Train(instances);
 			}
+			if (_cmd.forceTest)
 			{
 				Noticer nt("Test itself!");
 				try_create_dir(_cmd.resultDir);
@@ -469,9 +474,10 @@ namespace gezi {
 				}
 				else
 				{
-					string outfile = fileFormat == FileFormat::Arff ?
-						boost::replace_last_copy(_cmd.datafile, ".txt", "") + ".arff" :
-						GetOutputFileName(_cmd.datafile, "converted");
+					string outfile;
+					string suffix = _formatSuffixes[fileFormat];
+					outfile = GetOutputFileName(_cmd.datafile, suffix, true);
+
 					if (fileFormat == FileFormat::Arff)
 						VLOG(0) << "Writting to arff file " << outfile;
 					else
@@ -565,6 +571,47 @@ namespace gezi {
 				string outfile = GetOutputFileName(infile, suffix);
 				Pval(outfile);
 				write(parts[i], outfile);
+			}
+		}
+
+		void 	RunGenCrossData()
+		{
+			//输入是什么格式 输出还是什么格式 如果输入格式参数错误按照libsvm输出 
+			FileFormat fileFormat = get_value(_formats, _cmd.outputFileFormat, FileFormat::LibSVM);
+			auto instances = create_instances(_cmd.datafile);
+			string outDir = _cmd.outDir.empty() ? "cross-data" : _cmd.outDir;
+			try_create_dir(outDir);
+			//输入 feature.txt 输出到outDir下  feature.train_0.txt feature.test_0.txt feature.train_1.txt ...
+			//不考虑runIdx 统一累加 0,1,2...
+			const int randomStep = 10000; //@TODO
+			for (size_t runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
+			{
+				VLOG(0) << "The " << runIdx << " round";
+				RandomEngine rng = random_engine(_cmd.randSeed, runIdx * randomStep);
+				if (!_cmd.foldsSequential)
+					instances.Randomize(rng);
+
+				ivec instanceFoldIndices = CVFoldCreator::CreateFoldIndices(instances, _cmd, rng);
+				for (size_t foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
+				{
+					VLOG(0) << "Cross validaion foldIdx " << foldIdx;
+					int idx = runIdx * _cmd.numFolds + foldIdx;
+
+					Instances trainData, testData;
+					//只是trainProportion < 1 才需要rng
+					CVFoldCreator::CreateFolds(instances, _cmd.trainProportion,
+						instanceFoldIndices, foldIdx, _cmd.numFolds, trainData, testData,
+						random_engine(_cmd.randSeed, runIdx * randomStep));
+
+					string trainSuffix = "feature.train_" + STR(idx);
+					string trainFile = outDir + "/" + trainSuffix;
+					string testSuffix = "feature.test_" + STR(idx);
+					string testFile = outDir + "/" + testSuffix;
+					Pval2(trainFile, testFile);
+
+					write(trainData, trainFile, fileFormat);
+					write(testData, testFile, fileFormat);
+				}
 			}
 		}
 
@@ -701,6 +748,9 @@ namespace gezi {
 			case RunType::SPLIT_DATA:
 				RunSplitData();
 				break;
+			case  RunType::GEN_CROSS_DATA:
+				RunGenCrossData();
+				break;
 			case RunType::CHANGE_RAIO:
 				RunChangeRatio();
 				break;
@@ -743,6 +793,8 @@ namespace gezi {
 			{ "convert", RunType::CONVERT },
 			{ "splitdata", RunType::SPLIT_DATA },
 			{ "sd", RunType::SPLIT_DATA },
+			{ "gen_crossdata", RunType::GEN_CROSS_DATA },
+			{ "gcd", RunType::GEN_CROSS_DATA },
 			{ "changeratio", RunType::CHANGE_RAIO },
 			{ "cr", RunType::CHANGE_RAIO }
 		};
@@ -754,6 +806,15 @@ namespace gezi {
 			{ "text", FileFormat::Text },
 			{ "libsvm", FileFormat::LibSVM },
 			{ "arff", FileFormat::Arff }
+		};
+
+		map<FileFormat, string> _formatSuffixes = {
+			{ FileFormat::Unknown, "txt" },
+			{ FileFormat::Dense, "dense" },
+			{ FileFormat::Sparse, "sparse" },
+			{ FileFormat::Text, "txt" },
+			{ FileFormat::LibSVM, "libsvm" },
+			{ FileFormat::Arff, "arff" }
 		};
 	};
 } //end of namespace gezi

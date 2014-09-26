@@ -39,7 +39,7 @@ public:
 	{
 		int wordNum = identifer.size();
 		map<int, double> m; //确保按key排序
-		Segmentor::Init();
+		Segmentor::Init(); //最好还是外部Init好 这里为了安全仍然保有
 		svec twords = Segmentor::Segment(title, segType);
 		Prase(twords, m, identifer, 0);
 

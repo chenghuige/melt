@@ -162,15 +162,33 @@ namespace gezi {
 
 	}
 
+	//暂时不考虑有未标注label的情况 未标注设置为-1 normal 样本
 	inline void write_libsvm(Instance& instance, HeaderSchema& schema, ofstream& ofs)
 	{
-		ofs << instance.label;
+		if (schema.numClasses == 2)
+		{ //为了sofia方便 将0转为-1 这样libsvm sofia都可以直接处理这种格式
+			if (instance.label == -std::numeric_limits<double>::infinity() ||
+				instance.label == 0)
+			{
+				ofs << -1;
+			}
+			else
+			{
+				ofs << instance.label;
+			}
+		}
+		else
+		{
+			ofs << instance.label;
+		}
+		
 		instance.features.ForEachNonZero([&ofs](int index, Float value)
 		{
 			ofs << " " << index + 1 << ":" << value;
 		});
 		ofs << endl;
 	}
+
 	inline void write_libsvm(Instances& instances, string outfile)
 	{
 		ofstream ofs(outfile);
