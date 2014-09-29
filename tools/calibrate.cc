@@ -35,7 +35,7 @@ void run(string infile, string outfile)
 	while (getline(ifs, line))
 	{
 		string label_, output_;
-		split(line, ' ', label_, output_);
+		split(line, "\t ", label_, output_);
 		double label = DOUBLE(label_);
 		double output = DOUBLE(output_);
 		labels.push_back(label);

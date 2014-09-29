@@ -25,7 +25,7 @@ namespace gezi {
 		//训练器中使用构造
 		LinearPredictor(const Vector& weights, Float bias,
 			NormalizerPtr normalizer, CalibratorPtr calibrator,
-			const svec& featureNames, 
+			const svec& featureNames,
 			string name = "LinearPredictor")
 			:Predictor(normalizer, calibrator, featureNames),
 			_weights(weights), _bias(bias),
@@ -44,28 +44,33 @@ namespace gezi {
 			return _name;
 		}
 
-		virtual void Save(string path) override
+		virtual void Save_(string file) override
 		{
-			Predictor::Save(path);
-			string modelFile = path + "/model";
-			serialize_util::save(*this, modelFile);
+			_weights.Sparsify();
+			serialize_util::save(*this, file);
 		}
 
-		virtual void Load(string path) override
+		virtual void SaveXml_(string file) override
 		{
-			Predictor::Load(path);
-			string modelFile = path + "/model";
-			serialize_util::load(*this, modelFile);
+			serialize_util::save_xml(*this, file);
+		}
+
+		virtual void Load_(string file) override
+		{
+			_weights.MakeDense();
+			serialize_util::load(*this, file);
 		}
 
 		//SaveText是可选的 如果要使用 务必先调用Save 因为加载至使用Load
-		virtual void SaveText(string path)
+		virtual void SaveText_(string file) override
 		{
-			Predictor::SaveText(path);
-			ofstream ofs(path);
+			CHECK_EQ(_featureNames.size(), _numFeatures);
+			LoadSave::SaveText(file);
+
+			ofstream ofs(file);
 			ofs << "ModelName=" << Name() << endl;
 			ofs << "FeatureNum=" << _featureNames.size() << endl;
-			_weights.ForEachNonZero([&ofs,this](int index, Float value)
+			_weights.ForEachNonZero([&ofs, this](int index, Float value)
 			{
 				ofs << index << "\t" << _featureNames[index] << "\t" << value << endl;
 			});
@@ -76,9 +81,12 @@ namespace gezi {
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			ar & boost::serialization::base_object<Predictor>(*this);
-			ar & _weights;
-			ar & _bias;
+			/*	ar & boost::serialization::base_object<Predictor>(*this);
+				ar & _weights;
+				ar & _bias;*/
+			ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Predictor);
+			ar & BOOST_SERIALIZATION_NVP(_weights);
+			ar & BOOST_SERIALIZATION_NVP(_bias);
 		}
 
 	protected:

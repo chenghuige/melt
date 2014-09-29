@@ -231,16 +231,15 @@ namespace gezi {
 			ofs << "Instance\tTrue\tAssigned\tOutput\tProbability" << endl;
 		}
 
-		//@TODO 多做了一次预测等于
 		void Test(Instances& instances, PredictorPtr predictor,
 			string outfile, ofstream& ofs)
 		{
-			Test(instances, predictor, outfile);
-#pragma omp critical
-			{
-				Test(instances, predictor, ofs);
-			}
+			//@TODO 不再写每个round的单独文件 完善c++版本内部的evaluator进行输出展示
+			ofstream currentOfs(outfile);
+			WriteInstFileHeader(currentOfs);
+			Test(instances, predictor, ofs, currentOfs);
 		}
+
 		void Test(Instances& instances, PredictorPtr predictor, string outfile)
 		{
 			ofstream ofs(outfile);
@@ -272,6 +271,66 @@ namespace gezi {
 					<< probability;
 				idx++;
 			}
+		}
+
+		void Test(Instances& instances, PredictorPtr predictor, ofstream& ofs, ofstream& currentOfs)
+		{
+			int idx = 0;
+			ProgressBar pb(instances.Count(), "Testing");
+			for (InstancePtr instance : instances)
+			{
+				++pb;
+				double output;
+				double probability = predictor->Predict(instance, output);
+				string name = instance->name.empty() ? STR(idx) : instance->name;
+				if (startswith(name, '_'))
+				{
+					name = name.substr(1);
+				}
+
+				int assigned = output > 0 ? 1 : 0;
+#pragma  omp critical
+				{
+					ofs << name << "\t" << instance->label << "\t"
+						<< assigned << "\t" << output << "\t"
+						<< probability << endl;
+				}
+				currentOfs << name << "\t" << instance->label << "\t"
+					<< assigned << "\t" << output << "\t"
+					<< probability << endl;
+				VLOG(6) << name << "\t" << instance->label << "\t"
+					<< assigned << "\t" << output << "\t"
+					<< probability;
+				idx++;
+			}
+		}
+
+		string TestLazyStore(Instances& instances, PredictorPtr predictor)
+		{
+			stringstream ofs;
+			int idx = 0;
+			ProgressBar pb(instances.Count(), "Testing");
+			for (InstancePtr instance : instances)
+			{
+				++pb;
+				double output;
+				double probability = predictor->Predict(instance, output);
+				string name = instance->name.empty() ? STR(idx) : instance->name;
+				if (startswith(name, '_'))
+				{
+					name = name.substr(1);
+				}
+
+				int assigned = output > 0 ? 1 : 0;
+				ofs << name << "\t" << instance->label << "\t"
+					<< assigned << "\t" << output << "\t"
+					<< probability << endl;
+				VLOG(6) << name << "\t" << instance->label << "\t"
+					<< assigned << "\t" << output << "\t"
+					<< probability;
+				idx++;
+			}
+			return ofs.str();
 		}
 
 
@@ -324,6 +383,10 @@ namespace gezi {
 			{
 				Noticer nt("Write train result!");
 				predictor->Save(_cmd.modelFolder);
+				if (_cmd.modelfileXml)
+				{
+					predictor->SaveXml();
+				}
 				if (_cmd.modelfileText)
 				{
 					predictor->SaveText();
@@ -335,12 +398,16 @@ namespace gezi {
 		{
 			Noticer nt("Test! with model from " + _cmd.modelFolder);
 			//------load predictor
-			auto predictor = PredictorFactory::LoadPredictor(_cmd.modelFolder);
+			PredictorPtr predictor;
+			{
+				Noticer nt("Loading predictor");
+				predictor = PredictorFactory::LoadPredictor(_cmd.modelFolder);
+			}
 			//------test
 			try_create_dir(_cmd.resultDir);
 			string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
 
-			//hack for text input format //Not tested correctness yet
+			//@TODO hack for text input format //Not tested correctness yet
 			InstanceParser::TextFormatParsedTime(); //++ pared text from time这样表示需要使用词表数据
 			string testDatafile = _cmd.testDatafile.empty() ? _cmd.datafile : _cmd.testDatafile;
 			auto testInstances = create_instances(testDatafile);
@@ -376,6 +443,10 @@ namespace gezi {
 			{
 				Noticer nt("Write train result!");
 				predictor->Save(_cmd.modelFolder);
+				if (_cmd.modelfileXml)
+				{
+					predictor->SaveXml();
+				}
 				if (_cmd.modelfileText)
 				{
 					predictor->SaveText();

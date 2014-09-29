@@ -34,13 +34,15 @@ namespace gezi {
 		Predictor() = default;
 		virtual ~Predictor() {}
 		Predictor(NormalizerPtr normalizer, CalibratorPtr calibrator, const svec& featureNames)
-			:_normalizer(normalizer), _calibrator(calibrator), _featureNames(featureNames)
+			:_normalizer(normalizer), _calibrator(calibrator), _featureNames(featureNames),
+			_numFeatures(_featureNames.size())
 		{
 
 		}
 
 		Predictor(NormalizerPtr normalizer, CalibratorPtr calibrator, svec&& featureNames)
-			:_normalizer(normalizer), _calibrator(calibrator), _featureNames(featureNames)
+			:_normalizer(normalizer), _calibrator(calibrator), _featureNames(featureNames),
+			_numFeatures(_featureNames.size())
 		{
 
 		}
@@ -78,8 +80,8 @@ namespace gezi {
 		void Print(const Vector& features, std::ostream& ofs = std::cout)
 		{
 			features.ForEachNonZero([this, &ofs](int index, Float value)
-			{ 
-				ofs << index << "\t" <<  _featureNames[index] << "\t" << value << std::endl; 
+			{
+				ofs << index << "\t" << _featureNames[index] << "\t" << value << std::endl;
 			});
 		}
 
@@ -214,20 +216,32 @@ namespace gezi {
 
 		virtual void Save(string path) override
 		{
+			ChangeForSave();
 			LoadSave::Save(path);
 			_path = path;
 			try_create_dir(path);
+			string modelFile = path + "/model";
+			Save_(modelFile);
 			write_file(Name(), path + "/model.name.txt");
 			write_file(_param, path + "/model.param.txt");
-			SAVE_SHARED_PTR(_normalizer);
+			SAVE_SHARED_PTR(_normalizer); //@TODO 暂时shared ptr自动序列化没有弄成功 所以单独手动调用save 也不太麻烦
 			SAVE_SHARED_PTR(_calibrator);
+			ChangeForLoad();
+		}
+
+		virtual void Save_(string file) 
+		{
+			VLOG(0) << Name() << " currently not support saving model";
 		}
 
 		virtual void Load(string path) override
 		{
+			ChangeForLoad();
 			_path = path;
 			_param = read_file(OBJ_NAME_PATH(_param));
 			LoadSave::Load(path);
+			string modelFile = path + "/model";
+			Load_(modelFile);
 			string normalizerName = read_file(OBJ_NAME_PATH(_normalizer));
 			if (!normalizerName.empty())
 			{
@@ -240,16 +254,50 @@ namespace gezi {
 			}
 		}
 
+		virtual void Load_(string file) 
+		{
+			VLOG(0) << Name() << " currently not support loading model";
+		}
+
+		//注意不管是save xml还是save text 都不要单独使用 并且 都在Save 也就是存储二进制之后使用
+		//xml和text都提供载入 目前 都是按照二进制载入 如果是其它的开源输出比如linear model格式可以先转LinearPredictor然后
+		//Save 
+		virtual void SaveXml(string file) override
+		{
+			ChangeForSave();
+			LoadSave::SaveXml(file);
+			SaveXml_(file);
+			SAVE_SHARED_PTR_ASXML(_calibrator); //@TODO calibrator, normalizer支持xml
+			SAVE_SHARED_PTR_ASXML(_normalizer);
+			ChangeForLoad();
+		}
+
+		virtual void SaveXml_(string file) 
+		{
+			VLOG(0) << Name() << " currently not support saving xml";
+		}
+
 		virtual void SaveText(string file) override
 		{
-			LoadSave::SaveText(file);
+			//默认是不支持text格式写出的 除非自己重新手写了模型输出 一般为了debug后者更好展示model信息
+			//一般情况下选择写出xml就可以较好看到模型信息了 不需要手写 prefer SaveXML
+			SaveText_(file);
+			SaveText_NormalizerAndCalibrator(_saveNormalizerText, _saveCalibratorText);
+		}
+
+		virtual void SaveText_(string file) 
+		{
+			VLOG(0) << Name() << " currently not support saving text format! Try SaveXml";
+		}
+
+		void SaveXml()
+		{
+			SaveXml(_path + "/model.xml");
 		}
 
 		void SaveText()
 		{
 			SaveText(_path + "/model.txt");
-			SAVE_SHARED_PTR_ASTEXT(_normalizer);
-			SAVE_SHARED_PTR_ASTEXT(_calibrator);
 		}
 
 		NormalizerPtr GetNormalizer()
@@ -262,11 +310,35 @@ namespace gezi {
 			return _calibrator;
 		}
 
+		void SetNumFeatures(int numFeatures)
+		{
+			_numFeatures = numFeatures;
+		}
+
+		int GetNumFeatures()
+		{
+			return _numFeatures;
+		}
+
+		void SetUnSaveNormalizerText()
+		{
+			_saveNormalizerText = false;
+		}
+
+		void SetUnSaveCalibratorText()
+		{
+			_saveCalibratorText = false;
+		}
+
 		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			ar & _featureNames;
+			//ar & _featureNames;
+			ar & BOOST_SERIALIZATION_NVP(_numFeatures);
+			//@TODO 这个加入名字无意义特征数目巨大 是一个时空浪费
+			//由子类决定是否打印输出名字？ 或者特殊处理f0 f1这种不进行输出时候的序列化 输入时候序列化自动恢复成f0,f1的样子
+			ar & BOOST_SERIALIZATION_NVP(_featureNames);
 		}
 
 	protected:
@@ -275,16 +347,55 @@ namespace gezi {
 			return 0;
 		}
 
+	private:
+		void SaveText_NormalizerAndCalibrator(bool saveNormalizer = true, bool saveCalibrator = true)
+		{
+			if (saveNormalizer)
+			{
+				SAVE_SHARED_PTR_ASTEXT(_normalizer);
+			}
+			if (saveCalibrator)
+			{
+				SAVE_SHARED_PTR_ASTEXT(_calibrator);
+			}
+		}
+		void ChangeForSave()
+		{
+			if (_numFeatures > 1000 && _featureNames[0] == "f0" && _featureNames[999] == "f999")
+			{
+				_featureNames.clear();
+			}
+		}
+	protected:
+		void ChangeForLoad()
+		{
+			if (_numFeatures > _featureNames.size())
+			{
+				CreateFakeFeatureNames();
+			}
+		}
 
+		void CreateFakeFeatureNames()
+		{
+			for (int i = 0; i < _numFeatures; i++)
+			{
+				_featureNames.push_back("f" + STR(i));
+			}
+		}
 	protected:
 		bool _normalizeCopy = false;
 		NormalizerPtr _normalizer = nullptr;
 		CalibratorPtr _calibrator = nullptr;
 
 		svec _featureNames;
+		int _numFeatures = 0; //@TODO maybe uint int64 .. 暂时只处理int范围内的特征 文本分类会不会超过。。
 
 		string _path;
 		string _param;
+
+	private:
+		bool _saveNormalizerText = true;
+		bool _saveCalibratorText = true;
 	};
 	typedef shared_ptr<Predictor> PredictorPtr;
 	typedef vector<PredictorPtr> Predictors;

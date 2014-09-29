@@ -167,7 +167,7 @@ namespace gezi {
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			ar & NumLeaves;
+		/*	ar & NumLeaves;
 
 			ar & _gainPValue;
 			ar & _gtChild;
@@ -178,8 +178,21 @@ namespace gezi {
 			ar & _splitFeature;
 			ar & _splitGain;
 			ar & _threshold;
-			ar & _weight;
+			ar & _weight;*/
 			//ar & _featureNames; //不要序列化指针
+
+			ar & BOOST_SERIALIZATION_NVP(NumLeaves);
+
+			ar & BOOST_SERIALIZATION_NVP(_gainPValue); 
+			ar & BOOST_SERIALIZATION_NVP(_gtChild);
+			ar & BOOST_SERIALIZATION_NVP(_leafValue);
+			ar & BOOST_SERIALIZATION_NVP(_lteChild);
+			ar & BOOST_SERIALIZATION_NVP(_maxOutput);
+			ar & BOOST_SERIALIZATION_NVP(_previousLeafValue);
+			ar & BOOST_SERIALIZATION_NVP(_splitFeature);
+			ar & BOOST_SERIALIZATION_NVP(_splitGain);
+			ar & BOOST_SERIALIZATION_NVP(_threshold);
+			ar & BOOST_SERIALIZATION_NVP(_weight);
 		}
 #ifdef _DEBUG
 		DebugNode _debugNode;

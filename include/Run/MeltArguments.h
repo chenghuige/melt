@@ -36,11 +36,12 @@ namespace gezi {
 		string modelFolder = "model"; //m|
 		bool modelfileCode = false; //mc|
 		bool modelfileText = false; //mt|
+		bool modelfileXml = false; //mx|
 		string featureName = ""; //fn|
 		bool stratify = false;
 		bool foldsSequential = false;
 		double trainProportion = 1.0;
-
+		
 		bool forceTest = true; //ft| when -c train will test the train data its self after training
 
 		string modelDir = "";

@@ -165,22 +165,24 @@ namespace gezi {
 			_calibrator = make_shared<SigmoidCalibrator>(paramA, paramB);
 		}
 
-		virtual void Save(string path) override
+		virtual void Save_(string file) override
 		{
-			Predictor::Save(path);
-			string modelFile = path + "/model";
 			if (!_textModelPath.empty())
 			{ //Hack 拷贝模型文本文件 便于跟踪
-				copy_file(_textModelPath, path + "/model.txt");
+				string modelTextFile = file + ".txt";
+				copy_file(_textModelPath, modelTextFile);
 			}
-			serialize_util::save(*this, modelFile);
+			serialize_util::save(*this, file);
 		}
 
-		virtual void Load(string path) override
+		virtual void SaveXml_(string file) override
 		{
-			Predictor::Load(path);
-			string modelFile = path + "/model";
-			serialize_util::load(*this, modelFile);
+			serialize_util::save_xml(*this, file);
+		}
+
+		virtual void Load_(string file) override
+		{
+			serialize_util::load(*this, file);
 			for (auto& tree : _trees)
 			{
 				tree._featureNames = &_featureNames;
@@ -280,8 +282,10 @@ namespace gezi {
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			ar & boost::serialization::base_object<Predictor>(*this);
-			ar & _trees;
+		/*	ar & boost::serialization::base_object<Predictor>(*this);
+			ar & _trees;*/
+			ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Predictor);
+			ar & BOOST_SERIALIZATION_NVP(_trees);
 		}
 
 		vector<OnlineRegressionTree>& Trees()

@@ -1,11 +1,13 @@
 [[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mcomake2_makefile_check[0m']
-#in case of error, update 'Makefile' by 'comake2'
 [[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m.copy-so[0m']
+#in case of error, update 'Makefile' by 'comake2'
 ln -s ../../../../../../ps/se/toolchain/x86_64-unknown-linux-gnu-4.8.1-2.9-2.20-2.6.32/x86_64-unknown-linux-gnu/lib//ld-linux-x86-64.so.2 ld-linux-x86-64.so.2
-[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_predict[0m']
-ln: failed to create symbolic link 'ld-linux-x86-64.so.2'g++ fastrank_predict_fastrank_predict.o \
-  ../src/Prediction/Instances/fastrank_predict_InstanceParser.o \
-  ../src/Run/fastrank_predict_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mcalibrate[0m']
+ln: failed to create symbolic link 'ld-linux-x86-64.so.2': File exists
+[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Prediction/Instances/predict_InstanceParser.o[0m']
+g++ calibrate_calibrate.o \
+  ../src/Prediction/Instances/calibrate_InstanceParser.o \
+  ../src/Run/calibrate_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
@@ -74,8 +76,7 @@ ln: failed to create symbolic link 'ld-linux-x86-64.so.2'g++ fastrank_predict_fa
   ../../../../../../third-64/pcre/lib/libpcre.a \
   ../../../../../../third-64/pcre/lib/libpcrecpp.a \
   ../../../../../../third-64/pcre/lib/libpcreposix.a \
-: File exists  ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
-
+  ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc_debug.a \
@@ -87,8 +88,810 @@ ln: failed to create symbolic link 'ld-linux-x86-64.so.2'g++ fastrank_predict_fa
   -lgomp \
   -rdynamic \
   -Wl,-rpath=../../../../../../ps/se/toolchain/x86_64-unknown-linux-gnu-4.8.1-2.9-2.20-2.6.32/x86_64-unknown-linux-gnu/lib/ \
-  -lgomp -Xlinker "-)" -o fastrank_predict
+  -lgomp -Xlinker "-)" -o calibrate
+[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Run/predict_Melt.o[0m']
+g++ -c -I../ -I../include/ -I../../../../../../app/search/sep/anti-spam/gezi -I../../../../../../app/search/sep/anti-spam/gezi/include -I../../../../../../app/search/sep/anti-spam/gezi/output -I../../../../../../app/search/sep/anti-spam/gezi/output/include -I../../../../../../com/btest/gtest -I../../../../../../com/btest/gtest/include -I../../../../../../com/btest/gtest/output -I../../../../../../com/btest/gtest/output/include -I../../../../../../lib2-64/bsl -I../../../../../../lib2-64/bsl/include -I../../../../../../lib2-64/bsl/output -I../../../../../../lib2-64/bsl/output/include -I../../../../../../lib2-64/ccode -I../../../../../../lib2-64/ccode/include -I../../../../../../lib2-64/ccode/output -I../../../../../../lib2-64/ccode/output/include -I../../../../../../lib2-64/dict -I../../../../../../lib2-64/dict/include -I../../../../../../lib2-64/dict/output -I../../../../../../lib2-64/dict/output/include -I../../../../../../lib2-64/libcrf -I../../../../../../lib2-64/libcrf/include -I../../../../../../lib2-64/libcrf/output -I../../../../../../lib2-64/libcrf/output/include -I../../../../../../lib2-64/others-ex -I../../../../../../lib2-64/others-ex/include -I../../../../../../lib2-64/others-ex/output -I../../../../../../lib2-64/others-ex/output/include -I../../../../../../lib2-64/postag -I../../../../../../lib2-64/postag/include -I../../../../../../lib2-64/postag/output -I../../../../../../lib2-64/postag/output/include -I../../../../../../lib2-64/ullib -I../../../../../../lib2-64/ullib/include -I../../../../../../lib2-64/ullib/output -I../../../../../../lib2-64/ullib/output/include -I../../../../../../lib2-64/wordseg -I../../../../../../lib2-64/wordseg/include -I../../../../../../lib2-64/wordseg/output -I../../../../../../lib2-64/wordseg/output/include -I../../../../../../myspace/sep/chenghuige/melt-train -I../../../../../../myspace/sep/chenghuige/melt-train/include -I../../../../../../myspace/sep/chenghuige/melt-train/output -I../../../../../../myspace/sep/chenghuige/melt-train/output/include -I../../../../../../ps/se/toolchain -I../../../../../../ps/se/toolchain/include -I../../../../../../ps/se/toolchain/output -I../../../../../../ps/se/toolchain/output/include -I../../../../../../public/comlog-plugin -I../../../../../../public/comlog-plugin/include -I../../../../../../public/comlog-plugin/output -I../../../../../../public/comlog-plugin/output/include -I../../../../../../public/configure -I../../../../../../public/configure/include -I../../../../../../public/configure/output -I../../../../../../public/configure/output/include -I../../../../../../public/connectpool -I../../../../../../public/connectpool/include -I../../../../../../public/connectpool/output -I../../../../../../public/connectpool/output/include -I../../../../../../public/odict -I../../../../../../public/odict/include -I../../../../../../public/odict/output -I../../../../../../public/odict/output/include -I../../../../../../public/spreg -I../../../../../../public/spreg/include -I../../../../../../public/spreg/output -I../../../../../../public/spreg/output/include -I../../../../../../public/uconv -I../../../../../../public/uconv/include -I../../../../../../public/uconv/output -I../../../../../../public/uconv/output/include -I../../../../../../quality/autotest/reportlib/cpp -I../../../../../../quality/autotest/reportlib/cpp/include -I../../../../../../quality/autotest/reportlib/cpp/output -I../../../../../../quality/autotest/reportlib/cpp/output/include -I../../../../../../third-64/boost -I../../../../../../third-64/boost/include -I../../../../../../third-64/boost/output -I../../../../../../third-64/boost/output/include -I../../../../../../third-64/gflags -I../../../../../../third-64/gflags/include -I../../../../../../third-64/gflags/output -I../../../../../../third-64/gflags/output/include -I../../../../../../third-64/glog -I../../../../../../third-64/glog/include -I../../../../../../third-64/glog/output -I../../../../../../third-64/glog/output/include -I../../../../../../third-64/gtest -I../../../../../../third-64/gtest/include -I../../../../../../third-64/gtest/output -I../../../../../../third-64/gtest/output/include -I../../../../../../third-64/libcurl -I../../../../../../third-64/libcurl/include -I../../../../../../third-64/libcurl/output -I../../../../../../third-64/libcurl/output/include -I../../../../../../third-64/pcre -I../../../../../../third-64/pcre/include -I../../../../../../third-64/pcre/output -I../../../../../../third-64/pcre/output/include -I../../../../../../third-64/tcmalloc -I../../../../../../third-64/tcmalloc/include -I../../../../../../third-64/tcmalloc/output -I../../../../../../third-64/tcmalloc/output/include -D_GNU_SOURCE -D__STDC_LIMIT_MACROS -DVERSION=\"1.9.8.7\" -g -O5 -pipe -W -Wall -fPIC -DHAVE_NETINET_IN_H -Wno-unused-parameter -Wno-deprecated -std=c++11 -fpermissive -Wno-write-strings -Wno-literal-suffix -Wno-unused-local-typedefs -fopenmp  -o ../src/Prediction/Instances/predict_InstanceParser.o ../src/Prediction/Instances/InstanceParser.cpp
+g++ -c -I../ -I../include/ -I../../../../../../app/search/sep/anti-spam/gezi -I../../../../../../app/search/sep/anti-spam/gezi/include -I../../../../../../app/search/sep/anti-spam/gezi/output -I../../../../../../app/search/sep/anti-spam/gezi/output/include -I../../../../../../com/btest/gtest -I../../../../../../com/btest/gtest/include -I../../../../../../com/btest/gtest/output -I../../../../../../com/btest/gtest/output/include -I../../../../../../lib2-64/bsl -I../../../../../../lib2-64/bsl/include -I../../../../../../lib2-64/bsl/output -I../../../../../../lib2-64/bsl/output/include -I../../../../../../lib2-64/ccode -I../../../../../../lib2-64/ccode/include -I../../../../../../lib2-64/ccode/output -I../../../../../../lib2-64/ccode/output/include -I../../../../../../lib2-64/dict -I../../../../../../lib2-64/dict/include -I../../../../../../lib2-64/dict/output -I../../../../../../lib2-64/dict/output/include -I../../../../../../lib2-64/libcrf -I../../../../../../lib2-64/libcrf/include -I../../../../../../lib2-64/libcrf/output -I../../../../../../lib2-64/libcrf/output/include -I../../../../../../lib2-64/others-ex -I../../../../../../lib2-64/others-ex/include -I../../../../../../lib2-64/others-ex/output -I../../../../../../lib2-64/others-ex/output/include -I../../../../../../lib2-64/postag -I../../../../../../lib2-64/postag/include -I../../../../../../lib2-64/postag/output -I../../../../../../lib2-64/postag/output/include -I../../../../../../lib2-64/ullib -I../../../../../../lib2-64/ullib/include -I../../../../../../lib2-64/ullib/output -I../../../../../../lib2-64/ullib/output/include -I../../../../../../lib2-64/wordseg -I../../../../../../lib2-64/wordseg/include -I../../../../../../lib2-64/wordseg/output -I../../../../../../lib2-64/wordseg/output/include -I../../../../../../myspace/sep/chenghuige/melt-train -I../../../../../../myspace/sep/chenghuige/melt-train/include -I../../../../../../myspace/sep/chenghuige/melt-train/output -I../../../../../../myspace/sep/chenghuige/melt-train/output/include -I../../../../../../ps/se/toolchain -I../../../../../../ps/se/toolchain/include -I../../../../../../ps/se/toolchain/output -I../../../../../../ps/se/toolchain/output/include -I../../../../../../public/comlog-plugin -I../../../../../../public/comlog-plugin/include -I../../../../../../public/comlog-plugin/output -I../../../../../../public/comlog-plugin/output/include -I../../../../../../public/configure -I../../../../../../public/configure/include -I../../../../../../public/configure/output -I../../../../../../public/configure/output/include -I../../../../../../public/connectpool -I../../../../../../public/connectpool/include -I../../../../../../public/connectpool/output -I../../../../../../public/connectpool/output/include -I../../../../../../public/odict -I../../../../../../public/odict/include -I../../../../../../public/odict/output -I../../../../../../public/odict/output/include -I../../../../../../public/spreg -I../../../../../../public/spreg/include -I../../../../../../public/spreg/output -I../../../../../../public/spreg/output/include -I../../../../../../public/uconv -I../../../../../../public/uconv/include -I../../../../../../public/uconv/output -I../../../../../../public/uconv/output/include -I../../../../../../quality/autotest/reportlib/cpp -I../../../../../../quality/autotest/reportlib/cpp/include -I../../../../../../quality/autotest/reportlib/cpp/output -I../../../../../../quality/autotest/reportlib/cpp/output/include -I../../../../../../third-64/boost -I../../../../../../third-64/boost/include -I../../../../../../third-64/boost/output -I../../../../../../third-64/boost/output/include -I../../../../../../third-64/gflags -I../../../../../../third-64/gflags/include -I../../../../../../third-64/gflags/output -I../../../../../../third-64/gflags/output/include -I../../../../../../third-64/glog -I../../../../../../third-64/glog/include -I../../../../../../third-64/glog/output -I../../../../../../third-64/glog/output/include -I../../../../../../third-64/gtest -I../../../../../../third-64/gtest/include -I../../../../../../third-64/gtest/output -I../../../../../../third-64/gtest/output/include -I../../../../../../third-64/libcurl -I../../../../../../third-64/libcurl/include -I../../../../../../third-64/libcurl/output -I../../../../../../third-64/libcurl/output/include -I../../../../../../third-64/pcre -I../../../../../../third-64/pcre/include -I../../../../../../third-64/pcre/output -I../../../../../../third-64/pcre/output/include -I../../../../../../third-64/tcmalloc -I../../../../../../third-64/tcmalloc/include -I../../../../../../third-64/tcmalloc/output -I../../../../../../third-64/tcmalloc/output/include -D_GNU_SOURCE -D__STDC_LIMIT_MACROS -DVERSION=\"1.9.8.7\" -g -O5 -pipe -W -Wall -fPIC -DHAVE_NETINET_IN_H -Wno-unused-parameter -Wno-deprecated -std=c++11 -fpermissive -Wno-write-strings -Wno-literal-suffix -Wno-unused-local-typedefs -fopenmp  -o ../src/Run/predict_Melt.o ../src/Run/Melt.cpp
+[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_text2bin_fastrank_text2bin.o[0m']
 make: *** [.copy-so] Error 1
 make: *** Waiting for unfinished jobs....
+g++ -c -I../ -I../include/ -I../../../../../../app/search/sep/anti-spam/gezi -I../../../../../../app/search/sep/anti-spam/gezi/include -I../../../../../../app/search/sep/anti-spam/gezi/output -I../../../../../../app/search/sep/anti-spam/gezi/output/include -I../../../../../../com/btest/gtest -I../../../../../../com/btest/gtest/include -I../../../../../../com/btest/gtest/output -I../../../../../../com/btest/gtest/output/include -I../../../../../../lib2-64/bsl -I../../../../../../lib2-64/bsl/include -I../../../../../../lib2-64/bsl/output -I../../../../../../lib2-64/bsl/output/include -I../../../../../../lib2-64/ccode -I../../../../../../lib2-64/ccode/include -I../../../../../../lib2-64/ccode/output -I../../../../../../lib2-64/ccode/output/include -I../../../../../../lib2-64/dict -I../../../../../../lib2-64/dict/include -I../../../../../../lib2-64/dict/output -I../../../../../../lib2-64/dict/output/include -I../../../../../../lib2-64/libcrf -I../../../../../../lib2-64/libcrf/include -I../../../../../../lib2-64/libcrf/output -I../../../../../../lib2-64/libcrf/output/include -I../../../../../../lib2-64/others-ex -I../../../../../../lib2-64/others-ex/include -I../../../../../../lib2-64/others-ex/output -I../../../../../../lib2-64/others-ex/output/include -I../../../../../../lib2-64/postag -I../../../../../../lib2-64/postag/include -I../../../../../../lib2-64/postag/output -I../../../../../../lib2-64/postag/output/include -I../../../../../../lib2-64/ullib -I../../../../../../lib2-64/ullib/include -I../../../../../../lib2-64/ullib/output -I../../../../../../lib2-64/ullib/output/include -I../../../../../../lib2-64/wordseg -I../../../../../../lib2-64/wordseg/include -I../../../../../../lib2-64/wordseg/output -I../../../../../../lib2-64/wordseg/output/include -I../../../../../../myspace/sep/chenghuige/melt-train -I../../../../../../myspace/sep/chenghuige/melt-train/include -I../../../../../../myspace/sep/chenghuige/melt-train/output -I../../../../../../myspace/sep/chenghuige/melt-train/output/include -I../../../../../../ps/se/toolchain -I../../../../../../ps/se/toolchain/include -I../../../../../../ps/se/toolchain/output -I../../../../../../ps/se/toolchain/output/include -I../../../../../../public/comlog-plugin -I../../../../../../public/comlog-plugin/include -I../../../../../../public/comlog-plugin/output -I../../../../../../public/comlog-plugin/output/include -I../../../../../../public/configure -I../../../../../../public/configure/include -I../../../../../../public/configure/output -I../../../../../../public/configure/output/include -I../../../../../../public/connectpool -I../../../../../../public/connectpool/include -I../../../../../../public/connectpool/output -I../../../../../../public/connectpool/output/include -I../../../../../../public/odict -I../../../../../../public/odict/include -I../../../../../../public/odict/output -I../../../../../../public/odict/output/include -I../../../../../../public/spreg -I../../../../../../public/spreg/include -I../../../../../../public/spreg/output -I../../../../../../public/spreg/output/include -I../../../../../../public/uconv -I../../../../../../public/uconv/include -I../../../../../../public/uconv/output -I../../../../../../public/uconv/output/include -I../../../../../../quality/autotest/reportlib/cpp -I../../../../../../quality/autotest/reportlib/cpp/include -I../../../../../../quality/autotest/reportlib/cpp/output -I../../../../../../quality/autotest/reportlib/cpp/output/include -I../../../../../../third-64/boost -I../../../../../../third-64/boost/include -I../../../../../../third-64/boost/output -I../../../../../../third-64/boost/output/include -I../../../../../../third-64/gflags -I../../../../../../third-64/gflags/include -I../../../../../../third-64/gflags/output -I../../../../../../third-64/gflags/output/include -I../../../../../../third-64/glog -I../../../../../../third-64/glog/include -I../../../../../../third-64/glog/output -I../../../../../../third-64/glog/output/include -I../../../../../../third-64/gtest -I../../../../../../third-64/gtest/include -I../../../../../../third-64/gtest/output -I../../../../../../third-64/gtest/output/include -I../../../../../../third-64/libcurl -I../../../../../../third-64/libcurl/include -I../../../../../../third-64/libcurl/output -I../../../../../../third-64/libcurl/output/include -I../../../../../../third-64/pcre -I../../../../../../third-64/pcre/include -I../../../../../../third-64/pcre/output -I../../../../../../third-64/pcre/output/include -I../../../../../../third-64/tcmalloc -I../../../../../../third-64/tcmalloc/include -I../../../../../../third-64/tcmalloc/output -I../../../../../../third-64/tcmalloc/output/include -D_GNU_SOURCE -D__STDC_LIMIT_MACROS -DVERSION=\"1.9.8.7\" -g -O5 -pipe -W -Wall -fPIC -DHAVE_NETINET_IN_H -Wno-unused-parameter -Wno-deprecated -std=c++11 -fpermissive -Wno-write-strings -Wno-literal-suffix -Wno-unused-local-typedefs -fopenmp  -o fastrank_text2bin_fastrank_text2bin.o fastrank_text2bin.cc
 mkdir -p ./output/bin
-cp -f --link fastrank_predict ./output/bin
+cp -f --link calibrate ./output/bin
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:33:0,
+                 from ../src/Run/Melt.cpp:2:
+../../../../../../app/search/sep/anti-spam/gezi/include/log_util.h:59:1: warning: multi-line comment [-Wcomment]
+ //#define LOG_NOTICE(log_id, fmt, arg...) do { \
+ ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/conf_util.h:26:0,
+                 from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:34,
+                 from ../src/Run/Melt.cpp:2:
+../../../../../../app/search/sep/anti-spam/gezi/include/Exception.h:42:23: warning: backslash and newline separated by space [enabled by default]
+ #define  THROW(msg) do\ 
+ ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:33:0,
+                 from fastrank_text2bin.cc:17:
+../../../../../../app/search/sep/anti-spam/gezi/include/log_util.h:59:1: warning: multi-line comment [-Wcomment]
+ //#define LOG_NOTICE(log_id, fmt, arg...) do { \
+ ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:33:0,
+                 from ../include/Prediction/Instances/InstanceParser.h:28,
+                 from ../src/Prediction/Instances/InstanceParser.cpp:14:
+../../../../../../app/search/sep/anti-spam/gezi/include/log_util.h:59:1: warning: multi-line comment [-Wcomment]
+ //#define LOG_NOTICE(log_id, fmt, arg...) do { \
+ ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/conf_util.h:26:0,
+                 from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:34,
+                 from fastrank_text2bin.cc:17:
+../../../../../../app/search/sep/anti-spam/gezi/include/Exception.h:42:23: warning: backslash and newline separated by space [enabled by default]
+ #define  THROW(msg) do\ 
+ ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/conf_util.h:26:0,
+                 from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:34,
+                 from ../include/Prediction/Instances/InstanceParser.h:28,
+                 from ../src/Prediction/Instances/InstanceParser.cpp:14:
+../../../../../../app/search/sep/anti-spam/gezi/include/Exception.h:42:23: warning: backslash and newline separated by space [enabled by default]
+ #define  THROW(msg) do\ 
+ ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:26:0,
+                 from ../src/Run/Melt.cpp:2:
+../../../../../../app/search/sep/anti-spam/gezi/include/common_def.h: In member function 'bool KeyValuePair<Key, Value>::operator<(const KeyValuePair<Key, Value>&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/common_def.h:154:2: warning: no return statement in function returning non-void [-Wreturn-type]
+  }
+  ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:26:0,
+                 from ../include/Prediction/Instances/InstanceParser.h:28,
+                 from ../src/Prediction/Instances/InstanceParser.cpp:14:
+../../../../../../app/search/sep/anti-spam/gezi/include/common_def.h: In member function 'bool KeyValuePair<Key, Value>::operator<(const KeyValuePair<Key, Value>&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/common_def.h:154:2: warning: no return statement in function returning non-void [-Wreturn-type]
+  }
+  ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:26:0,
+                 from fastrank_text2bin.cc:17:
+../../../../../../app/search/sep/anti-spam/gezi/include/common_def.h: In member function 'bool KeyValuePair<Key, Value>::operator<(const KeyValuePair<Key, Value>&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/common_def.h:154:2: warning: no return statement in function returning non-void [-Wreturn-type]
+  }
+  ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:32:0,
+                 from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:30,
+                 from ../src/Run/Melt.cpp:2:
+../../../../../../app/search/sep/anti-spam/gezi/include/stl_util.h: In function 'bool gezi::split(std::string, std::string, std::string&, std::string&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/stl_util.h:194:24: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   if (index == string::npos)
+                        ^
+../../../../../../app/search/sep/anti-spam/gezi/include/stl_util.h: In function 'bool gezi::split(std::string, char, std::string&, std::string&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/stl_util.h:207:24: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   if (index == string::npos)
+                        ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:30:0,
+                 from ../src/Run/Melt.cpp:2:
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h: In function 'std::string gezi::extract_suspect_symb(std::string)':
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:153:11: warning: variable 'logtmp' set but not used [-Wunused-but-set-variable]
+      char logtmp[3];
+           ^
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h: In function 'std::string gezi::max(std::string, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:581:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   return input.length() <= length ? input : input.substr(0, length);
+                            ^
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h: In function 'std::string gezi::first(std::string, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:586:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   return input.length() <= length ? input : input.substr(0, length);
+                            ^
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h: In function 'std::string gezi::last(std::string, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:591:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   return input.length() <= length ? input : input.substr(input.length() - length, length);
+                            ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:32:0,
+                 from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:30,
+                 from ../include/Prediction/Instances/InstanceParser.h:28,
+                 from ../src/Prediction/Instances/InstanceParser.cpp:14:
+../../../../../../app/search/sep/anti-spam/gezi/include/stl_util.h: In function 'bool gezi::split(std::string, std::string, std::string&, std::string&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/stl_util.h:194:24: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   if (index == string::npos)
+                        ^
+../../../../../../app/search/sep/anti-spam/gezi/include/stl_util.h: In function 'bool gezi::split(std::string, char, std::string&, std::string&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/stl_util.h:207:24: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   if (index == string::npos)
+                        ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:30:0,
+                 from ../include/Prediction/Instances/InstanceParser.h:28,
+                 from ../src/Prediction/Instances/InstanceParser.cpp:14:
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h: In function 'std::string gezi::extract_suspect_symb(std::string)':
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:153:11: warning: variable 'logtmp' set but not used [-Wunused-but-set-variable]
+      char logtmp[3];
+           ^
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h: In function 'std::string gezi::max(std::string, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:581:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   return input.length() <= length ? input : input.substr(0, length);
+                            ^
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h: In function 'std::string gezi::first(std::string, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:586:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   return input.length() <= length ? input : input.substr(0, length);
+                            ^
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h: In function 'std::string gezi::last(std::string, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:591:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   return input.length() <= length ? input : input.substr(input.length() - length, length);
+                            ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:32:0,
+                 from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:30,
+                 from fastrank_text2bin.cc:17:
+../../../../../../app/search/sep/anti-spam/gezi/include/stl_util.h: In function 'bool gezi::split(std::string, std::string, std::string&, std::string&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/stl_util.h:194:24: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   if (index == string::npos)
+                        ^
+../../../../../../app/search/sep/anti-spam/gezi/include/stl_util.h: In function 'bool gezi::split(std::string, char, std::string&, std::string&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/stl_util.h:207:24: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   if (index == string::npos)
+                        ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:30:0,
+                 from fastrank_text2bin.cc:17:
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h: In function 'std::string gezi::extract_suspect_symb(std::string)':
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:153:11: warning: variable 'logtmp' set but not used [-Wunused-but-set-variable]
+      char logtmp[3];
+           ^
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h: In function 'std::string gezi::max(std::string, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:581:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   return input.length() <= length ? input : input.substr(0, length);
+                            ^
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h: In function 'std::string gezi::first(std::string, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:586:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   return input.length() <= length ? input : input.substr(0, length);
+                            ^
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h: In function 'std::string gezi::last(std::string, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/string_util.h:591:28: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   return input.length() <= length ? input : input.substr(input.length() - length, length);
+                            ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/statistic_util.h:31:0,
+                 from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:42,
+                 from ../src/Run/Melt.cpp:2:
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h: In function 'Fvec gezi::find_bins_(Fvec&, int, std::vector<std::pair<double, double> >&, std::vector<std::pair<int, double> >&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h:147:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   size_t allocSize = sampleSize < maxBins ? sampleSize : maxBins;
+                                   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h: In function 'Fvec gezi::find_bins_(Fvec&, int, int, std::vector<std::pair<double, double> >&, std::vector<std::pair<int, double> >&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h:170:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   size_t allocSize = sampleSize < maxBins ? sampleSize : maxBins;
+                                   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h: In function 'void gezi::find_bins_(Fvec&, int, std::vector<std::pair<double, double> >&, std::vector<std::pair<int, double> >&, Fvec&, Fvec&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h:247:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   size_t allocSize = sampleSize < maxBins ? sampleSize : maxBins;
+                                   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h: In function 'void gezi::find_bins_(Fvec&, int, int, std::vector<std::pair<double, double> >&, std::vector<std::pair<int, double> >&, Fvec&, Fvec&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h:271:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   size_t allocSize = sampleSize < maxBins ? sampleSize : maxBins;
+                                   ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/statistic_util.h:31:0,
+                 from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:42,
+                 from ../include/Prediction/Instances/InstanceParser.h:28,
+                 from ../src/Prediction/Instances/InstanceParser.cpp:14:
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h: In function 'Fvec gezi::find_bins_(Fvec&, int, std::vector<std::pair<double, double> >&, std::vector<std::pair<int, double> >&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h:147:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   size_t allocSize = sampleSize < maxBins ? sampleSize : maxBins;
+                                   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h: In function 'Fvec gezi::find_bins_(Fvec&, int, int, std::vector<std::pair<double, double> >&, std::vector<std::pair<int, double> >&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h:170:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   size_t allocSize = sampleSize < maxBins ? sampleSize : maxBins;
+                                   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h: In function 'void gezi::find_bins_(Fvec&, int, std::vector<std::pair<double, double> >&, std::vector<std::pair<int, double> >&, Fvec&, Fvec&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h:247:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   size_t allocSize = sampleSize < maxBins ? sampleSize : maxBins;
+                                   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h: In function 'void gezi::find_bins_(Fvec&, int, int, std::vector<std::pair<double, double> >&, std::vector<std::pair<int, double> >&, Fvec&, Fvec&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h:271:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   size_t allocSize = sampleSize < maxBins ? sampleSize : maxBins;
+                                   ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/statistic_util.h:31:0,
+                 from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:42,
+                 from fastrank_text2bin.cc:17:
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h: In function 'Fvec gezi::find_bins_(Fvec&, int, std::vector<std::pair<double, double> >&, std::vector<std::pair<int, double> >&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h:147:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   size_t allocSize = sampleSize < maxBins ? sampleSize : maxBins;
+                                   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h: In function 'Fvec gezi::find_bins_(Fvec&, int, int, std::vector<std::pair<double, double> >&, std::vector<std::pair<int, double> >&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h:170:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   size_t allocSize = sampleSize < maxBins ? sampleSize : maxBins;
+                                   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h: In function 'void gezi::find_bins_(Fvec&, int, std::vector<std::pair<double, double> >&, std::vector<std::pair<int, double> >&, Fvec&, Fvec&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h:247:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   size_t allocSize = sampleSize < maxBins ? sampleSize : maxBins;
+                                   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h: In function 'void gezi::find_bins_(Fvec&, int, int, std::vector<std::pair<double, double> >&, std::vector<std::pair<int, double> >&, Fvec&, Fvec&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/find_bins.h:271:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   size_t allocSize = sampleSize < maxBins ? sampleSize : maxBins;
+                                   ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:55:0,
+                 from ../src/Run/Melt.cpp:2:
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h: In constructor 'gezi::ProgressBar::ProgressBar(size_t)':
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:104:10: warning: 'gezi::ProgressBar::_total' will be initialized after [-Wreorder]
+   size_t _total;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:103:10: warning:   'size_t gezi::ProgressBar::Size' [-Wreorder]
+   size_t Size;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:41:3: warning:   when initialized here [-Wreorder]
+   ProgressBar(size_t total) :
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h: In constructor 'gezi::ProgressBar::ProgressBar(std::string, size_t)':
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:104:10: warning: 'gezi::ProgressBar::_total' will be initialized after [-Wreorder]
+   size_t _total;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:103:10: warning:   'size_t gezi::ProgressBar::Size' [-Wreorder]
+   size_t Size;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:46:3: warning:   when initialized here [-Wreorder]
+   ProgressBar(string log_word, size_t total) :
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h: In constructor 'gezi::ProgressBar::ProgressBar(size_t, std::string)':
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:104:10: warning: 'gezi::ProgressBar::_total' will be initialized after [-Wreorder]
+   size_t _total;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:100:27: warning:   'std::string gezi::ProgressBar::_log_word' [-Wreorder]
+   std::string _log_word = "Finished";
+                           ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:51:3: warning:   when initialized here [-Wreorder]
+   ProgressBar(size_t total, string log_word) :
+   ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:70:0,
+                 from ../src/Run/Melt.cpp:2:
+../../../../../../app/search/sep/anti-spam/gezi/include/Identifer.h: At global scope:
+../../../../../../app/search/sep/anti-spam/gezi/include/Identifer.h:30:31: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
+   static const IdType null_id()
+                               ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Identifer.h: In member function 'const IdType& gezi::Identifer::operator()(std::string) const':
+../../../../../../app/search/sep/anti-spam/gezi/include/Identifer.h:185:20: warning: returning reference to temporary [-Wreturn-local-addr]
+     return null_id();
+                    ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:55:0,
+                 from ../include/Prediction/Instances/InstanceParser.h:28,
+                 from ../src/Prediction/Instances/InstanceParser.cpp:14:
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h: In constructor 'gezi::ProgressBar::ProgressBar(size_t)':
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:104:10: warning: 'gezi::ProgressBar::_total' will be initialized after [-Wreorder]
+   size_t _total;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:103:10: warning:   'size_t gezi::ProgressBar::Size' [-Wreorder]
+   size_t Size;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:41:3: warning:   when initialized here [-Wreorder]
+   ProgressBar(size_t total) :
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h: In constructor 'gezi::ProgressBar::ProgressBar(std::string, size_t)':
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:104:10: warning: 'gezi::ProgressBar::_total' will be initialized after [-Wreorder]
+   size_t _total;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:103:10: warning:   'size_t gezi::ProgressBar::Size' [-Wreorder]
+   size_t Size;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:46:3: warning:   when initialized here [-Wreorder]
+   ProgressBar(string log_word, size_t total) :
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h: In constructor 'gezi::ProgressBar::ProgressBar(size_t, std::string)':
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:104:10: warning: 'gezi::ProgressBar::_total' will be initialized after [-Wreorder]
+   size_t _total;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:100:27: warning:   'std::string gezi::ProgressBar::_log_word' [-Wreorder]
+   std::string _log_word = "Finished";
+                           ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:51:3: warning:   when initialized here [-Wreorder]
+   ProgressBar(size_t total, string log_word) :
+   ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:55:0,
+                 from fastrank_text2bin.cc:17:
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h: In constructor 'gezi::ProgressBar::ProgressBar(size_t)':
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:104:10: warning: 'gezi::ProgressBar::_total' will be initialized after [-Wreorder]
+   size_t _total;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:103:10: warning:   'size_t gezi::ProgressBar::Size' [-Wreorder]
+   size_t Size;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:41:3: warning:   when initialized here [-Wreorder]
+   ProgressBar(size_t total) :
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h: In constructor 'gezi::ProgressBar::ProgressBar(std::string, size_t)':
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:104:10: warning: 'gezi::ProgressBar::_total' will be initialized after [-Wreorder]
+   size_t _total;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:103:10: warning:   'size_t gezi::ProgressBar::Size' [-Wreorder]
+   size_t Size;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:46:3: warning:   when initialized here [-Wreorder]
+   ProgressBar(string log_word, size_t total) :
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h: In constructor 'gezi::ProgressBar::ProgressBar(size_t, std::string)':
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:104:10: warning: 'gezi::ProgressBar::_total' will be initialized after [-Wreorder]
+   size_t _total;
+          ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:100:27: warning:   'std::string gezi::ProgressBar::_log_word' [-Wreorder]
+   std::string _log_word = "Finished";
+                           ^
+../../../../../../app/search/sep/anti-spam/gezi/include/ProgressBar.h:51:3: warning:   when initialized here [-Wreorder]
+   ProgressBar(size_t total, string log_word) :
+   ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:70:0,
+                 from ../include/Prediction/Instances/InstanceParser.h:28,
+                 from ../src/Prediction/Instances/InstanceParser.cpp:14:
+../../../../../../app/search/sep/anti-spam/gezi/include/Identifer.h: At global scope:
+../../../../../../app/search/sep/anti-spam/gezi/include/Identifer.h:30:31: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
+   static const IdType null_id()
+                               ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Identifer.h: In member function 'const IdType& gezi::Identifer::operator()(std::string) const':
+../../../../../../app/search/sep/anti-spam/gezi/include/Identifer.h:185:20: warning: returning reference to temporary [-Wreturn-local-addr]
+     return null_id();
+                    ^
+In file included from ../include/Prediction/Instances/Instance.h:18:0,
+                 from ../include/Prediction/Instances/Instances.h:18,
+                 from ../include/Prediction/Instances/InstanceParser.h:31,
+                 from ../include/Run/Melt.h:34,
+                 from ../src/Run/Melt.cpp:3:
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h: In member function 'void gezi::Vector::Sparsify(Float)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h:233:50: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    if (nonZeroNum < (uint64)(length * maxSparsity))
+                                                  ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h: In member function 'void gezi::Vector::Densify(Float)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h:247:76: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    if (length > 0 && (keepDense || Count() >= (uint64)(length * maxSparsity)))
+                                                                            ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h: In member function 'gezi::Vector& gezi::Vector::operator()(int, Float)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h:304:3: warning: no return statement in function returning non-void [-Wreturn-type]
+   }
+   ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:70:0,
+                 from fastrank_text2bin.cc:17:
+../../../../../../app/search/sep/anti-spam/gezi/include/Identifer.h: At global scope:
+../../../../../../app/search/sep/anti-spam/gezi/include/Identifer.h:30:31: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
+   static const IdType null_id()
+                               ^
+In file included from ../include/Prediction/Instances/Instance.h:18:0,
+                 from ../include/Prediction/Instances/Instances.h:18,
+                 from ../include/Prediction/Instances/InstanceParser.h:31,
+                 from ../include/Run/Melt.h:34,
+                 from ../src/Run/Melt.cpp:3:
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h: In member function 'void gezi::Vector::Add(gezi::Vector)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h:744:40: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for (int i = 0; i < a.indices.size(); i++)
+                                        ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Identifer.h: In member function 'const IdType& gezi::Identifer::operator()(std::string) const':
+../../../../../../app/search/sep/anti-spam/gezi/include/Identifer.h:185:20: warning: returning reference to temporary [-Wreturn-local-addr]
+     return null_id();
+                    ^
+In file included from ../include/Prediction/Instances/Instances.h:19:0,
+                 from ../include/Prediction/Instances/InstanceParser.h:31,
+                 from ../include/Run/Melt.h:34,
+                 from ../src/Run/Melt.cpp:3:
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomInt::RandomInt(int, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:82:41: warning: 'gezi::RandomInt::_d' will be initialized after [-Wreorder]
+   std::uniform_int_distribution<size_t> _d;
+                                         ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:81:16: warning:   'gezi::RandomEngine gezi::RandomInt::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:64:3: warning:   when initialized here [-Wreorder]
+   RandomInt(int max, int min = 0)
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomInt::RandomInt(int, const RandomEngine&, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:82:41: warning: 'gezi::RandomInt::_d' will be initialized after [-Wreorder]
+   std::uniform_int_distribution<size_t> _d;
+                                         ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:81:16: warning:   'gezi::RandomEngine gezi::RandomInt::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:70:3: warning:   when initialized here [-Wreorder]
+   RandomInt(int max, const RandomEngine& rng, int min = 0)
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomDouble::RandomDouble(double, double)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:107:36: warning: 'gezi::RandomDouble::_d' will be initialized after [-Wreorder]
+   std::uniform_real_distribution<> _d;
+                                    ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:106:16: warning:   'gezi::RandomEngine gezi::RandomDouble::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:89:3: warning:   when initialized here [-Wreorder]
+   RandomDouble(double lower = 0.0, double upper = 1.0)
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomDouble::RandomDouble(const RandomEngine&, double, double)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:107:36: warning: 'gezi::RandomDouble::_d' will be initialized after [-Wreorder]
+   std::uniform_real_distribution<> _d;
+                                    ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:106:16: warning:   'gezi::RandomEngine gezi::RandomDouble::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:95:3: warning:   when initialized here [-Wreorder]
+   RandomDouble(const RandomEngine& rng, double lower = 0.0, double upper = 1.0)
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomRange::RandomRange(int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:212:7: warning: 'gezi::RandomRange::_end' will be initialized after [-Wreorder]
+   int _end;
+       ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:210:16: warning:   'gezi::RandomEngine gezi::RandomRange::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:181:3: warning:   when initialized here [-Wreorder]
+   RandomRange(int max)
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomRange::RandomRange(int, const RandomEngine&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:212:7: warning: 'gezi::RandomRange::_end' will be initialized after [-Wreorder]
+   int _end;
+       ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:210:16: warning:   'gezi::RandomEngine gezi::RandomRange::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:187:3: warning:   when initialized here [-Wreorder]
+   RandomRange(int max, const RandomEngine& rng)
+   ^
+In file included from ../include/Prediction/Instances/Instance.h:18:0,
+                 from ../include/Prediction/Instances/Instances.h:18,
+                 from ../include/Prediction/Normalization/Normalizer.h:21,
+                 from ../include/Prediction/Normalization/NormalizerFactory.h:17,
+                 from ../include/MLCore/Predictor.h:20,
+                 from ../include/Predictors/LinearPredictor.h:17,
+                 from ../include/MLCore/PredictorFactory.h:17,
+                 from fastrank_text2bin.cc:18:
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h: In member function 'void gezi::Vector::Sparsify(Float)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h:233:50: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    if (nonZeroNum < (uint64)(length * maxSparsity))
+                                                  ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h: In member function 'void gezi::Vector::Densify(Float)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h:247:76: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    if (length > 0 && (keepDense || Count() >= (uint64)(length * maxSparsity)))
+                                                                            ^
+In file included from ../include/Prediction/Instances/Instance.h:18:0,
+                 from ../include/Prediction/Instances/Instances.h:18,
+                 from ../include/Prediction/Instances/InstanceParser.h:31,
+                 from ../src/Prediction/Instances/InstanceParser.cpp:14:
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h: In member function 'void gezi::Vector::Sparsify(Float)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h:233:50: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    if (nonZeroNum < (uint64)(length * maxSparsity))
+                                                  ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h: In member function 'void gezi::Vector::Densify(Float)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h:247:76: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    if (length > 0 && (keepDense || Count() >= (uint64)(length * maxSparsity)))
+                                                                            ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h: In member function 'gezi::Vector& gezi::Vector::operator()(int, Float)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h:304:3: warning: no return statement in function returning non-void [-Wreturn-type]
+   }
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h: In member function 'gezi::Vector& gezi::Vector::operator()(int, Float)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h:304:3: warning: no return statement in function returning non-void [-Wreturn-type]
+   }
+   ^
+In file included from ../include/Prediction/Instances/Instance.h:18:0,
+                 from ../include/Prediction/Instances/Instances.h:18,
+                 from ../include/Prediction/Normalization/Normalizer.h:21,
+                 from ../include/Prediction/Normalization/NormalizerFactory.h:17,
+                 from ../include/MLCore/Predictor.h:20,
+                 from ../include/Predictors/LinearPredictor.h:17,
+                 from ../include/MLCore/PredictorFactory.h:17,
+                 from fastrank_text2bin.cc:18:
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h: In member function 'void gezi::Vector::Add(gezi::Vector)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h:744:40: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for (int i = 0; i < a.indices.size(); i++)
+                                        ^
+In file included from ../include/Prediction/Instances/Instance.h:18:0,
+                 from ../include/Prediction/Instances/Instances.h:18,
+                 from ../include/Prediction/Instances/InstanceParser.h:31,
+                 from ../src/Prediction/Instances/InstanceParser.cpp:14:
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h: In member function 'void gezi::Vector::Add(gezi::Vector)':
+../../../../../../app/search/sep/anti-spam/gezi/include/Numeric/Vector/Vector.h:744:40: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for (int i = 0; i < a.indices.size(); i++)
+                                        ^
+In file included from ../include/Prediction/Instances/Instances.h:19:0,
+                 from ../include/Prediction/Normalization/Normalizer.h:21,
+                 from ../include/Prediction/Normalization/NormalizerFactory.h:17,
+                 from ../include/MLCore/Predictor.h:20,
+                 from ../include/Predictors/LinearPredictor.h:17,
+                 from ../include/MLCore/PredictorFactory.h:17,
+                 from fastrank_text2bin.cc:18:
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomInt::RandomInt(int, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:82:41: warning: 'gezi::RandomInt::_d' will be initialized after [-Wreorder]
+   std::uniform_int_distribution<size_t> _d;
+                                         ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:81:16: warning:   'gezi::RandomEngine gezi::RandomInt::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:64:3: warning:   when initialized here [-Wreorder]
+   RandomInt(int max, int min = 0)
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomInt::RandomInt(int, const RandomEngine&, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:82:41: warning: 'gezi::RandomInt::_d' will be initialized after [-Wreorder]
+   std::uniform_int_distribution<size_t> _d;
+                                         ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:81:16: warning:   'gezi::RandomEngine gezi::RandomInt::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:70:3: warning:   when initialized here [-Wreorder]
+   RandomInt(int max, const RandomEngine& rng, int min = 0)
+   ^
+In file included from ../include/Prediction/Instances/Instances.h:19:0,
+                 from ../include/Prediction/Instances/InstanceParser.h:31,
+                 from ../src/Prediction/Instances/InstanceParser.cpp:14:
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomInt::RandomInt(int, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:82:41: warning: 'gezi::RandomInt::_d' will be initialized after [-Wreorder]
+   std::uniform_int_distribution<size_t> _d;
+                                         ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:81:16: warning:   'gezi::RandomEngine gezi::RandomInt::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:64:3: warning:   when initialized here [-Wreorder]
+   RandomInt(int max, int min = 0)
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomInt::RandomInt(int, const RandomEngine&, int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:82:41: warning: 'gezi::RandomInt::_d' will be initialized after [-Wreorder]
+   std::uniform_int_distribution<size_t> _d;
+                                         ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:81:16: warning:   'gezi::RandomEngine gezi::RandomInt::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:70:3: warning:   when initialized here [-Wreorder]
+   RandomInt(int max, const RandomEngine& rng, int min = 0)
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomDouble::RandomDouble(double, double)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:107:36: warning: 'gezi::RandomDouble::_d' will be initialized after [-Wreorder]
+   std::uniform_real_distribution<> _d;
+                                    ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:106:16: warning:   'gezi::RandomEngine gezi::RandomDouble::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:89:3: warning:   when initialized here [-Wreorder]
+   RandomDouble(double lower = 0.0, double upper = 1.0)
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomDouble::RandomDouble(const RandomEngine&, double, double)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:107:36: warning: 'gezi::RandomDouble::_d' will be initialized after [-Wreorder]
+   std::uniform_real_distribution<> _d;
+                                    ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:106:16: warning:   'gezi::RandomEngine gezi::RandomDouble::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:95:3: warning:   when initialized here [-Wreorder]
+   RandomDouble(const RandomEngine& rng, double lower = 0.0, double upper = 1.0)
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomDouble::RandomDouble(double, double)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:107:36: warning: 'gezi::RandomDouble::_d' will be initialized after [-Wreorder]
+   std::uniform_real_distribution<> _d;
+                                    ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:106:16: warning:   'gezi::RandomEngine gezi::RandomDouble::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:89:3: warning:   when initialized here [-Wreorder]
+   RandomDouble(double lower = 0.0, double upper = 1.0)
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomDouble::RandomDouble(const RandomEngine&, double, double)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:107:36: warning: 'gezi::RandomDouble::_d' will be initialized after [-Wreorder]
+   std::uniform_real_distribution<> _d;
+                                    ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:106:16: warning:   'gezi::RandomEngine gezi::RandomDouble::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:95:3: warning:   when initialized here [-Wreorder]
+   RandomDouble(const RandomEngine& rng, double lower = 0.0, double upper = 1.0)
+   ^
+In file included from ../include/Run/Melt.h:34:0,
+                 from ../src/Run/Melt.cpp:3:
+../include/Prediction/Instances/InstanceParser.h: In member function 'void gezi::InstanceParser::CreateInstancesFromDenseFormat(svec&, uint64)':
+../include/Prediction/Instances/InstanceParser.h:398:21: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     if (l.size() != _columnNum)
+                     ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomRange::RandomRange(int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:212:7: warning: 'gezi::RandomRange::_end' will be initialized after [-Wreorder]
+   int _end;
+       ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:210:16: warning:   'gezi::RandomEngine gezi::RandomRange::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:181:3: warning:   when initialized here [-Wreorder]
+   RandomRange(int max)
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomRange::RandomRange(int, const RandomEngine&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:212:7: warning: 'gezi::RandomRange::_end' will be initialized after [-Wreorder]
+   int _end;
+       ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:210:16: warning:   'gezi::RandomEngine gezi::RandomRange::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:187:3: warning:   when initialized here [-Wreorder]
+   RandomRange(int max, const RandomEngine& rng)
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomRange::RandomRange(int)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:212:7: warning: 'gezi::RandomRange::_end' will be initialized after [-Wreorder]
+   int _end;
+       ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:210:16: warning:   'gezi::RandomEngine gezi::RandomRange::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:181:3: warning:   when initialized here [-Wreorder]
+   RandomRange(int max)
+   ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h: In constructor 'gezi::RandomRange::RandomRange(int, const RandomEngine&)':
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:212:7: warning: 'gezi::RandomRange::_end' will be initialized after [-Wreorder]
+   int _end;
+       ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:210:16: warning:   'gezi::RandomEngine gezi::RandomRange::_rng' [-Wreorder]
+   RandomEngine _rng;
+                ^
+../../../../../../app/search/sep/anti-spam/gezi/include/random_util.h:187:3: warning:   when initialized here [-Wreorder]
+   RandomRange(int max, const RandomEngine& rng)
+   ^
+../include/Prediction/Instances/InstanceParser.h: In member function 'gezi::Instances&& gezi::InstanceParser::ParseTextForTrain(svec&, uint64)':
+../include/Prediction/Instances/InstanceParser.h:835:3: warning: no return statement in function returning non-void [-Wreturn-type]
+   }
+   ^
+In file included from ../include/Run/Melt.h:35:0,
+                 from ../src/Run/Melt.cpp:3:
+../include/Run/CVFoldCreator.h: In static member function 'static ivec gezi::CVFoldCreator::CreateFoldIndicesSequential(gezi::ListInstances, int, const RandomEngine&)':
+../include/Run/CVFoldCreator.h:121:33: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     if (instanceIdx < data.size() && rand.Next() < (1.0 * (data.size() % numFolds) - moduloInstancesAssigned) / (numFolds - foldIdx))
+                                 ^
+../include/Run/CVFoldCreator.h:128:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    while (instanceIdx < data.size())
+                                   ^
+In file included from ../src/Prediction/Instances/InstanceParser.cpp:14:0:
+../include/Prediction/Instances/InstanceParser.h: In member function 'void gezi::InstanceParser::CreateInstancesFromDenseFormat(svec&, uint64)':
+../include/Prediction/Instances/InstanceParser.h:398:21: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     if (l.size() != _columnNum)
+                     ^
+../include/Run/CVFoldCreator.h: In static member function 'static void gezi::CVFoldCreator::CreateFolds(const gezi::Instances&, Float, ivec&, int, int, gezi::Instances&, gezi::Instances&, const RandomEngine&)':
+../include/Run/CVFoldCreator.h:160:34: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    for (int i = 0; i < data.Size(); i++)
+                                  ^
+In file included from ../include/Prediction/Normalization/NormalizerFactory.h:18:0,
+                 from ../include/MLCore/Predictor.h:20,
+                 from ../include/Predictors/LinearPredictor.h:17,
+                 from ../include/MLCore/PredictorFactory.h:17,
+                 from fastrank_text2bin.cc:18:
+../include/Prediction/Normalization/MinMaxNormalizer.h: In member function 'virtual void gezi::MinMaxNormalizer::Finish()':
+../include/Prediction/Normalization/MinMaxNormalizer.h:78:27: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    for (size_t i = 0; i < _numFeatures; i++)
+                           ^
+In file included from ../include/Prediction/Normalization/NormalizerFactory.h:20:0,
+                 from ../include/MLCore/Predictor.h:20,
+                 from ../include/Predictors/LinearPredictor.h:17,
+                 from ../include/MLCore/PredictorFactory.h:17,
+                 from fastrank_text2bin.cc:18:
+../include/Prediction/Normalization/BinNormalizer.h: In member function 'virtual void gezi::BinNormalizer::Finish()':
+../include/Prediction/Normalization/BinNormalizer.h:84:11: warning: unused variable 'totalSize' [-Wunused-variable]
+    uint64 totalSize = _numFeatures * _numProcessedInstances;
+           ^
+../include/Prediction/Instances/InstanceParser.h: In member function 'gezi::Instances&& gezi::InstanceParser::ParseTextForTrain(svec&, uint64)':
+../include/Prediction/Instances/InstanceParser.h:835:3: warning: no return statement in function returning non-void [-Wreturn-type]
+   }
+   ^
+In file included from ../include/Run/Melt.h:36:0,
+                 from ../src/Run/Melt.cpp:3:
+../include/Prediction/Normalization/MinMaxNormalizer.h: In member function 'virtual void gezi::MinMaxNormalizer::Finish()':
+../include/Prediction/Normalization/MinMaxNormalizer.h:78:27: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    for (size_t i = 0; i < _numFeatures; i++)
+                           ^
+In file included from ../include/Prediction/Normalization/NormalizerFactory.h:20:0,
+                 from ../include/Run/Melt.h:37,
+                 from ../src/Run/Melt.cpp:3:
+../include/Prediction/Normalization/BinNormalizer.h: In member function 'virtual void gezi::BinNormalizer::Finish()':
+../include/Prediction/Normalization/BinNormalizer.h:84:11: warning: unused variable 'totalSize' [-Wunused-variable]
+    uint64 totalSize = _numFeatures * _numProcessedInstances;
+           ^
+In file included from ../include/Prediction/Calibrate/CalibratorFactory.h:17:0,
+                 from ../include/MLCore/Predictor.h:21,
+                 from ../include/Predictors/LinearPredictor.h:17,
+                 from ../include/MLCore/PredictorFactory.h:17,
+                 from fastrank_text2bin.cc:18:
+../include/Prediction/Calibrate/Calibrator.h: In member function 'void gezi::CalibratorStore::Add(Float, bool, Float)':
+../include/Prediction/Calibrate/Calibrator.h:95:39: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+       else if (draw == nodes.size() - 1)
+                                       ^
+In file included from ../include/Prediction/Calibrate/CalibratorFactory.h:18:0,
+                 from ../include/MLCore/Predictor.h:21,
+                 from ../include/Predictors/LinearPredictor.h:17,
+                 from ../include/MLCore/PredictorFactory.h:17,
+                 from fastrank_text2bin.cc:18:
+../include/Prediction/Calibrate/SigmoidCalibrator.h: In member function 'virtual void gezi::SigmoidCalibrator::TrainModel(gezi::CalibratorStore&)':
+../include/Prediction/Calibrate/SigmoidCalibrator.h:179:11: warning: unused variable 'y' [-Wunused-variable]
+      auto y = (d_i.target == 1) ? d_i.score : -d_i.score;
+           ^
+In file included from ../include/Run/Melt.h:39:0,
+                 from ../src/Run/Melt.cpp:3:
+../include/Prediction/Instances/instances_util.h: In function 'void gezi::write_sparse(gezi::Instance&, gezi::HeaderSchema&, std::ofstream&)':
+../include/Prediction/Instances/instances_util.h:98:99: warning: operation on 'featureIdx' may be undefined [-Wsequence-point]
+    ofs << instance.features.indices[featureIdx++] << ":" << instance.features.values[featureIdx++];
+                                                                                                   ^
+In file included from ../include/Prediction/Calibrate/CalibratorFactory.h:17:0,
+                 from ../include/MLCore/Predictor.h:21,
+                 from ../include/MLCore/Trainer.h:20,
+                 from ../include/MLCore/TrainerFactory.h:17,
+                 from ../include/Run/Melt.h:40,
+                 from ../src/Run/Melt.cpp:3:
+../include/Prediction/Calibrate/Calibrator.h: In member function 'void gezi::CalibratorStore::Add(Float, bool, Float)':
+../include/Prediction/Calibrate/Calibrator.h:95:39: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+       else if (draw == nodes.size() - 1)
+                                       ^
+In file included from ../include/Predictors/LinearPredictor.h:17:0,
+                 from ../include/MLCore/PredictorFactory.h:17,
+                 from fastrank_text2bin.cc:18:
+../include/MLCore/Predictor.h: In member function 'void gezi::Predictor::ChangeForLoad()':
+../include/MLCore/Predictor.h:372:42: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    if (_numFeatures > _featureNames.size())
+                                          ^
+In file included from ../include/Prediction/Calibrate/CalibratorFactory.h:18:0,
+                 from ../include/MLCore/Predictor.h:21,
+                 from ../include/MLCore/Trainer.h:20,
+                 from ../include/MLCore/TrainerFactory.h:17,
+                 from ../include/Run/Melt.h:40,
+                 from ../src/Run/Melt.cpp:3:
+../include/Prediction/Calibrate/SigmoidCalibrator.h: In member function 'virtual void gezi::SigmoidCalibrator::TrainModel(gezi::CalibratorStore&)':
+../include/Prediction/Calibrate/SigmoidCalibrator.h:179:11: warning: unused variable 'y' [-Wunused-variable]
+      auto y = (d_i.target == 1) ? d_i.score : -d_i.score;
+           ^
+In file included from ../include/MLCore/Trainer.h:20:0,
+                 from ../include/MLCore/TrainerFactory.h:17,
+                 from ../include/Run/Melt.h:40,
+                 from ../src/Run/Melt.cpp:3:
+../include/MLCore/Predictor.h: In member function 'void gezi::Predictor::ChangeForLoad()':
+../include/MLCore/Predictor.h:372:42: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    if (_numFeatures > _featureNames.size())
+                                          ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:23:0,
+                 from ../src/Run/Melt.cpp:2:
+../include/Run/Melt.h: In member function 'void gezi::Melt::RunCrossValidation(gezi::Instances&, gezi::Melt::CrossValidationType)':
+../../../../../../third-64/glog/include/glog/logging.h:723:48: warning: passing NULL to non-pointer argument 1 of 'long int google::GetReferenceableValue(long int)' [-Wconversion-null]
+              google::GetReferenceableValue(val2),        \
+                                                ^
+../../../../../../third-64/glog/include/glog/logging.h:741:3: note: in expansion of macro 'CHECK_OP_LOG'
+   CHECK_OP_LOG(name, op, val1, val2, google::LogMessageFatal)
+   ^
+../../../../../../third-64/glog/include/glog/logging.h:766:30: note: in expansion of macro 'CHECK_OP'
+ #define CHECK_NE(val1, val2) CHECK_OP(_NE, !=, val1, val2)
+                              ^
+../include/Run/Melt.h:128:5: note: in expansion of macro 'CHECK_NE'
+     CHECK_NE(normalizer.get(), NULL);
+     ^
+In file included from ../src/Run/Melt.cpp:3:0:
+../include/Run/Melt.h:140:42: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    for (size_t runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
+                                          ^
+../include/Run/Melt.h:148:45: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for (size_t foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
+                                             ^
+In file included from ../src/Run/Melt.cpp:3:0:
+../include/Run/Melt.h: In member function 'gezi::PredictorPtr gezi::Melt::Train(gezi::Instances&)':
+../include/Run/Melt.h:355:5: warning: return-statement with no value, in function returning 'gezi::PredictorPtr {aka std::shared_ptr<gezi::Predictor>}' [-fpermissive]
+     return;
+     ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:23:0,
+                 from ../src/Run/Melt.cpp:2:
+../include/Run/Melt.h: In member function 'void gezi::Melt::RunNormalizeInstances()':
+../../../../../../third-64/glog/include/glog/logging.h:723:48: warning: passing NULL to non-pointer argument 1 of 'long int google::GetReferenceableValue(long int)' [-Wconversion-null]
+              google::GetReferenceableValue(val2),        \
+                                                ^
+../../../../../../third-64/glog/include/glog/logging.h:741:3: note: in expansion of macro 'CHECK_OP_LOG'
+   CHECK_OP_LOG(name, op, val1, val2, google::LogMessageFatal)
+   ^
+../../../../../../third-64/glog/include/glog/logging.h:766:30: note: in expansion of macro 'CHECK_OP'
+ #define CHECK_NE(val1, val2) CHECK_OP(_NE, !=, val1, val2)
+                              ^
+../include/Run/Melt.h:483:4: note: in expansion of macro 'CHECK_NE'
+    CHECK_NE(normalizer.get(), NULL);
+    ^
+In file included from ../src/Run/Melt.cpp:3:0:
+../include/Run/Melt.h: In member function 'void gezi::Melt::RunGenCrossData()':
+../include/Run/Melt.h:658:42: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+    for (size_t runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
+                                          ^
+../include/Run/Melt.h:666:45: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for (size_t foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
+                                             ^
+../include/Run/Melt.h: In member function 'void gezi::Melt::RunChangeRatio()':
+../include/Run/Melt.h:731:24: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+        if (negCount >= negAdjustedNum)
+                        ^
+../include/Run/Melt.h:748:24: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+        if (posCount >= posAdjustedNum)
+                        ^
+In file included from ../../../../../../app/search/sep/anti-spam/gezi/include/common_util.h:23:0,
+                 from ../src/Run/Melt.cpp:2:
+../../../../../../third-64/glog/include/glog/logging.h: In instantiation of 'std::string* google::Check_NEImpl(const T1&, const T2&, const char*) [with T1 = gezi::Normalizer*; T2 = long int; std::string = std::basic_string<char>]':
+../include/Run/Melt.h:128:5:   required from here
+../../../../../../third-64/glog/include/glog/logging.h:695:32: warning: ISO C++ forbids comparison between pointer and integer [-fpermissive]
+ DEFINE_CHECK_OP_IMPL(Check_NE, !=)  // Use CHECK(x == NULL) instead.
+                                ^
+../../../../../../third-64/glog/include/glog/logging.h:133:53: note: in definition of macro 'GOOGLE_PREDICT_TRUE'
+ #define GOOGLE_PREDICT_TRUE(x) (__builtin_expect(!!(x), 1))
+                                                     ^
+../../../../../../third-64/glog/include/glog/logging.h:695:1: note: in expansion of macro 'DEFINE_CHECK_OP_IMPL'
+ DEFINE_CHECK_OP_IMPL(Check_NE, !=)  // Use CHECK(x == NULL) instead.
+ ^
