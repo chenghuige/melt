@@ -28,7 +28,7 @@
 
 #ifndef RUN__MELT_H_
 #define RUN__MELT_H_
-
+#define NO_BAIDU_DEP
 #include "common_util.h"
 #include "Run/MeltArguments.h"
 #include "Prediction/Instances/InstanceParser.h"

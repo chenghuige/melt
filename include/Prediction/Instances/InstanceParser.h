@@ -24,7 +24,7 @@
 
 #ifndef PREDICTION__INSTANCES__INSTANCE_PARSER_H_
 #define PREDICTION__INSTANCES__INSTANCE_PARSER_H_
-
+#define  NO_BAIDU_DEP
 #include "common_util.h"
 #include "RegexSearcher.h"
 #include "Identifer.h"

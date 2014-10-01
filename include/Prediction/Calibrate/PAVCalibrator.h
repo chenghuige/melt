@@ -32,10 +32,15 @@ public:
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			ar & minX;
+		/*	ar & minX;
 			ar & maxX;
 			ar & val;
-			ar & n;
+			ar & n;*/
+
+			ar & GEZI_SERIALIZATION_NVP(minX);
+			ar & GEZI_SERIALIZATION_NVP(maxX);
+			ar & GEZI_SERIALIZATION_NVP(val);
+			ar & GEZI_SERIALIZATION_NVP(n);
 		}
 	};
 
@@ -189,10 +194,14 @@ protected:
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		ar & boost::serialization::base_object<CalibratorWrapper>(*this);
+	/*	ar & boost::serialization::base_object<CalibratorWrapper>(*this);
 		ar & piecewise;
 		ar & minToReturn;
-		ar & maxToReturn;
+		ar & maxToReturn;*/
+		ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(CalibratorWrapper);
+		ar & GEZI_SERIALIZATION_NVP(piecewise);
+		ar & GEZI_SERIALIZATION_NVP(minToReturn);
+		ar & GEZI_SERIALIZATION_NVP(maxToReturn);
 	}
 protected:
 private:

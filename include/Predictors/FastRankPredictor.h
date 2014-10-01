@@ -285,7 +285,7 @@ namespace gezi {
 		/*	ar & boost::serialization::base_object<Predictor>(*this);
 			ar & _trees;*/
 			ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Predictor);
-			ar & BOOST_SERIALIZATION_NVP(_trees);
+			ar & GEZI_SERIALIZATION_NVP(_trees);
 		}
 
 		vector<OnlineRegressionTree>& Trees()

@@ -9,6 +9,7 @@ CXXFLAGS=-g \
   -W \
   -Wall \
   -fPIC \
+  -DNO_BAIDU_DEP \
   -DHAVE_NETINET_IN_H \
   -Wno-unused-parameter \
   -Wno-deprecated \
@@ -24,6 +25,7 @@ CFLAGS=-g \
   -W \
   -Wall \
   -fPIC \
+  -DNO_BAIDU_DEP \
   -DHAVE_NETINET_IN_H \
   -Wno-unused-parameter \
   -Wno-deprecated \
@@ -153,7 +155,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=f96cdaa8aa0cc0069a119483f84c22fa  COMAKE
+COMAKE_MD5=0ee6e0d1f76c0747ff1f187441e13516  COMAKE
 
 
 .PHONY:all
@@ -232,7 +234,21 @@ melt:melt_melt.o \
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt[0m']"
 	$(CXX) melt_melt.o \
   ../src/Prediction/Instances/melt_InstanceParser.o \
-  ../src/Run/melt_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../src/Run/melt_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblber/.libs/liblber.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap/.libs/libldap.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap_r/.libs/libldap_r.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblunicode/liblunicode.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblutil/liblutil.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/librewrite/librewrite.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-bdb/libback_bdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-hdb/libback_hdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-ldif/libback_ldif.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-mdb/libback_mdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-monitor/libback_monitor.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-relay/libback_relay.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/libbackends.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/liboverlays.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
@@ -266,7 +282,9 @@ melt:melt_melt.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -278,6 +296,8 @@ melt:melt_melt.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
@@ -323,7 +343,21 @@ calibrate:calibrate_calibrate.o \
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mcalibrate[0m']"
 	$(CXX) calibrate_calibrate.o \
   ../src/Prediction/Instances/calibrate_InstanceParser.o \
-  ../src/Run/calibrate_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../src/Run/calibrate_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblber/.libs/liblber.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap/.libs/libldap.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap_r/.libs/libldap_r.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblunicode/liblunicode.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblutil/liblutil.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/librewrite/librewrite.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-bdb/libback_bdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-hdb/libback_hdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-ldif/libback_ldif.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-mdb/libback_mdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-monitor/libback_monitor.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-relay/libback_relay.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/libbackends.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/liboverlays.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
@@ -357,7 +391,9 @@ calibrate:calibrate_calibrate.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -369,6 +405,8 @@ calibrate:calibrate_calibrate.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
@@ -414,7 +452,21 @@ predict:predict_predict.o \
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mpredict[0m']"
 	$(CXX) predict_predict.o \
   ../src/Prediction/Instances/predict_InstanceParser.o \
-  ../src/Run/predict_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../src/Run/predict_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblber/.libs/liblber.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap/.libs/libldap.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap_r/.libs/libldap_r.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblunicode/liblunicode.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblutil/liblutil.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/librewrite/librewrite.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-bdb/libback_bdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-hdb/libback_hdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-ldif/libback_ldif.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-mdb/libback_mdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-monitor/libback_monitor.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-relay/libback_relay.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/libbackends.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/liboverlays.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
@@ -448,7 +500,9 @@ predict:predict_predict.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -460,6 +514,8 @@ predict:predict_predict.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
@@ -505,7 +561,21 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_text2bin[0m']"
 	$(CXX) fastrank_text2bin_fastrank_text2bin.o \
   ../src/Prediction/Instances/fastrank_text2bin_InstanceParser.o \
-  ../src/Run/fastrank_text2bin_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../src/Run/fastrank_text2bin_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblber/.libs/liblber.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap/.libs/libldap.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap_r/.libs/libldap_r.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblunicode/liblunicode.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblutil/liblutil.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/librewrite/librewrite.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-bdb/libback_bdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-hdb/libback_hdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-ldif/libback_ldif.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-mdb/libback_mdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-monitor/libback_monitor.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-relay/libback_relay.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/libbackends.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/liboverlays.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
@@ -539,7 +609,9 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -551,6 +623,8 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
@@ -596,7 +670,21 @@ fastrank_predict:fastrank_predict_fastrank_predict.o \
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_predict[0m']"
 	$(CXX) fastrank_predict_fastrank_predict.o \
   ../src/Prediction/Instances/fastrank_predict_InstanceParser.o \
-  ../src/Run/fastrank_predict_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../src/Run/fastrank_predict_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblber/.libs/liblber.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap/.libs/libldap.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap_r/.libs/libldap_r.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblunicode/liblunicode.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblutil/liblutil.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/librewrite/librewrite.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-bdb/libback_bdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-hdb/libback_hdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-ldif/libback_ldif.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-mdb/libback_mdb.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-monitor/libback_monitor.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/back-relay/libback_relay.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/libbackends.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/liboverlays.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
@@ -630,7 +718,9 @@ fastrank_predict:fastrank_predict_fastrank_predict.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -642,6 +732,8 @@ fastrank_predict:fastrank_predict_fastrank_predict.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \

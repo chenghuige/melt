@@ -335,10 +335,10 @@ namespace gezi {
 		void serialize(Archive &ar, const unsigned int version)
 		{
 			//ar & _featureNames;
-			ar & BOOST_SERIALIZATION_NVP(_numFeatures);
+			ar & GEZI_SERIALIZATION_NVP(_numFeatures);
 			//@TODO 这个加入名字无意义特征数目巨大 是一个时空浪费
 			//由子类决定是否打印输出名字？ 或者特殊处理f0 f1这种不进行输出时候的序列化 输入时候序列化自动恢复成f0,f1的样子
-			ar & BOOST_SERIALIZATION_NVP(_featureNames);
+			ar & GEZI_SERIALIZATION_NVP(_featureNames);
 		}
 
 	protected:
@@ -359,6 +359,7 @@ namespace gezi {
 				SAVE_SHARED_PTR_ASTEXT(_calibrator);
 			}
 		}
+	
 		void ChangeForSave()
 		{
 			if (_numFeatures > 1000 && _featureNames[0] == "f0" && _featureNames[999] == "f999")

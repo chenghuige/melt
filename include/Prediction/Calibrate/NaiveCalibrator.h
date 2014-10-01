@@ -131,14 +131,23 @@ private:
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		ar & boost::serialization::base_object<Calibrator>(*this);
+	/*	ar & boost::serialization::base_object<Calibrator>(*this);
 		ar & cMargins;
 		ar & ncMargins;
 		ar & numBins;
 		ar & binSize;
 		ar & _min;
 		ar & _max;
-		ar & binProbs;
+		ar & binProbs;*/
+
+		ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Calibrator);
+		ar & GEZI_SERIALIZATION_NVP(cMargins);
+		ar & GEZI_SERIALIZATION_NVP(ncMargins);
+		ar & GEZI_SERIALIZATION_NVP(numBins);
+		ar & GEZI_SERIALIZATION_NVP(binSize);
+		ar & GEZI_SERIALIZATION_NVP(_min);
+		ar & GEZI_SERIALIZATION_NVP(_max);
+		ar & GEZI_SERIALIZATION_NVP(binProbs);
 	}
 
 protected:

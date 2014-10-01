@@ -226,7 +226,8 @@ namespace gezi {
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			ar & boost::serialization::base_object<Calibrator>(*this);
+			//ar & boost::serialization::base_object<Calibrator>(*this);
+			ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Calibrator);
 		}
 
 	protected:

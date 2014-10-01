@@ -85,8 +85,8 @@ namespace gezi {
 				ar & _weights;
 				ar & _bias;*/
 			ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Predictor);
-			ar & BOOST_SERIALIZATION_NVP(_weights);
-			ar & BOOST_SERIALIZATION_NVP(_bias);
+			ar & GEZI_SERIALIZATION_NVP(_weights);
+			ar & GEZI_SERIALIZATION_NVP(_bias);
 		}
 
 	protected:

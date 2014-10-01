@@ -1,4 +1,4 @@
-
+#define NO_BAIDU_DEP
 #include "common_util.h"
 #include "Run/Melt.h"
 

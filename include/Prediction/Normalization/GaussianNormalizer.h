@@ -67,7 +67,8 @@ public:
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		ar & boost::serialization::base_object<AffineNormalizer>(*this);
+		//ar & boost::serialization::base_object<AffineNormalizer>(*this);
+		ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(AffineNormalizer);
 	}
 
 protected:

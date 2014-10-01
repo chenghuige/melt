@@ -28,7 +28,6 @@ namespace gezi {
 		OnlineRegressionTree(const OnlineRegressionTree&) = default;
 		OnlineRegressionTree& operator = (const OnlineRegressionTree&) = default;
 
-
 		OnlineRegressionTree(svec& featureNames)
 			:_featureNames(&featureNames)
 		{
@@ -181,18 +180,18 @@ namespace gezi {
 			ar & _weight;*/
 			//ar & _featureNames; //不要序列化指针
 
-			ar & BOOST_SERIALIZATION_NVP(NumLeaves);
+			ar & GEZI_SERIALIZATION_NVP(NumLeaves);
 
-			ar & BOOST_SERIALIZATION_NVP(_gainPValue); 
-			ar & BOOST_SERIALIZATION_NVP(_gtChild);
-			ar & BOOST_SERIALIZATION_NVP(_leafValue);
-			ar & BOOST_SERIALIZATION_NVP(_lteChild);
-			ar & BOOST_SERIALIZATION_NVP(_maxOutput);
-			ar & BOOST_SERIALIZATION_NVP(_previousLeafValue);
-			ar & BOOST_SERIALIZATION_NVP(_splitFeature);
-			ar & BOOST_SERIALIZATION_NVP(_splitGain);
-			ar & BOOST_SERIALIZATION_NVP(_threshold);
-			ar & BOOST_SERIALIZATION_NVP(_weight);
+			ar & GEZI_SERIALIZATION_NVP(_gainPValue); 
+			ar & GEZI_SERIALIZATION_NVP(_gtChild);
+			ar & GEZI_SERIALIZATION_NVP(_leafValue);
+			ar & GEZI_SERIALIZATION_NVP(_lteChild);
+			ar & GEZI_SERIALIZATION_NVP(_maxOutput);
+			ar & GEZI_SERIALIZATION_NVP(_previousLeafValue);
+			ar & GEZI_SERIALIZATION_NVP(_splitFeature);
+			ar & GEZI_SERIALIZATION_NVP(_splitGain);
+			ar & GEZI_SERIALIZATION_NVP(_threshold);
+			ar & GEZI_SERIALIZATION_NVP(_weight);
 		}
 #ifdef _DEBUG
 		DebugNode _debugNode;

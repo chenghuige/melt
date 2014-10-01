@@ -136,9 +136,12 @@ namespace gezi {
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			ar & boost::serialization::base_object<Normalizer>(*this);
+		/*	ar & boost::serialization::base_object<Normalizer>(*this);
 			ar & _offsets;
-			ar & _scales;
+			ar & _scales;*/
+			ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Normalizer);
+			ar & GEZI_SERIALIZATION_NVP(_offsets);
+			ar & GEZI_SERIALIZATION_NVP(_scales);
 		}
 
 	protected:

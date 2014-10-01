@@ -230,9 +230,12 @@ protected:
 	template<class Archive>
 	void serialize(Archive &ar, const unsigned int version)
 	{
-		ar & boost::serialization::base_object<CalibratorWrapper>(*this);
+	/*	ar & boost::serialization::base_object<CalibratorWrapper>(*this);
 		ar & paramA;
-		ar & paramB; 
+		ar & paramB; */
+		ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(CalibratorWrapper);
+		ar & GEZI_SERIALIZATION_NVP(paramA);
+		ar & GEZI_SERIALIZATION_NVP(paramB);
 	}
 
 private:

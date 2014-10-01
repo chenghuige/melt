@@ -233,26 +233,34 @@ namespace gezi {
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			ar & _numFeatures;
+	/*		ar & _numFeatures;
 			ar & _featureNames;
 			ar & _morphIndices;
 			ar & _shiftIndices;
 			ar & _normType;
-			ar & _trunct;
+			ar & _trunct;*/
+			ar & GEZI_SERIALIZATION_NVP(_normType);
+			ar & GEZI_SERIALIZATION_NVP(_numFeatures);
+			ar & GEZI_SERIALIZATION_NVP(_featureNames);
+			ar & GEZI_SERIALIZATION_NVP(_morphIndices);
+			ar & GEZI_SERIALIZATION_NVP(_shiftIndices);
+			ar & GEZI_SERIALIZATION_NVP(_trunct);
 		}
 		
 	protected:
+		std::function<void(int, Float&)> _func;
+
+		//-seralize
+		NormType _normType = NormType::Affine;
 		int _numFeatures = 0;
 		svec _featureNames;
 		ivec _morphIndices; //只有AffineNormalizer才使用
 		ivec _shiftIndices; //Affine,Bin都使用
-		NormType _normType = NormType::Affine;
-		std::function<void(int, Float&)> _func;
-		
 		//----------------------------args begin
 		//|if feature is out of bounds, threshold at 0/1, or return values below 0 and above 1?
 		//bool _trunct = false; //@TODO 似乎只有MinMax才可能越界吧
 		bool _trunct = true;
+		
 		uint64 _maxNormalizationExamples = 1000000;//numNorm|
 		//-----------------------------args end
 		uint64 _numProcessedInstances = 1; //处理的instance数目

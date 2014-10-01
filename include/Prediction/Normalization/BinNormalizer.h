@@ -127,11 +127,16 @@ namespace gezi {
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			ar & boost::serialization::base_object<Normalizer>(*this);
+		/*	ar & boost::serialization::base_object<Normalizer>(*this);
 			ar & numBins;
 			ar & binUpperBounds;
 			ar & binValues;
-			ar & _included;
+			ar & _included;*/
+			ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Normalizer);
+			ar & GEZI_SERIALIZATION_NVP(numBins);
+			ar & GEZI_SERIALIZATION_NVP(binUpperBounds);
+			ar & GEZI_SERIALIZATION_NVP(binValues);
+			ar & GEZI_SERIALIZATION_NVP(_included);
 		}
 
 		const Fmat& BinUpperBounds() const
