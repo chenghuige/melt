@@ -36,7 +36,8 @@ namespace gezi {
 		string modelFolder = "model"; //m|
 		bool modelfileCode = false; //mc|
 		bool modelfileText = false; //mt|
-		bool modelfileXml = false; //mx|
+		bool modelfileXml = false; //mxml|
+		bool modelfileJson = false; //mjson|
 		string featureName = ""; //fn|
 		bool stratify = false;
 		bool foldsSequential = false;

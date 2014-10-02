@@ -29,7 +29,8 @@ DEFINE_string(valid, "", "Data file used for training validation (with IValidati
 DEFINE_string(m, "model", "modelFolder");
 DEFINE_bool(mc, false, " modelfileCode:Gen model file to save in C++ code £¿ (for Train or TrainTest)");
 DEFINE_bool(mt, false, "modelfileText:  Gen model file to save in text format ? (for Train or TrainTest");
-DEFINE_bool(mx, false, "modelfileXml:  Gen model file to save in xml format ? (for Train or TrainTest");
+DEFINE_bool(mxml, false, "modelfileXml:  Gen model file to save in xml format ? (for Train or TrainTest");
+DEFINE_bool(mjson, false, "modelfileJson:  Gen model file to save in json format ? (for Train or TrainTest");
 DEFINE_bool(ft, true, "when -c train will test the train data its self after training");
 
 DEFINE_string(rd, "./result", "resultDir: where to put the result data");
@@ -67,7 +68,8 @@ namespace gezi {
 		_cmd.modelFolder = FLAGS_m;
 		_cmd.modelfileCode = FLAGS_mc;
 		_cmd.modelfileText = FLAGS_mt;
-		_cmd.modelfileXml = FLAGS_mx;
+		_cmd.modelfileXml = FLAGS_mxml;
+		_cmd.modelfileJson = FLAGS_mjson;
 		_cmd.numFolds = FLAGS_k;
 		_cmd.numRuns = FLAGS_nr;
 

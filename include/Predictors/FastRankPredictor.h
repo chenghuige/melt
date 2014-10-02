@@ -180,6 +180,11 @@ namespace gezi {
 			serialize_util::save_xml(*this, file);
 		}
 
+		virtual void SaveJson_(string file) override
+		{
+			serialize_util::save_json(*this, file);
+		}
+
 		virtual void Load_(string file) override
 		{
 			serialize_util::load(*this, file);
@@ -278,14 +283,14 @@ namespace gezi {
 			return result;
 		}
 
-		friend class boost::serialization::access;
+		friend class cereal::access;
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
 		/*	ar & boost::serialization::base_object<Predictor>(*this);
 			ar & _trees;*/
-			ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Predictor);
-			ar & GEZI_SERIALIZATION_NVP(_trees);
+			ar & CEREAL_BASE_OBJECT_NVP(Predictor);
+			ar & CEREAL_NVP(_trees);
 		}
 
 		vector<OnlineRegressionTree>& Trees()

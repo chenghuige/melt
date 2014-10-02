@@ -277,6 +277,21 @@ namespace gezi {
 			VLOG(0) << Name() << " currently not support saving xml";
 		}
 
+		virtual void SaveJson(string file) override
+		{
+			ChangeForSave();
+			LoadSave::SaveJson(file);
+			SaveJson_(file);
+			SAVE_SHARED_PTR_ASJSON(_calibrator); //@TODO calibrator, normalizer支持xml
+			SAVE_SHARED_PTR_ASJSON(_normalizer);
+			ChangeForLoad();
+		}
+
+		virtual void SaveJson_(string file)
+		{
+			VLOG(0) << Name() << " currently not support saving json";
+		}
+
 		virtual void SaveText(string file) override
 		{
 			//默认是不支持text格式写出的 除非自己重新手写了模型输出 一般为了debug后者更好展示model信息
@@ -291,8 +306,13 @@ namespace gezi {
 		}
 
 		void SaveXml()
+		{ 
+			SaveXml(_path + "/model.xml"); 
+		}
+
+		void SaveJson()
 		{
-			SaveXml(_path + "/model.xml");
+			SaveJson(_path + "/model.json");
 		}
 
 		void SaveText()
@@ -330,15 +350,14 @@ namespace gezi {
 			_saveCalibratorText = false;
 		}
 
-		friend class boost::serialization::access;
+		friend class cereal::access;
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			//ar & _featureNames;
-			ar & GEZI_SERIALIZATION_NVP(_numFeatures);
+			ar & CEREAL_NVP(_numFeatures);
 			//@TODO 这个加入名字无意义特征数目巨大 是一个时空浪费
 			//由子类决定是否打印输出名字？ 或者特殊处理f0 f1这种不进行输出时候的序列化 输入时候序列化自动恢复成f0,f1的样子
-			ar & GEZI_SERIALIZATION_NVP(_featureNames);
+			ar & CEREAL_NVP(_featureNames);
 		}
 
 	protected:

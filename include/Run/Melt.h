@@ -387,6 +387,10 @@ namespace gezi {
 				{
 					predictor->SaveXml();
 				}
+				if (_cmd.modelfileJson)
+				{
+					predictor->SaveJson();
+				}
 				if (_cmd.modelfileText)
 				{
 					predictor->SaveText();
@@ -446,6 +450,10 @@ namespace gezi {
 				if (_cmd.modelfileXml)
 				{
 					predictor->SaveXml();
+				}
+				if (_cmd.modelfileJson)
+				{
+					predictor->SaveJson();
 				}
 				if (_cmd.modelfileText)
 				{

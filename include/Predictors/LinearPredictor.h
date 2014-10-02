@@ -55,6 +55,11 @@ namespace gezi {
 			serialize_util::save_xml(*this, file);
 		}
 
+		virtual void SaveJson_(string file) override
+		{
+			serialize_util::save_json(*this, file);
+		}
+
 		virtual void Load_(string file) override
 		{
 			_weights.MakeDense();
@@ -77,16 +82,13 @@ namespace gezi {
 			ofs << _featureNames.size() << "\t" << "Bias" << "\t" << _bias;
 		}
 
-		friend class boost::serialization::access;
+		friend class cereal::access;
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			/*	ar & boost::serialization::base_object<Predictor>(*this);
-				ar & _weights;
-				ar & _bias;*/
-			ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Predictor);
-			ar & GEZI_SERIALIZATION_NVP(_weights);
-			ar & GEZI_SERIALIZATION_NVP(_bias);
+			ar & CEREAL_BASE_OBJECT_NVP(Predictor);
+			ar & CEREAL_NVP(_weights);
+			ar & CEREAL_NVP(_bias);
 		}
 
 	protected:
