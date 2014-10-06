@@ -55,6 +55,18 @@ public:
 		serialize_util::save(*this, path);
 	}
 
+	virtual void SaveXml(string path) override
+	{
+		LoadSave::SaveXml(path);
+		serialize_util::save_xml(*this, path);
+	}
+
+	virtual void SaveJson(string path) override
+	{
+		LoadSave::SaveJson(path);
+		serialize_util::save_json(*this, path);
+	}
+
 	virtual void SaveText(string file) override
 	{
 		LoadSave::SaveText(file);

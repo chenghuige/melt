@@ -84,6 +84,9 @@
     <ClCompile Include="tools3\PLSA\plsa.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tools3\melt.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MLCore\IPredictor.h">
@@ -243,6 +246,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Predictors\RandomPredictor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MLCore\TextPredictor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

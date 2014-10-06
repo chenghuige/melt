@@ -38,12 +38,14 @@ namespace gezi {
 		bool modelfileText = false; //mt|
 		bool modelfileXml = false; //mxml|
 		bool modelfileJson = false; //mjson|
+		bool saveNormalizerText = false; //snt|
+		bool saveCalibratorText = false; //sct|
 		string featureName = ""; //fn|
 		bool stratify = false;
 		bool foldsSequential = false;
 		double trainProportion = 1.0;
 		
-		bool forceTest = true; //ft| when -c train will test the train data its self after training
+		bool selfTest = true; //st| when -c train will test the train data its self after training
 
 		string modelDir = "";
 		string outDir = "";
@@ -56,8 +58,11 @@ namespace gezi {
 
 		//----------分类器公用选项
 		bool normalizeFeatures = true; //norm| Normalize features?
-		string normalizerName = "MinMax"; //| Which normalizer?
+		string normalizerName = "MinMax"; //normalizer| Which normalizer?
 
+		string calibratorName = "sigmoid"; //calibrator| Which calibrator?
+
+		string fileFormat = "normal"; //format | input file format
 		string outputFileFormat = "unknown";//oformat| output file format
 	};
 }  //----end of namespace gezi

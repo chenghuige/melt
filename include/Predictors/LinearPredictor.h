@@ -52,34 +52,60 @@ namespace gezi {
 
 		virtual void SaveXml_(string file) override
 		{
+			_weights.Sparsify();
 			serialize_util::save_xml(*this, file);
 		}
 
 		virtual void SaveJson_(string file) override
 		{
+			_weights.Sparsify();
 			serialize_util::save_json(*this, file);
 		}
 
 		virtual void Load_(string file) override
 		{
-			_weights.MakeDense();
 			serialize_util::load(*this, file);
+			_weights.MakeDense();
 		}
 
 		//SaveText是可选的 如果要使用 务必先调用Save 因为加载至使用Load
 		virtual void SaveText_(string file) override
 		{
 			CHECK_EQ(_featureNames.size(), _numFeatures);
-			LoadSave::SaveText(file);
-
 			ofstream ofs(file);
 			ofs << "ModelName=" << Name() << endl;
 			ofs << "FeatureNum=" << _featureNames.size() << endl;
+			ofs << -1 << "\t" << "Bias" << "\t" << _bias << endl;
 			_weights.ForEachNonZero([&ofs, this](int index, Float value)
 			{
 				ofs << index << "\t" << _featureNames[index] << "\t" << value << endl;
 			});
-			ofs << _featureNames.size() << "\t" << "Bias" << "\t" << _bias;
+		}
+
+		virtual void LoadText_(string file) override
+		{
+			ifstream ifs(file);
+			string line;
+			{
+				getline(ifs, line);
+				_name = parse_string_param("ModelName=", line);
+			}
+			{
+				getline(ifs, line);
+				_numFeatures = parse_int_param("FeatureNum=", line);
+				_weights.resize(_numFeatures, 0);
+				_weights.SetLength(_numFeatures);
+				ChangeForLoad();
+			}
+			{
+				getline(ifs, line);
+				_bias = DOUBLE(split(line, '\t').back());
+			}
+			while (getline(ifs, line))
+			{
+				auto parts = split(line, '\t');
+				_weights[INT(parts[0])] = DOUBLE(parts.back());
+			}
 		}
 
 		friend class cereal::access;

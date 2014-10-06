@@ -35,6 +35,7 @@
 #include "Run/CVFoldCreator.h"
 #include "Prediction/Normalization/MinMaxNormalizer.h"
 #include "Prediction/Normalization/NormalizerFactory.h"
+#include "Prediction/Calibrate/CalibratorFactory.h"
 #include "Utils/FeatureStatus.h"
 #include "Prediction/Instances/instances_util.h"
 #include "MLCore/TrainerFactory.h"
@@ -63,6 +64,7 @@ namespace gezi {
 		enum class RunType
 		{
 			UNKNOWN = 0,
+			HELP,
 			EVAL, //交叉验证,默认执行的command
 			EVAL_PARAM, //交叉验证 但是只输出auc的值,主要用于检测不同参数效果对比
 			TRAIN, //训练
@@ -70,7 +72,8 @@ namespace gezi {
 			TRAIN_TEST,  //训练+测试
 			FEATURE_SELECTION,  //特征选择  //参数选择放到外围python脚本 
 			CREATE_INSTANCES,  //将不符合normal格式的输入转换为符合的,例如catogry,text域的展开
-			NORMALIZE,  //进行归一化，输出结果到文本
+			NORMALIZE,  //进行归一化，输出结果到文本,将normalizer信息序列化到-m对应的路径下
+			CALIBRATE,  //进行output->[0-1]的归一化，将calibrator信息序列化到-m对应的路径下
 			CHECK_DATA, //检查数据 当前是进行minmax归一 提示无用特征
 			FEATURE_STATUS, //打印特征的均值方差信息　mean var
 			SHOW_FEATURES, //打印特征名
@@ -78,7 +81,9 @@ namespace gezi {
 			CONVERT, //对输入样本文件载入然后输出要求的格式 比如 dense -> sparse
 			SPLIT_DATA, //对输入样本进行切分  比如 1:1 1:3:2 同时保持每份中正反例比例维持和原始数据一致
 			GEN_CROSS_DATA, //输出交叉验证的文本数据文件 方便对比其它机器学习工具的实验效果
-			CHANGE_RAIO //对输入样本进行正反例比例调整 比如 原始 1:30 调整为 1:1
+			CHANGE_RAIO, //对输入样本进行正反例比例调整 比如 原始 1:30 调整为 1:1
+			WRITE_TEXT_MODEL, //读入binary模型后写出文本格式模型如-mt -mxml -mjson 注意模型内部的normalizer,calibrator默认都是不输出Text格式的，如果需要输出 -snt 1, -sct 1
+			TEXT_MODEL_TO_BINARY //读取-m 指定路径下的model.txt 用户指定模型名称-cl 默认是LinearSVM 按照文本格式模型载入写出binary模型到-m路径
 		};
 
 		enum class CrossValidationType
@@ -94,12 +99,32 @@ namespace gezi {
 
 		void PrintCommands()
 		{
-			VLOG(0) << "Supported commands now are below:";
+			VLOG(0) << "Supported commands now are below: [commandName or commandShortName] <-> [commandId]";
 			for (auto item : _commands)
 			{
 				VLOG(0) << setiosflags(ios::left) << setfill(' ') << setw(40)
 					<< item.first << " " << (int)item.second;
 			}
+			int i = 2; // 0 UNKNOWN, 1 HELP
+			VLOG(0) << i++ << " EVAL, //交叉验证,默认执行的command";
+			VLOG(0) << i++ << " EVAL_PARAM, //交叉验证 但是只输出auc的值,主要用于检测不同参数效果对比";
+			VLOG(0) << i++ << " TRAIN, //训练(-mt -mxml -mjson设置可以输出相应文本格式模型，如果要对内部的normalizer输出相应文本格式设置 -snt 1,calibrator类似 -sct 1)";
+			VLOG(0) << i++ << " TEST,  //测试";
+			VLOG(0) << i++ << " TRAIN_TEST,  //训练+测试";
+			VLOG(0) << i++ << " FEATURE_SELECTION,  //特征选择  //参数选择放到外围python脚本";
+			VLOG(0) << i++ << " CREATE_INSTANCES,  //将不符合normal格式的输入转换为符合的,例如catogry,text域的展开";
+			VLOG(0) << i++ << " NORMALIZE,  //进行归一化，输出结果到文本,将normalizer信息序列化到-m对应的路径下(-mt -mxml -mjson设置可以输出相应文本格式 不需要设置-snt)";
+			VLOG(0) << i++ << " CALIBRATE,  //进行output->[0-1]的归一化，将calibrator信息序列化到-m对应的路径下  -mt -mxml -mjson设置可以输出相应文本格式 不需要设置-sct";
+			VLOG(0) << i++ << " CHECK_DATA, //检查数据 当前是进行minmax归一 提示无用特征";
+			VLOG(0) << i++ << " FEATURE_STATUS, //打印特征的均值方差信息　mean var";
+			VLOG(0) << i++ << " SHOW_FEATURES, //打印特征名";
+			VLOG(0) << i++ << " SHOW_INFOS, //展示输入数据的基本信息  特征数目，样本数目，正例比例";
+			VLOG(0) << i++ << " CONVERT, //对输入样本文件载入然后输出要求的格式 比如 dense -> sparse";
+			VLOG(0) << i++ << " SPLIT_DATA, //对输入样本进行切分  比如 1:1 1:3:2 同时保持每份中正反例比例维持和原始数据一致";
+			VLOG(0) << i++ << " GEN_CROSS_DATA, //输出交叉验证的文本数据文件 方便对比其它机器学习工具的实验效果";
+			VLOG(0) << i++ << " CHANGE_RAIO //对输入样本进行正反例比例调整 比如 原始 1:30 调整为 1:1";
+			VLOG(0) << i++ << " WRITE_TEXT_MODEL // 读入binary模型后写出文本格式模型如-mt -mxml -mjson(注意内部的normalizer如果需要文本输出需要-snt 1,类似的calibrator文本输出 -sct 1)";
+			VLOG(0) << i++ << " TEXT_MODEL_TO_BINARY //读取-m 指定路径下的model.txt 用户指定模型名称-cl 默认是LinearSVM 按照文本格式模型载入写出binary模型到-m路径";
 		}
 
 		static string GetOutputFileName(string infile, string suffix, bool removeTxt = false)
@@ -369,7 +394,7 @@ namespace gezi {
 				CHECK_GT(instances.Count(), 0) << "Read 0 test instances, aborting experiment";
 				predictor = Train(instances);
 			}
-			if (_cmd.forceTest)
+			if (_cmd.selfTest)
 			{
 				Noticer nt("Test itself!");
 				try_create_dir(_cmd.resultDir);
@@ -382,6 +407,10 @@ namespace gezi {
 			}
 			{
 				Noticer nt("Write train result!");
+
+				(*predictor).SetSaveNormalizerText(_cmd.saveNormalizerText)
+					.SetSaveCalibratorText(_cmd.saveCalibratorText);
+
 				predictor->Save(_cmd.modelFolder);
 				if (_cmd.modelfileXml)
 				{
@@ -483,10 +512,26 @@ namespace gezi {
 			}
 		}
 
-		//只是为了输出normalize后的数据 查看normalize后效果
-		void RunNormalizeInstances()
+#define  SAVE_SHARED_PTR_ALL(obj)\
+		{\
+		SAVE_SHARED_PTR(obj, _cmd.modelFolder); \
+		if (_cmd.modelfileXml)\
+		{\
+		SAVE_SHARED_PTR_ASXML(obj, _cmd.modelFolder); \
+		}\
+		if (_cmd.modelfileJson)\
+		{\
+		SAVE_SHARED_PTR_ASJSON(obj, _cmd.modelFolder); \
+		}\
+		if (_cmd.modelfileText)\
+		{\
+		SAVE_SHARED_PTR_ASTEXT(obj, _cmd.modelFolder); \
+		}\
+		}
+
+		void RunNormalize()
 		{
-			Noticer nt("NormalizeInstances!");
+			Noticer nt("Normalize!");
 			NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
 			CHECK_NE(normalizer.get(), NULL);
 			Pval(normalizer->Name());
@@ -495,17 +540,32 @@ namespace gezi {
 			string suffix = normalizer->Name() + ".normed";
 			string outfile = _cmd.outfile.empty() ? GetOutputFileName(infile, suffix) : _cmd.outfile;
 			Pval(outfile);
-			string normalizerFile = _cmd.normalizerfile.empty() ?
-				(endswith(infile, ".txt") ?
-				boost::replace_last_copy(infile, ".txt", ".normalizer.txt") : infile + ".normalizer") : _cmd.normalizerfile;
-			Pval(normalizerFile);
 
 			Instances instances = create_instances(_cmd.datafile);
 
 			normalizer->RunNormalize(instances);
-			normalizer->SaveText(normalizerFile);
-			FileFormat fileFormat = get_value(_formats, _cmd.outputFileFormat, FileFormat::Unknown);
+			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
 			write(instances, outfile, fileFormat);
+
+			try_create_dir(_cmd.modelFolder);
+			SAVE_SHARED_PTR_ALL(normalizer);
+		}
+
+		void RunCalibrate()
+		{
+			Noticer nt("Calibrate!");
+
+			auto calibrator = CalibratorFactory::CreateCalibrator(_cmd.calibratorName);
+			CHECK_NE(calibrator.get(), NULL);
+			Pval(calibrator->Name());
+
+			Instances instances = create_instances(_cmd.datafile);
+			auto predictor = PredictorFactory::LoadPredictor(_cmd.modelFolder);
+			calibrator->Train(instances, [&predictor](InstancePtr instance) { return predictor->Output(instance); });
+
+			try_create_dir(_cmd.modelFolder);
+			//@WARNING calibrator 这个名字不能变 宏需要写到calibrator.bin... normalizer类似
+			SAVE_SHARED_PTR_ALL(calibrator);
 		}
 
 		void RunCheckData()
@@ -535,7 +595,8 @@ namespace gezi {
 		//输入文件转换后输出
 		void RunConvert()
 		{
-			FileFormat fileFormat = get_value(_formats, _cmd.outputFileFormat, FileFormat::Unknown);
+			FileFormat defaultFileFormat = _cmd.fileFormat == kFormatSuffixes[FileFormat::LibSVM] ? FileFormat::Unknown : FileFormat::LibSVM;
+			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, defaultFileFormat);
 			Instances instances = create_instances(_cmd.datafile);
 			if (fileFormat == FileFormat::Unknown)
 			{
@@ -554,13 +615,8 @@ namespace gezi {
 				else
 				{
 					string outfile;
-					string suffix = _formatSuffixes[fileFormat];
+					string suffix = kFormatSuffixes[fileFormat];
 					outfile = GetOutputFileName(_cmd.datafile, suffix, true);
-
-					if (fileFormat == FileFormat::Arff)
-						VLOG(0) << "Writting to arff file " << outfile;
-					else
-						LOG(WARNING) << "Not specify the out file name so write to " << outfile;
 					write(instances, outfile, fileFormat);
 				}
 			}
@@ -656,7 +712,7 @@ namespace gezi {
 		void 	RunGenCrossData()
 		{
 			//输入是什么格式 输出还是什么格式 如果输入格式参数错误按照libsvm输出 
-			FileFormat fileFormat = get_value(_formats, _cmd.outputFileFormat, FileFormat::LibSVM);
+			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::LibSVM);
 			auto instances = create_instances(_cmd.datafile);
 			string outDir = _cmd.outDir.empty() ? "cross-data" : _cmd.outDir;
 			try_create_dir(outDir);
@@ -767,6 +823,58 @@ namespace gezi {
 			}
 		}
 
+		void RunWriteTextModel()
+		{
+			if (!_cmd.modelfileText && !_cmd.modelfileXml && !_cmd.modelfileJson)
+			{
+				LOG(WARNING) << "Will do nothing, you have to set -mt 1 or -mxml 1 or -mjson 1";
+				return;
+			}
+
+			Noticer nt("WiteTextModel! with model from " + _cmd.modelFolder);
+			//------load predictor
+			PredictorPtr predictor;
+			if (!_cmd.saveNormalizerText && !_cmd.saveCalibratorText)
+			{
+				Predictor::loadNormalizerAndCalibrator() = false;
+			}
+		
+			{
+				Noticer nt("Loading predictor");
+				predictor = PredictorFactory::LoadPredictor(_cmd.modelFolder);
+			}
+
+			(*predictor).SetSaveNormalizerText(_cmd.saveNormalizerText)
+				.SetSaveCalibratorText(_cmd.saveCalibratorText)
+				.SetPath(_cmd.modelFolder);
+
+			if (_cmd.modelfileXml)
+			{
+				predictor->SaveXml();
+			}
+			if (_cmd.modelfileJson)
+			{
+				predictor->SaveJson();
+			}
+			if (_cmd.modelfileText)
+			{
+				predictor->SaveText();
+			}
+		}
+
+		void RunTextModelToBinary()
+		{
+			Noticer nt("TextModelToBinary! with model from " + _cmd.modelFolder);
+			//------load predictor
+			PredictorPtr predictor;
+			Predictor::loadNormalizerAndCalibrator() = false;
+			{
+				Noticer nt("Loading predictor");
+				predictor = PredictorFactory::CreatePredictorFromTextFormat(_cmd.classifierName, _cmd.modelFolder);
+			}
+			predictor->Save(_cmd.modelFolder);
+		}
+
 		void RunExperiments()
 		{
 			Pval(omp_get_num_procs());
@@ -807,7 +915,10 @@ namespace gezi {
 				RunCreateInstances();
 				break;
 			case RunType::NORMALIZE:
-				RunNormalizeInstances();
+				RunNormalize();
+				break;
+			case RunType::CALIBRATE:
+				RunCalibrate();
 				break;
 			case RunType::CHECK_DATA:
 				RunCheckData();
@@ -833,6 +944,15 @@ namespace gezi {
 			case RunType::CHANGE_RAIO:
 				RunChangeRatio();
 				break;
+			case RunType::WRITE_TEXT_MODEL:
+				RunWriteTextModel();
+				break;
+			case  RunType::TEXT_MODEL_TO_BINARY:
+				RunTextModelToBinary();
+				break;
+			case RunType::HELP:
+				PrintCommands();
+				break;
 			case RunType::UNKNOWN:
 			default:
 				LOG(WARNING) << commandStr << " is not supported yet ";
@@ -845,6 +965,7 @@ namespace gezi {
 	private:
 		MeltArguments _cmd;
 		map<string, RunType> _commands = {
+			{ "help", RunType::HELP },
 			{ "cv", RunType::EVAL },
 			{ "eval", RunType::EVAL },
 			{ "eval_param", RunType::EVAL_PARAM },
@@ -862,6 +983,7 @@ namespace gezi {
 			{ "createinstances", RunType::CREATE_INSTANCES },
 			{ "ci", RunType::CREATE_INSTANCES },
 			{ "norm", RunType::NORMALIZE },
+			{ "calibrate", RunType::CALIBRATE },
 			{ "check", RunType::CHECK_DATA },
 			{ "featurestatus", RunType::FEATURE_STATUS },
 			{ "fss", RunType::FEATURE_STATUS },
@@ -875,26 +997,15 @@ namespace gezi {
 			{ "gen_crossdata", RunType::GEN_CROSS_DATA },
 			{ "gcd", RunType::GEN_CROSS_DATA },
 			{ "changeratio", RunType::CHANGE_RAIO },
-			{ "cr", RunType::CHANGE_RAIO }
+			{ "cr", RunType::CHANGE_RAIO },
+			{ "write_text_model", RunType::WRITE_TEXT_MODEL },
+			{ "wtm", RunType::WRITE_TEXT_MODEL },
+			{ "binary_model_to_text", RunType::WRITE_TEXT_MODEL },
+			{ "bm2t", RunType::WRITE_TEXT_MODEL },
+			{ "text_model_to_binary", RunType::TEXT_MODEL_TO_BINARY },
+			{ "tm2b", RunType::TEXT_MODEL_TO_BINARY }
 		};
 
-		map<string, FileFormat> _formats = {
-			{ "unknown", FileFormat::Unknown },
-			{ "dense", FileFormat::Dense },
-			{ "sparse", FileFormat::Sparse },
-			{ "text", FileFormat::Text },
-			{ "libsvm", FileFormat::LibSVM },
-			{ "arff", FileFormat::Arff }
-		};
-
-		map<FileFormat, string> _formatSuffixes = {
-			{ FileFormat::Unknown, "txt" },
-			{ FileFormat::Dense, "dense" },
-			{ FileFormat::Sparse, "sparse" },
-			{ FileFormat::Text, "txt" },
-			{ FileFormat::LibSVM, "libsvm" },
-			{ FileFormat::Arff, "arff" }
-		};
 	};
 } //end of namespace gezi
 

@@ -31,25 +31,27 @@ DEFINE_bool(mc, false, " modelfileCode:Gen model file to save in C++ code £¿ (fo
 DEFINE_bool(mt, false, "modelfileText:  Gen model file to save in text format ? (for Train or TrainTest");
 DEFINE_bool(mxml, false, "modelfileXml:  Gen model file to save in xml format ? (for Train or TrainTest");
 DEFINE_bool(mjson, false, "modelfileJson:  Gen model file to save in json format ? (for Train or TrainTest");
-DEFINE_bool(ft, true, "when -c train will test the train data its self after training");
+DEFINE_bool(snt, false, "saveNormalizerText: wether save normalizer as text/xml/json");
+DEFINE_bool(sct, false, "saveCalibratorText: wether save calibrator as text/xml/json");
+DEFINE_bool(st, true, "selftTest|when -c train will test the train data its self after training");
 
 DEFINE_string(rd, "./result", "resultDir: where to put the result data");
 DEFINE_int32(ri, 0, "resultIndex: the name ouf out file like 0.model.txt 0.model 0.inst.txt");
 
 DEFINE_bool(norm, true, "Normalize features");
 DEFINE_string(normalizer, "MinMax", "Which normalizer?");
-DEFINE_string(nf, "", "normalzierfile: specified the output normalzier text");
 
 DEFINE_string(fn, "", "featureName:");
 //@FIXME
 //DEFINE_string(ev, "/home/users/chenghuige/rsc/app/search/sep/anti-spam/melt/tools3/evaluate/evaluate", "evaluate: use what to evalute the result, notice if not find this one will try to use local evaluate");
-DEFINE_string(ev, "~/tools/evaluate.py", "evaluate: use what to evalute the result, notice if not find this one will try to use local evaluate");
+DEFINE_string(ev, "./tools/evaluate.py", "evaluate: use what to evalute the result, notice if not find this one will try to use local evaluate");
 //DEFINE_string(ev, "./evaluate/evaluate ", "evaluate: use what to evalute the result");
 
 DEFINE_bool(calibrate, true, "calibrateOutput: use calibrator to gen probability?");
 DEFINE_string(calibrator, "sigmoid", "calibratorName: sigmoid/platt naive pav");
 DEFINE_bool(pn, false, "preNormalize:");
 
+DEFINE_string(format, "normal", "support melt/tlc format as normal, also support libSVM");
 DEFINE_string(off, "unknown", "ouput_file_format: if unknow using it's input format");
 
 namespace gezi {
@@ -62,7 +64,6 @@ namespace gezi {
 		_cmd.datafile = FLAGS_i;
 		_cmd.outfile = FLAGS_o;
 		_cmd.outDir = FLAGS_o;
-		_cmd.normalizerfile = FLAGS_nf;
 		_cmd.testDatafile = FLAGS_test;
 		_cmd.validationDatafile = FLAGS_valid;
 		_cmd.modelFolder = FLAGS_m;
@@ -70,10 +71,14 @@ namespace gezi {
 		_cmd.modelfileText = FLAGS_mt;
 		_cmd.modelfileXml = FLAGS_mxml;
 		_cmd.modelfileJson = FLAGS_mjson;
+
+		_cmd.saveNormalizerText = FLAGS_snt;
+		_cmd.saveCalibratorText = FLAGS_sct;
+
 		_cmd.numFolds = FLAGS_k;
 		_cmd.numRuns = FLAGS_nr;
 
-		_cmd.forceTest = FLAGS_ft;
+		_cmd.selfTest = FLAGS_st;
 
 		if (FLAGS_rs == 0)
 		{
@@ -88,6 +93,8 @@ namespace gezi {
 
 		_cmd.normalizeFeatures = FLAGS_norm;
 		_cmd.normalizerName = FLAGS_normalizer;
+		
+		_cmd.calibratorName = FLAGS_calibrator;
 
 		_cmd.featureName = FLAGS_fn;
 
@@ -105,7 +112,7 @@ namespace gezi {
 			_cmd.evaluate = FLAGS_ev + " ";
 		}
 
+		_cmd.fileFormat = FLAGS_format;
 		_cmd.outputFileFormat = FLAGS_off;
-
 	}
 } //end of namespace gezi

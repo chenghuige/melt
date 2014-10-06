@@ -29,6 +29,21 @@ namespace gezi {
 		{
 			return  (static_cast<gezi::Predictor*>(_predictor))->Predict(features, output);
 		}
+
+		/*	void Predictor::Normalize(Vector& features)
+			{
+			return  (static_cast<gezi::Predictor*>(_predictor))->Normalize(features);
+			}*/
+
+		void Predictor::SaveJson(string file)
+		{
+			return  (static_cast<gezi::Predictor*>(_predictor))->SaveJson(file);
+		}
+
+		void Predictor::SaveJson()
+		{
+			return  (static_cast<gezi::Predictor*>(_predictor))->SaveJson();
+		}
 	}
 }  //----end of namespace gezi
 

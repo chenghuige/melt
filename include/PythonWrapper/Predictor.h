@@ -20,9 +20,15 @@ namespace gezi {
 		class Predictor
 		{
 		public:
+			//---------basic function
 			Float Output(Vector& features);
 			Float Predict(Vector& features);
 			Float Predict(Vector& features, Float& output);
+			void Normalize(Vector& features);
+
+			//--------can save json for debug
+			void SaveJson(string file);
+			void SaveJson();
 		public:
 			void* _predictor;
 		};

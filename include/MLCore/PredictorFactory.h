@@ -59,6 +59,28 @@ public:
 		return predictor;
 	}
 
+	//主要用于线性分类器 用于接受其他外部分类器的结果转换为melt接受的文本格式后载入
+	static PredictorPtr CreatePredictorFromTextFormat(string name, string path)
+	{
+		PredictorPtr predictor = CreatePredictor(name);
+		if (predictor != nullptr)
+		{
+			predictor->LoadText(path);
+		}
+		return predictor;
+	}
+
+	static PredictorPtr LoadTextPredictor(string path)
+	{
+		string name = read_file(path + "/model.name.txt");
+		PredictorPtr predictor = CreatePredictor(name);
+		if (predictor != nullptr)
+		{
+			predictor->LoadText(path);
+		}
+		return predictor;
+	}
+
 	static Predictors LoadPredictors(const svec& paths)
 	{
 		Predictors predictors;

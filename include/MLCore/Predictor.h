@@ -52,14 +52,21 @@ namespace gezi {
 			return "Predictor";
 		}
 
+		Predictor& SetPath(string path)
+		{
+			_path = path;
+			return *this;
+		}
+
 		string Path()
 		{
 			return _path;
 		}
 
-		void SetParam(string param)
+		Predictor& SetParam(string param)
 		{
 			_param = param;
+			return *this;
 		}
 
 		string GetParam()
@@ -209,9 +216,15 @@ namespace gezi {
 			}
 		}
 
-		void SetNormalizeCopy(bool normalizeCopy = true)
+		Predictor& SetNormalizeCopy(bool normalizeCopy = true)
 		{
 			_normalizeCopy = normalizeCopy;
+			return *this;
+		}
+
+		virtual void Save()
+		{
+			Save(_path);
 		}
 
 		virtual void Save(string path) override
@@ -220,41 +233,54 @@ namespace gezi {
 			LoadSave::Save(path);
 			_path = path;
 			try_create_dir(path);
-			string modelFile = path + "/model";
+			string modelFile = path + "/model.bin";
 			Save_(modelFile);
 			write_file(Name(), path + "/model.name.txt");
 			write_file(_param, path + "/model.param.txt");
-			SAVE_SHARED_PTR(_normalizer); //@TODO 暂时shared ptr自动序列化没有弄成功 所以单独手动调用save 也不太麻烦
-			SAVE_SHARED_PTR(_calibrator);
+			SAVE_SHARED_PTR(_normalizer, path);
+			SAVE_SHARED_PTR(_calibrator, path);
 			ChangeForLoad();
 		}
 
-		virtual void Save_(string file) 
+		virtual void Save_(string file)
 		{
 			VLOG(0) << Name() << " currently not support saving model";
 		}
 
-		virtual void Load(string path) override
+		void LoadNormalizerAndCalibrator(string path)
 		{
-			ChangeForLoad();
-			_path = path;
-			_param = read_file(OBJ_NAME_PATH(_param));
-			LoadSave::Load(path);
-			string modelFile = path + "/model";
-			Load_(modelFile);
-			string normalizerName = read_file(OBJ_NAME_PATH(_normalizer));
-			if (!normalizerName.empty())
+			if (loadNormalizerAndCalibrator())
 			{
-				_normalizer = NormalizerFactory::CreateNormalizer(normalizerName, OBJ_PATH(_normalizer));
-			}
-			string calibratorName = read_file(OBJ_NAME_PATH(_calibrator));
-			if (!calibratorName.empty())
-			{
-				_calibrator = CalibratorFactory::CreateCalibrator(calibratorName, OBJ_PATH(_calibrator));
+				//#ifdef NO_CEREAL
+				string normalizerName = read_file(OBJ_NAME_PATH(_normalizer, path));
+				if (!normalizerName.empty())
+				{ //@TODO 理论上有了cereal序列化多态shared ptr机制 不再需要单独的通过路径载入这个函数
+					_normalizer = NormalizerFactory::CreateNormalizer(normalizerName, OBJ_PATH(_normalizer, path));
+				}
+				string calibratorName = read_file(OBJ_NAME_PATH(_calibrator, path));
+				if (!calibratorName.empty())
+				{
+					_calibrator = CalibratorFactory::CreateCalibrator(calibratorName, OBJ_PATH(_calibrator, path));
+				}
+				//#else 
+				//			serialize_util::Load(_normalizer, OBJ_PATH(_normalizer, path));
+				//			serialize_util::Load(_calibrator, OBJ_PATH(_calibrator, path));
+				//#endif
 			}
 		}
 
-		virtual void Load_(string file) 
+		virtual void Load(string path) override
+		{
+			_path = path;
+			_param = read_file(OBJ_NAME_PATH(_param, path));
+			LoadSave::Load(path);
+			string modelFile = path + "/model.bin";
+			Load_(modelFile);
+			ChangeForLoad();
+			LoadNormalizerAndCalibrator(path);
+		}
+
+		virtual void Load_(string file)
 		{
 			VLOG(0) << Name() << " currently not support loading model";
 		}
@@ -267,12 +293,11 @@ namespace gezi {
 			ChangeForSave();
 			LoadSave::SaveXml(file);
 			SaveXml_(file);
-			SAVE_SHARED_PTR_ASXML(_calibrator); //@TODO calibrator, normalizer支持xml
-			SAVE_SHARED_PTR_ASXML(_normalizer);
 			ChangeForLoad();
+			SaveXml_NormalizerAndCalibrator(_saveNormalizerText, _saveCalibratorText);
 		}
 
-		virtual void SaveXml_(string file) 
+		virtual void SaveXml_(string file)
 		{
 			VLOG(0) << Name() << " currently not support saving xml";
 		}
@@ -282,9 +307,8 @@ namespace gezi {
 			ChangeForSave();
 			LoadSave::SaveJson(file);
 			SaveJson_(file);
-			SAVE_SHARED_PTR_ASJSON(_calibrator); //@TODO calibrator, normalizer支持xml
-			SAVE_SHARED_PTR_ASJSON(_normalizer);
 			ChangeForLoad();
+			SaveJson_NormalizerAndCalibrator(_saveNormalizerText, _saveCalibratorText);
 		}
 
 		virtual void SaveJson_(string file)
@@ -294,20 +318,19 @@ namespace gezi {
 
 		virtual void SaveText(string file) override
 		{
-			//默认是不支持text格式写出的 除非自己重新手写了模型输出 一般为了debug后者更好展示model信息
-			//一般情况下选择写出xml就可以较好看到模型信息了 不需要手写 prefer SaveXML
+			LoadSave::SaveText(file);
 			SaveText_(file);
 			SaveText_NormalizerAndCalibrator(_saveNormalizerText, _saveCalibratorText);
 		}
 
-		virtual void SaveText_(string file) 
+		virtual void SaveText_(string file)
 		{
-			VLOG(0) << Name() << " currently not support saving text format! Try SaveXml";
+			VLOG(0) << Name() << " currently not support saving text format! Try SaveJson or SaveXml";
 		}
 
 		void SaveXml()
-		{ 
-			SaveXml(_path + "/model.xml"); 
+		{
+			SaveXml(_path + "/model.xml");
 		}
 
 		void SaveJson()
@@ -320,19 +343,36 @@ namespace gezi {
 			SaveText(_path + "/model.txt");
 		}
 
-		NormalizerPtr GetNormalizer()
+		virtual void LoadText_(string file)
+		{
+			VLOG(0) << Name() << " currently not support loading text format!";
+		}
+
+		virtual void LoadText(string path) override
+		{
+			ChangeForLoad();
+			_path = path;
+			_param = read_file(OBJ_NAME_PATH(_param, _path));
+			LoadSave::LoadText(path);
+			string modelFile = path + "/model.txt";
+			LoadText_(modelFile);
+			LoadNormalizerAndCalibrator(path);
+		}
+
+		NormalizerPtr& GetNormalizer()
 		{
 			return _normalizer;
 		}
 
-		CalibratorPtr GetCalibrator()
+		CalibratorPtr& GetCalibrator()
 		{
 			return _calibrator;
 		}
 
-		void SetNumFeatures(int numFeatures)
+		Predictor& SetNumFeatures(int numFeatures)
 		{
 			_numFeatures = numFeatures;
+			return *this;
 		}
 
 		int GetNumFeatures()
@@ -340,15 +380,24 @@ namespace gezi {
 			return _numFeatures;
 		}
 
-		void SetUnSaveNormalizerText()
+		Predictor& SetSaveNormalizerText(bool setSave = true)
 		{
-			_saveNormalizerText = false;
+			_saveNormalizerText = setSave;
+			return *this;
 		}
 
-		void SetUnSaveCalibratorText()
+		Predictor& SetSaveCalibratorText(bool setSave = true)
 		{
-			_saveCalibratorText = false;
+			_saveCalibratorText = setSave;
+			return *this;
 		}
+
+		static bool& loadNormalizerAndCalibrator()
+		{
+			static bool _loadNormalizerAndCalibrator = true;
+			return _loadNormalizerAndCalibrator;
+		}
+
 
 		friend class cereal::access;
 		template<class Archive>
@@ -371,27 +420,59 @@ namespace gezi {
 		{
 			if (saveNormalizer)
 			{
-				SAVE_SHARED_PTR_ASTEXT(_normalizer);
+				SAVE_SHARED_PTR_ASTEXT(_normalizer, _path);
 			}
 			if (saveCalibrator)
 			{
-				SAVE_SHARED_PTR_ASTEXT(_calibrator);
+				SAVE_SHARED_PTR_ASTEXT(_calibrator, _path);
 			}
 		}
-	
+
+		void SaveXml_NormalizerAndCalibrator(bool saveNormalizer = true, bool saveCalibrator = true)
+		{
+			if (saveNormalizer)
+			{
+				SAVE_SHARED_PTR_ASXML(_normalizer, _path);
+			}
+			if (saveCalibrator)
+			{
+				SAVE_SHARED_PTR_ASXML(_calibrator, _path);
+			}
+		}
+
+		void SaveJson_NormalizerAndCalibrator(bool saveNormalizer = true, bool saveCalibrator = true)
+		{
+			if (saveNormalizer)
+			{
+				SAVE_SHARED_PTR_ASJSON(_normalizer, _path);
+			}
+			if (saveCalibrator)
+			{
+				SAVE_SHARED_PTR_ASJSON(_calibrator, _path);
+			}
+		}
+
 		void ChangeForSave()
 		{
+			CHECK_GT(_featureNames.size(), 0);
 			if (_numFeatures > 1000 && _featureNames[0] == "f0" && _featureNames[999] == "f999")
 			{
-				_featureNames.clear();
+				_tempFeatureNames.swap(_featureNames);
 			}
 		}
 	protected:
 		void ChangeForLoad()
 		{
-			if (_numFeatures > _featureNames.size())
+			if (_featureNames.empty())
 			{
-				CreateFakeFeatureNames();
+				if (_tempFeatureNames.empty())
+				{
+					CreateFakeFeatureNames();
+				}
+				else
+				{
+					_featureNames.swap(_tempFeatureNames);
+				}
 			}
 		}
 
@@ -402,21 +483,24 @@ namespace gezi {
 				_featureNames.push_back("f" + STR(i));
 			}
 		}
+
 	protected:
 		bool _normalizeCopy = false;
 		NormalizerPtr _normalizer = nullptr;
 		CalibratorPtr _calibrator = nullptr;
 
 		svec _featureNames;
+		svec _tempFeatureNames;
 		int _numFeatures = 0; //@TODO maybe uint int64 .. 暂时只处理int范围内的特征 文本分类会不会超过。。
 
 		string _path;
 		string _param;
 
 	private:
-		bool _saveNormalizerText = true;
-		bool _saveCalibratorText = true;
+		bool _saveNormalizerText = false; //是否输出文本格式 包括xml,json统一使用
+		bool _saveCalibratorText = false;
 	};
+
 	typedef shared_ptr<Predictor> PredictorPtr;
 	typedef vector<PredictorPtr> Predictors;
 }  //----end of namespace gezi
