@@ -32,6 +32,28 @@
 
 namespace gezi {
 
+	//@TODO 修改名字或者增加namespace 易冲突
+	static const map<string, FileFormat> kFormats = {
+		{ "unknown", FileFormat::Unknown },
+		{ "dense", FileFormat::Dense },
+		{ "sparse", FileFormat::Sparse },
+		{ "sparse_no_length", FileFormat::Sparse },
+		{ "text", FileFormat::Text },
+		{ "libsvm", FileFormat::LibSVM },
+		{ "arff", FileFormat::Arff }
+	};
+
+	static const map<FileFormat, string> kFormatSuffixes = {
+		{ FileFormat::Unknown, "unknown" },
+		{ FileFormat::Dense, "dense" },
+		{ FileFormat::Sparse, "sparse" },
+		{ FileFormat::SparseNoLength, "sparse" },
+		{ FileFormat::Text, "txt" },
+		{ FileFormat::LibSVM, "libsvm" },
+		{ FileFormat::Arff, "arff" }
+	};
+
+
 	//不做clear清理工作每次 create 一个新的InstanceParser使用即可
 	class InstanceParser
 	{
@@ -247,14 +269,17 @@ namespace gezi {
 
 			return filterArray;
 		}
+
 		bool IsSparse()
 		{
 			return !IsDense();
 		}
+
 		bool IsDense()
 		{
 			return _fileFormat == FileFormat::Dense;
 		}
+
 		void InitColumnTypes(svec& lines)
 		{
 			for (int idx : _attributesIdx)
@@ -298,6 +323,7 @@ namespace gezi {
 				_firstColums = split(lines[_hasHeader], _sep);
 			}
 
+			//如果是_开头那么第一个是Name 如果没有设置labelIdx那么第二个紧跟着认为是Label
 			if (startswith(_firstColums[0], '_'))
 			{
 				{
@@ -310,6 +336,7 @@ namespace gezi {
 				}
 			}
 
+			//默认如果没有Name 第一个是Label
 			if (_labelIdx < 0)
 			{
 				_labelIdx = 0;
@@ -321,7 +348,7 @@ namespace gezi {
 		void InitNames()
 		{
 			if (_hasHeader)
-			{
+			{ //意味着文件中明确指明了所有的特征名称
 				for (int i = 0; i < _columnNum; i++)
 				{
 					switch (_columnTypes[i])
@@ -342,7 +369,7 @@ namespace gezi {
 				_featureNum = _instances.FeatureNum();
 			}
 			else
-			{
+			{ //需要统计特征数目
 				int numFeatures = 0;
 				if (_fileFormat == FileFormat::Dense)
 				{
@@ -370,17 +397,6 @@ namespace gezi {
 			}
 		}
 
-		void SetSparseFeatureNames()
-		{
-			if (!_hasHeader)
-			{
-				for (int i = 0; i < _featureNum; i++)
-				{
-					string name = "f" + STR(i);
-					_instances.schema.featureNames.push_back(name);
-				}
-			}
-		}
 		void SetTextFeatureNames()
 		{
 			if (!_hasHeader)
@@ -390,6 +406,7 @@ namespace gezi {
 		}
 		void CreateInstancesFromDenseFormat(svec& lines, uint64 start)
 		{
+			VLOG(1) << "CreateInstancesFromDenseFormat";
 			uint64 end = start + _instanceNum;
 #pragma omp parallel for 
 			for (uint64 i = start; i < end; i++)
@@ -436,32 +453,48 @@ namespace gezi {
 						break;
 					}
 				}
-
-				if (_args.keepSparse)
-				{
-					features.ToSparse();
-				}
-				else if (!_args.keepDense)
-				{//if not keep dense   如果是0值数目<= FeatureNum/2转 sparse
-					features.Sparsify(0.5);
-				}
-
-				if (!instance.names.empty())
-				{
-					/*if (startswith(instance.names[0], "_"))
-						instance.names[0] = instance.names[0].substr(1);*/
-					instance.name = join(instance.names, _args.ncsep);
-				}
 			}
 			ufo::erase(_instances, nullptr);
 		}
 
+		//这个放到这里会影响找不到所有其它stl_util.h里面定义的split...
+		////@TODO 这个版本是 int + double 如果是需要其他类型的 fast atou快一些 但是运行有问题 暂不使用
+		//template<typename FindFunc, typename UnfindFunc>
+		//static void split(string input, const char sep, const char inSep, FindFunc findFunc, UnfindFunc unfindFunc)
+		//{
+		//	size_t pos = 0;
+		//	size_t pos2 = input.find(sep);
+		//	int i = 0;
+		//	while (pos2 != string::npos)
+		//	{
+		//		int len = pos2 - pos;
+		//		//why find_char so slow.... 
+		//		//size_t inPos = find_char(input, inSep, pos, len);
+		//		size_t inPos = input.find(inSep, pos);
+		//		//if (inPos != string::npos)
+		//		if (inPos < pos2) //这个查找可以优化 但是问题不大。。
+		//		{
+		//			findFunc(atoi(input.c_str() + pos), atof(input.c_str() + inPos + 1));
+		//			//findFunc(fast_atou(input.c_str() + pos, input.c_str() + inPos), atof(input.c_str() + inPos + 1));
+		//		}
+		//		else
+		//		{
+		//			unfindFunc(i, input.substr(pos, len));
+		//		}
+		//		pos = pos2 + 1;
+		//		pos2 = input.find(sep, pos);
+		//		i++;
+		//	}
+		//	size_t inPos = input.find(inSep, pos);
+		//	findFunc(atoi(input.c_str() + pos), atof(input.c_str() + inPos + 1));
+		//}
 		//@TODO Instance Next(string line) 支持streaming
 		//@TODO tlc貌似快很多thread.feature.txt 9w instance 
 		//1000ms 这里需要2000ms是因为split c#的速度更快？ 另外注意能char split find不要用string
 		//不过使用omp并行后 200ms就搞定
 		void CreateInstancesFromSparseFormat(svec& lines, uint64 start)
 		{
+			VLOG(1) << " CreateInstancesFromSparseFormat";
 			uint64 end = start + _instanceNum;
 #pragma omp parallel for 
 			for (uint64 i = start; i < end; i++)
@@ -470,59 +503,57 @@ namespace gezi {
 				_instances[i - start] = make_shared<Instance>(_featureNum);
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
-				svec l = split(line, _sep);
 
-				for (size_t j = 0; j < l.size(); j++)
-				{
-					string item = l[j];
-					//string index_, value_;
-					int index;
-					Float value;
-					//bool ret = split(item, ':', index_, value_);
-					bool ret = split(item, ':', index, value);
-					if (ret)
+				splits_int_double(line, _sep[0], ':', [&, this](int index, Float value) {
+					if (_selectedArray[index])
 					{
-						//int index = INT(index_); Float value = DOUBLE(value_);
-						if (_selectedArray[index])
-							features.Add(index, value);
+						features.Add(index, value);
 					}
-					else
-					{
-						//@TODO 暂时没有检查格式正确性 要求的是 所有非:的数据 都在后面
-						switch (_columnTypes[j])
-						{
-						case ColumnType::Name:
-							instance.names.push_back(item);
-							break;
-						case ColumnType::Label:
-							instance.label = DOUBLE(item);
-							break;
-						case ColumnType::Weight:
-							instance.weight = DOUBLE(item);
-							break;
-						case ColumnType::Attribute:
-							instance.attributes.push_back(item);
-							break;
-						default:
-							break;
-						}
-					}
-				}
-				if (_args.keepDense)
-				{
-					features.ToDense();
-				}
-				else if (!_args.keepSparse)
-				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
-					features.Densify(0.5);
-				}
-
-				instance.name = join(instance.names, _args.ncsep);
+				},
+					[&, this](int index, string item) {
+					ParseSparseAttributes(instance, index, item);
+				});
+				//svec l = split(line, _sep);
+				//for (size_t j = 0; j < l.size(); j++)
+				//{
+				//	string item = l[j];
+				//	int index;
+				//	Float value;
+				//	bool ret = split(item, ':', index, value);
+				//	if (ret)
+				//	{
+				//		if (_selectedArray[index])
+				//			features.Add(index, value);
+				//	}
+				//	else
+				//	{
+				//		//@TODO 暂时没有检查格式正确性 要求的是 所有非:的数据 都在后面
+				//		switch (_columnTypes[j])
+				//		{
+				//		case ColumnType::Name:
+				//			instance.names.push_back(item);
+				//			break;
+				//		case ColumnType::Label:
+				//			instance.label = DOUBLE(item);
+				//			break;
+				//		case ColumnType::Weight:
+				//			instance.weight = DOUBLE(item);
+				//			break;
+				//		case ColumnType::Attribute:
+				//			instance.attributes.push_back(item);
+				//			break;
+				//		default:
+				//			break;
+				//		}
+				//	}
+				//}
 			}
 		}
 
+		//如果没有提前声明向量最大长度SparseNoLength 那么不支持特征选择,否则影响解析速度 可以先转换为正常的sparse格式
 		void CreateInstancesFromSparseNoLengthFormat(svec& lines, uint64 start)
 		{
+			VLOG(1) << "CreateInstancesFromSparseNoLengthFormat";
 			uint64 end = start + _instanceNum;
 			int maxIndex = 0;
 #pragma omp parallel for 
@@ -532,66 +563,67 @@ namespace gezi {
 				_instances[i - start] = make_shared<Instance>();
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
-				svec l = split(line, _sep);
-
-				for (size_t j = 0; j < l.size(); j++)
-				{
-					string item = l[j];
-					string index_, value_;
-					bool ret = split(item, ':', index_, value_);
-					if (ret)
+				splits_int_double(line, _sep[0], ':', [&, this](int index, Float value) {
+					if (_selectedArray[index])
 					{
-						int index = INT(index_); Float value = DOUBLE(value_);
-						if (_selectedArray[index])
-							features.Add(index, value);
+						features.Add(index, value);
+					}
 #pragma omp critical
-						{
-							if (index > maxIndex)
-							{
-								maxIndex = index;
-							}
-						}
-					}
-					else
 					{
-						//@TODO 暂时没有检查格式正确性 要求的是 所有非:的数据 都在后面 如果不符合会越界
-						switch (_columnTypes[j])
+						if (index > maxIndex)
 						{
-						case ColumnType::Name:
-							instance.names.push_back(item);
-							break;
-						case ColumnType::Label:
-							instance.label = DOUBLE(item);
-							break;
-						case ColumnType::Weight:
-							instance.weight = DOUBLE(item);
-							break;
-						case ColumnType::Attribute:
-							instance.attributes.push_back(item);
-							break;
-						default:
-							break;
+							maxIndex = index;
 						}
 					}
-				}
-				instance.name = join(instance.names, _args.ncsep);
+				},
+					[&, this](int index, string item) {
+					ParseSparseAttributes(instance, index, item);
+				});
+				//				svec l = split(line, _sep);
+				//
+				//				for (size_t j = 0; j < l.size(); j++)
+				//				{
+				//					string item = l[j];
+				//					string index_, value_;
+				//					bool ret = split(item, ':', index_, value_);
+				//					if (ret)
+				//					{
+				//						int index = INT(index_); Float value = DOUBLE(value_);
+				//						if (_selectedArray[index])
+				//							features.Add(index, value);
+				//#pragma omp critical
+				//						{
+				//							if (index > maxIndex)
+				//							{
+				//								maxIndex = index;
+				//							}
+				//						}
+				//					}
+				//					else
+				//					{
+				//						//@TODO 暂时没有检查格式正确性 要求的是 所有非:的数据 都在后面 如果不符合会越界
+				//						switch (_columnTypes[j])
+				//						{
+				//						case ColumnType::Name:
+				//							instance.names.push_back(item);
+				//							break;
+				//						case ColumnType::Label:
+				//							instance.label = DOUBLE(item);
+				//							break;
+				//						case ColumnType::Weight:
+				//							instance.weight = DOUBLE(item);
+				//							break;
+				//						case ColumnType::Attribute:
+				//							instance.attributes.push_back(item);
+				//							break;
+				//						default:
+				//							break;
+				//						}
+				//					}
+				//				}
 			}
 			_featureNum = maxIndex + 1;
-			SetSparseFeatureNames();
-#pragma omp parallel for 
-			for (uint64 i = 0; i < _instanceNum; i++)
-			{
-				Vector& features = _instances[i]->features;
-				features.SetLength(_featureNum);
-				if (_args.keepDense)
-				{
-					features.ToDense();
-				}
-				else if (!_args.keepSparse)
-				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
-					features.Densify(0.5);
-				}
-			}
+			_instances.schema.featureNames.SetNumFeatures(_featureNum);
 		}
 
 		FileFormat GetFileFormat(string line)
@@ -602,7 +634,7 @@ namespace gezi {
 				{
 					if (contains(_firstColums[i], ':'))
 					{
-						return FileFormat::SparseNoLenth;
+						return FileFormat::SparseNoLength;
 					}
 
 					int j = i + 1;
@@ -619,7 +651,7 @@ namespace gezi {
 					{
 						if (contains(_firstColums[j], ':'))
 						{
-							_featureNum = INT(_firstColums[i]);
+							_featureNum = INT(_firstColums[i]); //sparse格式解析出特征数目！ @IMPORTANT
 							_columnTypes[i] = ColumnType::Attribute;
 							return FileFormat::Sparse;
 						}
@@ -663,8 +695,12 @@ namespace gezi {
 			VLOG(2) << format("InitColumnTypes time: {}", timer.elapsed_ms());
 			timer.restart();
 
-			//libsvm格式已经特殊处理 这里可能的是 normal, text
-			_fileFormat = _format == "text" ? FileFormat::Text : GetFileFormat(lines[_hasHeader]);
+			_fileFormat = kFormats[_format];
+			if (_fileFormat == FileFormat::Unknown)
+			{
+				_fileFormat = GetFileFormat(lines[_hasHeader]);
+			}
+				
 			InitNames();
 
 			VLOG(2) << format("InitNames time: {}", timer.elapsed_ms());
@@ -700,52 +736,64 @@ namespace gezi {
 			PVAL(_args.keepDense);
 		}
 
-		//libsvm格式不支持过滤特征 
-		Instances&& ParseLibSVM(string dataFile)
+		char GuessSeparator(string line, string seps)
 		{
-			VLOG(0) << "Parsing libsvm format: " << dataFile;
-			Timer timer;
-			vector<string> lines = read_lines(dataFile, "//");
-			Pval_(timer.elapsed_ms(), "read_lines");
-			if (lines.empty())
+			for (char sep : seps)
 			{
-				LOG(FATAL) << "Fail to load data file! " << dataFile << " is empty!";
+				if (line.find(sep) != string::npos)
+				{
+					return sep;
+				}
 			}
+			THROW(format("Could not gusess sep for line:[{}] seps:{}", line, seps));
+		}
 
-			_instanceNum = lines.size();
-			_instances.resize(_instanceNum, nullptr);
+		//处理广义的属性数据
+		void ParseSparseAttributes(Instance& instance, int index, string item)
+		{
+			switch (_columnTypes[index])
+			{
+			case ColumnType::Name:
+				instance.names.push_back(item);
+				break;
+			case ColumnType::Label:
+				instance.label = DOUBLE(item);
+				if (instance.label == -1)
+				{
+					instance.label = 0;
+				}
+				break;
+			case ColumnType::Weight:
+				instance.weight = DOUBLE(item);
+				break;
+			case ColumnType::Attribute:
+				instance.attributes.push_back(item);
+				break;
+			default:
+				break;
+			}
+		}
 
-			_hasHeader = false;
-			_instances.SetHeader("", _hasHeader);
-			_fileFormat = FileFormat::LibSVM;
-			_instances.schema.fileFormat = _fileFormat;
-			_hasWeight = false;
-			_instances.schema.hasWeights = _hasWeight;
-
+		//@TODO 还可以优化的是首先处理 不带有:的属性 然后集中处理带有的
+		void CreateInstancesFromLibSVMFormat(svec& lines, uint64 start)
+		{
+			VLOG(0) << "CreateInstancesFromLibSVMFormat";
+			uint64 end = start + _instanceNum;
 			int maxIndex = 1;
+			char sep = GuessSeparator(lines[0], "\t ");
 #pragma omp parallel for 
-			for (uint64 i = 0; i < _instanceNum; i++)
+			for (uint64 i = start; i < end; i++)
 			{
 				string line = lines[i];
-				_instances[i] = make_shared<Instance>();
-				Instance& instance = *_instances[i];
-				Vector& features = instance.features;
-				svec l = split(line, "\t "); //libsvm 是用空格或者tab都有可能
-				for (size_t j = 0; j < l.size(); j++)
-				{
-					string item = l[j];
-					if (j == 0)
+				_instances[i - start] = make_shared<Instance>(_featureNum);
+				Instance& instance = *_instances[i - start];
+				Vector& features = instance.features;;
+
+				splits_int_double(line, sep, ':', [&, this](int index, Float value) {
+					if (_selectedArray[index - 1])
 					{
-						instance.label = DOUBLE(item);
-						if (instance.label == -1)
-						{
-							instance.label = 0;
-						}
-						continue;
+						features.Add(index - 1, value);
 					}
-					string index_, value_;
-					split(item, ':', index_, value_);
-					int index = INT(index_); Float value = DOUBLE(value_);
 #pragma omp critical
 					{
 						if (index > maxIndex)
@@ -753,38 +801,45 @@ namespace gezi {
 							maxIndex = index;
 						}
 					}
-					features.Add(index - 1, value); //libsvm 是1开始 melt/tlc内部0开始处理
-				}
+				},
+					[&, this](int index, string item) {
+					ParseSparseAttributes(instance, index, item);
+				});
+				//				svec l = split(line, "\t "); //libsvm 是用空格或者tab都有可能
+				//				for (size_t j = 0; j < l.size(); j++)
+				//				{
+				//					string item = l[j];
+				//					if (j == 0)
+				//					{
+				//						instance.label = DOUBLE(item);
+				//						if (instance.label == -1)
+				//						{
+				//							instance.label = 0;
+				//						}
+				//						continue;
+				//					}
+				//					string index_, value_;
+				//					split(item, ':', index_, value_);
+				//					int index = INT(index_); Float value = DOUBLE(value_);
+				//#pragma omp critical
+				//					{
+				//						if (index > maxIndex)
+				//						{
+				//							maxIndex = index;
+				//						}
+				//					}
+				//					features.Add(index - 1, value); //libsvm 是1开始 melt/tlc内部0开始处理
+				//				}
 			}
 			_featureNum = maxIndex;
-			for (int i = 0; i < _featureNum; i++)
-			{
-				string name = "f" + STR(i);
-				_instances.schema.featureNames.push_back(name);
-			}
-#pragma omp parallel for 
-			for (uint64 i = 0; i < _instanceNum; i++)
-			{
-				Vector& features = _instances[i]->features;
-				features.SetLength(_featureNum);
-				if (_args.keepDense)
-				{
-					features.ToDense();
-				}
-				else if (!_args.keepSparse)
-				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
-					features.Densify(0.5);
-				}
-			}
-
-			PrintInfo();
+			_instances.schema.featureNames.SetNumFeatures(_featureNum);
 			return move(_instances);
 		}
 
-		//训练文本解析
+		//训练文本解析 暂时都是只支持单一char的分隔符 没有必要支持string分割
 		void ParseTextForTrain(svec& lines, uint64 start)
 		{
-			Timer timer;
+			VLOG(0) << "ParseTextForTrain";
 			uint64 end = start + _instanceNum;
 #pragma omp parallel for 
 			for (uint64 i = start; i < end; i++)
@@ -793,77 +848,79 @@ namespace gezi {
 				_instances[i - start] = make_shared<Instance>();
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
-				svec l = split(line, _sep);
 
-				for (size_t j = 0; j < l.size(); j++)
-				{
-					string item = l[j];
-					string key, value_;
-					int index; Float value;
-					bool ret = split(item, ':', key, value_);
-					if (ret)
-					{
-						value = DOUBLE(value_);
+				splits_string_double(line, _sep[0], ':', [&, this](string key, Float value) {
+					int index;
 #pragma  omp critical
-						{
-							//输入需要保证没有重复的key
-							index = GetIdentifer().add(key);
-						}
-						if (_selectedArray[index])
-							features.Add(index, value);
-					}
-					else
 					{
-						//@TODO 暂时没有检查格式正确性 要求的是 所有非:的数据 都在后面
-						switch (_columnTypes[j])
-						{
-						case ColumnType::Name:
-							instance.names.push_back(item);
-							break;
-						case ColumnType::Label:
-							instance.label = DOUBLE(item);
-							break;
-						case ColumnType::Weight:
-							instance.weight = DOUBLE(item);
-							break;
-						case ColumnType::Attribute:
-							instance.attributes.push_back(item);
-							break;
-						default:
-							break;
-						}
+						//输入需要保证没有重复的key
+						index = GetIdentifer().add(key);
 					}
-				}
-				instance.name = join(instance.names, _args.ncsep);
+					if (_selectedArray[index])
+					{
+						features.Add(index, value);
+					}
+				},
+					[&, this](int index, string item) {
+					ParseSparseAttributes(instance, index, item);
+				});
+
+				//				svec l = split(line, _sep);
+				//
+				//				for (size_t j = 0; j < l.size(); j++)
+				//				{
+				//					string item = l[j];
+				//					string key, value_;
+				//					int index; Float value;
+				//					bool ret = split(item, ':', key, value_);
+				//					if (ret)
+				//					{
+				//						value = DOUBLE(value_);
+				//#pragma  omp critical
+				//						{
+				//							//输入需要保证没有重复的key
+				//							index = GetIdentifer().add(key);
+				//						}
+				//						if (_selectedArray[index])
+				//							features.Add(index, value);
+				//					}
+				//					else
+				//					{
+				//						//@TODO 暂时没有检查格式正确性 要求的是 所有非:的数据 都在后面
+				//						switch (_columnTypes[j])
+				//						{
+				//						case ColumnType::Name:
+				//							instance.names.push_back(item);
+				//							break;
+				//						case ColumnType::Label:
+				//							instance.label = DOUBLE(item);
+				//							break;
+				//						case ColumnType::Weight:
+				//							instance.weight = DOUBLE(item);
+				//							break;
+				//						case ColumnType::Attribute:
+				//							instance.attributes.push_back(item);
+				//							break;
+				//						default:
+				//							break;
+				//						}
+				//					}
+				//				}
 			}
 			_featureNum = GetIdentifer().size();
 			SetTextFeatureNames();
-#pragma omp parallel for 
-			for (uint64 i = 0; i < _instanceNum; i++)
-			{
-				Vector& features = _instances[i]->features;
-				features.SetLength(_featureNum);
-				if (_args.keepDense)
-				{
-					features.ToDense();
-				}
-				else if (!_args.keepSparse)
-				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
-					features.Densify(0.5);
-				}
-			}
-			GetIdentifer().save(_args.resultDir + "/identifer.txt");
+			GetIdentifer().Save(_args.resultDir + "/identifer.bin");
 		}
 
 		//测试文本解析
 		void ParseTextForTest(svec& lines, uint64 start)
 		{
-			Timer timer;
+			VLOG(0) << "ParseTextForTest";
 			_featureNum = GetIdentifer().size();
 			if (_featureNum == 0)
 			{ //可能RunTest模式 需要加载词表
-				string path = _args.resultDir + "/identifer.txt";
-				InstanceParser::GetIdentifer().load(path);
+				string path = _args.resultDir + "/identifer.bin";
+				InstanceParser::GetIdentifer().Load(path);
 				_featureNum = GetIdentifer().size();
 				CHECK(_featureNum != 0) << "No identifer in memory or to load from disk " << path;
 			}
@@ -877,57 +934,59 @@ namespace gezi {
 				_instances[i - start] = make_shared<Instance>(_featureNum);
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
-				svec l = split(line, _sep);
 
-				for (size_t j = 0; j < l.size(); j++)
-				{
-					string item = l[j];
-					string key, value_;
-					bool ret = split(item, ':', key, value_);
-					if (ret)
+				splits_string_double(line, _sep[0], ':', [&, this](string key, Float value) {
+					int index = GetIdentifer().id(key);
+					if (index != Identifer::null_id() && _selectedArray[index])
 					{
-						int index = GetIdentifer().id(key); Float value = DOUBLE(value_);
-						if (index != Identifer::null_id() && _selectedArray[index])
-							features.Add(index, value);
+						features.Add(index, value);
 					}
-					else
-					{
-						//@TODO 暂时没有检查格式正确性 要求的是 所有非:的数据 都在后面
-						switch (_columnTypes[j])
-						{
-						case ColumnType::Name:
-							instance.names.push_back(item);
-							break;
-						case ColumnType::Label:
-							instance.label = DOUBLE(item);
-							break;
-						case ColumnType::Weight:
-							instance.weight = DOUBLE(item);
-							break;
-						case ColumnType::Attribute:
-							instance.attributes.push_back(item);
-							break;
-						default:
-							break;
-						}
-					}
-				}
-				if (_args.keepDense)
-				{
-					features.ToDense();
-				}
-				else if (!_args.keepSparse)
-				{//if not keep sparse  如果是0值数目> FeatureNum/2转dense
-					features.Densify(0.5);
-				}
+				},
+					[&, this](int index, string item) {
+					ParseSparseAttributes(instance, index, item);
+				});
 
-				instance.name = join(instance.names, _args.ncsep);
+				//svec l = split(line, _sep);
+				//for (size_t j = 0; j < l.size(); j++)
+				//{
+				//	string item = l[j];
+				//	string key, value_;
+				//	bool ret = split(item, ':', key, value_);
+				//	if (ret)
+				//	{
+				//		int index = GetIdentifer().id(key); Float value = DOUBLE(value_);
+				//		if (index != Identifer::null_id() && _selectedArray[index])
+				//			features.Add(index, value);
+				//	}
+				//	else
+				//	{
+				//		//@TODO 暂时没有检查格式正确性 要求的是 所有非:的数据 都在后面
+				//		switch (_columnTypes[j])
+				//		{
+				//		case ColumnType::Name:
+				//			instance.names.push_back(item);
+				//			break;
+				//		case ColumnType::Label:
+				//			instance.label = DOUBLE(item);
+				//			break;
+				//		case ColumnType::Weight:
+				//			instance.weight = DOUBLE(item);
+				//			break;
+				//		case ColumnType::Attribute:
+				//			instance.attributes.push_back(item);
+				//			break;
+				//		default:
+				//			break;
+				//		}
+				//	}
+				//}
 			}
 		}
 
 		//1 张无忌:3.5 小甜甜:2.0  暂时没有测试 不推荐使用 尽量还是外部使用Identifer 脚本处理这些
 		void CreateInstancesFromTextFormat(svec& lines, uint64 start)
 		{
+			VLOG(0) << "CreateInstancesFromTextFormat";
 			int times = TextFormatParsedTime();
 			if (times == 0)
 				ParseTextForTrain(lines, start);
@@ -935,81 +994,13 @@ namespace gezi {
 				ParseTextForTest(lines, start);
 		}
 
-		//默认推荐格式解析
-		Instances&& ParseNormal(string dataFile)
-		{
-			Timer timer;
-			vector<string> lines = read_lines(dataFile, "//");
-			if (lines.empty())
-			{
-				LOG(FATAL) << "Fail to load data file! " << dataFile << " is empty!";
-			}
-			_instanceNum = lines.size();
-
-			if (_args.hasHeader)
-			{
-				_instanceNum--;
-				if (!_instanceNum)
-				{
-					LOG(FATAL) << "Only header no data! " << dataFile;
-				}
-				_hasHeader = true;
-			}
-
-			timer.restart();
-			ParseFirstLine(lines);
-			PVAL_(timer.elapsed_ms(), "ParseFirstLine");
-
-			timer.restart();
-			_selectedArray = GetSelectedArray();
-			PVAL_(timer.elapsed_ms(), "GetSelectedArray");
-
-			_instanceNum = lines.size() - _hasHeader; //必须有 因为_hasHeader可能通过解析变为true
-			if (!_instanceNum)
-			{
-				LOG(FATAL) << "Only header no data! " << dataFile;
-			}
-			_instances.resize(_instanceNum, nullptr);
-
-			timer.restart();
-
-			switch (_fileFormat)
-			{
-			case FileFormat::Dense:
-				CreateInstancesFromDenseFormat(lines, _hasHeader);
-				break;
-			case FileFormat::Sparse:
-				CreateInstancesFromSparseFormat(lines, _hasHeader);
-				break;
-			case FileFormat::SparseNoLenth:
-				CreateInstancesFromSparseNoLengthFormat(lines, _hasHeader);
-				break;
-			case FileFormat::Text:
-				CreateInstancesFromTextFormat(lines, _hasHeader);
-				break;
-			default:
-				LOG(WARNING) << "well not supported file format ?";
-				break;
-			}
-
-			PVAL_(timer.elapsed_ms(), "CreateInstances");
-
-			PrintInfo();
-			return move(_instances);
-		}
 
 		Instances&& Parse(string dataFile)
 		{
 			AutoTimer timer("ParseInputDataFile", 0);
-			//-----------------判断输入文件类型
-			if (_format == "libsvm")
-			{//只能特殊处理 外部确认 因为libsvm 是1开始index 
-				return ParseLibSVM(dataFile);
-			}
-			else
-			{
-				return ParseNormal(dataFile);
-			}
+			Parse_(dataFile);
+			Finallize();
+			return move(_instances);
 		}
 
 		void Clear()
@@ -1034,6 +1025,113 @@ namespace gezi {
 		}
 
 	protected:
+		Instances&& Parse_(string dataFile)
+		{
+			Timer timer;
+			vector<string> lines = read_lines_fast(dataFile, "//");
+			if (lines.empty())
+			{
+				LOG(FATAL) << "Fail to load data file! " << dataFile << " is empty!";
+			}
+			_instanceNum = lines.size();
+
+			if (_args.hasHeader)
+			{
+				_instanceNum--;
+				if (!_instanceNum)
+				{
+					LOG(FATAL) << "Only header no data! " << dataFile;
+				}
+				_hasHeader = true;
+			}
+
+			timer.restart();
+			ParseFirstLine(lines);
+			PVAL_(timer.elapsed_ms(), "ParseFirstLine");
+
+			timer.restart();
+			if (_featureNum == 0)
+			{ //如果是没有指明Length的文本格式包括libsvm格式 都是没有指明 这时候仍然不确定特征数目
+				//尝试设置一个较大的默认值 后续会再修正的 注意过滤的时候不要按照匹配了 按照index设定
+				//libsvm格式的也按照melt标准0开始匹配
+				_featureNum = std::numeric_limits<int>::max();
+			}
+			{
+				_selectedArray = GetSelectedArray();
+				PVAL_(timer.elapsed_ms(), "GetSelectedArray");
+			}
+
+			_instanceNum = lines.size() - _hasHeader; //必须有 因为_hasHeader可能通过解析变为true
+			if (!_instanceNum)
+			{
+				LOG(FATAL) << "Only header no data! " << dataFile;
+			}
+			_instances.resize(_instanceNum, nullptr);
+
+			timer.restart();
+
+			switch (_fileFormat)
+			{
+			case FileFormat::Dense:
+				CreateInstancesFromDenseFormat(lines, _hasHeader);
+				break;
+			case FileFormat::Sparse:
+				CreateInstancesFromSparseFormat(lines, _hasHeader);
+				break;
+			case FileFormat::SparseNoLength:
+				CreateInstancesFromSparseNoLengthFormat(lines, _hasHeader);
+				break;
+			case  FileFormat::LibSVM:
+				CreateInstancesFromLibSVMFormat(lines, _hasHeader);
+				break;
+			case FileFormat::Text:
+				CreateInstancesFromTextFormat(lines, _hasHeader);
+				break;
+			default:
+				LOG(WARNING) << "well not supported file format ?";
+				break;
+			}
+
+			PVAL_(timer.elapsed_ms(), "CreateInstances");
+
+			PrintInfo();
+			return move(_instances);
+		}
+
+		void Finallize()
+		{
+#pragma omp parallel for 
+			for (uint64 i = 0; i < _instanceNum; i++)
+			{
+				_instances[i]->name = join(_instances[i]->names, _args.ncsep);
+				Vector& features = _instances[i]->features;
+				features.SetLength(_featureNum);
+			
+				if (features.IsDense())
+				{
+					if (features.keepSparse)
+					{
+						features.ToSparse();
+					}
+					else
+					{
+						features.Sparsify(0.5);
+					}
+				}
+				else
+				{
+					if (features.keepDense)
+					{
+						features.ToDense();
+					}
+					else
+					{
+						features.Densify(0.5);
+					}
+				}
+			}
+		}
+
 	private:
 		Instances _instances;
 		uint64 _instanceNum = 0;

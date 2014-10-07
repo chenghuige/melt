@@ -400,8 +400,8 @@ namespace gezi {
 				Noticer nt("Test itself!");
 				try_create_dir(_cmd.resultDir);
 				string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
-				auto testInstances = create_instances(_cmd.datafile);
-				//auto& testInstances = instances;
+				//auto testInstances = create_instances(_cmd.datafile);
+				auto& testInstances = instances; //好像Train的过程没有改变instances 没有normlaize被改变吗 @TODO 确认NormalizeCopy ?
 				//could use deep copy of instances at first so do not need reload from disk and also avoid modification during train like normalize
 				CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
 				Test(testInstances, predictor, instFile);
@@ -604,25 +604,25 @@ namespace gezi {
 			Instances instances = create_instances(_cmd.datafile);
 			if (fileFormat == FileFormat::Unknown)
 			{
-				LOG(WARNING) << "Not specified ouput file format, do nothing";
+				LOG(WARNING) << "Not specified ouput file format";
 			}
 			else if (fileFormat == instances.schema.fileFormat)
 			{
-				LOG(WARNING) << "Specified ouput file format is the same as input , do nothing";
+				LOG(WARNING) << "Specified ouput file format is the same as input";
 			}
-			else
+			//else
 			{
-				if (!_cmd.outfile.empty())
+				string outfile = _cmd.outfile;
+				if (outfile.empty())
 				{
-					write(instances, _cmd.outfile, fileFormat);
-				}
-				else
-				{
-					string outfile;
 					string suffix = kFormatSuffixes[fileFormat];
 					outfile = GetOutputFileName(_cmd.datafile, suffix, true);
-					write(instances, outfile, fileFormat);
+					if (outfile == _cmd.datafile)
+					{
+						outfile += ".bak";
+					}
 				}
+				write(instances, outfile, fileFormat);
 			}
 		}
 

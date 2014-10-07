@@ -16,25 +16,7 @@
 
 #include "InstanceParser.h"
 namespace gezi {
-	//@TODO 修改名字或者增加namespace 易冲突
-	static const map<string, FileFormat> kFormats = {
-		{ "unknown", FileFormat::Unknown },
-		{ "dense", FileFormat::Dense },
-		{ "sparse", FileFormat::Sparse },
-		{ "text", FileFormat::Text },
-		{ "libsvm", FileFormat::LibSVM },
-		{ "arff", FileFormat::Arff }
-	};
-
-	static const map<FileFormat, string> kFormatSuffixes = {
-		{ FileFormat::Unknown, "txt" },
-		{ FileFormat::Dense, "dense" },
-		{ FileFormat::Sparse, "sparse" },
-		{ FileFormat::Text, "txt" },
-		{ FileFormat::LibSVM, "libsvm" },
-		{ FileFormat::Arff, "arff" }
-	};
-
+	
 	inline Instances create_instances(string infile)
 	{
 		InstanceParser parser;
@@ -248,11 +230,11 @@ namespace gezi {
 
 	inline void write(Instances& instances, string outfile, FileFormat format)
 	{
-		VLOG(0) << "Writing to: " << outfile << " in format: " << kFormatSuffixes[format];
 		if (format == FileFormat::Unknown)
 		{
 			format = instances.schema.fileFormat;
 		}
+		VLOG(0) << "Writing to: " << outfile << " in format: " << kFormatSuffixes[format];
 
 		switch (format)
 		{
@@ -260,7 +242,7 @@ namespace gezi {
 			write_dense(instances, outfile);
 			break;
 		case  FileFormat::Sparse:
-		case FileFormat::SparseNoLenth:
+		case FileFormat::SparseNoLength:
 			write_sparse(instances, outfile);
 			break;
 		case FileFormat::Text:

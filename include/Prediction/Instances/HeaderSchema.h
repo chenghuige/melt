@@ -25,7 +25,7 @@ namespace gezi
 		Unknown = 0,
 		Dense,
 		Sparse,  // 1230 1:3
-		SparseNoLenth, // 1:3
+		SparseNoLength, // 1:3
 		Text,
 		LibSVM,
 		Arff
