@@ -108,7 +108,7 @@ namespace gezi {
 				int maxLeaves = parse_int_param("NumInternalNodes=", lines[i++]);
 				PVAL(maxLeaves);
 				{
-					OnlineRegressionTree tree(identifer.keys());
+					OnlineRegressionTree tree;
 					string splits = parse_string_param("SplitFeatures=", lines[i++]);
 					tree._splitFeature = from(split(splits, '\t')) >> select([&](string a)
 					{
@@ -157,6 +157,11 @@ namespace gezi {
 
 			//--------------ÉèÖÃÌØÕ÷Ãû³Æ
 			_featureNames = move(identifer.keys());
+
+			for (auto& tree : _trees)
+			{
+				tree._featureNames = &_featureNames;
+			}
 
 			//-------------calibrator
 			double paramB = -parse_double_param("Bias=", lines[i]);

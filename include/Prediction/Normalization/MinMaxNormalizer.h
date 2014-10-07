@@ -70,6 +70,7 @@ namespace gezi {
 		}
 		virtual void Begin() override
 		{
+			PVAL(_numFeatures);
 			AffineNormalizer::Begin();
 			_counts.resize(_numFeatures, 1);
 		}

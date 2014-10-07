@@ -49,7 +49,7 @@ namespace gezi {
 			int numNegPerFold = numNeg / numFolds;
 			int numUnlabeledPerFold = numUnlabeled / numFolds;
 
-			VLOG(0) << format("In every fold, positives: %d negatives: %d unlabeled: %d") % numPosPerFold % numNegPerFold % numUnlabeledPerFold;
+			VLOG(0) << boost::format("In every fold, positives: %d negatives: %d unlabeled: %d") % numPosPerFold % numNegPerFold % numUnlabeledPerFold;
 
 			int currPosFold = 0, currNegFold = 0, numCurrPos = 0, numCurrNeg = 0;
 			for (size_t i = 0; i < data.size(); i++)

@@ -25,7 +25,7 @@ namespace gezi {
 		//训练器中使用构造
 		LinearPredictor(const Vector& weights, Float bias,
 			NormalizerPtr normalizer, CalibratorPtr calibrator,
-			const svec& featureNames,
+			const FeatureNamesVector& featureNames,
 			string name = "LinearPredictor")
 			:Predictor(normalizer, calibrator, featureNames),
 			_weights(weights), _bias(bias),
@@ -71,10 +71,9 @@ namespace gezi {
 		//SaveText是可选的 如果要使用 务必先调用Save 因为加载至使用Load
 		virtual void SaveText_(string file) override
 		{
-			CHECK_EQ(_featureNames.size(), _numFeatures);
 			ofstream ofs(file);
 			ofs << "ModelName=" << Name() << endl;
-			ofs << "FeatureNum=" << _featureNames.size() << endl;
+			ofs << "FeatureNum=" << _weights.size() << endl;
 			ofs << -1 << "\t" << "Bias" << "\t" << _bias << endl;
 			_weights.ForEachNonZero([&ofs, this](int index, Float value)
 			{
@@ -92,10 +91,9 @@ namespace gezi {
 			}
 			{
 				getline(ifs, line);
-				_numFeatures = parse_int_param("FeatureNum=", line);
-				_weights.resize(_numFeatures, 0);
-				_weights.SetLength(_numFeatures);
-				ChangeForLoad();
+				int numFeatures = parse_int_param("FeatureNum=", line);
+				_weights.resize(numFeatures, 0);
+				_weights.SetLength(numFeatures);
 			}
 			{
 				getline(ifs, line);
@@ -120,6 +118,7 @@ namespace gezi {
 	protected:
 		virtual Float Margin(Vector& features) override
 		{
+			//PVAL2(_weights.Length(), features.Length());
 			return _bias + dot(_weights, features);
 		}
 	private:

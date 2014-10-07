@@ -110,6 +110,7 @@
     <ClInclude Include="include\Prediction\Calibrate\NaiveCalibrator.h" />
     <ClInclude Include="include\Prediction\Calibrate\PAVCalibrator.h" />
     <ClInclude Include="include\Prediction\Calibrate\SigmoidCalibrator.h" />
+    <ClInclude Include="include\Prediction\Instances\FeatureNamesVector.h" />
     <ClInclude Include="include\Prediction\Instances\HeaderSchema.h" />
     <ClInclude Include="include\Prediction\Instances\Instance.h" />
     <ClInclude Include="include\Prediction\Instances\InstanceParser.h" />

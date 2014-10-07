@@ -253,7 +253,7 @@ namespace gezi {
 		//-seralize
 		NormType _normType = NormType::Affine;
 		int _numFeatures = 0;
-		svec _featureNames;
+		FeatureNamesVector _featureNames;
 		ivec _morphIndices; //只有AffineNormalizer才使用
 		ivec _shiftIndices; //Affine,Bin都使用
 		//----------------------------args begin

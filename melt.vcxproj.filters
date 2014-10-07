@@ -251,5 +251,8 @@
     <ClInclude Include="include\MLCore\TextPredictor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Prediction\Instances\FeatureNamesVector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

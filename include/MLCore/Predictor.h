@@ -33,18 +33,9 @@ namespace gezi {
 	public:
 		Predictor() = default;
 		virtual ~Predictor() {}
-		Predictor(NormalizerPtr normalizer, CalibratorPtr calibrator, const svec& featureNames)
-			:_normalizer(normalizer), _calibrator(calibrator), _featureNames(featureNames),
-			_numFeatures(_featureNames.size())
+		Predictor(NormalizerPtr normalizer, CalibratorPtr calibrator, const FeatureNamesVector& featureNames)
+			:_normalizer(normalizer), _calibrator(calibrator), _featureNames(featureNames)
 		{
-
-		}
-
-		Predictor(NormalizerPtr normalizer, CalibratorPtr calibrator, svec&& featureNames)
-			:_normalizer(normalizer), _calibrator(calibrator), _featureNames(featureNames),
-			_numFeatures(_featureNames.size())
-		{
-
 		}
 
 		virtual string Name() override
@@ -229,7 +220,6 @@ namespace gezi {
 
 		virtual void Save(string path) override
 		{
-			ChangeForSave();
 			LoadSave::Save(path);
 			_path = path;
 			try_create_dir(path);
@@ -239,7 +229,6 @@ namespace gezi {
 			write_file(_param, path + "/model.param.txt");
 			SAVE_SHARED_PTR(_normalizer, path);
 			SAVE_SHARED_PTR(_calibrator, path);
-			ChangeForLoad();
 		}
 
 		virtual void Save_(string file)
@@ -276,7 +265,6 @@ namespace gezi {
 			LoadSave::Load(path);
 			string modelFile = path + "/model.bin";
 			Load_(modelFile);
-			ChangeForLoad();
 			LoadNormalizerAndCalibrator(path);
 		}
 
@@ -290,10 +278,8 @@ namespace gezi {
 		//Save 
 		virtual void SaveXml(string file) override
 		{
-			ChangeForSave();
 			LoadSave::SaveXml(file);
 			SaveXml_(file);
-			ChangeForLoad();
 			SaveXml_NormalizerAndCalibrator(_saveNormalizerText, _saveCalibratorText);
 		}
 
@@ -304,10 +290,8 @@ namespace gezi {
 
 		virtual void SaveJson(string file) override
 		{
-			ChangeForSave();
 			LoadSave::SaveJson(file);
 			SaveJson_(file);
-			ChangeForLoad();
 			SaveJson_NormalizerAndCalibrator(_saveNormalizerText, _saveCalibratorText);
 		}
 
@@ -350,7 +334,6 @@ namespace gezi {
 
 		virtual void LoadText(string path) override
 		{
-			ChangeForLoad();
 			_path = path;
 			_param = read_file(OBJ_NAME_PATH(_param, _path));
 			LoadSave::LoadText(path);
@@ -367,17 +350,6 @@ namespace gezi {
 		CalibratorPtr& GetCalibrator()
 		{
 			return _calibrator;
-		}
-
-		Predictor& SetNumFeatures(int numFeatures)
-		{
-			_numFeatures = numFeatures;
-			return *this;
-		}
-
-		int GetNumFeatures()
-		{
-			return _numFeatures;
 		}
 
 		Predictor& SetSaveNormalizerText(bool setSave = true)
@@ -398,15 +370,15 @@ namespace gezi {
 			return _loadNormalizerAndCalibrator;
 		}
 
-
 		friend class cereal::access;
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-			ar & CEREAL_NVP(_numFeatures);
-			//@TODO 这个加入名字无意义特征数目巨大 是一个时空浪费
-			//由子类决定是否打印输出名字？ 或者特殊处理f0 f1这种不进行输出时候的序列化 输入时候序列化自动恢复成f0,f1的样子
-			ar & CEREAL_NVP(_featureNames);
+			auto& numFeatures = _featureNames._numFeatures;
+			ar & CEREAL_NVP(numFeatures);
+			auto& featureNames = *_featureNames._featureNames;
+			ar & CEREAL_NVP(featureNames);
+			//ar & CEREAL_NVP(_featureNames);
 		}
 
 	protected:
@@ -452,46 +424,13 @@ namespace gezi {
 			}
 		}
 
-		void ChangeForSave()
-		{
-			CHECK_GT(_featureNames.size(), 0);
-			if (_numFeatures > 1000 && _featureNames[0] == "f0" && _featureNames[999] == "f999")
-			{
-				_tempFeatureNames.swap(_featureNames);
-			}
-		}
-	protected:
-		void ChangeForLoad()
-		{
-			if (_featureNames.empty())
-			{
-				if (_tempFeatureNames.empty())
-				{
-					CreateFakeFeatureNames();
-				}
-				else
-				{
-					_featureNames.swap(_tempFeatureNames);
-				}
-			}
-		}
-
-		void CreateFakeFeatureNames()
-		{
-			for (int i = 0; i < _numFeatures; i++)
-			{
-				_featureNames.push_back("f" + STR(i));
-			}
-		}
-
 	protected:
 		bool _normalizeCopy = false;
 		NormalizerPtr _normalizer = nullptr;
 		CalibratorPtr _calibrator = nullptr;
 
-		svec _featureNames;
-		svec _tempFeatureNames;
-		int _numFeatures = 0; //@TODO maybe uint int64 .. 暂时只处理int范围内的特征 文本分类会不会超过。。
+		//svec _featureNames;
+		FeatureNamesVector _featureNames;
 
 		string _path;
 		string _param;

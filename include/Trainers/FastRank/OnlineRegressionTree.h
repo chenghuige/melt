@@ -28,11 +28,6 @@ namespace gezi {
 		OnlineRegressionTree(const OnlineRegressionTree&) = default;
 		OnlineRegressionTree& operator = (const OnlineRegressionTree&) = default;
 
-		OnlineRegressionTree(svec& featureNames)
-			:_featureNames(&featureNames)
-		{
-
-		}
 #ifdef _DEBUG
 		struct DebugNode
 		{
@@ -60,7 +55,7 @@ namespace gezi {
 					/*_debugNode.paths.push_back((*_featureNames)[_splitFeature[node]] + " " +
 						STR(features[_splitFeature[node]]) + " <= " + STR(_threshold[node])
 						+ " " + STR(_splitGain[node]) + " " + STR(_gainPValue[node]));*/
-					string result = (format("%s %.5f <= %.5f") % (*_featureNames)[_splitFeature[node]] %
+					string result = (boost::format("%s %.5f <= %.5f") % (*_featureNames)[_splitFeature[node]] %
 						features[_splitFeature[node]] % _threshold[node]).str();
 					_debugNode.paths.push_back(result);
 #endif // _DEBUG
@@ -72,7 +67,7 @@ namespace gezi {
 					/*_debugNode.paths.push_back((*_featureNames)[_splitFeature[node]] + " " +
 						STR(features[_splitFeature[node]]) + " > " + STR(_threshold[node])
 						+ " " + STR(_splitGain[node]) + " " + STR(_gainPValue[node]));*/
-					string result = (format("%s %.5f > %.5f") % (*_featureNames)[_splitFeature[node]] %
+					string result = (boost::format("%s %.5f > %.5f") % (*_featureNames)[_splitFeature[node]] %
 						features[_splitFeature[node]] % _threshold[node]).str();
 					_debugNode.paths.push_back(result);
 #endif // _DEBUG
@@ -146,7 +141,7 @@ namespace gezi {
 			}
 			else
 			{
-				cout << format("%s %.5f <= %.5f ?") % (*_featureNames)[_splitFeature[node]] %
+				cout << boost::format("%s %.5f <= %.5f ?") % (*_featureNames)[_splitFeature[node]] %
 					features[_splitFeature[node]] % _threshold[node] << endl;
 				string lsuffix = "", rsuffix = "";
 				if (!suffix.empty())
@@ -209,7 +204,8 @@ namespace gezi {
 		double _maxOutput = 0;
 		dvec _previousLeafValue;
 		double _weight = 1.0;
-		svec* _featureNames;
+		//svec* _featureNames;
+		FeatureNamesVector* _featureNames; 
 	};
 
 }  //----end of namespace gezi

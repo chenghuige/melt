@@ -248,7 +248,7 @@ namespace gezi {
 
 	inline void write(Instances& instances, string outfile, FileFormat format)
 	{
-		VLOG(0) << "Writing to: " << outfile << " in formt: " << kFormatSuffixes[format];
+		VLOG(0) << "Writing to: " << outfile << " in format: " << kFormatSuffixes[format];
 		if (format == FileFormat::Unknown)
 		{
 			format = instances.schema.fileFormat;

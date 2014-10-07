@@ -343,28 +343,30 @@ namespace gezi {
 			}
 			else
 			{
-				int i = 0;
+				int numFeatures = 0;
 				if (_fileFormat == FileFormat::Dense)
 				{
 					for (auto type : _columnTypes)
 					{
 						if (type == ColumnType::Feature)
 						{
-							string name = "f" + STR(i);
-							_instances.schema.featureNames.push_back(name);
-							i++;
+							//string name = format("f{}", i);
+							//_instances.schema.featureNames.emplace_back(name);
+							numFeatures++;
 						}
 					}
-					_featureNum = _instances.FeatureNum();
+					_featureNum = numFeatures;
 				}
 				else if (_fileFormat == FileFormat::Sparse)
-				{ //注意已经解析首个数据行 获取到 特征数目了 但是注意 SparseNoLength, Text获取不到
-					for (int i = 0; i < _featureNum; i++)
-					{
-						string name = "f" + STR(i);
-						_instances.schema.featureNames.push_back(name);
-					}
+				{ //注意已经解析首个数据行 获取到 特征数目了(_featureNum) 但是注意 SparseNoLength, Text获取不到
+					//_instances.schema.featureNames.reserve(_featureNum);
+					//for (int i = 0; i < _featureNum; i++) //@TODO may exceed int capacity
+					//{
+					//	string name = format("f{}", i);
+					//	_instances.schema.featureNames.push_back(name);
+					//}
 				}
+				_instances.schema.featureNames.SetNumFeatures(_featureNum); //@NOTICE
 			}
 		}
 
@@ -395,7 +397,7 @@ namespace gezi {
 				string line = lines[i];
 				svec l = split(line, _sep);
 				//CHECK_EQ(l.size(), _columnNum) << "has bad line " << i; //不允许有坏数据行
-				if (l.size() != _columnNum)
+				if ((int)l.size() != _columnNum)
 				{
 					LOG(WARNING) << "has bad line " << i;
 					LOG(WARNING) << line;
@@ -406,7 +408,7 @@ namespace gezi {
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
 				features.PrepareDense();
-				
+
 				int fidx = 0;
 				double value = 0;
 				for (int j = 0; j < _columnNum; j++)
@@ -473,11 +475,14 @@ namespace gezi {
 				for (size_t j = 0; j < l.size(); j++)
 				{
 					string item = l[j];
-					string index_, value_;
-					bool ret = split(item, ':', index_, value_);
+					//string index_, value_;
+					int index;
+					Float value;
+					//bool ret = split(item, ':', index_, value_);
+					bool ret = split(item, ':', index, value);
 					if (ret)
 					{
-						int index = INT(index_); Float value = DOUBLE(value_);
+						//int index = INT(index_); Float value = DOUBLE(value_);
 						if (_selectedArray[index])
 							features.Add(index, value);
 					}
@@ -639,8 +644,13 @@ namespace gezi {
 		//获取列信息，名字，是dense还是sparse表示
 		void ParseFirstLine(svec lines)
 		{
+			Timer timer;
 			string line = lines[0];
 			_firstColums = split(line, _sep);
+
+			VLOG(2) << format("split time: {}", timer.elapsed_ms());
+			timer.restart();
+
 			_columnNum = _firstColums.size();
 			PVAL(_columnNum);
 			if (_columnNum < 2)
@@ -649,10 +659,21 @@ namespace gezi {
 			}
 			_columnTypes.resize(_columnNum, ColumnType::Feature);
 			InitColumnTypes(lines);
+
+			VLOG(2) << format("InitColumnTypes time: {}", timer.elapsed_ms());
+			timer.restart();
+
 			//libsvm格式已经特殊处理 这里可能的是 normal, text
 			_fileFormat = _format == "text" ? FileFormat::Text : GetFileFormat(lines[_hasHeader]);
 			InitNames();
+
+			VLOG(2) << format("InitNames time: {}", timer.elapsed_ms());
+			timer.restart();
+
 			SetHeaderSchema(line);
+
+			VLOG(2) << format("SetHeaderSchema time: {}", timer.elapsed_ms());
+			timer.restart();
 		}
 
 		void PrintInfo()
@@ -679,7 +700,7 @@ namespace gezi {
 			PVAL(_args.keepDense);
 		}
 
-		//libsvm格式不支持过滤特征 仅仅为了方便一直使用libsvm的同学
+		//libsvm格式不支持过滤特征 
 		Instances&& ParseLibSVM(string dataFile)
 		{
 			VLOG(0) << "Parsing libsvm format: " << dataFile;
@@ -761,7 +782,7 @@ namespace gezi {
 		}
 
 		//训练文本解析
-		Instances&& ParseTextForTrain(svec& lines, uint64 start)
+		void ParseTextForTrain(svec& lines, uint64 start)
 		{
 			Timer timer;
 			uint64 end = start + _instanceNum;
@@ -846,7 +867,7 @@ namespace gezi {
 				_featureNum = GetIdentifer().size();
 				CHECK(_featureNum != 0) << "No identifer in memory or to load from disk " << path;
 			}
-			
+
 			SetTextFeatureNames();
 			uint64 end = start + _instanceNum;
 #pragma omp parallel for 
@@ -919,7 +940,6 @@ namespace gezi {
 		{
 			Timer timer;
 			vector<string> lines = read_lines(dataFile, "//");
-			PVAL_(timer.elapsed_ms(), "read_lines");
 			if (lines.empty())
 			{
 				LOG(FATAL) << "Fail to load data file! " << dataFile << " is empty!";
@@ -980,6 +1000,7 @@ namespace gezi {
 
 		Instances&& Parse(string dataFile)
 		{
+			AutoTimer timer("ParseInputDataFile", 0);
 			//-----------------判断输入文件类型
 			if (_format == "libsvm")
 			{//只能特殊处理 外部确认 因为libsvm 是1开始index 

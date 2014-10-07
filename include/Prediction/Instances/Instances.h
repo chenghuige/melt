@@ -69,12 +69,12 @@ namespace gezi {
 			return schema.NumFeatures();
 		}
 
-		const svec& FeatureNames() const
+		const FeatureNamesVector& FeatureNames() const
 		{
 			return schema.featureNames;
 		}
 
-		svec& FeatureNames()
+		FeatureNamesVector& FeatureNames()
 		{
 			return schema.featureNames;
 		}
@@ -107,7 +107,7 @@ namespace gezi {
 			}
 			int removeSize = (int)((1.0 - trainProportion) * InstanceNum());
 			int afterSize = InstanceNum() - removeSize;
-			LOG(INFO) << format("Shrinking *thisset to %1 of original from %2 to %3") % trainProportion % InstanceNum() % afterSize;
+			LOG(INFO) << format("Shrinking *thisset to {} of original from {} to {}", trainProportion , InstanceNum() , afterSize);
 			sample_reverse(*this, removeSize, rng);
 			this->resize(afterSize);
 		}
@@ -120,12 +120,10 @@ namespace gezi {
 		void PrintSummary(int level = 0)
 		{
 			uint64 pcnt = PositiveCount();
-			VLOG(level) << format(
-				"Total instance num: %1% PostiveCount: %2% NegativeCount %3% PostiveRatio: %4%")
-				% InstanceNum() % pcnt %
-				(InstanceNum() - pcnt) % ((double)pcnt * 100 / InstanceNum());
+			VLOG(level) << format( "Total instance num: {} PostiveCount: {} NegativeCount {} PostiveRatio: {}"
+				, InstanceNum() , pcnt , (InstanceNum() - pcnt) , ((double)pcnt * 100 / InstanceNum()));
 			uint64 dcnt = DenseCount();
-			VLOG(level) << format("DenseCount: %1% SparseCount: %2% DenseRatio: %3%") % dcnt % (InstanceNum() - dcnt) % ((double)dcnt * 100 / InstanceNum());
+			VLOG(level) << format("DenseCount: {} SparseCount: {} DenseRatio: {}", dcnt , (InstanceNum() - dcnt) , ((double)dcnt * 100 / InstanceNum()));
 		}
 
 		uint64 PositiveCount()

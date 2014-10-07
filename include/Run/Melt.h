@@ -150,7 +150,7 @@ namespace gezi {
 			if (_cmd.preNormalize)
 			{
 				NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
-				CHECK_NE(normalizer.get(), NULL);
+				CHECK(normalizer != nullptr);
 				Pval(normalizer->Name());
 				normalizer->RunNormalize(instances);
 			}
@@ -173,8 +173,8 @@ namespace gezi {
 				for (size_t foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
 				{
 					VLOG(0) << "Cross validaion foldIdx " << foldIdx;
-					string instfile = (format("%s/%d_%d_%d.inst.txt") % _cmd.resultDir % _cmd.resultIndex
-						% runIdx % foldIdx).str();
+					string instfile = format("{}/{}_{}_{}.inst.txt", _cmd.resultDir, _cmd.resultIndex
+						,runIdx, foldIdx);
 
 					Instances trainData, testData;
 					//只是trainProportion < 1 才需要rng
@@ -240,7 +240,7 @@ namespace gezi {
 
 		void RunCrossValidation(CrossValidationType cvType = CrossValidationType::DEFAULT)
 		{
-			Noticer nt((format("%d fold cross-validation") % _cmd.numFolds).str());
+			Noticer nt(format("{} fold cross-validation", _cmd.numFolds));
 			//----------------------------check if command ok
 			CHECK_GE(_cmd.numFolds, 2) << "The number of folds must be at least 2 for cross validation";
 			//-----------------------------parse input
@@ -388,9 +388,10 @@ namespace gezi {
 		void RunTrain()
 		{
 			PredictorPtr predictor;
+			Instances instances;
 			{
 				Noticer nt("Train!");
-				auto instances = create_instances(_cmd.datafile);
+				instances = create_instances(_cmd.datafile);
 				CHECK_GT(instances.Count(), 0) << "Read 0 test instances, aborting experiment";
 				predictor = Train(instances);
 			}
@@ -400,6 +401,8 @@ namespace gezi {
 				try_create_dir(_cmd.resultDir);
 				string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
 				auto testInstances = create_instances(_cmd.datafile);
+				//auto& testInstances = instances;
+				//could use deep copy of instances at first so do not need reload from disk and also avoid modification during train like normalize
 				CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
 				Test(testInstances, predictor, instFile);
 				string command = _cmd.evaluate + instFile;
@@ -505,6 +508,7 @@ namespace gezi {
 		void RunShowFeatures()
 		{
 			Instances instances = create_instances(_cmd.datafile);
+			fmt::print("Num features: {}", instances.NumFeatures());
 			int num = 0;
 			for (string feature : instances.FeatureNames())
 			{
@@ -533,7 +537,7 @@ namespace gezi {
 		{
 			Noticer nt("Normalize!");
 			NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
-			CHECK_NE(normalizer.get(), NULL);
+			CHECK(normalizer != nullptr);
 			Pval(normalizer->Name());
 
 			string infile = _cmd.datafile;
@@ -556,7 +560,7 @@ namespace gezi {
 			Noticer nt("Calibrate!");
 
 			auto calibrator = CalibratorFactory::CreateCalibrator(_cmd.calibratorName);
-			CHECK_NE(calibrator.get(), NULL);
+			CHECK(calibrator != nullptr);
 			Pval(calibrator->Name());
 
 			Instances instances = create_instances(_cmd.datafile);
@@ -719,7 +723,7 @@ namespace gezi {
 			//输入 feature.txt 输出到outDir下  feature.train_0.txt feature.test_0.txt feature.train_1.txt ...
 			//不考虑runIdx 统一累加 0,1,2...
 			const int randomStep = 10000; //@TODO
-			for (size_t runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
+			for (int runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
 			{
 				VLOG(0) << "The " << runIdx << " round";
 				RandomEngine rng = random_engine(_cmd.randSeed, runIdx * randomStep);
@@ -727,7 +731,7 @@ namespace gezi {
 					instances.Randomize(rng);
 
 				ivec instanceFoldIndices = CVFoldCreator::CreateFoldIndices(instances, _cmd, rng);
-				for (size_t foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
+				for (int foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
 				{
 					VLOG(0) << "Cross validaion foldIdx " << foldIdx;
 					int idx = runIdx * _cmd.numFolds + foldIdx;
@@ -787,7 +791,7 @@ namespace gezi {
 				{
 					uint64 negAdjustedNum = posNum / posPart * negPart;
 					VLOG(0) << "Shrink neg part num to " << negAdjustedNum;
-					int negCount = 0;
+					uint64 negCount = 0;
 					for (InstancePtr instance : instances)
 					{
 						if (instance->IsNegative())
@@ -804,7 +808,7 @@ namespace gezi {
 				else
 				{
 					VLOG(0) << "Shrink pos part num to " << posAdjustedNum;
-					int posCount = 0;
+					uint64 posCount = 0;
 					for (InstancePtr instance : instances)
 					{
 						if (instance->IsPositive())

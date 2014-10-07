@@ -15,6 +15,7 @@
 #define PREDICTION__INSTANCES__HEADER_SCHEMA_H_
 
 #include "common_util.h"
+#include "FeatureNamesVector.h"
 namespace gezi
 {
 	//默认支持的格式对应的 输入 输出 Instances 的文本格式
@@ -102,7 +103,7 @@ namespace gezi
 			return fileFormat;
 		}
 	public:
-		svec featureNames;
+		FeatureNamesVector featureNames;
 		svec attributeNames;
 		svec tagNames;
 		string headerStr;

@@ -4,7 +4,7 @@ ifeq ($(shell uname -m),x86_64)
 CC=g++
 CXX=g++
 CXXFLAGS=-g \
-  -O5 \
+  -O3 \
   -pipe \
   -W \
   -Wall \
@@ -20,7 +20,7 @@ CXXFLAGS=-g \
   -Wno-unused-local-typedefs \
   -fopenmp
 CFLAGS=-g \
-  -O5 \
+  -O3 \
   -pipe \
   -W \
   -Wall \
@@ -155,7 +155,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=0ee6e0d1f76c0747ff1f187441e13516  COMAKE
+COMAKE_MD5=fc75f3a4084517a8f4454fa144035ee8  COMAKE
 
 
 .PHONY:all
