@@ -404,6 +404,7 @@ namespace gezi {
 				_instances.schema.featureNames = GetIdentifer().keys();
 			}
 		}
+
 		void CreateInstancesFromDenseFormat(svec& lines, uint64 start)
 		{
 			VLOG(1) << "CreateInstancesFromDenseFormat";
@@ -412,49 +413,82 @@ namespace gezi {
 			for (uint64 i = start; i < end; i++)
 			{
 				string line = lines[i];
-				svec l = split(line, _sep);
-				//CHECK_EQ(l.size(), _columnNum) << "has bad line " << i; //不允许有坏数据行
-				if ((int)l.size() != _columnNum)
-				{
-					LOG(WARNING) << "has bad line " << i;
-					LOG(WARNING) << line;
-					continue;
-				}
-
 				_instances[i - start] = make_shared<Instance>(_featureNum);
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
 				features.PrepareDense();
 
-				int fidx = 0;
-				double value = 0;
-				for (int j = 0; j < _columnNum; j++)
-				{
-					string item = l[j];
-					switch (_columnTypes[j])
+				int featureIndex = 0;
+				int count = split_enumerate(line, _sep[0], [&,this](int index, int start, int len) { 
+					switch (_columnTypes[index])
 					{
 					case ColumnType::Feature:
-						value = _selectedArray[fidx++] ? DOUBLE(item) : 0;
+						double value;
+						value = _selectedArray[featureIndex++] ? atof(line.c_str() + start) : 0;
 						features.Add(value);
 						break;
 					case ColumnType::Name:
-						instance.names.push_back(item);
+						instance.names.push_back(line.substr(start, len));
 						break;
 					case ColumnType::Label:
-						instance.label = DOUBLE(item);
+						instance.label = atof(line.c_str() + start);
 						break;
 					case ColumnType::Weight:
-						instance.weight = DOUBLE(item);
+						instance.weight = atof(line.c_str() + start);
 						break;
 					case ColumnType::Attribute:
-						instance.attributes.push_back(item);
+						instance.attributes.push_back(line.substr(start, len));
 						break;
 					default:
 						break;
+					} });
+
+					if (count != _columnNum)
+					{
+						LOG(WARNING) << "has bad line " << i;
+						LOG(WARNING) << line;
+						_instances[i - start] = nullptr;
 					}
-				}
+
+				//svec l = split(line, _sep);
+				////CHECK_EQ(l.size(), _columnNum) << "has bad line " << i; //不允许有坏数据行
+				//if ((int)l.size() != _columnNum)
+				//{
+				//	LOG(WARNING) << "has bad line " << i;
+				//	LOG(WARNING) << line;
+				//	continue;
+				//}
+
+				//int fidx = 0;
+				//double value = 0;
+				//for (int j = 0; j < _columnNum; j++)
+				//{
+				//	string item = l[j];
+				//	switch (_columnTypes[j])
+				//	{
+				//	case ColumnType::Feature:
+				//		value = _selectedArray[fidx++] ? DOUBLE(item) : 0;
+				//		features.Add(value);
+				//		break;
+				//	case ColumnType::Name:
+				//		instance.names.push_back(item);
+				//		break;
+				//	case ColumnType::Label:
+				//		instance.label = DOUBLE(item);
+				//		break;
+				//	case ColumnType::Weight:
+				//		instance.weight = DOUBLE(item);
+				//		break;
+				//	case ColumnType::Attribute:
+				//		instance.attributes.push_back(item);
+				//		break;
+				//	default:
+				//		break;
+				//	}
+				//}
 			}
 			ufo::erase(_instances, nullptr);
+			_instanceNum = (uint64)_instances.size();
 		}
 
 		//这个放到这里会影响找不到所有其它stl_util.h里面定义的split...
