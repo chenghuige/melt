@@ -419,11 +419,11 @@ namespace gezi {
 				features.PrepareDense();
 
 				int featureIndex = 0;
-				int count = split_enumerate(line, _sep[0], [&,this](int index, int start, int len) { 
+				int count = split_enumerate(line, _sep[0], [&, this](int index, int start, int len) {
 					switch (_columnTypes[index])
 					{
 					case ColumnType::Feature:
-						double value;
+						double value; //必须单独一行。。 否则crosses initialization
 						value = _selectedArray[featureIndex++] ? atof(line.c_str() + start) : 0;
 						features.Add(value);
 						break;
@@ -450,42 +450,42 @@ namespace gezi {
 						_instances[i - start] = nullptr;
 					}
 
-				//svec l = split(line, _sep);
-				////CHECK_EQ(l.size(), _columnNum) << "has bad line " << i; //不允许有坏数据行
-				//if ((int)l.size() != _columnNum)
-				//{
-				//	LOG(WARNING) << "has bad line " << i;
-				//	LOG(WARNING) << line;
-				//	continue;
-				//}
+					//svec l = split(line, _sep);
+					////CHECK_EQ(l.size(), _columnNum) << "has bad line " << i; //不允许有坏数据行
+					//if ((int)l.size() != _columnNum)
+					//{
+					//	LOG(WARNING) << "has bad line " << i;
+					//	LOG(WARNING) << line;
+					//	continue;
+					//}
 
-				//int fidx = 0;
-				//double value = 0;
-				//for (int j = 0; j < _columnNum; j++)
-				//{
-				//	string item = l[j];
-				//	switch (_columnTypes[j])
-				//	{
-				//	case ColumnType::Feature:
-				//		value = _selectedArray[fidx++] ? DOUBLE(item) : 0;
-				//		features.Add(value);
-				//		break;
-				//	case ColumnType::Name:
-				//		instance.names.push_back(item);
-				//		break;
-				//	case ColumnType::Label:
-				//		instance.label = DOUBLE(item);
-				//		break;
-				//	case ColumnType::Weight:
-				//		instance.weight = DOUBLE(item);
-				//		break;
-				//	case ColumnType::Attribute:
-				//		instance.attributes.push_back(item);
-				//		break;
-				//	default:
-				//		break;
-				//	}
-				//}
+					//int fidx = 0;
+					//double value = 0;
+					//for (int j = 0; j < _columnNum; j++)
+					//{
+					//	string item = l[j];
+					//	switch (_columnTypes[j])
+					//	{
+					//	case ColumnType::Feature:
+					//		value = _selectedArray[fidx++] ? DOUBLE(item) : 0;
+					//		features.Add(value);
+					//		break;
+					//	case ColumnType::Name:
+					//		instance.names.push_back(item);
+					//		break;
+					//	case ColumnType::Label:
+					//		instance.label = DOUBLE(item);
+					//		break;
+					//	case ColumnType::Weight:
+					//		instance.weight = DOUBLE(item);
+					//		break;
+					//	case ColumnType::Attribute:
+					//		instance.attributes.push_back(item);
+					//		break;
+					//	default:
+					//		break;
+					//	}
+					//}
 			}
 			ufo::erase(_instances, nullptr);
 			_instanceNum = (uint64)_instances.size();
@@ -590,7 +590,8 @@ namespace gezi {
 			VLOG(1) << "CreateInstancesFromSparseNoLengthFormat";
 			uint64 end = start + _instanceNum;
 			int maxIndex = 0;
-#pragma omp parallel for 
+//#pragma omp parallel for 
+#pragma omp parallel for reduction(max : maxIndex)
 			for (uint64 i = start; i < end; i++)
 			{
 				string line = lines[i];
@@ -602,12 +603,11 @@ namespace gezi {
 					{
 						features.Add(index, value);
 					}
-#pragma omp critical
+
+					if (index > maxIndex)
 					{
-						if (index > maxIndex)
-						{
-							maxIndex = index;
-						}
+//#pragma omp critical //锁的代价 是否值得并行@TODO
+						maxIndex = index;
 					}
 				},
 					[&, this](int index, string item) {
@@ -734,7 +734,7 @@ namespace gezi {
 			{
 				_fileFormat = GetFileFormat(lines[_hasHeader]);
 			}
-				
+
 			InitNames();
 
 			VLOG(2) << format("InitNames time: {}", timer.elapsed_ms());
@@ -815,7 +815,7 @@ namespace gezi {
 			uint64 end = start + _instanceNum;
 			int maxIndex = 1;
 			char sep = GuessSeparator(lines[0], "\t ");
-#pragma omp parallel for 
+#pragma omp parallel for reduction(max : maxIndex)
 			for (uint64 i = start; i < end; i++)
 			{
 				string line = lines[i];
@@ -828,12 +828,10 @@ namespace gezi {
 					{
 						features.Add(index - 1, value);
 					}
-#pragma omp critical
+
+					if (index > maxIndex)
 					{
-						if (index > maxIndex)
-						{
-							maxIndex = index;
-						}
+						maxIndex = index;
 					}
 				},
 					[&, this](int index, string item) {
@@ -886,8 +884,7 @@ namespace gezi {
 				splits_string_double(line, _sep[0], ':', [&, this](string key, Float value) {
 					int index;
 #pragma  omp critical
-					{
-						//输入需要保证没有重复的key
+					{ //输入需要保证没有重复的key
 						index = GetIdentifer().add(key);
 					}
 					if (_selectedArray[index])
@@ -1140,7 +1137,7 @@ namespace gezi {
 				_instances[i]->name = join(_instances[i]->names, _args.ncsep);
 				Vector& features = _instances[i]->features;
 				features.SetLength(_featureNum);
-			
+
 				if (features.IsDense())
 				{
 					if (features.keepSparse)

@@ -138,6 +138,12 @@ namespace gezi {
 				break;
 			}
 		}
+
+		if (schema.fileFormat != FileFormat::Sparse)
+		{//Sparse格式的话 已经有了Attribute记录了特征数目, 当然一般不需要sparse->sparse除了debug
+			ofs << "\t" << instance.NumFeatures();
+		}
+	
 		instance.features.ForEachNonZero([&ofs](int index, Float value)
 		{
 			ofs << "\t" << index << ":" << value;
