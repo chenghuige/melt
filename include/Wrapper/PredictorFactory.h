@@ -36,7 +36,7 @@ namespace gezi {
 				SCONF(model_cnt);
 				for (int i = 0; i < model_cnt; i++)
 				{
-					string name = (format("model_%d_dir") % i).str();
+					string name = format("model_{}_dir", i);
 					string modelDir;
 					gezi::set_val(gezi::SharedConf::conf(), section, gezi::conf_trim(name), modelDir);
 					predictors.push_back(gezi::PredictorFactory::LoadPredictor(modelDir));

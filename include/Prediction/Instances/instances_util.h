@@ -71,6 +71,11 @@ namespace gezi {
 				break;
 			}
 		}
+		//稀疏转desne很可能要继续输出下面
+		for (; featureIdx < instance.features.Length(); featureIdx++)
+		{
+			ofs << "\t" << instance.features[featureIdx];
+		}
 		ofs << endl;
 		instance.features.Clear(); //避免都转dense带来内存问题
 	}

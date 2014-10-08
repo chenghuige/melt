@@ -307,13 +307,19 @@ namespace gezi {
 			if (startswith(_firstColums[0], '#'))
 			{
 				_hasHeader = true;
-				_columnTypes[0] = ColumnType::Name;
+				//_columnTypes[0] = ColumnType::Name;
 
-				if (_labelIdx < 0)
-				{
-					_labelIdx = 1;
-					_columnTypes[1] = ColumnType::Label;
-				}
+				//if (_labelIdx < 0)
+				//	{
+				//	_labelIdx = 1;
+				//	_columnTypes[1] = ColumnType::Label;
+				//	}
+
+				//if (_labelIdx < 0)
+				//{
+				//	_labelIdx = 0;
+				//	_columnTypes[0] = ColumnType::Label;
+				//}
 			}
 
 			//前面确认了是否有header

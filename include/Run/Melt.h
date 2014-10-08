@@ -508,7 +508,7 @@ namespace gezi {
 		void RunShowFeatures()
 		{
 			Instances instances = create_instances(_cmd.datafile);
-			fmt::print("Num features: {}", instances.NumFeatures());
+			fmt::print("Num features: {}\n", instances.NumFeatures());
 			int num = 0;
 			for (string feature : instances.FeatureNames())
 			{
