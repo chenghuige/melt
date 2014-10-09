@@ -23,8 +23,8 @@ namespace gezi {
 		AffineNormalizer()
 		{
 			_func = [this](int index, Float& value)
-			{
-				if (_scales[index] <= 0)
+			{ //index >= _numFeatures 只有在train-test模式 读取最大index不同的libsvm或者其它没有指定最大特征数目的文件可能
+				if (index >= _numFeatures || _scales[index] <= 0)
 				{//保持不变 Dense Sparse 保持逻辑一致 如果置为0 
 					//需要AffineInit函数中shiftIndices增加scale <=0 且offset!=0的点
 					//value = .0;

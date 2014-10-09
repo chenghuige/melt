@@ -128,7 +128,7 @@ namespace gezi {
 						{
 							if (VLOG_IS_ON(1))
 							{
-								fmt::print_colored(fmt::RED, "{}:{} is always taking value: {} - {}\n", i, instances.FeatureNames()[i], mins[i], maxes[i]);
+								fmt::print_colored(fmt::RED, "{}:{} is always taking value: [{}:{}]\n", i, instances.FeatureNames()[i], mins[i], maxes[i]);
 							}
 						}
 						ofs << instances.FeatureNames()[i] << "\t"

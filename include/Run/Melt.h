@@ -280,9 +280,7 @@ namespace gezi {
 			{
 				++pb;
 				double output;
-				PVAL(instance->features.str());
 				double probability = predictor->Predict(instance, output);
-				PVAL(instance->features.str());
 				CHECK(!std::isnan(output));
 				string name = instance->name.empty() ? STR(idx) : instance->name;
 				if (startswith(name, '_'))
@@ -400,7 +398,7 @@ namespace gezi {
 			}
 			if (_cmd.selfTest)
 			{
-				Noticer nt("Test itself!");
+				Noticer nt("Test itself!(if not want test itself use --st=0)");
 				try_create_dir(_cmd.resultDir);
 				string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
 				//auto testInstances = create_instances(_cmd.datafile);

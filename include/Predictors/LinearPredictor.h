@@ -118,7 +118,7 @@ namespace gezi {
 	protected:
 		virtual Float Margin(Vector& features) override
 		{
-			//PVAL2(_weights.Length(), features.Length());
+			//Pval2(_weights.Length(), features.Length());
 			return _bias + dot(_weights, features);
 		}
 	private:
