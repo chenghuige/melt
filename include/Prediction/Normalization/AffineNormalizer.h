@@ -27,7 +27,7 @@ namespace gezi {
 				if (_scales[index] <= 0)
 				{//保持不变 Dense Sparse 保持逻辑一致 如果置为0 
 					//需要AffineInit函数中shiftIndices增加scale <=0 且offset!=0的点
-					//value = 0;
+					//value = .0;
 					return;
 				}
 				else if (_trunct)

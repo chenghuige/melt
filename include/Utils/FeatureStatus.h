@@ -23,21 +23,21 @@ namespace gezi {
 	{
 	public:
 
-		static void WriteResult(std::ostream& ofs)
-		{
-
-		}
-		static void GenMeanVarInfo(const Instances& instances, string outFile,
+		static void GenMeanVarInfo(const Instances& instances, string outFile,  string outFile2,
 			string featureName = "")
 		{
 			int featureNum = instances.FeatureNum();
 			dvec means(featureNum, 0);
-			dvec vars(featureNum, 0);
-
+			dvec mins(featureNum, std::numeric_limits<double>::max());
+			dvec maxes(featureNum, std::numeric_limits<double>::min());
 			dvec posMeans(featureNum, 0);
-			dvec posVars(featureNum, 0);
-
 			dvec negMeans(featureNum, 0);
+			dvec posMins(featureNum, std::numeric_limits<double>::max());
+			dvec negMins(featureNum, std::numeric_limits<double>::max());
+			dvec posMaxes(featureNum, std::numeric_limits<double>::min());
+			dvec negMaxes(featureNum, std::numeric_limits<double>::min());
+			dvec vars(featureNum, 0);
+			dvec posVars(featureNum, 0);
 			dvec negVars(featureNum, 0);
 
 			uint64 instanceNum = instances.Count();
@@ -57,6 +57,22 @@ namespace gezi {
 							vars[index] += val2;
 							posMeans[index] += value;
 							posVars[index] += val2;
+							if (value > maxes[index])
+							{
+								maxes[index] = value;
+							}
+							if (value > posMaxes[index])
+							{
+								posMaxes[index] = value;
+							}
+							if (value < mins[index])
+							{
+								mins[index] = value;
+							}
+							if (value < posMins[index])
+							{
+								posMins[index] = value;
+							}
 						});
 						posNum++;
 					}
@@ -69,6 +85,22 @@ namespace gezi {
 							vars[index] += val2;
 							negMeans[index] += value;
 							negVars[index] += val2;
+							if (value > maxes[index])
+							{
+								maxes[index] = value;
+							}
+							if (value > negMaxes[index])
+							{
+								negMaxes[index] = value;
+							}
+							if (value < mins[index])
+							{
+								mins[index] = value;
+							}
+							if (value < negMins[index])
+							{
+								negMins[index] = value;
+							}
 						});
 						negNum++;
 					}
@@ -82,21 +114,42 @@ namespace gezi {
 			{
 				LOG(INFO) << "Write result to " << outFile;
 				ofstream ofs(outFile);
-				ofs << "FeatureName\tMean\tPosMean\tNegMean\tVar\tPosVar\tNegVar" << endl;
+				LOG(INFO) << "Write csv result to " << outFile2;
+				ofstream ofs2(outFile2);
+				ofs << "FeatureName\tMean\tPosMean\tNegMean\tPosMin\tNegMin\tPosMax\tNegMax\tVar\tPosVar\tNegVar" << endl;
+				ofs2 << "FeatureName\tMean\tPosMean\tNegMean\tPosMin\tNegMin\tPosMax\tNegMax\tVar\tPosVar\tNegVar" << endl;
 				if (featureName.empty())
 				{
 					ProgressBar pb(featureNum);
 					for (int i = 0; i < featureNum; i++)
 					{
 						pb.progress(i);
+						if (gezi::are_same(mins[i], maxes[i]))
+						{
+							if (VLOG_IS_ON(1))
+							{
+								fmt::print_colored(fmt::RED, "{}:{} is always taking value: {} - {}\n", i, instances.FeatureNames()[i], mins[i], maxes[i]);
+							}
+						}
 						ofs << instances.FeatureNames()[i] << "\t"
 							<< "mean:" << means[i] << "\t"
+							<< "min:" << mins[i] << "\t"
+							<< "max:" << maxes[i] << "\t"
 							<< "posMean:" << posMeans[i] << "\t"
 							<< "negMean:" << negMeans[i] << "\t"
+							<< "posMin:" << posMins[i] << "\t"
+							<< "negMin:" << negMins[i] << "\t"
+							<< "posMax:" << posMaxes[i] << "\t"
+							<< "negMax:" << negMaxes[i] << "\t"
 							<< "var:" << vars[i] << "\t"
 							<< "posVar:" << posVars[i] << "\t"
 							<< "negVar:" << negVars[i] << "\t"
 							<< endl;
+
+						ofs2 << instances.FeatureNames()[i] << "\t" << means[i] << "\t" << maxes[i] << "\t"
+							<< posMeans[i] << "\t" << negMeans[i] << "\t" << posMins[i] << "\t" << negMins[i] << "\t"
+							<< posMaxes[i] << "\t" << negMaxes[i] << "\t" << vars[i] << "\t" << posVars[i] << "\t" << negVars[i]
+							<< "\t" << endl;
 					}
 				}
 				else
@@ -108,8 +161,14 @@ namespace gezi {
 							std::cout << "FeatureName\tMean\tPosMean\tNegMean\tVar\tPosVar\tNegVar" << endl;
 							std::cout << instances.FeatureNames()[i] << "\t"
 								<< "mean:" << means[i] << "\t"
+								<< "min:" << mins[i] << "\t"
+								<< "max:" << maxes[i] << "\t"
 								<< "posMean:" << posMeans[i] << "\t"
 								<< "negMean:" << negMeans[i] << "\t"
+								<< "posMin:" << posMins[i] << "\t"
+								<< "negMin:" << negMins[i] << "\t"
+								<< "posMax:" << posMaxes[i] << "\t"
+								<< "negMax:" << negMaxes[i] << "\t"
 								<< "var:" << vars[i] << "\t"
 								<< "posVar:" << posVars[i] << "\t"
 								<< "negVar:" << negVars[i] << "\t"

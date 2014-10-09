@@ -130,9 +130,9 @@ namespace gezi {
 		static string GetOutputFileName(string infile, string suffix, bool removeTxt = false)
 		{
 			if (!removeTxt)
-				return endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", "." + suffix + ".txt") : infile + "." + suffix;
+				return endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", format(".{}.txt", suffix)) : format("{}.{}", infile, suffix);
 			else
-				return endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", "." + suffix) : infile + "." + suffix;
+				return endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", format(".{}", suffix)) : format("{}.{}", infile, suffix);
 		}
 
 		void RunCrossValidation(Instances& instances, CrossValidationType cvType)
@@ -174,7 +174,7 @@ namespace gezi {
 				{
 					VLOG(0) << "Cross validaion foldIdx " << foldIdx;
 					string instfile = format("{}/{}_{}_{}.inst.txt", _cmd.resultDir, _cmd.resultIndex
-						,runIdx, foldIdx);
+						, runIdx, foldIdx);
 
 					Instances trainData, testData;
 					//只是trainProportion < 1 才需要rng
@@ -280,7 +280,10 @@ namespace gezi {
 			{
 				++pb;
 				double output;
+				PVAL(instance->features.str());
 				double probability = predictor->Predict(instance, output);
+				PVAL(instance->features.str());
+				CHECK(!std::isnan(output));
 				string name = instance->name.empty() ? STR(idx) : instance->name;
 				if (startswith(name, '_'))
 				{
@@ -401,8 +404,7 @@ namespace gezi {
 				try_create_dir(_cmd.resultDir);
 				string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
 				//auto testInstances = create_instances(_cmd.datafile);
-				auto& testInstances = instances; //好像Train的过程没有改变instances 没有normlaize被改变吗 @TODO 确认NormalizeCopy ?
-				//could use deep copy of instances at first so do not need reload from disk and also avoid modification during train like normalize
+				auto& testInstances = instances; //train的过程中没有改变instance！ 用了normalize copy
 				CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
 				Test(testInstances, predictor, instFile);
 				string command = _cmd.evaluate + instFile;
@@ -441,7 +443,7 @@ namespace gezi {
 			}
 			//------test
 			try_create_dir(_cmd.resultDir);
-			string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
+			string instFile = _cmd.resultFile.empty() ? format("{}/{}.inst.txt", _cmd.resultDir, _cmd.resultIndex) : _cmd.resultFile;
 
 			//@TODO hack for text input format //Not tested correctness yet
 			InstanceParser::TextFormatParsedTime(); //++ pared text from time这样表示需要使用词表数据
@@ -467,7 +469,7 @@ namespace gezi {
 			{
 				Noticer nt("Test!");
 				try_create_dir(_cmd.resultDir);
-				string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
+				string instFile = _cmd.resultFile.empty() ? format("{}/{}.inst.txt", _cmd.resultDir, _cmd.resultIndex) : _cmd.resultFile;
 
 				auto testInstances = create_instances(_cmd.testDatafile);
 				CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
@@ -548,9 +550,13 @@ namespace gezi {
 			Instances instances = create_instances(_cmd.datafile);
 
 			normalizer->RunNormalize(instances);
-			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
-			write(instances, outfile, fileFormat);
-
+			
+			if (_cmd.saveOutputFile)
+			{
+				FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
+				write(instances, outfile, fileFormat);
+			}
+		
 			try_create_dir(_cmd.modelFolder);
 			SAVE_SHARED_PTR_ALL(normalizer);
 		}
@@ -574,7 +580,7 @@ namespace gezi {
 
 		void RunCheckData()
 		{
-			Noticer nt("CheckData!(need GLOG_v=4 ./melt)");
+			Noticer nt("CheckData!(need GLOG_v=4 or -vl 4), this command is derecated try use -c fss -vl 1");
 			Instances instances = create_instances(_cmd.datafile);
 			NormalizerPtr normalizer = make_shared<MinMaxNormalizer>();
 			normalizer->Prepare(instances);
@@ -587,19 +593,21 @@ namespace gezi {
 
 		void RunFeatureStatus()
 		{
-			Noticer nt("FeatureStatus!");
+			Noticer nt("FeatureStatus! You may try to use -vl 1 to print warning of possible no use features");
 			string infile = _cmd.datafile;
 			string suffix = "featurestatus";
 			string outfile = _cmd.outfile.empty() ? GetOutputFileName(infile, suffix)
 				: _cmd.outfile;
+			string outfile2 = _cmd.outfile.empty() ? GetOutputFileName(infile, format("{}.csv", suffix), true)
+				: format("{}.csv", _cmd.outfile);
 			Instances instances = create_instances(_cmd.datafile);
-			FeatureStatus::GenMeanVarInfo(instances, outfile, _cmd.featureName);
+			FeatureStatus::GenMeanVarInfo(instances, outfile, outfile2, _cmd.featureName);
 		}
 
 		//输入文件转换后输出
 		void RunConvert()
 		{
-			FileFormat defaultFileFormat = _cmd.fileFormat == kFormatSuffixes[FileFormat::LibSVM] ? FileFormat::Unknown : FileFormat::LibSVM;
+			FileFormat defaultFileFormat = _cmd.inputFileFormat == kFormatSuffixes[FileFormat::LibSVM] ? FileFormat::Unknown : FileFormat::LibSVM;
 			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, defaultFileFormat);
 			Instances instances = create_instances(_cmd.datafile);
 			if (fileFormat == FileFormat::Unknown)
@@ -842,7 +850,7 @@ namespace gezi {
 			{
 				Predictor::loadNormalizerAndCalibrator() = false;
 			}
-		
+
 			{
 				Noticer nt("Loading predictor");
 				predictor = PredictorFactory::LoadPredictor(_cmd.modelFolder);

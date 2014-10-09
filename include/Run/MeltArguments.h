@@ -30,6 +30,7 @@ namespace gezi {
 		unsigned randSeed = 0;
 		string datafile = "";
 		string outfile = ""; //o| specify the output file
+		bool saveOutputFile = true; //sf| save the output file
 		string normalizerfile = ""; //nf| normalzier output file
 		string testDatafile = ""; //test| Data file used for test
 		string validationDatafile = "";
@@ -50,6 +51,7 @@ namespace gezi {
 		string modelDir = "";
 		string outDir = "";
 		string resultDir = "./result";
+		string resultFile = "";
 		int resultIndex = 0;
 
 		string evaluate = "evaluate.simple/evaluate.simple ";
@@ -62,8 +64,8 @@ namespace gezi {
 
 		string calibratorName = "sigmoid"; //calibrator| Which calibrator?
 
-		string fileFormat = "normal"; //format | input file format
-		string outputFileFormat = "unknown";//oformat| output file format
+		string inputFileFormat = "normal"; //if | input file format
+		string outputFileFormat = "unknown";//of| output file format
 	};
 }  //----end of namespace gezi
 

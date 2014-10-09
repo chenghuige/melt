@@ -68,6 +68,7 @@ namespace gezi {
 				_scales[i] = value;
 			}
 		}
+
 		virtual void Begin() override
 		{
 			PVAL(_numFeatures);
