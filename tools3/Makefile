@@ -234,9 +234,9 @@ melt:melt_melt.o \
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt[0m']"
 	$(CXX) melt_melt.o \
   ../src/Prediction/Instances/melt_InstanceParser.o \
-  ../src/Run/melt_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblber/.libs/liblber.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap/.libs/libldap.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap_r/.libs/libldap_r.a \
+  ../src/Run/melt_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/liblber.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/libldap.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/libldap_r.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblunicode/liblunicode.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblutil/liblutil.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/librewrite/librewrite.a \
@@ -249,6 +249,7 @@ melt:melt_melt.o \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/libbackends.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/liboverlays.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
@@ -343,9 +344,9 @@ calibrate:calibrate_calibrate.o \
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mcalibrate[0m']"
 	$(CXX) calibrate_calibrate.o \
   ../src/Prediction/Instances/calibrate_InstanceParser.o \
-  ../src/Run/calibrate_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblber/.libs/liblber.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap/.libs/libldap.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap_r/.libs/libldap_r.a \
+  ../src/Run/calibrate_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/liblber.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/libldap.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/libldap_r.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblunicode/liblunicode.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblutil/liblutil.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/librewrite/librewrite.a \
@@ -358,6 +359,7 @@ calibrate:calibrate_calibrate.o \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/libbackends.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/liboverlays.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
@@ -452,9 +454,9 @@ predict:predict_predict.o \
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mpredict[0m']"
 	$(CXX) predict_predict.o \
   ../src/Prediction/Instances/predict_InstanceParser.o \
-  ../src/Run/predict_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblber/.libs/liblber.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap/.libs/libldap.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap_r/.libs/libldap_r.a \
+  ../src/Run/predict_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/liblber.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/libldap.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/libldap_r.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblunicode/liblunicode.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblutil/liblutil.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/librewrite/librewrite.a \
@@ -467,6 +469,7 @@ predict:predict_predict.o \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/libbackends.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/liboverlays.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
@@ -561,9 +564,9 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_text2bin[0m']"
 	$(CXX) fastrank_text2bin_fastrank_text2bin.o \
   ../src/Prediction/Instances/fastrank_text2bin_InstanceParser.o \
-  ../src/Run/fastrank_text2bin_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblber/.libs/liblber.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap/.libs/libldap.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap_r/.libs/libldap_r.a \
+  ../src/Run/fastrank_text2bin_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/liblber.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/libldap.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/libldap_r.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblunicode/liblunicode.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblutil/liblutil.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/librewrite/librewrite.a \
@@ -576,6 +579,7 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/libbackends.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/liboverlays.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
@@ -670,9 +674,9 @@ fastrank_predict:fastrank_predict_fastrank_predict.o \
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_predict[0m']"
 	$(CXX) fastrank_predict_fastrank_predict.o \
   ../src/Prediction/Instances/fastrank_predict_InstanceParser.o \
-  ../src/Run/fastrank_predict_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblber/.libs/liblber.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap/.libs/libldap.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/libldap_r/.libs/libldap_r.a \
+  ../src/Run/fastrank_predict_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/liblber.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/libldap.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/lib/lib/libldap_r.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblunicode/liblunicode.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/liblutil/liblutil.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/libraries/librewrite/librewrite.a \
@@ -685,6 +689,7 @@ fastrank_predict:fastrank_predict_fastrank_predict.o \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/libbackends.a \
   ../../../../../../app/search/sep/anti-spam/gezi/lib/bak/openldap-2.4.39/servers/slapd/liboverlays.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \

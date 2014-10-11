@@ -44,6 +44,10 @@ public:
 		{
 			predictor->Load(path);
 		}
+		else
+		{
+			LOG(WARNING) << "CreatePredictor fail! path: " << path << " name: " << name;
+		}
 		return predictor;
 	}
 
@@ -56,6 +60,10 @@ public:
 		{
 			predictor->Load(path);
 		}
+		else
+		{
+			LOG(WARNING) << "CreatePredictor fail! path: " << path << " name: " << name;
+		}
 		return predictor;
 	}
 
@@ -67,6 +75,10 @@ public:
 		{
 			predictor->LoadText(path);
 		}
+		else
+		{
+			LOG(WARNING) << "CreatePredictor fail! path: " << path << " name: " << name;
+		}
 		return predictor;
 	}
 
@@ -77,6 +89,10 @@ public:
 		if (predictor != nullptr)
 		{
 			predictor->LoadText(path);
+		}
+		else
+		{
+			LOG(WARNING) << "CreatePredictor fail! path: " << path << " name: " << name;
 		}
 		return predictor;
 	}
