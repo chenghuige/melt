@@ -155,11 +155,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=ea09092639c9c8e313cb5a86bba6aef9  COMAKE
+COMAKE_MD5=923a0f0ffaaedc93101b835216f40361  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check .copy-so melt calibrate predict fastrank_text2bin fastrank_predict 
+all:comake2_makefile_check melt calibrate predict fastrank_text2bin fastrank_predict 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -179,8 +179,6 @@ ccpclean:
 .PHONY:clean
 clean:ccpclean
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mclean[0m']"
-	rm -rf .copy-so
-	rm -rf ld-linux-x86-64.so.2
 	rm -rf melt
 	rm -rf ./output/bin/melt
 	rm -rf calibrate
@@ -223,10 +221,6 @@ distclean:clean
 love:
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlove[0m']"
 	@echo "make love done"
-
-.copy-so:
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m.copy-so[0m']"
-	ln -s ../../../../../../ps/se/toolchain/x86_64-unknown-linux-gnu-4.8.1-2.9-2.20-2.6.32/x86_64-unknown-linux-gnu/lib//ld-linux-x86-64.so.2 ld-linux-x86-64.so.2
 
 melt:melt_melt.o \
   ../src/Prediction/Instances/melt_InstanceParser.o \
@@ -331,9 +325,6 @@ melt:melt_melt.o \
   -lrt \
   -ldl \
   -rdynamic \
-  -lgomp \
-  -rdynamic \
-  -Wl,-rpath=../../../../../../ps/se/toolchain/x86_64-unknown-linux-gnu-4.8.1-2.9-2.20-2.6.32/x86_64-unknown-linux-gnu/lib/ \
   -lgomp -Xlinker "-)" -o melt
 	mkdir -p ./output/bin
 	cp -f --link melt ./output/bin
@@ -441,9 +432,6 @@ calibrate:calibrate_calibrate.o \
   -lrt \
   -ldl \
   -rdynamic \
-  -lgomp \
-  -rdynamic \
-  -Wl,-rpath=../../../../../../ps/se/toolchain/x86_64-unknown-linux-gnu-4.8.1-2.9-2.20-2.6.32/x86_64-unknown-linux-gnu/lib/ \
   -lgomp -Xlinker "-)" -o calibrate
 	mkdir -p ./output/bin
 	cp -f --link calibrate ./output/bin
@@ -551,9 +539,6 @@ predict:predict_predict.o \
   -lrt \
   -ldl \
   -rdynamic \
-  -lgomp \
-  -rdynamic \
-  -Wl,-rpath=../../../../../../ps/se/toolchain/x86_64-unknown-linux-gnu-4.8.1-2.9-2.20-2.6.32/x86_64-unknown-linux-gnu/lib/ \
   -lgomp -Xlinker "-)" -o predict
 	mkdir -p ./output/bin
 	cp -f --link predict ./output/bin
@@ -661,9 +646,6 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
   -lrt \
   -ldl \
   -rdynamic \
-  -lgomp \
-  -rdynamic \
-  -Wl,-rpath=../../../../../../ps/se/toolchain/x86_64-unknown-linux-gnu-4.8.1-2.9-2.20-2.6.32/x86_64-unknown-linux-gnu/lib/ \
   -lgomp -Xlinker "-)" -o fastrank_text2bin
 	mkdir -p ./output/bin
 	cp -f --link fastrank_text2bin ./output/bin
@@ -771,9 +753,6 @@ fastrank_predict:fastrank_predict_fastrank_predict.o \
   -lrt \
   -ldl \
   -rdynamic \
-  -lgomp \
-  -rdynamic \
-  -Wl,-rpath=../../../../../../ps/se/toolchain/x86_64-unknown-linux-gnu-4.8.1-2.9-2.20-2.6.32/x86_64-unknown-linux-gnu/lib/ \
   -lgomp -Xlinker "-)" -o fastrank_predict
 	mkdir -p ./output/bin
 	cp -f --link fastrank_predict ./output/bin

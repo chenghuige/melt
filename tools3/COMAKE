@@ -14,7 +14,6 @@ print 'GCC_LOCAL: %d'%GCC_LOCAL
 #是否使用高版本gcc 可以直接使用生成的bin文件 如./main 
 GCC_HIGH=1
 print 'GCC_HIGH: %d'%GCC_HIGH
-#是否使用高版本动态链接库，即是否使用高版本libc 如果启用 可以使用openmp 但是需要make .copy-so 将ld-linux...so库拷贝或者链接到当前路径
 GCC_DYNAMIC=1
 #if GCC_LOCAL==1:
 #  GCC_DYNAMIC=1
@@ -82,12 +81,7 @@ UBRPCFLAGS('--compack')
 GCC_LDFLAGS=''
 if GCC_HIGH  == 1: 
 	if GCC_DYNAMIC  == 1:
-		GCC_LDFLAGS += ' -lgomp -rdynamic -Wl,-rpath=../../../../../../ps/se/toolchain/x86_64-unknown-linux-gnu-4.8.1-2.9-2.20-2.6.32/x86_64-unknown-linux-gnu/lib/'
 		GCC_LDFLAGS += ' -lgomp'
-		if GCC_LOCAL == 0:
-			GCC_LDFLAGS += ' -Wl,--dynamic-linker=./ld-linux-x86-64.so.2 -L%s'%(LIBS_DIR)
-		TARGET('.copy-so', ShellCommands('ln -s %s/ld-linux-x86-64.so.2 ld-linux-x86-64.so.2'%(LIBS_DIR)), 
-          CleanCommands('rm -rf ld-linux-x86-64.so.2')) 
 	else: 
 		GCC_LDFLAGS  += ' -static-libgcc -static-libstdc++'
 
