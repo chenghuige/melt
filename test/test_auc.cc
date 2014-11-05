@@ -20,6 +20,8 @@
 using namespace std;
 using namespace gezi;
 DEFINE_int32(vl, 0, "vlog level");
+DECLARE_int32(label);
+DEFINE_int32(out, 0, "out idx");
 //DEFINE_string(i, "~/data/0.inst.txt", "input");
 DECLARE_string(i);
 //DEFINE_string(o, "", "output");
@@ -42,8 +44,8 @@ TEST(auc, func)
 				continue;
 			}
 			svec vec = split(line, "\t ");
-			int label = INT(vec[1]);
-			double out = DOUBLE(vec[4]);
+			int label = INT(vec[FLAGS_label]);
+			double out = DOUBLE(vec[FLAGS_out]);
 			evaluator.Add(label, out);
 		}
 		Pval(evaluator.Finish());

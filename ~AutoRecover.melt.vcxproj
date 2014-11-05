@@ -75,6 +75,7 @@
     <ClCompile Include="src\Simple\Predictor.cpp" />
     <ClCompile Include="src\Simple\PredictorFactory.cpp" />
     <ClCompile Include="src\Wrapper\PredictorFactory.cpp" />
+    <ClCompile Include="test\test_auc.cc" />
     <ClCompile Include="test\test_bins.cc" />
     <ClCompile Include="test\test_fastrank_classification.cc" />
     <ClCompile Include="test\test_fastrank_loadtlc.cc" />
@@ -84,6 +85,7 @@
     <ClCompile Include="test\test_shared_predictors.cc" />
     <ClCompile Include="test\test_vector.cc" />
     <ClCompile Include="tools3\fastrank_predict.cc" />
+    <ClCompile Include="tools3\melt.cc" />
     <ClCompile Include="tools3\PLSA\plsa.cc" />
     <ClCompile Include="tools\calibrate.cc" />
     <ClCompile Include="tools\fastrank_predict.cc" />
@@ -109,6 +111,7 @@
     <ClInclude Include="include\Prediction\Calibrate\NaiveCalibrator.h" />
     <ClInclude Include="include\Prediction\Calibrate\PAVCalibrator.h" />
     <ClInclude Include="include\Prediction\Calibrate\SigmoidCalibrator.h" />
+    <ClInclude Include="include\Prediction\Instances\FeatureNamesVector.h" />
     <ClInclude Include="include\Prediction\Instances\HeaderSchema.h" />
     <ClInclude Include="include\Prediction\Instances\Instance.h" />
     <ClInclude Include="include\Prediction\Instances\InstanceParser.h" />
