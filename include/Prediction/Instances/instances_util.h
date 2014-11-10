@@ -175,18 +175,33 @@ namespace gezi {
 	}
 
 	//暂时不考虑有未标注label的情况 未标注设置为-1 normal 样本
-	inline void write_libsvm(Instance& instance, HeaderSchema& schema, ofstream& ofs)
+	inline void write_libsvm(Instance& instance, HeaderSchema& schema, ofstream& ofs, bool noNegLabel = false)
 	{
 		if (schema.numClasses == 2)
 		{ //为了sofia方便 将0转为-1 这样libsvm sofia都可以直接处理这种格式
-			if (instance.label == -std::numeric_limits<double>::infinity() ||
-				instance.label == 0)
+			if (noNegLabel)
 			{
-				ofs << -1;
+				if (instance.label == -std::numeric_limits<double>::infinity())
+				{
+					ofs << 0;
+				}
+				else
+				{
+					ofs << instance.label;
+				}
+
 			}
 			else
 			{
-				ofs << instance.label;
+				if (instance.label == -std::numeric_limits<double>::infinity() ||
+					instance.label == 0)
+				{
+					ofs << -1;
+				}
+				else
+				{
+					ofs << instance.label;
+				}
 			}
 		}
 		else
@@ -201,12 +216,12 @@ namespace gezi {
 		ofs << endl;
 	}
 
-	inline void write_libsvm(Instances& instances, string outfile)
+	inline void write_libsvm(Instances& instances, string outfile, bool noNegLabel = false)
 	{
 		ofstream ofs(outfile);
 		for (InstancePtr instance : instances)
 		{
-			write_libsvm(*instance, instances.schema, ofs);
+			write_libsvm(*instance, instances.schema, ofs, noNegLabel);
 		}
 	}
 
@@ -245,7 +260,7 @@ namespace gezi {
 		{
 			format = instances.schema.fileFormat;
 		}
-		VLOG(0) << "Writing to: " << outfile << " in format: " << kFormatSuffixes[format];
+		VLOG(0) << "Writing to: " << outfile << " in format: " << kFormatNames[format];
 
 		switch (format)
 		{
@@ -260,6 +275,9 @@ namespace gezi {
 			break;
 		case  FileFormat::LibSVM:
 			write_libsvm(instances, outfile);
+			break;
+		case  FileFormat::LibSVM2:
+			write_libsvm(instances, outfile, true);
 			break;
 		case FileFormat::Arff:
 			write_arff(instances, outfile);

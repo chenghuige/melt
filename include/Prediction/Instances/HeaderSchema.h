@@ -28,6 +28,7 @@ namespace gezi
 		SparseNoLength, // 1:3
 		Text,
 		LibSVM,
+		LibSVM2, //同LibSVM但是不会将label 0 转为 -1
 		Arff
 	};
 

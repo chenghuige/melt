@@ -40,16 +40,31 @@ namespace gezi {
 		{ "sparse_no_length", FileFormat::Sparse },
 		{ "text", FileFormat::Text },
 		{ "libsvm", FileFormat::LibSVM },
+		{ "libsvm2", FileFormat::LibSVM2 },
 		{ "arff", FileFormat::Arff }
 	};
 
-	static const map<FileFormat, string> kFormatSuffixes = {
+	//RunConvert 显示转换使用
+	static const map<FileFormat, string> kFormatNames = {
 		{ FileFormat::Unknown, "unknown" },
 		{ FileFormat::Dense, "dense" },
 		{ FileFormat::Sparse, "sparse" },
 		{ FileFormat::SparseNoLength, "sparse" },
 		{ FileFormat::Text, "txt" },
 		{ FileFormat::LibSVM, "libsvm" },
+		{ FileFormat::LibSVM2, "libsvm" },
+		{ FileFormat::Arff, "arff" }
+	};
+
+	//其它最后输出 使用
+	static const map<FileFormat, string> kFormatSuffixes = {
+		{ FileFormat::Unknown, "txt" },
+		{ FileFormat::Dense, "txt" },
+		{ FileFormat::Sparse, "txt" },
+		{ FileFormat::SparseNoLength, "sparse" },
+		{ FileFormat::Text, "txt" },
+		{ FileFormat::LibSVM, "libsvm" },
+		{ FileFormat::LibSVM2, "libsvm" },
 		{ FileFormat::Arff, "arff" }
 	};
 

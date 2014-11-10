@@ -102,6 +102,7 @@ public:
 		return hasMissingFeatures;
 	}
 
+	//TODO size_t counter; 计数 第几个instance
 	Vector features;
 	bool hasMissingFeatures = false;
 	Float label = -std::numeric_limits<double>::infinity();

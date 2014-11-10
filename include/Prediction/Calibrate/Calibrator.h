@@ -162,6 +162,23 @@ namespace gezi {
 			FinishTraining();
 		}
 
+		template<typename MarginFunc>
+		void Train(Instances& instances, MarginFunc marginFunc, int maxCount)
+		{
+			int dealCount = std::min((uint64)maxCount, instances.Count());
+			ProgressBar pb(dealCount, Name() + " calibrating");
+			for (InstancePtr instance : instances) 
+			{
+				++pb;
+				if (pb.counter() >= dealCount)
+				{
+					break;
+				}
+				ProcessTrainingExample(marginFunc(instance), instance->label > 0, instance->weight);
+			}
+			FinishTraining();
+		}
+
 		void Train(const dvec& scores, const BitArray& labels, const dvec& weights)
 		{
 			int len = scores.size();

@@ -605,7 +605,7 @@ namespace gezi {
 		//输入文件转换后输出
 		void RunConvert()
 		{
-			FileFormat defaultFileFormat = _cmd.inputFileFormat == kFormatSuffixes[FileFormat::LibSVM] ? FileFormat::Unknown : FileFormat::LibSVM;
+			FileFormat defaultFileFormat = _cmd.inputFileFormat == kFormatNames[FileFormat::LibSVM] ? FileFormat::Unknown : FileFormat::LibSVM;
 			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, defaultFileFormat);
 			Instances instances = create_instances(_cmd.datafile);
 			if (fileFormat == FileFormat::Unknown)
@@ -621,7 +621,7 @@ namespace gezi {
 				string outfile = _cmd.outfile;
 				if (outfile.empty())
 				{
-					string suffix = kFormatSuffixes[fileFormat];
+					string suffix = kFormatNames[fileFormat];
 					outfile = GetOutputFileName(_cmd.datafile, suffix, true);
 					if (outfile == _cmd.datafile)
 					{
@@ -710,12 +710,20 @@ namespace gezi {
 			}
 
 			string infile = _cmd.datafile;
+			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
 			for (int i = 0; i < partNum; i++)
 			{
 				string suffix = STR(i) + "_" + STR(partNum);
 				string outfile = GetOutputFileName(infile, suffix);
+				{
+					string suffix = kFormatSuffixes[fileFormat];
+					if (suffix != "txt")
+					{
+						outfile = GetOutputFileName(outfile, suffix, true);
+					}
+				}
 				Pval(outfile);
-				write(parts[i], outfile);
+				write(parts[i], outfile, fileFormat);
 			}
 		}
 
