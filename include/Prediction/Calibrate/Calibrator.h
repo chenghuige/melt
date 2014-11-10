@@ -179,7 +179,7 @@ namespace gezi {
 			FinishTraining();
 		}
 
-		void Train(const dvec& scores, const BitArray& labels, const dvec& weights)
+		void Train(const Fvec& scores, const BitArray& labels, const Fvec& weights)
 		{
 			int len = scores.size();
 			ProgressBar pb(len, Name() + " calibrating");
@@ -192,7 +192,7 @@ namespace gezi {
 			FinishTraining();
 		}
 
-		void Train(const dvec& scores, const BitArray& labels)
+		void Train(const Fvec& scores, const BitArray& labels)
 		{
 			int len = scores.size();
 			ProgressBar pb(len, Name() + " calibrating");
