@@ -54,7 +54,7 @@ namespace gezi {
 		string resultFile = "";
 		int resultIndex = 0;
 
-		string evaluate = "evaluate.simple/evaluate.simple ";
+		string evaluate = "";
 
 		bool preNormalize = false;
 
