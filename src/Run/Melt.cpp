@@ -40,7 +40,7 @@ DEFINE_string(rd, "./result", "resultDir: where to put the result data");
 DEFINE_string(rf, "", "resultFile: not used in cross validation which use resultDir only, can be used in test or train-test, if set FLAGS_rf than will write result to resultFile instead of to resultDir/0.inst.txt or resultDir/n.inst.txt if you set Flags_ri");
 DEFINE_int32(ri, 0, "resultIndex: the name ouf out file like 0.model.txt 0.model 0.inst.txt");
 
-DEFINE_int32(num, 0, "choose num instances or use as other number realted meaning");
+DEFINE_int64(num, 0, "choose num instances or use as other number realted meaning");
 
 DEFINE_bool(norm, true, "Normalize features");
 DEFINE_string(normalizer, "MinMax", "Which normalizer?");
@@ -48,8 +48,7 @@ DEFINE_string(normalizer, "MinMax", "Which normalizer?");
 DEFINE_string(fn, "", "featureName:");
 //@FIXME
 //DEFINE_string(ev, "/home/users/chenghuige/rsc/app/search/sep/anti-spam/melt/tools3/evaluate/evaluate", "evaluate: use what to evalute the result, notice if not find this one will try to use local evaluate");
-DEFINE_string(ev, "./tools/evaluate.py", "evaluate: use what to evalute the result, notice if not find this one will try to use local evaluate");
-//DEFINE_string(ev, "./evaluate/evaluate ", "evaluate: use what to evalute the result");
+DEFINE_string(ev, "", "evaluate: use what to evalute the result like ~/tools/evaluate.py, notice if empty not find this one will try to use internal c++ evaluate");
 
 DEFINE_bool(calibrate, true, "calibrateOutput: use calibrator to gen probability?");
 DEFINE_string(calibrator, "sigmoid", "calibratorName: sigmoid/platt naive pav");
@@ -111,7 +110,7 @@ namespace gezi {
 
 		_cmd.preNormalize = FLAGS_pn;
 	
-		if (!_cmd.evaluate.empty())
+		if (!FLAGS_ev.empty())
 		{
 			_cmd.evaluate = FLAGS_ev + " ";
 		}

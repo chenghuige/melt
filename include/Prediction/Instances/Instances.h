@@ -120,10 +120,10 @@ namespace gezi {
 		void PrintSummary(int level = 0)
 		{
 			uint64 pcnt = PositiveCount();
-			VLOG(level) << format( "Total instance num: {} PostiveCount: {} NegativeCount {} PostiveRatio: {}"
+			VLOG(level) << format( "Total instance num: {} PostiveCount: {} NegativeCount {} PostiveRatio: {}%"
 				, InstanceNum() , pcnt , (InstanceNum() - pcnt) , ((double)pcnt * 100 / InstanceNum()));
 			uint64 dcnt = DenseCount();
-			VLOG(level) << format("DenseCount: {} SparseCount: {} DenseRatio: {}", dcnt , (InstanceNum() - dcnt) , ((double)dcnt * 100 / InstanceNum()));
+			VLOG(level) << format("DenseCount: {} SparseCount: {} DenseRatio: {}%", dcnt , (InstanceNum() - dcnt) , ((double)dcnt * 100 / InstanceNum()));
 		}
 
 		uint64 PositiveCount()

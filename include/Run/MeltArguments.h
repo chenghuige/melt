@@ -23,7 +23,7 @@ namespace gezi {
 		string commandInput = ""; //ci|
 		string classifierName = "LinearSvm";//cl|
 		string classifierSettings = ""; //cls|
-		int num = 0;
+		int64 num = 0;
 		int numFolds = 5;
 		int numRuns = 1;
 		int numThreads = 0;
