@@ -22,7 +22,7 @@ class TrainerFactory
 {
 public:
 	static TrainerPtr CreateTrainer(string name_);
-
+	static void PrintTrainersInfo();
 protected:
 private:
 

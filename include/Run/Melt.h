@@ -65,6 +65,7 @@ namespace gezi {
 		{
 			UNKNOWN = 0,
 			HELP,
+			HELP_TRAINERS, //Melt现在支持的trainers信息打印
 			EVAL, //交叉验证,默认执行的command
 			EVAL_PARAM, //交叉验证 但是只输出auc的值,主要用于检测不同参数效果对比
 			TRAIN, //训练
@@ -106,7 +107,8 @@ namespace gezi {
 				VLOG(0) << setiosflags(ios::left) << setfill(' ') << setw(40)
 					<< item.first << " " << (int)item.second;
 			}
-			int i = 2; // 0 UNKNOWN, 1 HELP
+			int i = (int)RunType::HELP_TRAINERS; // 0 UNKNOWN, 1 HELP, 2 HELP_TRAINERS
+			VLOG(0) << i++ << " HELP_TRAINERS, //Melt现在支持的trainers信息打印";
 			VLOG(0) << i++ << " EVAL, //交叉验证,默认执行的command";
 			VLOG(0) << i++ << " EVAL_PARAM, //交叉验证 但是只输出auc的值,主要用于检测不同参数效果对比";
 			VLOG(0) << i++ << " TRAIN, //训练(-mt -mxml -mjson设置可以输出相应文本格式模型，如果要对内部的normalizer输出相应文本格式设置 -snt 1,calibrator类似 -sct 1)";
@@ -869,7 +871,7 @@ namespace gezi {
 							{
 								numPoses++;
 								newInstances.push_back(instances[i]);
-								if (numPoses + numNegs == _cmd.num)
+								if (numPoses + numNegs == (size_t)_cmd.num)
 								{
 									break;
 								}
@@ -881,7 +883,7 @@ namespace gezi {
 							{
 								numNegs++;
 								newInstances.push_back(instances[i]);
-								if (numPoses + numNegs == _cmd.num)
+								if (numPoses + numNegs == (size_t)_cmd.num)
 								{
 									break;
 								}
@@ -1037,6 +1039,9 @@ namespace gezi {
 			case RunType::HELP:
 				PrintCommands();
 				break;
+			case RunType::HELP_TRAINERS:
+				TrainerFactory::PrintTrainersInfo();
+				break;
 			case RunType::UNKNOWN:
 			default:
 				LOG(WARNING) << commandStr << " is not supported yet ";
@@ -1050,6 +1055,8 @@ namespace gezi {
 		MeltArguments _cmd;
 		map<string, RunType> _commands = {
 			{ "help", RunType::HELP },
+			{ "help_trainers", RunType::HELP_TRAINERS },
+			{ "helptrainers", RunType::HELP_TRAINERS },
 			{ "cv", RunType::EVAL },
 			{ "eval", RunType::EVAL },
 			{ "eval_param", RunType::EVAL_PARAM },
