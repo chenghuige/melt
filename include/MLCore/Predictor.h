@@ -24,6 +24,21 @@
 #include "Prediction/Calibrate/Calibrator.h"
 namespace gezi {
 
+	enum class PredictionKind
+	{
+		Unknown = 0,
+		Custom = 1,
+
+		BinaryClassification = 2,
+		MultiClassClassification = 3,
+		Regression = 4,
+		MultiOutputRegression = 5,
+		Ranking = 6,
+		Recommendation = 7,
+		// More to be added later.
+		// When adding values, also add to PredictionKindMask.
+	};
+
 	//当前只是考虑 二分类模型
 	//@TODO 多分类模型支持 重载 Fvec 或者Predict返回Fvec ?, Regression Rank等模型的支持
 	//@TODO TLC c#的那种接口的设计 能够迁移到c++吗
@@ -36,6 +51,11 @@ namespace gezi {
 		Predictor(NormalizerPtr normalizer, CalibratorPtr calibrator, const FeatureNamesVector& featureNames)
 			:_normalizer(normalizer), _calibrator(calibrator), _featureNames(featureNames)
 		{
+		}
+
+		virtual PredictionKind GetPredictionKind()
+		{
+			return PredictionKind::BinaryClassification;
 		}
 
 		virtual string Name() override

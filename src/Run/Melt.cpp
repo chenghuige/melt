@@ -40,6 +40,8 @@ DEFINE_string(rd, "./result", "resultDir: where to put the result data");
 DEFINE_string(rf, "", "resultFile: not used in cross validation which use resultDir only, can be used in test or train-test, if set FLAGS_rf than will write result to resultFile instead of to resultDir/0.inst.txt or resultDir/n.inst.txt if you set Flags_ri");
 DEFINE_int32(ri, 0, "resultIndex: the name ouf out file like 0.model.txt 0.model 0.inst.txt");
 
+DEFINE_int32(num, 0, "choose num instances or use as other number realted meaning");
+
 DEFINE_bool(norm, true, "Normalize features");
 DEFINE_string(normalizer, "MinMax", "Which normalizer?");
 
@@ -77,6 +79,8 @@ namespace gezi {
 
 		_cmd.saveNormalizerText = FLAGS_snt;
 		_cmd.saveCalibratorText = FLAGS_sct;
+
+		_cmd.num = FLAGS_num;
 
 		_cmd.numFolds = FLAGS_k;
 		_cmd.numRuns = FLAGS_nr;

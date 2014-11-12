@@ -33,7 +33,7 @@ namespace gezi {
 		看公式有点抽象，用上面的例子解释一下
 		模型1：首先对预测的score进行排序，排序后的样本为：负（6），正（5），正（4），负（3），负（2），正（1）
 		AUC的值为：(（5 + 4 + 1） - 3 * （3 + 1） / 2) / (3 * 3) = 4 / 9。可以看到跟方法二的计算结果一致，我们看一下这个计算公式，首先分子上后面的部分M*（M + 1） / 2。是不是很熟悉，小学就知道，上底加下底括号起来除以2，既是求梯形的面积公式，也是求连续值的公式，例如1 + 2 + 3 + 4。在这里指的就是所有的正样本的得分都小于所有的负样本的得分的情况下，计算出来的值。前半部分指的是实际的情况下正样本的排序。应该比较好理解了吧*/
-	inline double auc(vector<std::tuple<int, Float, Float> >& results, bool needSort = true)
+	inline Float auc(vector<std::tuple<int, Float, Float> >& results, bool needSort = true)
 	{
 		if (needSort)
 		{
@@ -46,7 +46,7 @@ namespace gezi {
 		Float oldTruePos = 0;
 		Float falsePos = 0;
 		Float truePos = 0;
-		Float oldOut = std::numeric_limits<double>::infinity();
+		Float oldOut = std::numeric_limits<Float>::infinity();
 		Float result = 0;
 
 		for (auto& item : results)
@@ -75,7 +75,7 @@ namespace gezi {
 		return AUC;
 	}
 
-	class BinaryClassficationEvaluator
+	class BinaryClassificationEvaluator
 	{
 	public:
 		virtual void Add(int label, Float output, Float weight = 1.0)
@@ -89,8 +89,8 @@ namespace gezi {
 		}
 	};
 
-	typedef shared_ptr<BinaryClassficationEvaluator> BinaryClassficationEvaluatorPtr;
-	class AucEvaluator : public BinaryClassficationEvaluator
+	typedef shared_ptr<BinaryClassificationEvaluator> BinaryClassficationEvaluatorPtr;
+	class AucEvaluator : public BinaryClassificationEvaluator
 	{
 	public:
 		virtual void Add(int label, Float output, Float weight = 1.0) override

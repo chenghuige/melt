@@ -82,6 +82,7 @@ namespace gezi {
 			SPLIT_DATA, //对输入样本进行切分  比如 1:1 1:3:2 同时保持每份中正反例比例维持和原始数据一致
 			GEN_CROSS_DATA, //输出交叉验证的文本数据文件 方便对比其它机器学习工具的实验效果
 			CHANGE_RAIO, //对输入样本进行正反例比例调整 比如 原始 1:30 调整为 1:1
+			RANDOMIZE, //对输入样本随机化处理，与CrossFold强制每组正反比例和原始数据一致相比，这里只做随机化，不强制保证,配合 -num > 0则只输出前num个样本
 			WRITE_TEXT_MODEL, //读入binary模型后写出文本格式模型如-mt -mxml -mjson 注意模型内部的normalizer,calibrator默认都是不输出Text格式的，如果需要输出 -snt 1, -sct 1
 			TEXT_MODEL_TO_BINARY //读取-m 指定路径下的model.txt 用户指定模型名称-cl 默认是LinearSVM 按照文本格式模型载入写出binary模型到-m路径
 		};
@@ -123,16 +124,9 @@ namespace gezi {
 			VLOG(0) << i++ << " SPLIT_DATA, //对输入样本进行切分  比如 1:1 1:3:2 同时保持每份中正反例比例维持和原始数据一致";
 			VLOG(0) << i++ << " GEN_CROSS_DATA, //输出交叉验证的文本数据文件 方便对比其它机器学习工具的实验效果";
 			VLOG(0) << i++ << " CHANGE_RAIO //对输入样本进行正反例比例调整 比如 原始 1:30 调整为 1:1";
+			VLOG(0) << i++ << " RANDOMIZE //对输入样本随机化处理，与CrossFold强制每组正反比例和原始数据一致相比，这里只做随机化，不强制保证,配合 -num > 0则只输出前num个样本";
 			VLOG(0) << i++ << " WRITE_TEXT_MODEL // 读入binary模型后写出文本格式模型如-mt -mxml -mjson(注意内部的normalizer如果需要文本输出需要-snt 1,类似的calibrator文本输出 -sct 1)";
 			VLOG(0) << i++ << " TEXT_MODEL_TO_BINARY //读取-m 指定路径下的model.txt 用户指定模型名称-cl 默认是LinearSVM 按照文本格式模型载入写出binary模型到-m路径";
-		}
-
-		static string GetOutputFileName(string infile, string suffix, bool removeTxt = false)
-		{
-			if (!removeTxt)
-				return endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", format(".{}.txt", suffix)) : format("{}.{}", infile, suffix);
-			else
-				return endswith(infile, ".txt") ? boost::replace_last_copy(infile, ".txt", format(".{}", suffix)) : format("{}.{}", infile, suffix);
 		}
 
 		void RunCrossValidation(Instances& instances, CrossValidationType cvType)
@@ -548,13 +542,13 @@ namespace gezi {
 			Instances instances = create_instances(_cmd.datafile);
 
 			normalizer->RunNormalize(instances);
-			
+
 			if (_cmd.saveOutputFile)
 			{
 				FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
 				write(instances, outfile, fileFormat);
 			}
-		
+
 			try_create_dir(_cmd.modelFolder);
 			SAVE_SHARED_PTR_ALL(normalizer);
 		}
@@ -636,6 +630,7 @@ namespace gezi {
 		{
 			Instances posInstances(instances.schema);
 			Instances negInstances(instances.schema);
+			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
 			for (InstancePtr instance : instances)
 			{
 				if (instance->IsPositive())
@@ -651,7 +646,7 @@ namespace gezi {
 			{
 				string outfile = GetOutputFileName(_cmd.datafile, "neg");
 				Pval(outfile);
-				write(negInstances, outfile);
+				write(negInstances, outfile, fileFormat);
 			}
 		}
 		//当前复用cross fold思路 
@@ -794,6 +789,7 @@ namespace gezi {
 			string infile = _cmd.datafile;
 			string suffix = replace(_cmd.commandInput, ':', '-');
 			string outfile = GetOutputFileName(infile, suffix);
+			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
 			if (posAdjustedNum == posNum)
 			{
 				LOG(WARNING) << "Need to do nothing";
@@ -837,7 +833,36 @@ namespace gezi {
 					}
 				}
 				Pval(outfile);
-				write(newInstances, outfile);
+				write(newInstances, outfile, fileFormat);
+			}
+		}
+
+		void RunRandomize()
+		{
+			auto instances = create_instances(_cmd.datafile);
+			RandomEngine rng = random_engine(_cmd.randSeed);
+			instances.Randomize(rng);
+			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
+			string suffix = "rand";
+			if (_cmd.num > 0)
+			{
+				suffix = format("{}.{}", suffix, _cmd.num);
+			}
+			string outfile = GetOutputFileName(_cmd.datafile, suffix);
+			Pval(outfile);
+			
+			if (_cmd.num > 0 && _cmd.num < instances.Count())
+			{
+				Instances newInstances(instances.schema);
+				for (int i = 0; i < _cmd.num; i++)
+				{
+					newInstances.push_back(instances[i]);
+				}
+				write(newInstances, outfile, fileFormat);
+			}
+			else
+			{
+				write(instances, outfile, fileFormat);
 			}
 		}
 
@@ -962,6 +987,9 @@ namespace gezi {
 			case RunType::CHANGE_RAIO:
 				RunChangeRatio();
 				break;
+			case RunType::RANDOMIZE:
+
+				break;
 			case RunType::WRITE_TEXT_MODEL:
 				RunWriteTextModel();
 				break;
@@ -1016,6 +1044,8 @@ namespace gezi {
 			{ "gcd", RunType::GEN_CROSS_DATA },
 			{ "changeratio", RunType::CHANGE_RAIO },
 			{ "cr", RunType::CHANGE_RAIO },
+			{ "randomize", RunType::RANDOMIZE },
+			{ "rand", RunType::RANDOMIZE },
 			{ "write_text_model", RunType::WRITE_TEXT_MODEL },
 			{ "wtm", RunType::WRITE_TEXT_MODEL },
 			{ "binary_model_to_text", RunType::WRITE_TEXT_MODEL },
