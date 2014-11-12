@@ -4,7 +4,8 @@
 WORKROOT('../../../../../../')
 
 GCC_VERSION='4.8.2'
-GCC_BIN='../../../../../../ps/se/toolchain/gcc_only_%s/bin/g++'%(GCC_VERSION)
+#GCC_BIN='../../../../../../ps/se/toolchain/gcc_only_%s/bin/g++'%(GCC_VERSION)
+GCC_BIN='/opt/compiler/gcc-4.8.2/bin/g++'
 print 'GCC_BIN: %s'%GCC_BIN
 CC(GCC_BIN)
 CXX(GCC_BIN)
