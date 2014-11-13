@@ -140,7 +140,7 @@ namespace gezi {
 				//如果是交叉验证为了得到一个全局结果 这里有重复计算
 				if (isCrossValidationMode)
 				{
-					gezi::join_vec<double>(globalDatasetMetrics, [&](const DatasetMetricsPtr& globalDatasetMetrics) { return datasetMetric->ProcessInstance(label, prediction, probability, weight); });
+					gezi::join_vec<double>(globalDatasetMetrics, [&](const DatasetMetricsPtr& datasetMetric) { return datasetMetric->ProcessInstance(label, prediction, probability, weight); });
 				}
 
 				idx++;
