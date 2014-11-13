@@ -133,13 +133,23 @@ namespace gezi {
 				Float prediction = 0, probability = std::numeric_limits<double>::quiet_NaN();
 				probability = predictor->Predict(instance, prediction);
 				dvec perInstanceOutputs = gezi::join_vec<double>(datasetMetrics, [&](const DatasetMetricsPtr& datasetMetric) { return datasetMetric->ProcessInstance(label, prediction, probability, weight); });
-				PrintInstanceOutput(idx, instance, perInstanceOutputs);
+				if (ofs.is_open())
+				{
+					PrintInstanceOutput(idx, instance, perInstanceOutputs);
+				}
+				//如果是交叉验证为了得到一个全局结果 这里有重复计算
+				if (isCrossValidationMode)
+				{
+					gezi::join_vec<double>(globalDatasetMetrics, [&](const DatasetMetricsPtr& datasetMetric) { return datasetMetric->ProcessInstance(label, prediction, probability, weight); });
+				}
+
 				idx++;
 			}
 			for (auto& datasetMetric : datasetMetrics)
 			{
 				datasetMetric->Print();
 			}
+			fmt::print_line(foldSeparatorString);
 		}
 
 		void ProcessInstancesForRanking(Instances instances, PredictorPtr predictor)
@@ -147,9 +157,28 @@ namespace gezi {
 
 		}
 
+		void Finalize()
+		{
+			if (isCrossValidationMode)
+			{
+				fmt::print_line("OVERALL RESULTS");
+				fmt::print_line("---------------------------------------");
+				for (auto& datasetMetric : globalDatasetMetrics)
+				{
+					datasetMetric->Print();
+				}
+			}
+		}
+
+		//可以一个Tester连续使用Test datasetMetrics = ConstructDatasetMetrics();确保结果清空每次
 		void Test(Instances& instances, PredictorPtr predictor, string lossOutfile = "")
 		{
 			datasetMetrics = ConstructDatasetMetrics();
+
+			if (isCrossValidationMode && globalDatasetMetrics.empty())
+			{
+				globalDatasetMetrics = ConstructDatasetMetrics();
+			}
 
 			if (!lossOutfile.empty() && !ofs.is_open())
 			{
@@ -197,7 +226,10 @@ namespace gezi {
 
 		ofstream ofs; //输出inst文件使用
 		vector<DatasetMetricsPtr> datasetMetrics;
+		vector<DatasetMetricsPtr> globalDatasetMetrics; //交叉验证时使用
 		string foldSeparatorString = "----------------------------------------------------------------------------------------";
+
+		bool isCrossValidationMode = false; //交叉验证的时候用true来表示需要一个每轮结果累加的Tester
 	protected:
 	private:
 	};

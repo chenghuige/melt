@@ -19,7 +19,6 @@
 
 namespace gezi {
 
-
 	class ClassificationPrecisionRecall : public DatasetMetrics
 	{
 	public:
@@ -152,7 +151,7 @@ namespace gezi {
 			line = line + format("{0:.4f} ({1}/{2})", recallPos, numTruePos, numTruePos + numFalseNeg);
 			fmt::print_line(line);
 
-			line = format(" negative||    {}", numFalsePos);
+			line = format(" negative||   {}", numFalsePos);
 			line = pad_right(line, 26);
 			line = format("{} |    {}", line, numTrueNeg);
 			line = pad_right(line, 42) + "|| ";
@@ -167,12 +166,16 @@ namespace gezi {
 				precisionNeg, numTrueNeg, (numTrueNeg + numFalseNeg));
 			fmt::print_line(line);
 
-			fmt::print_line("\n" + prefix + "OVERALL 0/1 ACCURACY:\t\t{0:.4f} ({1}/{2})", accuracy,
-				(numTrueNeg + numTruePos),
-				(numTruePos + numTrueNeg + numFalseNeg + numFalsePos));
 			fmt::print_line(prefix + "LOG LOSS/instance:\t\t{0:.4f}", avgLogLoss);
 			fmt::print_line(prefix + "TEST-SET ENTROPY (prior LL/in):\t{0:.4f}", testLogLoss);
 			fmt::print_line(prefix + "LOG-LOSS REDUCTION (RIG):\t{0:.4f}%", logLossReduction);
+			fmt::print_line("\n" + prefix + "OVERALL 0/1 ACCURACY:	{0:.4f} ({1}/{2})", accuracy,
+				(numTrueNeg + numTruePos),
+				(numTruePos + numTrueNeg + numFalseNeg + numFalsePos));
+			fmt::print_line("POS.PRECISION:		{:.4f}", precisionPos);
+			fmt::print_line("PPOS.RECALL:		{:.4f}", recallPos);
+			fmt::print_line("POS.PRECISION:		{:.4f}", precisionNeg);
+			fmt::print_line("PPOS.RECALL:		{:.4f}", recallNeg);
 			//if (trainPrior > 0)
 			//{
 			//	Float trainLogLoss = gezi::cross_entropy(testPrior, trainPrior, useLn);
@@ -227,7 +230,8 @@ namespace gezi {
 
 		virtual void Print_(string prefix) override
 		{
-			fmt::print_colored_line(fmt::RED, prefix + "AUC:\t\t\t\t{0:.4}", _auc);
+			fmt::print_colored(fmt::RED, prefix + "AUC:			[{0:.4}]", _auc);
+			fmt::print("\n");
 		}
 	private:
 		vector<std::tuple<int, Float, Float> > _results;

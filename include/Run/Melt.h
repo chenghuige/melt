@@ -46,6 +46,8 @@
 #include "MLCore/PredictorFactory.h"
 
 #include "Utils/performance_evaluate.h"
+#include "Testers/testers.h"
+#include "Utils/PredictorUtils.h"
 
 namespace gezi {
 	class Melt
@@ -88,10 +90,13 @@ namespace gezi {
 			TEXT_MODEL_TO_BINARY //读取-m 指定路径下的model.txt 用户指定模型名称-cl 默认是LinearSVM 按照文本格式模型载入写出binary模型到-m路径
 		};
 
+
+		//目前兼容调用外部脚本 但是没考虑扩展性 暂时只考虑二分类，而内置的Tester考虑了可扩展性
 		enum class CrossValidationType
 		{
-			DEFAULT = 0, //默认生成instance文件，调用外部python脚本处理instance文件生成evaluate结果
-			AUC = 1 //不生成instance文件,只是内部计算auc或者其它evaluate数据@TODO,用于参数选取
+			DEFAULT = 0, //默认使用melt本身内置c++的Tester
+			USE_SCRIPT, //调用外部python脚本处理instance文件生成evaluate结果 如~/tools/evaluate.py ~/tools/evaluate.full.py可以辅助输出ROC,PR曲线，调节阈值展示召回
+			AUC //不生成instance文件,只是内部计算auc或者其它evaluate数据@TODO,用于参数选取
 		};
 
 		MeltArguments& Cmd()
@@ -134,13 +139,16 @@ namespace gezi {
 		void RunCrossValidation(Instances& instances, CrossValidationType cvType)
 		{
 			//--------------------------- 输出文件头
-			string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
-			ofstream ofs;
-			if (cvType == CrossValidationType::DEFAULT)
+			string fullInstFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
+			ofstream ofs; //如果 cvType == CrossValidationType::USE_SCRIPT  使用
+			if (cvType == CrossValidationType::USE_SCRIPT || cvType == CrossValidationType::DEFAULT)
 			{
 				try_create_dir(_cmd.resultDir);
-				ofs.open(instFile);
-				WriteInstFileHeader(ofs);
+				if (cvType == CrossValidationType::USE_SCRIPT)
+				{
+					ofs.open(fullInstFile);
+					WriteInstFileHeader(ofs);
+				}
 			}
 
 			if (_cmd.preNormalize)
@@ -158,6 +166,7 @@ namespace gezi {
 				evaluator = make_shared<AucEvaluator>();
 			}
 			string trainerParam;
+			TesterPtr tester = nullptr;
 			for (size_t runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
 			{
 				VLOG(0) << "The " << runIdx << " round";
@@ -194,6 +203,22 @@ namespace gezi {
 
 					if (cvType == CrossValidationType::DEFAULT)
 					{
+						if (tester == nullptr)
+						{
+#pragma  omp critical
+							{
+								tester = PredictorUtils::GetTester(predictor);
+								tester->isCrossValidationMode = true;
+							}
+						}
+						else
+						{
+							tester->writeTSVHeader = false;
+						}
+						tester->Test(testData, predictor, fullInstFile);
+					}
+					else if (cvType == CrossValidationType::USE_SCRIPT)
+					{
 						//@TODO 每个test 输出一个inst 文件也 然后每个给出一个结果
 						VLOG(0) << "-------------------------------------Testing";
 						Test(testData, predictor, instfile, ofs);
@@ -221,7 +246,11 @@ namespace gezi {
 
 			if (cvType == CrossValidationType::DEFAULT)
 			{
-				string command = _cmd.evaluate + instFile;
+				tester->Finalize();
+			}
+			else if (cvType == CrossValidationType::USE_SCRIPT)
+			{
+				string command = _cmd.evaluate + fullInstFile;
 #pragma omp critical
 				{
 					EXECUTE(command);
@@ -243,6 +272,10 @@ namespace gezi {
 			Instances instances = create_instances(_cmd.datafile);
 			CHECK_GT(instances.Count(), 0) << "Read 0 instances, aborting experiment";
 			instances.PrintSummary();
+			if (cvType == CrossValidationType::DEFAULT && !_cmd.evaluate.empty())
+			{
+				cvType = CrossValidationType::USE_SCRIPT;
+			}
 			//------------------------------run
 			RunCrossValidation(instances, cvType);
 		}

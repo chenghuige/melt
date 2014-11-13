@@ -113,6 +113,7 @@ namespace gezi {
 		if (!FLAGS_ev.empty())
 		{
 			_cmd.evaluate = FLAGS_ev + " ";
+			Pval(_cmd.evaluate);
 		}
 
 		_cmd.inputFileFormat = FLAGS_format;
