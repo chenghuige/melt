@@ -13,7 +13,7 @@
 
 #ifndef TESTERS__REGRESSOR_TESTER_H_
 #define TESTERS__REGRESSOR_TESTER_H_
-
+#include "Tester.h"
 namespace gezi {
 
 class RegressorTester 

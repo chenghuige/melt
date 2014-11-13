@@ -14,9 +14,11 @@
 #ifndef TESTERS__CLASSIFIER_TESTER_H_
 #define TESTERS__CLASSIFIER_TESTER_H_
 
+#include "Tester.h"
+
 namespace gezi {
 
-class ClassifierTester 
+class ClassifierTester : public Tester
 {
 public:
 

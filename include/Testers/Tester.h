@@ -13,7 +13,7 @@
 
 #ifndef TESTERS__TESTER_H_
 #define TESTERS__TESTER_H_
-
+#include "common_util.h"
 namespace gezi {
 
 class Tester 
@@ -24,6 +24,8 @@ protected:
 private:
 
 };
+
+typedef shared_ptr<Tester> TesterPtr;
 
 }  //----end of namespace gezi
 

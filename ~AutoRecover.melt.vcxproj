@@ -136,7 +136,14 @@
     <ClInclude Include="include\Run\CVFoldCreator.h" />
     <ClInclude Include="include\Run\Melt.h" />
     <ClInclude Include="include\Run\MeltArguments.h" />
-    <ClInclude Include="include\Tools\FeatureStatus.h" />
+    <ClInclude Include="include\Testers\ClassifierTester.h" />
+    <ClInclude Include="include\Testers\DatasetMetrics.h" />
+    <ClInclude Include="include\Testers\MulticlassTester.h" />
+    <ClInclude Include="include\Testers\MultioutputRegressorTester.h" />
+    <ClInclude Include="include\Testers\RankerTester.h" />
+    <ClInclude Include="include\Testers\RegressorTester.h" />
+    <ClInclude Include="include\Testers\Tester.h" />
+    <ClInclude Include="include\Testers\testers.h" />
     <ClInclude Include="include\TopicModel\PLSA\plsa.h" />
     <ClInclude Include="include\TopicModel\PLSA\PLSAModel.h" />
     <ClInclude Include="include\Trainers\BoostedTree\RegressionTree.h" />
@@ -145,6 +152,7 @@
     <ClInclude Include="include\Trainers\SVM\LinearSVM.h" />
     <ClInclude Include="include\Utils\FeatureStatus.h" />
     <ClInclude Include="include\Utils\performance_evaluate.h" />
+    <ClInclude Include="include\Utils\PredictorUtils.h" />
     <ClInclude Include="include\Wrapper\PredictorFactory.h" />
     <ClInclude Include="include\Wrapper\SharedPredictor.h" />
     <ClInclude Include="include\Wrapper\SharedPredictors.h" />

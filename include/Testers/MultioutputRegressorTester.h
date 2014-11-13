@@ -13,10 +13,10 @@
 
 #ifndef TESTERS__MULTIOUTPUT_REGRESSOR_TESTER_H_
 #define TESTERS__MULTIOUTPUT_REGRESSOR_TESTER_H_
-
+#include "Tester.h"
 namespace gezi {
 
-class MultioutputRegressorTester 
+class MultioutputRegressorTester : public Tester
 {
 public:
 

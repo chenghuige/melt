@@ -37,7 +37,8 @@ namespace gezi {
 		{ "unknown", FileFormat::Unknown },
 		{ "dense", FileFormat::Dense },
 		{ "sparse", FileFormat::Sparse },
-		{ "sparse_no_length", FileFormat::Sparse },
+		{ "sparse_no_length", FileFormat::SparseNoLength },
+		{ "sparse2", FileFormat::SparseNoLength },
 		{ "text", FileFormat::Text },
 		{ "libsvm", FileFormat::LibSVM },
 		{ "libsvm2", FileFormat::LibSVM2 },
@@ -689,7 +690,8 @@ namespace gezi {
 				{
 					if (contains(_firstColums[i], ':'))
 					{
-						return FileFormat::SparseNoLength;
+						//return FileFormat::SparseNoLength; //去掉默认解析 sparse no length因为不常用,为了更好兼容libsvm格式
+						return FileFormat::LibSVM;
 					}
 
 					int j = i + 1;
