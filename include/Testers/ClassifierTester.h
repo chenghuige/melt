@@ -161,7 +161,7 @@ namespace gezi {
 			fmt::print_line("         ||===============================||");
 			line = " PRECISION " + format("{0:.4f} ({1}/{2})",
 				precisionPos, numTruePos, numTruePos + numFalsePos);
-			line = pad_right(line, 27);
+			line = pad_right(line, 30);
 			line = line + "  " + format("{0:.4f}({1}/{2})",
 				precisionNeg, numTrueNeg, (numTrueNeg + numFalseNeg));
 			fmt::print_line(line);
@@ -230,7 +230,7 @@ namespace gezi {
 
 		virtual void Print_(string prefix) override
 		{
-			fmt::print_colored(fmt::RED, prefix + "AUC:		[{0:.4}]", _auc);
+			fmt::print_colored(fmt::RED, prefix + "AUC:                   [{0:.4f}]", _auc);
 			fmt::print("\n");
 		}
 	private:
