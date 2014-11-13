@@ -733,12 +733,20 @@ namespace gezi {
 		//获取列信息，名字，是dense还是sparse表示
 		void ParseFirstLine(svec lines)
 		{
-			Timer timer;
+			//Timer timer;
 			string line = lines[0];
 			_firstColums = split(line, _sep);
 
-			VLOG(2) << format("split time: {}", timer.elapsed_ms());
-			timer.restart();
+			if (_firstColums.size() < 2)
+			{
+				char sep = GuessSeparator(lines[0], "\t ");
+				_firstColums = split(line, sep);
+				//_sep = string(sep); //貌似这样char to string 会core。。
+				_sep = STRING(sep);
+			}
+
+			//VLOG(2) << format("split time: {}", timer.elapsed_ms());
+			//timer.restart();
 
 			_columnNum = _firstColums.size();
 			PVAL(_columnNum);
@@ -749,8 +757,8 @@ namespace gezi {
 			_columnTypes.resize(_columnNum, ColumnType::Feature);
 			InitColumnTypes(lines);
 
-			VLOG(2) << format("InitColumnTypes time: {}", timer.elapsed_ms());
-			timer.restart();
+			//VLOG(2) << format("InitColumnTypes time: {}", timer.elapsed_ms());
+			//timer.restart();
 
 			_fileFormat = kFormats[_format];
 			if (_fileFormat == FileFormat::Unknown)
@@ -760,13 +768,13 @@ namespace gezi {
 
 			InitNames();
 
-			VLOG(2) << format("InitNames time: {}", timer.elapsed_ms());
-			timer.restart();
+			//VLOG(2) << format("InitNames time: {}", timer.elapsed_ms());
+			//timer.restart();
 
 			SetHeaderSchema(line);
 
-			VLOG(2) << format("SetHeaderSchema time: {}", timer.elapsed_ms());
-			timer.restart();
+			//VLOG(2) << format("SetHeaderSchema time: {}", timer.elapsed_ms());
+			//timer.restart();
 		}
 
 		void PrintInfo()
@@ -837,7 +845,8 @@ namespace gezi {
 			VLOG(0) << "CreateInstancesFromLibSVMFormat";
 			uint64 end = start + _instanceNum;
 			int maxIndex = 1;
-			char sep = GuessSeparator(lines[0], "\t ");
+			//char sep = GuessSeparator(lines[0], "\t ");
+			char sep = _sep[0];
 #pragma omp parallel for reduction(max : maxIndex)
 			for (uint64 i = start; i < end; i++)
 			{

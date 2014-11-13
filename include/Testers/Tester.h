@@ -14,6 +14,7 @@
 #ifndef TESTERS__TESTER_H_
 #define TESTERS__TESTER_H_
 #include "common_util.h"
+#include "MLCore/Predictor.h"
 namespace gezi {
 
 class Tester 

@@ -41,7 +41,8 @@ namespace gezi {
 
 	//当前只是考虑 二分类模型
 	//@TODO 多分类模型支持 重载 Fvec 或者Predict返回Fvec ?, Regression Rank等模型的支持
-	//@TODO TLC c#的那种接口的设计 能够迁移到c++吗
+	//@TODO TLC c#的那种接口的设计 能够迁移到c++吗 c#的关键有一个  object Predict(object features);   public interface IPredictor<in TFeatures, out TResult> : IPredictor
+	//TResult Predict(TFeatures features);
 	//var stronglyTypedPredictor = predictor as IPredictor<Instance, float>;
 	class Predictor : public LoadSave
 	{

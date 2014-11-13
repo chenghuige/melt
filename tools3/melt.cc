@@ -33,7 +33,7 @@ void ShowHelp()
 	cout << "	Try <./melt --helpmatch Instance> for melt input instances parser settings\n";
 	cout << "	For spcific classifer setting use like <./melt --helpmatch LinearSVM.cpp>, <./melt --helpmatch FastRank.cpp>\n";
 	cout << "	The default trainer is LinearSVM, for other trainers use -cl, eg. <./melt feature.txt -c train -cl gbdt> will train feature.txt using gbdt trainer\n";
-	cout << "	The default input is melt dense or sparse input, you can use LibSVM format input, but need to add <-format libsvm>\n";
+	cout << "Recommed to use melt internal format(0 started index, can be sparse or dense) but you can also use libsvm format(1 started sparse format) directly\n";
 }
 
 int main(int argc, char *argv[])
