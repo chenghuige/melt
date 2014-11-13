@@ -19,7 +19,14 @@ namespace gezi {
 class MultioutputRegressorTester : public Tester
 {
 public:
-
+	virtual PredictionKind GetPredictionKind()
+	{
+		return PredictionKind::MultiOutputRegression;
+	}
+	virtual vector<DatasetMetricsPtr> ConstructDatasetMetrics()
+	{
+		return vector<DatasetMetricsPtr>();
+	}
 protected:
 private:
 

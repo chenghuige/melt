@@ -75,6 +75,8 @@ namespace gezi {
 		return AUC;
 	}
 
+
+	//-----------------below depreciated
 	class BinaryClassificationEvaluator
 	{
 	public:

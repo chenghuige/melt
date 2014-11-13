@@ -46,6 +46,12 @@ namespace gezi {
 				return nullptr;
 			}
 		}
+
+		static	TesterPtr GetTester(PredictorPtr predictor)
+		{
+			return GetTester(predictor->GetPredictionKind());
+		}
+
 	protected:
 	private:
 

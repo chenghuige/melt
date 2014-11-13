@@ -845,7 +845,7 @@ namespace gezi {
 			VLOG(0) << "CreateInstancesFromLibSVMFormat";
 			uint64 end = start + _instanceNum;
 			int maxIndex = 1;
-			//char sep = GuessSeparator(lines[0], "\t ");
+			//char sep = GuessSeparator(lines[0], "\t "); //已经在ParseFirstLine的时候确定了
 			char sep = _sep[0];
 #pragma omp parallel for reduction(max : maxIndex)
 			for (uint64 i = start; i < end; i++)

@@ -16,10 +16,17 @@
 #include "Tester.h"
 namespace gezi {
 
-class RankerTester 
+class RankerTester : public Tester
 {
 public:
-
+	virtual PredictionKind GetPredictionKind()
+	{
+		return PredictionKind::Ranking;
+	}
+	virtual vector<DatasetMetricsPtr> ConstructDatasetMetrics()
+	{
+		return vector<DatasetMetricsPtr>();
+	}
 protected:
 private:
 

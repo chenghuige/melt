@@ -94,7 +94,7 @@ public:
 	//wether label is unknown
 	bool IsUnknown()
 	{
-		return label == -std::numeric_limits<double>::infinity();
+		return std::isnan(label);
 	}
 
 	bool HasMissingFeatures()
@@ -105,7 +105,7 @@ public:
 	//TODO size_t counter; 计数 第几个instance
 	Vector features;
 	bool hasMissingFeatures = false;
-	Float label = -std::numeric_limits<double>::infinity();
+	Float label = std::numeric_limits<double>::quiet_NaN();
 	string name;
 	svec names;
 	svec attributes;

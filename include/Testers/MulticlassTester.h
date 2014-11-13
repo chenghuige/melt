@@ -19,7 +19,14 @@ namespace gezi {
 class MulticlassTester : public Tester
 {
 public:
-
+	virtual PredictionKind GetPredictionKind()
+	{
+		return PredictionKind::MultiClassClassification;
+	}
+	virtual vector<DatasetMetricsPtr> ConstructDatasetMetrics()
+	{
+		return vector<DatasetMetricsPtr>();
+	}
 protected:
 private:
 

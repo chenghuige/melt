@@ -152,6 +152,7 @@
     <ClInclude Include="include\Trainers\SVM\LinearSVM.h" />
     <ClInclude Include="include\Utils\FeatureStatus.h" />
     <ClInclude Include="include\Utils\performance_evaluate.h" />
+    <ClInclude Include="include\Utils\PredictorUtils.h" />
     <ClInclude Include="include\Wrapper\PredictorFactory.h" />
     <ClInclude Include="include\Wrapper\SharedPredictor.h" />
     <ClInclude Include="include\Wrapper\SharedPredictors.h" />

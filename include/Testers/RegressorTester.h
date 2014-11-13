@@ -16,10 +16,17 @@
 #include "Tester.h"
 namespace gezi {
 
-class RegressorTester 
+class RegressorTester : public Tester
 {
 public:
-
+	virtual PredictionKind GetPredictionKind()
+	{
+		return PredictionKind::Regression;
+	}
+	virtual vector<DatasetMetricsPtr> ConstructDatasetMetrics()
+	{
+		return vector<DatasetMetricsPtr>();
+	}
 protected:
 private:
 
