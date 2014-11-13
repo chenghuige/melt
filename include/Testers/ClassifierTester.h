@@ -230,7 +230,7 @@ namespace gezi {
 
 		virtual void Print_(string prefix) override
 		{
-			fmt::print_colored(fmt::RED, prefix + "AUC:			[{0:.4}]", _auc);
+			fmt::print_colored(fmt::RED, prefix + "AUC:		[{0:.4}]", _auc);
 			fmt::print("\n");
 		}
 	private:
