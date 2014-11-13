@@ -15,6 +15,7 @@
 #define TESTERS__CLASSIFIER_TESTER_H_
 
 #include "Testers/Tester.h"
+#include "Utils/performance_evaluate.h"
 
 namespace gezi {
 
@@ -26,19 +27,15 @@ namespace gezi {
 		{
 			return "True";
 		}
-		virtual vector<string> PerInstanceColumnNames()
+
+		virtual vector<string> PerInstanceColumnNames() override
 		{
 			return vector<string>({ "Assigned", "Output", "Probability", "Log-loss" });
 		}
 
-		virtual dvec ProcessInstance(InstancePtr instance, PredictorPtr predictor) override
+		virtual Fvec ProcessInstance(Float label, Float prediction, Float probability, Float weight) override
 		{
-			vector<double> results(4, std::numeric_limits<double>::quiet_NaN());
-
-			double label = instance->label;
-			double weight = instance->weight;
-			double prediction, probability;
-			probability = predictor->Predict(instance, prediction);
+			vector<Float> results(4, std::numeric_limits<Float>::quiet_NaN());
 
 			if (std::isnan(label))
 			{
@@ -66,7 +63,7 @@ namespace gezi {
 			results[0] = (prediction > 0 ? 1 : 0);
 			results[1] = prediction;
 
-			double currLogLoss;
+			Float currLogLoss;
 
 			if (!std::isnan(probability))
 			{
@@ -83,7 +80,7 @@ namespace gezi {
 			}
 			else
 			{
-				currLogLoss = std::numeric_limits<double>::quiet_NaN();
+				currLogLoss = std::numeric_limits<Float>::quiet_NaN();
 			}
 
 			if (currLogLoss > logTolerance || std::isinf(currLogLoss))
@@ -95,52 +92,111 @@ namespace gezi {
 			return results;
 		}
 
+
 	protected:
 		virtual void Finish() override
 		{
-			double accuracy = (numTrueNeg + numTruePos) / (numTruePos + numTrueNeg + numFalseNeg + numFalsePos);
-			double recallPos = (numTruePos + numFalseNeg > 0)
-				? numTruePos / (numTruePos + numFalseNeg) : 0;
-			double precisionPos = (numTruePos + numFalsePos > 0)
-				? numTruePos / (numTruePos + numFalsePos) : 0;
-			double recallNeg = (numTrueNeg + numFalsePos > 0)
-				? numTrueNeg / (numTrueNeg + numFalsePos) : 0;
-			double precisionNeg = (numTrueNeg + numFalseNeg > 0)
-				? numTrueNeg / (numTrueNeg + numFalseNeg) : 0;
+			accuracy = (numTrueNeg + numTruePos) / Float(numTruePos + numTrueNeg + numFalseNeg + numFalsePos);
+			recallPos = (numTruePos + numFalseNeg > 0)
+				? numTruePos / Float(numTruePos + numFalseNeg) : 0;
+			precisionPos = (numTruePos + numFalsePos > 0)
+				? numTruePos / Float(numTruePos + numFalsePos) : 0;
+			recallNeg = (numTrueNeg + numFalsePos > 0)
+				? numTrueNeg / Float(numTrueNeg + numFalsePos) : 0;
+			precisionNeg = (numTrueNeg + numFalseNeg > 0)
+				? numTrueNeg / Float(numTrueNeg + numFalseNeg) : 0;
 
-			double logLossReduction = 0;
+			logLossReduction = 0;
 			if (numLogLossPositives + numLogLossNegatives > 0)
 			{
-				logLoss = logLoss / (numLogLossPositives + numLogLossNegatives);
+				logLoss = logLoss / Float(numLogLossPositives + numLogLossNegatives);
 
-				double priorPos = numLogLossPositives / (numLogLossPositives + numLogLossNegatives);
-				priorLogLoss = PredictionUtil.Entropy(priorPos, useLn);
+				Float priorPos = numLogLossPositives / Float(numLogLossPositives + numLogLossNegatives);
+				priorLogLoss = gezi::entropy(priorPos, useLn);
 				logLossReduction = 100 * (priorLogLoss - logLoss) / priorLogLoss;
 			}
 		}
 
-		virtual void Print_() override
+		virtual void Print_(string prefix) override
 		{
-			Finish();
+			avgLogLoss = logLoss;
+			Float testPrior = (numTruePos + numFalseNeg) / (numTruePos + numTrueNeg + numFalseNeg + numFalsePos);
+			Float testLogLoss = gezi::entropy(testPrior, useLn);
 
+			if (trainPrior < 0)
+			{
+				trainPrior = testPrior;
+				//fmt::print_line("\n\n*** Predictor did not carry a train prior, using test prior...");
+			}
+
+			if (numUnlabeledInstances > 0)
+				fmt::print_line("\nEncountered {} unlabeled instances during testing", numUnlabeledInstances);
+
+			fmt::print_line("\n{0}TEST POSITIVE RATIO:\t{1:.4f} ({2}/({2}+{3}))", prefix,
+				1.0 * (numTruePos + numFalseNeg) / (numTruePos + numTrueNeg + numFalseNeg + numFalsePos),
+				numTruePos + numFalseNeg, numFalsePos + numTrueNeg);
+			//@TODO 是否有必要类似TLC predictor记录了训练数据的正负样本比例分布
+			//if (trainPrior != -1)                          
+			//	fmt::print_line("{0}TRAIN POSITIVE RATIO:\t{1}", prefix, trainPrior);
+
+			fmt::print_line("\n{0}Confusion table:", prefix);
+			fmt::print_line("         ||===============================||");
+			fmt::print_line("         ||            PREDICTED          ||");
+			fmt::print_line("  TRUTH  ||    positive    |   negative   || RECALL");
+			fmt::print_line("         ||===============================||");
+
+			string line = format(" positive||   {}", numTruePos);
+			line = pad_right(line, 26);
+			line = format("{} |    {}", line, numFalseNeg);
+			line = pad_right(line, 42) + "|| ";
+			line = line + format("{0:.4f} ({1}/{2})", recallPos, numTruePos, numTruePos + numFalseNeg);
+			fmt::print_line(line);
+
+			line = format(" negative||    {}", numFalsePos);
+			line = pad_right(line, 26);
+			line = format("{} |    {}", line, numTrueNeg);
+			line = pad_right(line, 42) + "|| ";
+			line = line + format("{0:.4f} ({1}/{2})", recallNeg, numTrueNeg, numTrueNeg + numFalsePos);
+			fmt::print_line(line);
+
+			fmt::print_line("         ||===============================||");
+			line = " PRECISION " + format("{0:.4f} ({1}/{2})",
+				precisionPos, numTruePos, numTruePos + numFalsePos);
+			line = pad_right(line, 27);
+			line = line + "  " + format("{0:.4f}({1}/{2})",
+				precisionNeg, numTrueNeg, (numTrueNeg + numFalseNeg));
+			fmt::print_line(line);
+
+			fmt::print_line("\n" + prefix + "OVERALL 0/1 ACCURACY:\t\t{0:.4f} ({1}/{2})", accuracy,
+				(numTrueNeg + numTruePos),
+				(numTruePos + numTrueNeg + numFalseNeg + numFalsePos));
+			fmt::print_line(prefix + "LOG LOSS/instance:\t\t{0:.4f}", avgLogLoss);
+			fmt::print_line(prefix + "TEST-SET ENTROPY (prior LL/in):\t{0:.4f}", testLogLoss);
+			fmt::print_line(prefix + "LOG-LOSS REDUCTION (RIG):\t{0:.4f}%", logLossReduction);
+			//if (trainPrior > 0)
+			//{
+			//	Float trainLogLoss = gezi::cross_entropy(testPrior, trainPrior, useLn);
+			//	fmt::print_line("   " + prefix + "TRAIN-SET PRIOR LL/inst (train-test cross-entropy):\t\t\t{0}", trainLogLoss);
+			//	fmt::print_line("   " + prefix + "TRAIN-SET LL REDUCTION (trainRIG diagnostic, *not* for comparisons):\t{0}%", 100.0 * (trainLogLoss - avgLogLoss) / trainLogLoss);
+			//}
 		}
 
 	protected:
-		double numTruePos = 0, numFalsePos = 0, numTrueNeg = 0, numFalseNeg = 0;
+		Float numTruePos = 0, numFalsePos = 0, numTrueNeg = 0, numFalseNeg = 0;
 		int64 numUnlabeledInstances = 0;
-		double logLoss = 0, priorLogLoss = 0;
+		Float logLoss = 0, priorLogLoss = 0;
 		// need to keep separate in case NaNs in probability
-		double numLogLossPositives, numLogLossNegatives;
-		double trainPrior = -1;
+		Float numLogLossPositives, numLogLossNegatives;
+		Float trainPrior = -1;
 
 		bool useLn = false;
 
 		//// cutoff for log-loss tolerances (to prevent infinite loss)
 		//[Argument(ArgumentType.AtMostOnce, HelpText = "Confidence threshold (log-loss limit)", ShortName = "logtol", DefaultValue = 30.0)]
-		//public Double logTolerance = 30.0;
-		double logTolerance = 30.0;
+		//public Float logTolerance = 30.0;
+		Float logTolerance = 30.0;
 
-		double accuracy, precisionPos, recallPos, precisionNeg, recallNeg, logLoss, logLossReduction;
+		Float accuracy, precisionPos, recallPos, precisionNeg, recallNeg, avgLogLoss, logLossReduction;
 	};
 
 	class ClassificationAUC : public DatasetMetrics
@@ -150,11 +206,32 @@ namespace gezi {
 		{
 			return "True";
 		}
-		virtual vector<string> PerInstanceColumnNames()
+
+		virtual vector<string> PerInstanceColumnNames() override
 		{
 			//return vector<string>({ "Test", "Haha"});
 			return vector<string>();
 		}
+
+		virtual Fvec ProcessInstance(Float label, Float prediction, Float probability, Float weight) override
+		{
+			_results.push_back(std::make_tuple(label, prediction, weight));
+			return vector<Float>();
+		}
+
+	protected:
+		virtual void Finish() override
+		{
+			_auc = gezi::auc(_results);
+		}
+
+		virtual void Print_(string prefix) override
+		{
+			fmt::print_colored_line(fmt::RED, prefix + "AUC:\t\t\t\t{0:.4}", _auc);
+		}
+	private:
+		vector<std::tuple<int, Float, Float> > _results;
+		Float _auc = 0.;
 	};
 
 
@@ -172,9 +249,6 @@ namespace gezi {
 				make_shared<ClassificationAUC>()
 			});
 		}
-	protected:
-	private:
-
 	};
 
 }  //----end of namespace gezi

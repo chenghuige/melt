@@ -24,15 +24,30 @@ public:
 	virtual string LabelColumnName() = 0;
 	virtual vector<string> PerInstanceColumnNames() = 0;
 
-	virtual dvec ProcessInstance(InstancePtr instance, PredictorPtr predictor)
+	virtual Fvec ProcessInstance(InstancePtr instance, PredictorPtr predictor) 
 	{
-		return dvec();
+		Float label = instance->label;
+		Float weight = instance->weight;
+		Float prediction = 0, probability = std::numeric_limits<double>::quiet_NaN();
+		probability = predictor->Predict(instance, prediction);
+
+		return ProcessInstance(label, prediction, probability, weight);
 	}
 
-	void Print()
+	virtual Fvec ProcessInstance(Float label, Float prediction, Float probability = std::numeric_limits<double>::quiet_NaN(), Float weight = 1.)
+	{
+		return Fvec();
+	}
+
+	virtual Fvec ProcessInstance(Float label,const Fvec& prediction, Float probability = std::numeric_limits<double>::quiet_NaN(), Float weight = 1.)
+	{
+		return Fvec();
+	}
+
+	void Print(string prefix = "")
 	{
 		Finish();
-		Print_();
+		Print_(prefix);
 	}
 protected:
 	virtual void Finish()
@@ -40,7 +55,7 @@ protected:
 
 	}
 
-	virtual void Print_()
+	virtual void Print_(string prefix)
 	{
 
 	}

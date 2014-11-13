@@ -128,23 +128,32 @@ namespace gezi {
 			int64 idx = 0;
 			for (InstancePtr instance : instances)
 			{
-				dvec perInstanceOutputs = gezi::join_vec<double>(datasetMetrics, [&](const DatasetMetricsPtr& a) { return a->ProcessInstance(instance, predictor); });
+				Float label = instance->label;
+				Float weight = instance->weight;
+				Float prediction = 0, probability = std::numeric_limits<double>::quiet_NaN();
+				probability = predictor->Predict(instance, prediction);
+				dvec perInstanceOutputs = gezi::join_vec<double>(datasetMetrics, [&](const DatasetMetricsPtr& datasetMetric) { return datasetMetric->ProcessInstance(label, prediction, probability, weight); });
 				PrintInstanceOutput(idx, instance, perInstanceOutputs);
+				idx++;
+			}
+			for (auto& datasetMetric : datasetMetrics)
+			{
+				datasetMetric->Print();
 			}
 		}
 
 		void ProcessInstancesForRanking(Instances instances, PredictorPtr predictor)
 		{
-		
+
 		}
 
 		void Test(Instances& instances, PredictorPtr predictor, string lossOutfile = "")
 		{
 			datasetMetrics = ConstructDatasetMetrics();
 
-			if (!lossOutfile.empty())
+			if (!lossOutfile.empty() && !ofs.is_open())
 			{
-				ofs.open(lossOutfile, std::ios::app);
+				ofs.open(lossOutfile);
 			}
 
 			if (writeTSVHeader && ofs.is_open())
