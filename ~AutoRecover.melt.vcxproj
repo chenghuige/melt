@@ -74,6 +74,7 @@
     <ClCompile Include="src\Run\Melt.cpp" />
     <ClCompile Include="src\Simple\Predictor.cpp" />
     <ClCompile Include="src\Simple\PredictorFactory.cpp" />
+    <ClCompile Include="src\Testers\ClassifierTester.cpp" />
     <ClCompile Include="src\Wrapper\PredictorFactory.cpp" />
     <ClCompile Include="test\test_auc.cc" />
     <ClCompile Include="test\test_bins.cc" />

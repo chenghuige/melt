@@ -205,6 +205,10 @@ namespace gezi {
 	class ClassificationAUC : public DatasetMetrics
 	{
 	public:
+		ClassificationAUC()
+		{
+			ParseArgs();
+		}
 		virtual string LabelColumnName() override
 		{
 			return "True";
@@ -218,10 +222,13 @@ namespace gezi {
 
 		virtual Fvec ProcessInstance(Float label, Float prediction, Float probability, Float weight) override
 		{
-			_results.push_back(std::make_tuple(label, prediction, weight));
+			Float val = useProbability ? probability : prediction;
+			//PVAL4(useProbability, prediction, probability, val);
+			_results.push_back(std::make_tuple(label, val, weight));
 			return vector<Float>();
 		}
 
+		virtual void ParseArgs() override;
 	protected:
 		virtual void Finish() override
 		{
@@ -233,6 +240,9 @@ namespace gezi {
 			fmt::print_colored(fmt::RED, prefix + "AUC:                   [{0:.4f}]", _auc);
 			fmt::print("\n");
 		}
+
+	public:
+		bool useProbability = true; //use ouput or use probability
 	private:
 		vector<std::tuple<int, Float, Float> > _results;
 		Float _auc = 0.;

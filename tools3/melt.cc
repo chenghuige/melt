@@ -29,11 +29,12 @@ void ShowHelp()
 	cout << "	Default command is cross validation: <./melt feature.txt> will do 5 fold cross validation using LinearSVM trainer with it's default settings\n";
 	fmt::print_colored(fmt::RED, "	For more commands: <./melt -c help>\n");
 	fmt::print_colored(fmt::RED, "	Show supported trainers: <./melt -c helptrainers>\n");
+	fmt::print_colored(fmt::RED, "	Show trainer setting try : <./melt -c helptrainer -cl LinearSVM> <./melt -c helptrainer -cl gbdt>...\n");
+	fmt::print_colored(fmt::RED, "	Try also like <./melt --helpmatch LinearSVM.cpp>, <./melt --helpmatch FastRank.cpp> for trainer settings when no or less info show using -c helptrainer\n");
 	cout << "	Try <./melt --helpmatch Melt> for melt common settings\n";
 	cout << "	Try <./melt --helpmatch Instance> for melt input instances parser settings\n";
-	cout << "	For spcific classifer setting use like <./melt --helpmatch LinearSVM.cpp>, <./melt --helpmatch FastRank.cpp>\n";
 	cout << "	The default trainer is LinearSVM, for other trainers use -cl, eg. <./melt feature.txt -c train -cl gbdt> will train feature.txt using gbdt trainer\n";
-	cout << "Recommed to use melt internal format(0 started index, can be sparse or dense) but you can also use libsvm format(1 started sparse format) directly\n";
+	cout << " Recommed to use melt internal format(0 started index, can be sparse or dense) but you can also use libsvm format(1 started sparse format) directly\n";
 }
 
 int main(int argc, char *argv[])
@@ -60,7 +61,8 @@ int main(int argc, char *argv[])
 		FLAGS_v = FLAGS_vl;
 
 	Melt melt;
-	if (FLAGS_c != "help" && FLAGS_c != "helptrainers" && FLAGS_c != "help_trainers"
+	set<string> ignores = { "help", "helptrainers", "help_trainers", "helptrainer", "help_trainer" };
+	if (!ignores.count(FLAGS_c)
 		&& !(FLAGS_c == "write_text_model" || FLAGS_c == "wtm" || FLAGS_c == "binary_model_to_text" || FLAGS_c == "bm2t")
 		&& !(FLAGS_c == "text_model_to_binary" || FLAGS_c == "tm2b")
 		&& melt.Cmd().datafile.empty())

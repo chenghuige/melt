@@ -68,6 +68,7 @@ namespace gezi {
 			UNKNOWN = 0,
 			HELP,
 			HELP_TRAINERS, //Melt现在支持的trainers信息打印
+			HELP_TRAINER, //打印当前-cl指定的trainer的Help信息(如果tainer有实现ShowHelp)
 			EVAL, //交叉验证,默认执行的command
 			EVAL_PARAM, //交叉验证 但是只输出auc的值,主要用于检测不同参数效果对比
 			TRAIN, //训练
@@ -114,6 +115,7 @@ namespace gezi {
 			}
 			int i = (int)RunType::HELP_TRAINERS; // 0 UNKNOWN, 1 HELP, 2 HELP_TRAINERS
 			VLOG(0) << i++ << " HELP_TRAINERS, //Melt现在支持的trainers信息打印";
+			VLOG(0) << i++ << " HELP_TRAINER, //打印当前-cl指定的trainer的Help信息(如果tainer有实现ShowHelp)";
 			VLOG(0) << i++ << " EVAL, //交叉验证,默认执行的command";
 			VLOG(0) << i++ << " EVAL_PARAM, //交叉验证 但是只输出auc的值,主要用于检测不同参数效果对比";
 			VLOG(0) << i++ << " TRAIN, //训练(-mt -mxml -mjson设置可以输出相应文本格式模型，如果要对内部的normalizer输出相应文本格式设置 -snt 1,calibrator类似 -sct 1)";
@@ -415,6 +417,18 @@ namespace gezi {
 			return predictor;
 		}
 
+		void PrintTrainerInfo()
+		{
+			Pval(_cmd.classifierName);
+			auto trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
+			if (trainer == nullptr)
+			{
+				LOG(WARNING) << _cmd.classifierName << " has not been supported yet";
+				return;
+			}
+			trainer->ShowHelp();
+		}
+
 		void RunTrain()
 		{
 			PredictorPtr predictor;
@@ -581,7 +595,8 @@ namespace gezi {
 
 			if (_cmd.saveOutputFile)
 			{
-				FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
+				//FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
+				FileFormat fileFormat = kFormats[_cmd.outputFileFormat];
 				write(instances, outfile, fileFormat);
 			}
 
@@ -666,7 +681,8 @@ namespace gezi {
 		{
 			Instances posInstances(instances.schema);
 			Instances negInstances(instances.schema);
-			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
+			//FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
+			FileFormat fileFormat = kFormats[_cmd.outputFileFormat];
 			for (InstancePtr instance : instances)
 			{
 				if (instance->IsPositive())
@@ -741,7 +757,8 @@ namespace gezi {
 			}
 
 			string infile = _cmd.datafile;
-			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
+			//FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
+			FileFormat fileFormat = kFormats[_cmd.outputFileFormat];
 			for (int i = 0; i < partNum; i++)
 			{
 				string suffix = STR(i) + "_" + STR(partNum);
@@ -1006,7 +1023,8 @@ namespace gezi {
 			//解析命令模式
 			string commandStr = erase(boost::to_lower_copy(_cmd.command), "_-");
 			Pval(commandStr);
-			RunType command = get_value(_commands, commandStr, RunType::UNKNOWN);
+			//RunType command = get_value(_commands, commandStr, RunType::UNKNOWN);
+			RunType command = _commands[commandStr];
 			switch (command)
 			{
 			case RunType::EVAL:
@@ -1075,6 +1093,9 @@ namespace gezi {
 			case RunType::HELP_TRAINERS:
 				TrainerFactory::PrintTrainersInfo();
 				break;
+			case RunType::HELP_TRAINER:
+				PrintTrainerInfo();
+				break;
 			case RunType::UNKNOWN:
 			default:
 				LOG(WARNING) << commandStr << " is not supported yet ";
@@ -1090,6 +1111,8 @@ namespace gezi {
 			{ "help", RunType::HELP },
 			{ "help_trainers", RunType::HELP_TRAINERS },
 			{ "helptrainers", RunType::HELP_TRAINERS },
+			{ "help_trainer", RunType::HELP_TRAINER },
+			{ "helptrainer", RunType::HELP_TRAINER },
 			{ "cv", RunType::EVAL },
 			{ "eval", RunType::EVAL },
 			{ "eval_param", RunType::EVAL_PARAM },

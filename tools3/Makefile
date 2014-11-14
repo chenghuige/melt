@@ -155,7 +155,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=a63e838d0d9243832a4164c5725b217c  COMAKE
+COMAKE_MD5=25ab3b3dfcec654d73dc9d4404b4ad71  COMAKE
 
 
 .PHONY:all
@@ -192,18 +192,23 @@ clean:ccpclean
 	rm -rf melt_melt.o
 	rm -rf ../src/Prediction/Instances/melt_InstanceParser.o
 	rm -rf ../src/Run/melt_Melt.o
+	rm -rf ../src/Testers/melt_ClassifierTester.o
 	rm -rf calibrate_calibrate.o
 	rm -rf ../src/Prediction/Instances/calibrate_InstanceParser.o
 	rm -rf ../src/Run/calibrate_Melt.o
+	rm -rf ../src/Testers/calibrate_ClassifierTester.o
 	rm -rf predict_predict.o
 	rm -rf ../src/Prediction/Instances/predict_InstanceParser.o
 	rm -rf ../src/Run/predict_Melt.o
+	rm -rf ../src/Testers/predict_ClassifierTester.o
 	rm -rf fastrank_text2bin_fastrank_text2bin.o
 	rm -rf ../src/Prediction/Instances/fastrank_text2bin_InstanceParser.o
 	rm -rf ../src/Run/fastrank_text2bin_Melt.o
+	rm -rf ../src/Testers/fastrank_text2bin_ClassifierTester.o
 	rm -rf fastrank_predict_fastrank_predict.o
 	rm -rf ../src/Prediction/Instances/fastrank_predict_InstanceParser.o
 	rm -rf ../src/Run/fastrank_predict_Melt.o
+	rm -rf ../src/Testers/fastrank_predict_ClassifierTester.o
 
 .PHONY:dist
 dist:
@@ -224,11 +229,13 @@ love:
 
 melt:melt_melt.o \
   ../src/Prediction/Instances/melt_InstanceParser.o \
-  ../src/Run/melt_Melt.o
+  ../src/Run/melt_Melt.o \
+  ../src/Testers/melt_ClassifierTester.o
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt[0m']"
 	$(CXX) melt_melt.o \
   ../src/Prediction/Instances/melt_InstanceParser.o \
-  ../src/Run/melt_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../src/Run/melt_Melt.o \
+  ../src/Testers/melt_ClassifierTester.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
@@ -313,11 +320,13 @@ melt:melt_melt.o \
 
 calibrate:calibrate_calibrate.o \
   ../src/Prediction/Instances/calibrate_InstanceParser.o \
-  ../src/Run/calibrate_Melt.o
+  ../src/Run/calibrate_Melt.o \
+  ../src/Testers/calibrate_ClassifierTester.o
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mcalibrate[0m']"
 	$(CXX) calibrate_calibrate.o \
   ../src/Prediction/Instances/calibrate_InstanceParser.o \
-  ../src/Run/calibrate_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../src/Run/calibrate_Melt.o \
+  ../src/Testers/calibrate_ClassifierTester.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
@@ -402,11 +411,13 @@ calibrate:calibrate_calibrate.o \
 
 predict:predict_predict.o \
   ../src/Prediction/Instances/predict_InstanceParser.o \
-  ../src/Run/predict_Melt.o
+  ../src/Run/predict_Melt.o \
+  ../src/Testers/predict_ClassifierTester.o
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mpredict[0m']"
 	$(CXX) predict_predict.o \
   ../src/Prediction/Instances/predict_InstanceParser.o \
-  ../src/Run/predict_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../src/Run/predict_Melt.o \
+  ../src/Testers/predict_ClassifierTester.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
@@ -491,11 +502,13 @@ predict:predict_predict.o \
 
 fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
   ../src/Prediction/Instances/fastrank_text2bin_InstanceParser.o \
-  ../src/Run/fastrank_text2bin_Melt.o
+  ../src/Run/fastrank_text2bin_Melt.o \
+  ../src/Testers/fastrank_text2bin_ClassifierTester.o
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_text2bin[0m']"
 	$(CXX) fastrank_text2bin_fastrank_text2bin.o \
   ../src/Prediction/Instances/fastrank_text2bin_InstanceParser.o \
-  ../src/Run/fastrank_text2bin_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../src/Run/fastrank_text2bin_Melt.o \
+  ../src/Testers/fastrank_text2bin_ClassifierTester.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
@@ -580,11 +593,13 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
 
 fastrank_predict:fastrank_predict_fastrank_predict.o \
   ../src/Prediction/Instances/fastrank_predict_InstanceParser.o \
-  ../src/Run/fastrank_predict_Melt.o
+  ../src/Run/fastrank_predict_Melt.o \
+  ../src/Testers/fastrank_predict_ClassifierTester.o
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_predict[0m']"
 	$(CXX) fastrank_predict_fastrank_predict.o \
   ../src/Prediction/Instances/fastrank_predict_InstanceParser.o \
-  ../src/Run/fastrank_predict_Melt.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../src/Run/fastrank_predict_Melt.o \
+  ../src/Testers/fastrank_predict_ClassifierTester.o -Xlinker "-("  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
@@ -679,6 +694,10 @@ melt_melt.o:melt.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Run/melt_Melt.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Run/melt_Melt.o ../src/Run/Melt.cpp
 
+../src/Testers/melt_ClassifierTester.o:../src/Testers/ClassifierTester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/melt_ClassifierTester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Testers/melt_ClassifierTester.o ../src/Testers/ClassifierTester.cpp
+
 calibrate_calibrate.o:calibrate.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mcalibrate_calibrate.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o calibrate_calibrate.o calibrate.cc
@@ -690,6 +709,10 @@ calibrate_calibrate.o:calibrate.cc
 ../src/Run/calibrate_Melt.o:../src/Run/Melt.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Run/calibrate_Melt.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Run/calibrate_Melt.o ../src/Run/Melt.cpp
+
+../src/Testers/calibrate_ClassifierTester.o:../src/Testers/ClassifierTester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/calibrate_ClassifierTester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Testers/calibrate_ClassifierTester.o ../src/Testers/ClassifierTester.cpp
 
 predict_predict.o:predict.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mpredict_predict.o[0m']"
@@ -703,6 +726,10 @@ predict_predict.o:predict.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Run/predict_Melt.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Run/predict_Melt.o ../src/Run/Melt.cpp
 
+../src/Testers/predict_ClassifierTester.o:../src/Testers/ClassifierTester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/predict_ClassifierTester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Testers/predict_ClassifierTester.o ../src/Testers/ClassifierTester.cpp
+
 fastrank_text2bin_fastrank_text2bin.o:fastrank_text2bin.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_text2bin_fastrank_text2bin.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o fastrank_text2bin_fastrank_text2bin.o fastrank_text2bin.cc
@@ -715,6 +742,10 @@ fastrank_text2bin_fastrank_text2bin.o:fastrank_text2bin.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Run/fastrank_text2bin_Melt.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Run/fastrank_text2bin_Melt.o ../src/Run/Melt.cpp
 
+../src/Testers/fastrank_text2bin_ClassifierTester.o:../src/Testers/ClassifierTester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/fastrank_text2bin_ClassifierTester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Testers/fastrank_text2bin_ClassifierTester.o ../src/Testers/ClassifierTester.cpp
+
 fastrank_predict_fastrank_predict.o:fastrank_predict.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_predict_fastrank_predict.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o fastrank_predict_fastrank_predict.o fastrank_predict.cc
@@ -726,6 +757,10 @@ fastrank_predict_fastrank_predict.o:fastrank_predict.cc
 ../src/Run/fastrank_predict_Melt.o:../src/Run/Melt.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Run/fastrank_predict_Melt.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Run/fastrank_predict_Melt.o ../src/Run/Melt.cpp
+
+../src/Testers/fastrank_predict_ClassifierTester.o:../src/Testers/ClassifierTester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/fastrank_predict_ClassifierTester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Testers/fastrank_predict_ClassifierTester.o ../src/Testers/ClassifierTester.cpp
 
 endif #ifeq ($(shell uname -m),x86_64)
 

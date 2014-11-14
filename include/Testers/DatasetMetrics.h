@@ -18,9 +18,13 @@
 
 namespace gezi {
 
-class DatasetMetrics 
+class DatasetMetrics : public WithArgs
 {
 public:
+	DatasetMetrics()
+	{
+	}
+	virtual ~DatasetMetrics(){}
 	virtual string LabelColumnName() = 0;
 	virtual vector<string> PerInstanceColumnNames() = 0;
 
@@ -49,6 +53,7 @@ public:
 		Finish();
 		Print_(prefix);
 	}
+
 protected:
 	virtual void Finish()
 	{

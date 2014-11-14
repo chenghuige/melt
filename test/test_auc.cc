@@ -46,6 +46,7 @@ TEST(auc, func)
 			svec vec = split(line, "\t ");
 			int label = INT(vec[FLAGS_label]);
 			double out = DOUBLE(vec[FLAGS_out]);
+			PVAL2(label, out);
 			evaluator.Add(label, out);
 		}
 		Pval(evaluator.Finish());

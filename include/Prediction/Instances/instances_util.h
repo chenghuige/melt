@@ -16,7 +16,25 @@
 
 #include "InstanceParser.h"
 namespace gezi {
-	
+
+	class InstancesUtil
+	{
+	public:
+		static void SplitInstancesByLabel(const Instances& instances, Instances& posInstances, Instances& negInstances)
+		{
+			for (InstancePtr instance : instances)
+			{
+				if (instance->IsPositive())
+					posInstances.push_back(instance);
+				else
+					negInstances.push_back(instance);
+			}
+		}
+	protected:
+	private:
+	};
+
+	//@TODO下面不做修改 但是实际设计使用InstacesUtil::CreateInstance InstancesUtil::Write更好一些
 	inline Instances create_instances(string infile)
 	{
 		InstanceParser parser;

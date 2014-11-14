@@ -143,7 +143,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=ab09ede2f8b70808f0c28033cbe09ca7  COMAKE
+COMAKE_MD5=b673013b58c00e392369edf759263624  COMAKE
 
 
 .PHONY:all
@@ -174,6 +174,7 @@ clean:ccpclean
 	rm -rf src/Wrapper/melt_PredictorFactory.o
 	rm -rf src/Prediction/Instances/melt_InstanceParser.o
 	rm -rf src/Run/melt_Melt.o
+	rm -rf src/Testers/melt_ClassifierTester.o
 	rm -rf src/Simple/melt_predict_Predictor.o
 	rm -rf src/Simple/melt_predict_PredictorFactory.o
 
@@ -196,11 +197,13 @@ love:
 
 libmelt.a:src/Wrapper/melt_PredictorFactory.o \
   src/Prediction/Instances/melt_InstanceParser.o \
-  src/Run/melt_Melt.o
+  src/Run/melt_Melt.o \
+  src/Testers/melt_ClassifierTester.o
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibmelt.a[0m']"
 	ar crs libmelt.a src/Wrapper/melt_PredictorFactory.o \
   src/Prediction/Instances/melt_InstanceParser.o \
-  src/Run/melt_Melt.o
+  src/Run/melt_Melt.o \
+  src/Testers/melt_ClassifierTester.o
 	mkdir -p ./output/lib
 	cp -f --link libmelt.a ./output/lib
 
@@ -235,6 +238,14 @@ src/Run/melt_Melt.o:src/Run/Melt.cpp
   -DVERSION=\"1.9.8.7\" \
   -O3 \
   -DNDEBUG $(CXXFLAGS)  -o src/Run/melt_Melt.o src/Run/Melt.cpp
+
+src/Testers/melt_ClassifierTester.o:src/Testers/ClassifierTester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Testers/melt_ClassifierTester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o src/Testers/melt_ClassifierTester.o src/Testers/ClassifierTester.cpp
 
 src/Simple/melt_predict_Predictor.o:src/Simple/Predictor.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Simple/melt_predict_Predictor.o[0m']"

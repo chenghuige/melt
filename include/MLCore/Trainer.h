@@ -23,7 +23,7 @@
 
 namespace gezi {
 
-	class Trainer
+	class Trainer : public WithArgs, public WithHelp
 	{
 	public:
 		void Train(Instances& instances)
@@ -71,7 +71,7 @@ namespace gezi {
 			_normalizeCopy = normalizeCopy;
 		}
 
-		
+
 		void SetNormalizer(NormalizerPtr normalizer)
 		{
 			_normalizer = normalizer;

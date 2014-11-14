@@ -113,7 +113,7 @@ CONFIGS('public/configure@base')
 CONFIGS('app/search/sep/anti-spam/gezi@base')
 #srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp'.replace('./',RELATIVE_PATH))
 #Application('melt',Sources('melt.cc', srcs))
-srcs = GLOB('./src/Wrapper/*.cpp ./src/Prediction/Instances/*.cpp ./src/Run/*.cpp')
+srcs = GLOB('./src/Wrapper/*.cpp ./src/Prediction/Instances/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp')
 StaticLibrary('melt',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 
 srcs = GLOB('./src/Simple/*.cpp')
