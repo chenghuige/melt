@@ -77,6 +77,7 @@ namespace gezi {
 			FEATURE_SELECTION,  //特征选择  //参数选择放到外围python脚本 
 			CREATE_INSTANCES,  //将不符合normal格式的输入转换为符合的,例如catogry,text域的展开
 			NORMALIZE,  //进行归一化，输出结果到文本,将normalizer信息序列化到-m对应的路径下
+			NORMALIZE_FILE, //仅对文本进行归一化输出结果到结果文本
 			CALIBRATE,  //进行output->[0-1]的归一化，将calibrator信息序列化到-m对应的路径下
 			CHECK_DATA, //检查数据 当前是进行minmax归一 提示无用特征
 			FEATURE_STATUS, //打印特征的均值方差信息　mean var
@@ -124,6 +125,7 @@ namespace gezi {
 			VLOG(0) << i++ << " FEATURE_SELECTION,  //特征选择  //参数选择放到外围python脚本";
 			VLOG(0) << i++ << " CREATE_INSTANCES,  //将不符合normal格式的输入转换为符合的,例如catogry,text域的展开";
 			VLOG(0) << i++ << " NORMALIZE,  //进行归一化，输出结果到文本,将normalizer信息序列化到-m对应的路径下(-mt -mxml -mjson设置可以输出相应文本格式 不需要设置-snt)";
+			VLOG(0) << i++ << " NORMALIZE_FILE, //仅对文本进行归一化输出结果到结果文本";
 			VLOG(0) << i++ << " CALIBRATE,  //进行output->[0-1]的归一化，将calibrator信息序列化到-m对应的路径下  -mt -mxml -mjson设置可以输出相应文本格式 不需要设置-sct";
 			VLOG(0) << i++ << " CHECK_DATA, //检查数据 当前是进行minmax归一 提示无用特征";
 			VLOG(0) << i++ << " FEATURE_STATUS, //打印特征的均值方差信息　mean var";
@@ -260,8 +262,8 @@ namespace gezi {
 			}
 			else if (cvType == CrossValidationType::AUC)
 			{
-				double aucScore = evaluator->Finish();
-				cout << "aucScore: " << aucScore << "\t" << "trainerParam: " << trainerParam << endl;
+				double auc = evaluator->Finish();
+				cout << auc << "\t" << "trainerParam: " << trainerParam << endl;
 			}
 		}
 
@@ -602,6 +604,28 @@ namespace gezi {
 
 			try_create_dir(_cmd.modelFolder);
 			SAVE_SHARED_PTR_ALL(normalizer);
+		}
+
+		void RunNormalizeFile()
+		{
+			Noticer nt("Convert to normalized file!");
+			NormalizerPtr normalizer = NormalizerFactory::CreateNormalizer(_cmd.normalizerName);
+			CHECK(normalizer != nullptr);
+			Pval(normalizer->Name());
+
+			string infile = _cmd.datafile;
+			//string suffix = normalizer->Name() + ".normed";
+			string suffix = "normed";
+			string outfile = _cmd.outfile.empty() ? GetOutputFileName(infile, suffix) : _cmd.outfile;
+			Pval(outfile);
+
+			Instances instances = create_instances(_cmd.datafile);
+
+			normalizer->RunNormalize(instances);
+
+			//FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
+			FileFormat fileFormat = kFormats[_cmd.outputFileFormat];
+			write(instances, outfile, fileFormat);
 		}
 
 		void RunCalibrate()
@@ -1021,7 +1045,8 @@ namespace gezi {
 			}
 			Pval(get_num_threads());
 			//解析命令模式
-			string commandStr = erase(boost::to_lower_copy(_cmd.command), "_-");
+			//string commandStr = erase(boost::to_lower_copy(_cmd.command), "_-");
+			string commandStr = boost::to_lower_copy(_cmd.command);
 			Pval(commandStr);
 			//RunType command = get_value(_commands, commandStr, RunType::UNKNOWN);
 			RunType command = _commands[commandStr];
@@ -1050,6 +1075,9 @@ namespace gezi {
 				break;
 			case RunType::NORMALIZE:
 				RunNormalize();
+				break;
+			case RunType::NORMALIZE_FILE:
+				RunNormalizeFile();
 				break;
 			case RunType::CALIBRATE:
 				RunCalibrate();
@@ -1123,20 +1151,21 @@ namespace gezi {
 			{ "tr", RunType::TRAIN },
 			{ "test", RunType::TEST },
 			{ "te", RunType::TEST },
-			{ "traintest", RunType::TRAIN_TEST },
+			{ "train_test", RunType::TRAIN_TEST },
 			{ "tt", RunType::TRAIN_TEST },
-			{ "featureselection", RunType::FEATURE_SELECTION },
+			{ "feature_selection", RunType::FEATURE_SELECTION },
 			{ "fs", RunType::FEATURE_SELECTION },
-			{ "createinstances", RunType::CREATE_INSTANCES },
+			{ "create_instances", RunType::CREATE_INSTANCES },
 			{ "ci", RunType::CREATE_INSTANCES },
 			{ "norm", RunType::NORMALIZE },
+			{ "norm_file", RunType::NORMALIZE_FILE },
 			{ "calibrate", RunType::CALIBRATE },
 			{ "check", RunType::CHECK_DATA },
-			{ "featurestatus", RunType::FEATURE_STATUS },
+			{ "feature_status", RunType::FEATURE_STATUS },
 			{ "fss", RunType::FEATURE_STATUS },
-			{ "showfeatures", RunType::SHOW_FEATURES },
+			{ "show_features", RunType::SHOW_FEATURES },
 			{ "sf", RunType::SHOW_FEATURES },
-			{ "showinfos", RunType::SHOW_INFOS },
+			{ "show_infos", RunType::SHOW_INFOS },
 			{ "si", RunType::SHOW_INFOS },
 			{ "convert", RunType::CONVERT },
 			{ "splitdata", RunType::SPLIT_DATA },

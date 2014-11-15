@@ -90,6 +90,9 @@
     <ClCompile Include="test\test_auc.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Testers\ClassifierTester.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MLCore\IPredictor.h">

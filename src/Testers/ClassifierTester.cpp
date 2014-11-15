@@ -17,13 +17,13 @@
 #include "common_util.h"
 #include "Testers/ClassifierTester.h"
 
-DEFINE_bool(useProb, true, "useProbForClassfierTester: ");
+DEFINE_bool(use_prob, true, "useProbForClassfierTester: ");
 
 namespace gezi {
 
 	void ClassificationAUC::ParseArgs()
 	{
-		useProbability = FLAGS_useProb;
+		useProbability = FLAGS_use_prob;
 	}
 }
 
