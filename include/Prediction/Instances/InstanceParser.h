@@ -1060,7 +1060,7 @@ namespace gezi {
 
 		Instances&& Parse(string dataFile)
 		{
-			AutoTimer timer("ParseInputDataFile", 0);
+			Noticer timer("ParseInputDataFile", 0);
 			Parse_(dataFile);
 			Finallize();
 			return move(_instances);

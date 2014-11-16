@@ -449,9 +449,17 @@ namespace gezi {
 				//auto testInstances = create_instances(_cmd.datafile);
 				auto& testInstances = instances; //train的过程中没有改变instance！ 用了normalize copy
 				CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
-				Test(testInstances, predictor, instFile);
-				string command = _cmd.evaluate + instFile;
-				EXECUTE(command);
+				if (!_cmd.evaluate.empty())
+				{
+					Test(testInstances, predictor, instFile);
+					string command = _cmd.evaluate + instFile;
+					EXECUTE(command);
+				}
+				else
+				{
+					auto tester = PredictorUtils::GetTester(predictor);
+					tester->Test(testInstances, predictor, instFile);
+				}
 			}
 			{
 				Noticer nt("Write train result!");
@@ -493,9 +501,17 @@ namespace gezi {
 			string testDatafile = _cmd.testDatafile.empty() ? _cmd.datafile : _cmd.testDatafile;
 			auto testInstances = create_instances(testDatafile);
 			CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
-			Test(testInstances, predictor, instFile);
-			string command = _cmd.evaluate + instFile;
-			EXECUTE(command);
+			if (!_cmd.evaluate.empty())
+			{
+				Test(testInstances, predictor, instFile);
+				string command = _cmd.evaluate + instFile;
+				EXECUTE(command);
+			}
+			else
+			{
+				auto tester = PredictorUtils::GetTester(predictor);
+				tester->Test(testInstances, predictor, instFile);
+			}
 		}
 
 		void RunTrainTest()
@@ -517,10 +533,19 @@ namespace gezi {
 				auto testInstances = create_instances(_cmd.testDatafile);
 				CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
 				CHECK_EQ(instances.schema == testInstances.schema, 1);
-				Test(testInstances, predictor, instFile);
-				string command = _cmd.evaluate + instFile;
-				EXECUTE(command);
+				if (!_cmd.evaluate.empty())
+				{
+					Test(testInstances, predictor, instFile);
+					string command = _cmd.evaluate + instFile;
+					EXECUTE(command);
+				}
+				else
+				{
+					auto tester = PredictorUtils::GetTester(predictor);
+					tester->Test(testInstances, predictor, instFile);
+				}
 			}
+			if (_cmd.modelfile)
 			{
 				Noticer nt("Write train result!");
 				predictor->Save(_cmd.modelFolder);
@@ -562,21 +587,21 @@ namespace gezi {
 		}
 
 #define  SAVE_SHARED_PTR_ALL(obj)\
-		{\
+				{\
 		SAVE_SHARED_PTR(obj, _cmd.modelFolder); \
 		if (_cmd.modelfileXml)\
-		{\
+				{\
 		SAVE_SHARED_PTR_ASXML(obj, _cmd.modelFolder); \
-		}\
+				}\
 		if (_cmd.modelfileJson)\
-		{\
+				{\
 		SAVE_SHARED_PTR_ASJSON(obj, _cmd.modelFolder); \
-		}\
+				}\
 		if (_cmd.modelfileText)\
-		{\
+				{\
 		SAVE_SHARED_PTR_ASTEXT(obj, _cmd.modelFolder); \
-		}\
-		}
+				}\
+				}
 
 		void RunNormalize()
 		{
@@ -925,7 +950,7 @@ namespace gezi {
 			{
 				suffix = format("{}.{}", suffix, _cmd.num);
 			}
-			string outfile = GetOutputFileName(_cmd.datafile, suffix);
+			string outfile = _cmd.outfile.empty() ? GetOutputFileName(_cmd.datafile, suffix) : _cmd.outfile;
 			Pval(outfile);
 
 			if (_cmd.num > 0 && _cmd.num < instances.Count())
@@ -1045,8 +1070,7 @@ namespace gezi {
 			}
 			Pval(get_num_threads());
 			//解析命令模式
-			//string commandStr = erase(boost::to_lower_copy(_cmd.command), "_-");
-			string commandStr = boost::to_lower_copy(_cmd.command);
+			string commandStr = arg(_cmd.command);
 			Pval(commandStr);
 			//RunType command = get_value(_commands, commandStr, RunType::UNKNOWN);
 			RunType command = _commands[commandStr];
@@ -1137,50 +1161,48 @@ namespace gezi {
 		MeltArguments _cmd;
 		map<string, RunType> _commands = {
 			{ "help", RunType::HELP },
-			{ "help_trainers", RunType::HELP_TRAINERS },
 			{ "helptrainers", RunType::HELP_TRAINERS },
-			{ "help_trainer", RunType::HELP_TRAINER },
 			{ "helptrainer", RunType::HELP_TRAINER },
 			{ "cv", RunType::EVAL },
 			{ "eval", RunType::EVAL },
-			{ "eval_param", RunType::EVAL_PARAM },
+			{ "evalParam", RunType::EVAL_PARAM },
 			{ "cv2", RunType::EVAL_PARAM },
-			{ "cv_param", RunType::EVAL_PARAM },
+			{ "cvParam", RunType::EVAL_PARAM },
 			{ "auc", RunType::EVAL_PARAM },
 			{ "train", RunType::TRAIN },
 			{ "tr", RunType::TRAIN },
 			{ "test", RunType::TEST },
 			{ "te", RunType::TEST },
-			{ "train_test", RunType::TRAIN_TEST },
+			{ "traintest", RunType::TRAIN_TEST },
 			{ "tt", RunType::TRAIN_TEST },
-			{ "feature_selection", RunType::FEATURE_SELECTION },
+			{ "featureselection", RunType::FEATURE_SELECTION },
 			{ "fs", RunType::FEATURE_SELECTION },
-			{ "create_instances", RunType::CREATE_INSTANCES },
+			{ "createinstances", RunType::CREATE_INSTANCES },
 			{ "ci", RunType::CREATE_INSTANCES },
 			{ "norm", RunType::NORMALIZE },
-			{ "norm_file", RunType::NORMALIZE_FILE },
+			{ "normfile", RunType::NORMALIZE_FILE },
 			{ "calibrate", RunType::CALIBRATE },
 			{ "check", RunType::CHECK_DATA },
-			{ "feature_status", RunType::FEATURE_STATUS },
+			{ "featurestatus", RunType::FEATURE_STATUS },
 			{ "fss", RunType::FEATURE_STATUS },
-			{ "show_features", RunType::SHOW_FEATURES },
+			{ "showfeatures", RunType::SHOW_FEATURES },
 			{ "sf", RunType::SHOW_FEATURES },
-			{ "show_infos", RunType::SHOW_INFOS },
+			{ "showinfos", RunType::SHOW_INFOS },
 			{ "si", RunType::SHOW_INFOS },
 			{ "convert", RunType::CONVERT },
 			{ "splitdata", RunType::SPLIT_DATA },
 			{ "sd", RunType::SPLIT_DATA },
-			{ "gen_crossdata", RunType::GEN_CROSS_DATA },
+			{ "gencrossdata", RunType::GEN_CROSS_DATA },
 			{ "gcd", RunType::GEN_CROSS_DATA },
 			{ "changeratio", RunType::CHANGE_RAIO },
 			{ "cr", RunType::CHANGE_RAIO },
 			{ "randomize", RunType::RANDOMIZE },
 			{ "rand", RunType::RANDOMIZE },
-			{ "write_text_model", RunType::WRITE_TEXT_MODEL },
+			{ "writetextmodel", RunType::WRITE_TEXT_MODEL },
 			{ "wtm", RunType::WRITE_TEXT_MODEL },
-			{ "binary_model_to_text", RunType::WRITE_TEXT_MODEL },
+			{ "binarymodeltotext", RunType::WRITE_TEXT_MODEL },
 			{ "bm2t", RunType::WRITE_TEXT_MODEL },
-			{ "text_model_to_binary", RunType::TEXT_MODEL_TO_BINARY },
+			{ "textmodeltobinary", RunType::TEXT_MODEL_TO_BINARY },
 			{ "tm2b", RunType::TEXT_MODEL_TO_BINARY }
 		};
 

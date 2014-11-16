@@ -44,6 +44,8 @@ namespace gezi {
 	//@TODO TLC c#的那种接口的设计 能够迁移到c++吗 c#的关键有一个  object Predict(object features);   public interface IPredictor<in TFeatures, out TResult> : IPredictor
 	//TResult Predict(TFeatures features);
 	//var stronglyTypedPredictor = predictor as IPredictor<Instance, float>;
+	//dvec Predicts(const Vector&) 
+	//double Predict(const Vector&, dvec&)
 	class Predictor : public LoadSave
 	{
 	public:

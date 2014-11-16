@@ -28,6 +28,7 @@ DEFINE_string(test, "", "testDatafile: Data file used for test");
 DEFINE_string(valid, "", "Data file used for training validation (with IValidatingPredictor classifiers)");
 
 DEFINE_string(m, "model", "modelFolder");
+DEFINE_bool(mf, false, " modelfile: Gen model file£¿ (for TrainTest)");
 DEFINE_bool(mc, false, " modelfileCode: Gen model file to save in C++ code £¿ (for Train or TrainTest)");
 DEFINE_bool(mt, false, "modelfileText:  Gen model file to save in text format ? (for Train or TrainTest");
 DEFINE_bool(mxml, false, "modelfileXml:  Gen model file to save in xml format ? (for Train or TrainTest");
@@ -43,7 +44,7 @@ DEFINE_int32(ri, 0, "resultIndex: the name ouf out file like 0.model.txt 0.model
 DEFINE_int64(num, 0, "choose num instances or use as other number realted meaning");
 
 DEFINE_bool(norm, true, "Normalize features");
-DEFINE_string(normalizer, "MinMax", "Which normalizer?");
+DEFINE_string(normalizer, "MinMax", "Which normalizer? can also try gaussian or bin");
 
 DEFINE_string(fn, "", "featureName:");
 //@FIXME
@@ -73,6 +74,7 @@ namespace gezi {
 		_cmd.testDatafile = FLAGS_test;
 		_cmd.validationDatafile = FLAGS_valid;
 		_cmd.modelFolder = FLAGS_m;
+		_cmd.modelfile = FLAGS_mf;
 		_cmd.modelfileCode = FLAGS_mc;
 		_cmd.modelfileText = FLAGS_mt;
 		_cmd.modelfileXml = FLAGS_mxml;

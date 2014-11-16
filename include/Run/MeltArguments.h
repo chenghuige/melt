@@ -36,6 +36,7 @@ namespace gezi {
 		string testDatafile = ""; //test| Data file used for test
 		string validationDatafile = "";
 		string modelFolder = "model"; //m|
+		bool modelfile = false; //mf|
 		bool modelfileCode = false; //mc|
 		bool modelfileText = false; //mt|
 		bool modelfileXml = false; //mxml|

@@ -83,15 +83,16 @@ namespace gezi {
 
 			uint64 totalSize = _numFeatures * _numProcessedInstances;
 			// pre-compute the normalization range for each feature
-			ProgressBar pb("BinNormalizer finish", _numFeatures);
+			//ProgressBar pb("BinNormalizer finish", _numFeatures);
 			BinFinder binFinder;
-#pragma omp parallel for firstprivate(pb) firstprivate(binFinder)
+//#pragma omp parallel for firstprivate(pb) firstprivate(binFinder)
+#pragma omp parallel for firstprivate(binFinder)
 			for (int i = 0; i < _numFeatures; i++)
 			{
-				++pb;
+				//++pb;
 				//values[i].resize(_numProcessedInstances, 0); //ºóÃæÌî³ä0
 				//binUpperBounds[i] = find_bins(values[i], numBins);
-				binFinder.FindBins(values[i], _numProcessedInstances, numBins);
+				binUpperBounds[i] = binFinder.FindBins(values[i], _numProcessedInstances, numBins);
 				if (binUpperBounds[i][0] == binUpperBounds[i].back())
 				{
 					_included[i] = false;
