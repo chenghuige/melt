@@ -68,6 +68,7 @@
   <ItemGroup>
     <ClCompile Include="melt.cc" />
     <ClCompile Include="src\Prediction\Instances\InstanceParser.cpp" />
+    <ClCompile Include="src\Prediction\Normalization\BinNormalizer.cpp" />
     <ClCompile Include="src\Prediction\Trainers\LinearSVM.cpp" />
     <ClCompile Include="src\PythonWrapper\Predictor.cpp" />
     <ClCompile Include="src\PythonWrapper\PredictorFactory.cpp" />

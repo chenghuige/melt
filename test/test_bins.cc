@@ -30,7 +30,7 @@ TEST(bins, func)
 	Instances instances = create_instances(FLAGS_i);
 	Pval(instances.Size());
 	BinNormalizer normalizer; 
-	normalizer.numBins = 255;
+	normalizer.maxBins = 255;
 	normalizer.RunNormalize(instances);
 	int len = std::min(instances.NumFeatures(), 10);
 	for (int i = 0; i < len; i++)

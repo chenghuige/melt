@@ -101,7 +101,7 @@ ImportConfigsFrom('../')
 CONFIGS('third-64/gtest@base')
 CONFIGS('myspace/sep/chenghuige/melt-train@base')
 
-srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp'.replace('./',RELATIVE_PATH))
+srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp'.replace('./',RELATIVE_PATH))
 Application('melt', Sources('melt.cc', srcs))
 #Application('calibrate',Sources('calibrate.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 Application('calibrate',Sources('calibrate.cc',srcs))

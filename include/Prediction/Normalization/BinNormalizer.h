@@ -26,6 +26,7 @@ namespace gezi {
 	public:
 		BinNormalizer()
 		{
+			ParseArgs();
 			_normType = Normalizer::NormType::Bin; //do not BinNormalizer():_normType(NormType::Bin)
 			_func = [this](int index, Float& value)
 			{
@@ -39,6 +40,8 @@ namespace gezi {
 				}
 			};
 		}
+
+		void ParseArgs();
 
 		BinNormalizer(string path)
 		{
@@ -62,6 +65,7 @@ namespace gezi {
 
 		virtual void Begin() override
 		{
+			Pval(maxBins);
 			_included.resize(_numFeatures, true);
 			binUpperBounds.resize(_numFeatures);
 			values.resize(_numFeatures);
@@ -74,25 +78,26 @@ namespace gezi {
 			_numProcessedInstances++;
 		}
 
+		//@TODO 如果比较大的话 init这个会爆内存 考虑逐个批次处理
 		virtual void Finish() override
 		{
-			init(binValues, _numFeatures, numBins);
+			init(binValues, _numFeatures, maxBins);
 			for (int i = 0; i < _numFeatures; i++)
-				for (int j = 0; j < numBins; j++)
-					binValues[i][j] = (Float)j / numBins;
+				for (int j = 0; j < maxBins; j++)
+					binValues[i][j] = (Float)j / maxBins;
 
 			uint64 totalSize = _numFeatures * _numProcessedInstances;
 			// pre-compute the normalization range for each feature
-			//ProgressBar pb("BinNormalizer finish", _numFeatures);
+			ProgressBar pb("BinNormalizer finish", _numFeatures);
 			BinFinder binFinder;
-//#pragma omp parallel for firstprivate(pb) firstprivate(binFinder)
-#pragma omp parallel for firstprivate(binFinder)
+#pragma omp parallel for firstprivate(pb) firstprivate(binFinder)
+//#pragma omp parallel for firstprivate(binFinder)
 			for (int i = 0; i < _numFeatures; i++)
 			{
-				//++pb;
+				++pb;
 				//values[i].resize(_numProcessedInstances, 0); //后面填充0
 				//binUpperBounds[i] = find_bins(values[i], numBins);
-				binUpperBounds[i] = binFinder.FindBins(values[i], _numProcessedInstances, numBins);
+				binUpperBounds[i] = binFinder.FindBins(values[i], _numProcessedInstances, maxBins);
 				if (binUpperBounds[i][0] == binUpperBounds[i].back())
 				{
 					_included[i] = false;
@@ -104,7 +109,7 @@ namespace gezi {
 					}
 				}
 				// reclaculate bin values if too few
-				if ((int)binUpperBounds[i].size() < numBins)
+				if ((int)binUpperBounds[i].size() < maxBins)
 				{
 					int numBinsActual = binUpperBounds[i].size();
 					binValues[i].resize(numBinsActual);
@@ -129,12 +134,12 @@ namespace gezi {
 		void serialize(Archive &ar, const unsigned int version)
 		{
 		/*	ar & boost::serialization::base_object<Normalizer>(*this);
-			ar & numBins;
+			ar & maxBins;
 			ar & binUpperBounds;
 			ar & binValues;
 			ar & _included;*/
 			ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(Normalizer);
-			ar & GEZI_SERIALIZATION_NVP(numBins);
+			ar & GEZI_SERIALIZATION_NVP(maxBins);
 			ar & GEZI_SERIALIZATION_NVP(binUpperBounds);
 			ar & GEZI_SERIALIZATION_NVP(binValues);
 			ar & GEZI_SERIALIZATION_NVP(_included);
@@ -147,7 +152,7 @@ namespace gezi {
 
 	public:
 		//------------args begin
-		int numBins = 1000; //n|Max number of bins
+		int maxBins = 1000; //n|Max number of bins per feature
 		//------------args end
 		// min/max values and ranges for all features
 		Fmat binUpperBounds;
