@@ -411,7 +411,7 @@ namespace gezi {
 			if (trainer == nullptr)
 			{
 				LOG(WARNING) << _cmd.classifierName << " has not been supported yet";
-				return;
+				return nullptr;
 			}
 			trainer->Train(instances);
 			auto predictor = trainer->CreatePredictor();
@@ -491,6 +491,7 @@ namespace gezi {
 			{
 				Noticer nt("Loading predictor");
 				predictor = PredictorFactory::LoadPredictor(_cmd.modelFolder);
+				CHECK(predictor != nullptr);
 			}
 			//------test
 			try_create_dir(_cmd.resultDir);
@@ -524,6 +525,7 @@ namespace gezi {
 				instances = create_instances(_cmd.datafile);
 				CHECK_GT(instances.Count(), 0) << "Read 0 train instances, aborting experiment";
 				predictor = Train(instances);
+				CHECK(predictor != nullptr);
 			}
 			{
 				Noticer nt("Test!");

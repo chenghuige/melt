@@ -3,6 +3,7 @@ Copyright (c) by respective owners including Yahoo!, Microsoft, and
 individual contributors. All rights reserved.  Released under a BSD (revised)
 license as described in the file LICENSE.
  */
+
 #include <stdio.h>
 #include <float.h>
 #include <sstream>
@@ -46,7 +47,13 @@ license as described in the file LICENSE.
 #include "kernel_svm.h"
 
 #include <iostream>
+
+
+#include "debug_util.h"
+
 using namespace std;
+
+
 //
 // Does string end with a certain substring?
 //

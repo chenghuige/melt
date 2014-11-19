@@ -93,7 +93,9 @@ namespace gezi {
 		{
 			return Output(instance.features);
 		}
-		Float Output(InstancePtr instance)
+		
+		//在Melt.h 统一使用虚函数接口  输入是 InstancePtr
+		virtual Float Output(InstancePtr instance)
 		{
 			return Output(instance->features);
 		}
@@ -168,7 +170,7 @@ namespace gezi {
 			return Predict(features);
 		}
 
-		Float Predict(InstancePtr instance)
+		virtual Float Predict(InstancePtr instance)
 		{
 			return Predict(instance->features);
 		}
@@ -183,7 +185,7 @@ namespace gezi {
 			return Predict(instance.features, output);
 		}
 
-		Float Predict(InstancePtr instance, Float& output)
+		virtual Float Predict(InstancePtr instance, Float& output)
 		{
 			return Predict(instance->features, output);
 		}

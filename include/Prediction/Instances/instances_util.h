@@ -193,7 +193,7 @@ namespace gezi {
 	}
 
 	//暂时不考虑有未标注label的情况 未标注设置为-1 normal 样本
-	inline void write_libsvm(Instance& instance, HeaderSchema& schema, ofstream& ofs, bool noNegLabel = false)
+	inline void write_libsvm(Instance& instance, HeaderSchema& schema, ofstream& ofs, bool noNegLabel = false, bool isVW = false)
 	{
 		if (schema.numClasses == 2)
 		{ //为了sofia方便 将0转为-1 这样libsvm sofia都可以直接处理这种格式
@@ -227,6 +227,11 @@ namespace gezi {
 			ofs << instance.label;
 		}
 		
+		if (isVW)
+		{
+			ofs << " |n";
+		}
+
 		instance.features.ForEachNonZero([&ofs](int index, Float value)
 		{
 			ofs << " " << index + 1 << ":" << value;
@@ -240,6 +245,15 @@ namespace gezi {
 		for (InstancePtr instance : instances)
 		{
 			write_libsvm(*instance, instances.schema, ofs, noNegLabel);
+		}
+	}
+
+	inline void write_vw(Instances& instances, string outfile)
+	{
+		ofstream ofs(outfile);
+		for (InstancePtr instance : instances)
+		{
+			write_libsvm(*instance, instances.schema, ofs, false, true);
 		}
 	}
 
@@ -299,6 +313,9 @@ namespace gezi {
 			break;
 		case FileFormat::Arff:
 			write_arff(instances, outfile);
+			break;
+		case  FileFormat::VW:
+			write_vw(instances, outfile);
 			break;
 		default:
 			break;

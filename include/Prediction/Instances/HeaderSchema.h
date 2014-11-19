@@ -29,7 +29,8 @@ namespace gezi
 		Text,
 		LibSVM,
 		LibSVM2, //同LibSVM但是不会将label 0 转为 -1
-		Arff
+		Arff,
+		VW, 
 	};
 
 	enum class ColumnType

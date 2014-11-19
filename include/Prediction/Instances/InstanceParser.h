@@ -42,7 +42,8 @@ namespace gezi {
 		{ "text", FileFormat::Text },
 		{ "libsvm", FileFormat::LibSVM },
 		{ "libsvm2", FileFormat::LibSVM2 },
-		{ "arff", FileFormat::Arff }
+		{ "arff", FileFormat::Arff },
+		{ "vw", FileFormat::VW },
 	};
 
 	//RunConvert 显示转换使用
@@ -54,7 +55,8 @@ namespace gezi {
 		{ FileFormat::Text, "txt" },
 		{ FileFormat::LibSVM, "libsvm" },
 		{ FileFormat::LibSVM2, "libsvm" },
-		{ FileFormat::Arff, "arff" }
+		{ FileFormat::Arff, "arff" },
+		{ FileFormat::VW, "vw" },
 	};
 
 	//其它最后输出 使用
@@ -66,7 +68,8 @@ namespace gezi {
 		{ FileFormat::Text, "txt" },
 		{ FileFormat::LibSVM, "libsvm" },
 		{ FileFormat::LibSVM2, "libsvm" },
-		{ FileFormat::Arff, "arff" }
+		{ FileFormat::Arff, "arff" },
+		{ FileFormat::VW, "vw" },
 	};
 
 

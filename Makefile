@@ -133,7 +133,11 @@ DEP_INCPATH=-I../../../../../app/search/sep/anti-spam/gezi \
   -I../../../../../third-64/tcmalloc \
   -I../../../../../third-64/tcmalloc/include \
   -I../../../../../third-64/tcmalloc/output \
-  -I../../../../../third-64/tcmalloc/output/include
+  -I../../../../../third-64/tcmalloc/output/include \
+  -I../../../../../third-64/zlib \
+  -I../../../../../third-64/zlib/include \
+  -I../../../../../third-64/zlib/output \
+  -I../../../../../third-64/zlib/output/include
 
 #============ CCP vars ============
 CCHECK=@ccheck.py
@@ -145,7 +149,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=43998f79f810c11691b150e21ab053b9  COMAKE
+COMAKE_MD5=65d6134e825e09bf0d0c5de5cbcf944b  COMAKE
 
 
 .PHONY:all
@@ -180,7 +184,6 @@ clean:ccpclean
 	rm -rf src/Prediction/Normalization/melt_BinNormalizer.o
 	rm -rf src/vowpalwabbit/melt_accumulate.o
 	rm -rf src/vowpalwabbit/melt_active.o
-	rm -rf src/vowpalwabbit/melt_active_interactor.o
 	rm -rf src/vowpalwabbit/melt_allreduce.o
 	rm -rf src/vowpalwabbit/melt_autolink.o
 	rm -rf src/vowpalwabbit/melt_bfgs.o
@@ -205,7 +208,6 @@ clean:ccpclean
 	rm -rf src/vowpalwabbit/melt_log_multi.o
 	rm -rf src/vowpalwabbit/melt_loss_functions.o
 	rm -rf src/vowpalwabbit/melt_lrq.o
-	rm -rf src/vowpalwabbit/melt_main.o
 	rm -rf src/vowpalwabbit/melt_memory.o
 	rm -rf src/vowpalwabbit/melt_mf.o
 	rm -rf src/vowpalwabbit/melt_multiclass.o
@@ -233,18 +235,11 @@ clean:ccpclean
 	rm -rf src/vowpalwabbit/melt_topk.o
 	rm -rf src/vowpalwabbit/melt_unique_sort.o
 	rm -rf src/sofia/melt_sf-data-set.o
-	rm -rf src/sofia/melt_sf-data-set_test.o
 	rm -rf src/sofia/melt_sf-hash-inline.o
-	rm -rf src/sofia/melt_sf-hash-inline_test.o
 	rm -rf src/sofia/melt_sf-hash-weight-vector.o
 	rm -rf src/sofia/melt_sf-sparse-vector.o
-	rm -rf src/sofia/melt_sf-sparse-vector_test.o
 	rm -rf src/sofia/melt_sf-weight-vector.o
-	rm -rf src/sofia/melt_sf-weight-vector_test.o
-	rm -rf src/sofia/melt_simple-cmd-line-helper_test.o
 	rm -rf src/sofia/melt_sofia-ml-methods.o
-	rm -rf src/sofia/melt_sofia-ml-methods_test.o
-	rm -rf src/sofia/melt_sofia-ml.o
 	rm -rf src/Simple/melt_predict_Predictor.o
 	rm -rf src/Simple/melt_predict_PredictorFactory.o
 
@@ -272,7 +267,6 @@ libmelt.a:src/Wrapper/melt_PredictorFactory.o \
   src/Prediction/Normalization/melt_BinNormalizer.o \
   src/vowpalwabbit/melt_accumulate.o \
   src/vowpalwabbit/melt_active.o \
-  src/vowpalwabbit/melt_active_interactor.o \
   src/vowpalwabbit/melt_allreduce.o \
   src/vowpalwabbit/melt_autolink.o \
   src/vowpalwabbit/melt_bfgs.o \
@@ -297,7 +291,6 @@ libmelt.a:src/Wrapper/melt_PredictorFactory.o \
   src/vowpalwabbit/melt_log_multi.o \
   src/vowpalwabbit/melt_loss_functions.o \
   src/vowpalwabbit/melt_lrq.o \
-  src/vowpalwabbit/melt_main.o \
   src/vowpalwabbit/melt_memory.o \
   src/vowpalwabbit/melt_mf.o \
   src/vowpalwabbit/melt_multiclass.o \
@@ -325,18 +318,11 @@ libmelt.a:src/Wrapper/melt_PredictorFactory.o \
   src/vowpalwabbit/melt_topk.o \
   src/vowpalwabbit/melt_unique_sort.o \
   src/sofia/melt_sf-data-set.o \
-  src/sofia/melt_sf-data-set_test.o \
   src/sofia/melt_sf-hash-inline.o \
-  src/sofia/melt_sf-hash-inline_test.o \
   src/sofia/melt_sf-hash-weight-vector.o \
   src/sofia/melt_sf-sparse-vector.o \
-  src/sofia/melt_sf-sparse-vector_test.o \
   src/sofia/melt_sf-weight-vector.o \
-  src/sofia/melt_sf-weight-vector_test.o \
-  src/sofia/melt_simple-cmd-line-helper_test.o \
-  src/sofia/melt_sofia-ml-methods.o \
-  src/sofia/melt_sofia-ml-methods_test.o \
-  src/sofia/melt_sofia-ml.o
+  src/sofia/melt_sofia-ml-methods.o
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibmelt.a[0m']"
 	ar crs libmelt.a src/Wrapper/melt_PredictorFactory.o \
   src/Prediction/Instances/melt_InstanceParser.o \
@@ -345,7 +331,6 @@ libmelt.a:src/Wrapper/melt_PredictorFactory.o \
   src/Prediction/Normalization/melt_BinNormalizer.o \
   src/vowpalwabbit/melt_accumulate.o \
   src/vowpalwabbit/melt_active.o \
-  src/vowpalwabbit/melt_active_interactor.o \
   src/vowpalwabbit/melt_allreduce.o \
   src/vowpalwabbit/melt_autolink.o \
   src/vowpalwabbit/melt_bfgs.o \
@@ -370,7 +355,6 @@ libmelt.a:src/Wrapper/melt_PredictorFactory.o \
   src/vowpalwabbit/melt_log_multi.o \
   src/vowpalwabbit/melt_loss_functions.o \
   src/vowpalwabbit/melt_lrq.o \
-  src/vowpalwabbit/melt_main.o \
   src/vowpalwabbit/melt_memory.o \
   src/vowpalwabbit/melt_mf.o \
   src/vowpalwabbit/melt_multiclass.o \
@@ -398,18 +382,11 @@ libmelt.a:src/Wrapper/melt_PredictorFactory.o \
   src/vowpalwabbit/melt_topk.o \
   src/vowpalwabbit/melt_unique_sort.o \
   src/sofia/melt_sf-data-set.o \
-  src/sofia/melt_sf-data-set_test.o \
   src/sofia/melt_sf-hash-inline.o \
-  src/sofia/melt_sf-hash-inline_test.o \
   src/sofia/melt_sf-hash-weight-vector.o \
   src/sofia/melt_sf-sparse-vector.o \
-  src/sofia/melt_sf-sparse-vector_test.o \
   src/sofia/melt_sf-weight-vector.o \
-  src/sofia/melt_sf-weight-vector_test.o \
-  src/sofia/melt_simple-cmd-line-helper_test.o \
-  src/sofia/melt_sofia-ml-methods.o \
-  src/sofia/melt_sofia-ml-methods_test.o \
-  src/sofia/melt_sofia-ml.o
+  src/sofia/melt_sofia-ml-methods.o
 	mkdir -p ./output/lib
 	cp -f --link libmelt.a ./output/lib
 
@@ -476,14 +453,6 @@ src/vowpalwabbit/melt_active.o:src/vowpalwabbit/active.cc
   -DVERSION=\"1.9.8.7\" \
   -O3 \
   -DNDEBUG $(CXXFLAGS)  -o src/vowpalwabbit/melt_active.o src/vowpalwabbit/active.cc
-
-src/vowpalwabbit/melt_active_interactor.o:src/vowpalwabbit/active_interactor.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/vowpalwabbit/melt_active_interactor.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/vowpalwabbit/melt_active_interactor.o src/vowpalwabbit/active_interactor.cc
 
 src/vowpalwabbit/melt_allreduce.o:src/vowpalwabbit/allreduce.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/vowpalwabbit/melt_allreduce.o[0m']"
@@ -676,14 +645,6 @@ src/vowpalwabbit/melt_lrq.o:src/vowpalwabbit/lrq.cc
   -DVERSION=\"1.9.8.7\" \
   -O3 \
   -DNDEBUG $(CXXFLAGS)  -o src/vowpalwabbit/melt_lrq.o src/vowpalwabbit/lrq.cc
-
-src/vowpalwabbit/melt_main.o:src/vowpalwabbit/main.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/vowpalwabbit/melt_main.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/vowpalwabbit/melt_main.o src/vowpalwabbit/main.cc
 
 src/vowpalwabbit/melt_memory.o:src/vowpalwabbit/memory.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/vowpalwabbit/melt_memory.o[0m']"
@@ -901,14 +862,6 @@ src/sofia/melt_sf-data-set.o:src/sofia/sf-data-set.cc
   -O3 \
   -DNDEBUG $(CXXFLAGS)  -o src/sofia/melt_sf-data-set.o src/sofia/sf-data-set.cc
 
-src/sofia/melt_sf-data-set_test.o:src/sofia/sf-data-set_test.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/sofia/melt_sf-data-set_test.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/sofia/melt_sf-data-set_test.o src/sofia/sf-data-set_test.cc
-
 src/sofia/melt_sf-hash-inline.o:src/sofia/sf-hash-inline.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/sofia/melt_sf-hash-inline.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
@@ -916,14 +869,6 @@ src/sofia/melt_sf-hash-inline.o:src/sofia/sf-hash-inline.cc
   -DVERSION=\"1.9.8.7\" \
   -O3 \
   -DNDEBUG $(CXXFLAGS)  -o src/sofia/melt_sf-hash-inline.o src/sofia/sf-hash-inline.cc
-
-src/sofia/melt_sf-hash-inline_test.o:src/sofia/sf-hash-inline_test.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/sofia/melt_sf-hash-inline_test.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/sofia/melt_sf-hash-inline_test.o src/sofia/sf-hash-inline_test.cc
 
 src/sofia/melt_sf-hash-weight-vector.o:src/sofia/sf-hash-weight-vector.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/sofia/melt_sf-hash-weight-vector.o[0m']"
@@ -941,14 +886,6 @@ src/sofia/melt_sf-sparse-vector.o:src/sofia/sf-sparse-vector.cc
   -O3 \
   -DNDEBUG $(CXXFLAGS)  -o src/sofia/melt_sf-sparse-vector.o src/sofia/sf-sparse-vector.cc
 
-src/sofia/melt_sf-sparse-vector_test.o:src/sofia/sf-sparse-vector_test.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/sofia/melt_sf-sparse-vector_test.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/sofia/melt_sf-sparse-vector_test.o src/sofia/sf-sparse-vector_test.cc
-
 src/sofia/melt_sf-weight-vector.o:src/sofia/sf-weight-vector.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/sofia/melt_sf-weight-vector.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
@@ -957,22 +894,6 @@ src/sofia/melt_sf-weight-vector.o:src/sofia/sf-weight-vector.cc
   -O3 \
   -DNDEBUG $(CXXFLAGS)  -o src/sofia/melt_sf-weight-vector.o src/sofia/sf-weight-vector.cc
 
-src/sofia/melt_sf-weight-vector_test.o:src/sofia/sf-weight-vector_test.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/sofia/melt_sf-weight-vector_test.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/sofia/melt_sf-weight-vector_test.o src/sofia/sf-weight-vector_test.cc
-
-src/sofia/melt_simple-cmd-line-helper_test.o:src/sofia/simple-cmd-line-helper_test.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/sofia/melt_simple-cmd-line-helper_test.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/sofia/melt_simple-cmd-line-helper_test.o src/sofia/simple-cmd-line-helper_test.cc
-
 src/sofia/melt_sofia-ml-methods.o:src/sofia/sofia-ml-methods.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/sofia/melt_sofia-ml-methods.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
@@ -980,22 +901,6 @@ src/sofia/melt_sofia-ml-methods.o:src/sofia/sofia-ml-methods.cc
   -DVERSION=\"1.9.8.7\" \
   -O3 \
   -DNDEBUG $(CXXFLAGS)  -o src/sofia/melt_sofia-ml-methods.o src/sofia/sofia-ml-methods.cc
-
-src/sofia/melt_sofia-ml-methods_test.o:src/sofia/sofia-ml-methods_test.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/sofia/melt_sofia-ml-methods_test.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/sofia/melt_sofia-ml-methods_test.o src/sofia/sofia-ml-methods_test.cc
-
-src/sofia/melt_sofia-ml.o:src/sofia/sofia-ml.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/sofia/melt_sofia-ml.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/sofia/melt_sofia-ml.o src/sofia/sofia-ml.cc
 
 src/Simple/melt_predict_Predictor.o:src/Simple/Predictor.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Simple/melt_predict_Predictor.o[0m']"

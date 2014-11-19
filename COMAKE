@@ -99,7 +99,7 @@ INCPATHS('./ ./include/ ./include/vowpalwabbit/ ./include/sofia/'.replace('./', 
 #ÒÀÀµÄ£¿é
 #CONFIGS('third-64/openssl@base')
 CONFIGS('ps/se/toolchain@base')
-#CONFIGS('third-64/zlib@base')
+CONFIGS('third-64/zlib@base') #used in vowpalwabbit
 CONFIGS('third-64/boost@base')
 #CONFIGS('third-gcc4/boost@base')
 CONFIGS('third-64/gflags@base')

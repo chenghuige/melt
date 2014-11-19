@@ -75,6 +75,7 @@
     <ClCompile Include="src\Run\Melt.cpp" />
     <ClCompile Include="src\Simple\Predictor.cpp" />
     <ClCompile Include="src\Simple\PredictorFactory.cpp" />
+    <ClCompile Include="src\sofia\main\sofia-ml.cc" />
     <ClCompile Include="src\sofia\sf-data-set.cc" />
     <ClCompile Include="src\sofia\sf-data-set_test.cc" />
     <ClCompile Include="src\sofia\sf-hash-inline.cc" />
@@ -117,6 +118,8 @@
     <ClCompile Include="src\vowpalwabbit\loss_functions.cc" />
     <ClCompile Include="src\vowpalwabbit\lrq.cc" />
     <ClCompile Include="src\vowpalwabbit\main.cc" />
+    <ClCompile Include="src\vowpalwabbit\main\active_interactor.cc" />
+    <ClCompile Include="src\vowpalwabbit\main\main.cc" />
     <ClCompile Include="src\vowpalwabbit\memory.cc" />
     <ClCompile Include="src\vowpalwabbit\mf.cc" />
     <ClCompile Include="src\vowpalwabbit\multiclass.cc" />
@@ -143,6 +146,7 @@
     <ClCompile Include="src\vowpalwabbit\stagewise_poly.cc" />
     <ClCompile Include="src\vowpalwabbit\topk.cc" />
     <ClCompile Include="src\vowpalwabbit\unique_sort.cc" />
+    <ClCompile Include="src\vowpalwabbit\vwdll.cpp" />
     <ClCompile Include="src\Wrapper\PredictorFactory.cpp" />
     <ClCompile Include="test\test_auc.cc" />
     <ClCompile Include="test\test_bins.cc" />
@@ -160,6 +164,7 @@
     <ClCompile Include="tools\fastrank_predict.cc" />
     <ClCompile Include="tools\fastrank_text2bin.cc" />
     <ClCompile Include="tools\predict.cc" />
+    <ClCompile Include="tools\vw.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MLCore\IPredictor.h" />
