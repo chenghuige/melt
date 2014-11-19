@@ -91,7 +91,7 @@ if GCC_HIGH  == 1:
 LDFLAGS('-lpthread -lcrypto -lrt -lssl -lldap -lcurl -ldl -rdynamic', GCC_LDFLAGS)
 
 #头文件路径.
-INCPATHS('./ ./include/'.replace('./', RELATIVE_PATH))
+INCPATHS('./ ./include/ ./include/vowpalwabbit/ ./include/sofia/'.replace('./', RELATIVE_PATH))
 
 #使用库
 #LIBS('./librsc-sender.a')
@@ -113,7 +113,7 @@ CONFIGS('public/configure@base')
 CONFIGS('app/search/sep/anti-spam/gezi@base')
 #srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp'.replace('./',RELATIVE_PATH))
 #Application('melt',Sources('melt.cc', srcs))
-srcs = GLOB('./src/Wrapper/*.cpp ./src/Prediction/Instances/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp')
+srcs = GLOB('./src/Wrapper/*.cpp ./src/Prediction/Instances/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/vowpalwabbit/*.cc ./src/sofia/*.cc')
 StaticLibrary('melt',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 
 srcs = GLOB('./src/Simple/*.cpp')

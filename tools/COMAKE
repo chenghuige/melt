@@ -89,7 +89,7 @@ if GCC_HIGH  == 1:
 #LDFLAGS('-lpthread -lcrypto -lrt -lssl -lldap -lcurl -ldl -rdynamic', GCC_LDFLAGS)
 LDFLAGS('-lpthread -lrt -ldl -rdynamic', GCC_LDFLAGS)
 #头文件路径.
-INCPATHS('./ ./include/'.replace('./', RELATIVE_PATH))
+INCPATHS('./ ./include/ ./include/vowpalwabbit/ ./include/sofia/'.replace('./', RELATIVE_PATH))
 
 #使用库
 #LIBS('./librsc-sender.a')
@@ -101,7 +101,7 @@ ImportConfigsFrom('../')
 CONFIGS('third-64/gtest@base')
 CONFIGS('myspace/sep/chenghuige/melt-train@base')
 
-srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp'.replace('./',RELATIVE_PATH))
+srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/vowpalwabbit/*.cc ./src/sofia/*.cc'.replace('./',RELATIVE_PATH))
 Application('melt', Sources('melt.cc', srcs))
 #Application('calibrate',Sources('calibrate.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 Application('calibrate',Sources('calibrate.cc',srcs))
