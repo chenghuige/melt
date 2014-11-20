@@ -21,9 +21,9 @@ using namespace gezi;
 DEFINE_int32(vl, 0, "vlog level");
 DECLARE_string(c);
 
-const char* const kVersion = "1-0-0-10";
+const char* const kVersion = "1-0-0-11";
 
-void ShowHelp()
+void ShowMeltHelp()
 {
 	cout << "\n";
 	cout << "	Default command is cross validation: <./melt feature.txt> will do 5 fold cross validation using LinearSVM trainer with it's default settings\n";
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 		string arg = argv[i];
 		if (arg == "-help" || arg == "--help" || arg == "-h" || arg == "--h")
 		{
-			ShowHelp();
+			ShowMeltHelp();
 			cout << endl;
 			break;
 		}
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 		{
 			google::ShowUsageWithFlags(argv[0]);
 			cout << "	No input data file use -i filename or just input filename after ./melt\n";
-			ShowHelp();
+			ShowMeltHelp();
 			return -1;
 		}
 		melt.Cmd().datafile = argv[s];

@@ -26,17 +26,37 @@ namespace gezi {
 	class Trainer : public WithArgs, public WithHelp
 	{
 	public:
-		void Train(Instances& instances)
+		virtual void Train(Instances& instances, bool isStreaming = false)
 		{
 			_trainingSchema = instances.schema;
 
+			Init();
 			Initialize(instances);
 
+			if (!isStreaming)
+			{
+				InitializeNormalizer(instances);
+			}
+		
 			InnerTrain(instances);
 
 			Finalize(instances);
 
 			VLOG(0) << GetParam() << endl;
+		}
+
+		virtual void InitializeNormalizer(Instances& instances)
+		{
+			//--- 将所有数据归一化 和TLC策略不同 TLC将normalize混在训练过程中(主要可能是兼容streaming模式)
+			//特别是hadoop scope训练  @TODO  也许这里也会变化
+			//如果不是类似交叉验证 比如就是训练测试 默认是 no normalize copy
+			if (_normalizer != nullptr && !instances.IsNormalized())
+			{
+				if (!_normalizeCopy)
+					_normalizer->RunNormalize(instances);
+				else
+					_normalizer->Prepare(instances);
+			}
 		}
 
 		const HeaderSchema& TrainingSchema() const
@@ -83,6 +103,11 @@ namespace gezi {
 		}
 
 	protected:
+		virtual void Init()
+		{
+
+		}
+
 		virtual void Initialize(Instances& instances)
 		{
 

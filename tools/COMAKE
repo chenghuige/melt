@@ -101,7 +101,9 @@ ImportConfigsFrom('../')
 CONFIGS('third-64/gtest@base')
 CONFIGS('myspace/sep/chenghuige/melt-train@base')
 
-srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/vowpalwabbit/*.cc ./src/sofia/*.cc'.replace('./',RELATIVE_PATH))
+LIBS('../libmelt.a ../libsofia.a ../libvw.a')
+#srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/vowpalwabbit/*.cc ./src/sofia/*.cc'.replace('./',RELATIVE_PATH))
+srcs = ''
 Application('melt', Sources('melt.cc', srcs))
 #Application('calibrate',Sources('calibrate.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 Application('calibrate',Sources('calibrate.cc',srcs))
@@ -112,7 +114,7 @@ Application('fastrank_text2bin',Sources('fastrank_text2bin.cc',srcs))
 #Application('fastrank_predict',Sources('fastrank_predict.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 Application('fastrank_predict',Sources('fastrank_predict.cc',srcs))
 
-srcs = GLOB('../src/vowpalwabbit/*.cc')
+LIBS('../libvw.a')
 Application('vw',Sources('vw.cc',srcs))
 Application('vw.debug',Sources('vw.cc',srcs, ENV.CppFlags()+CppFlags('-O0')))
 

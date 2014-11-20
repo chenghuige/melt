@@ -66,7 +66,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="melt.cc" />
     <ClCompile Include="src\Prediction\Instances\InstanceParser.cpp" />
     <ClCompile Include="src\Prediction\Normalization\BinNormalizer.cpp" />
     <ClCompile Include="src\Prediction\Trainers\LinearSVM.cpp" />
@@ -75,20 +74,6 @@
     <ClCompile Include="src\Run\Melt.cpp" />
     <ClCompile Include="src\Simple\Predictor.cpp" />
     <ClCompile Include="src\Simple\PredictorFactory.cpp" />
-    <ClCompile Include="src\sofia\main\sofia-ml.cc" />
-    <ClCompile Include="src\sofia\sf-data-set.cc" />
-    <ClCompile Include="src\sofia\sf-data-set_test.cc" />
-    <ClCompile Include="src\sofia\sf-hash-inline.cc" />
-    <ClCompile Include="src\sofia\sf-hash-inline_test.cc" />
-    <ClCompile Include="src\sofia\sf-hash-weight-vector.cc" />
-    <ClCompile Include="src\sofia\sf-sparse-vector.cc" />
-    <ClCompile Include="src\sofia\sf-sparse-vector_test.cc" />
-    <ClCompile Include="src\sofia\sf-weight-vector.cc" />
-    <ClCompile Include="src\sofia\sf-weight-vector_test.cc" />
-    <ClCompile Include="src\sofia\simple-cmd-line-helper_test.cc" />
-    <ClCompile Include="src\sofia\sofia-ml-methods.cc" />
-    <ClCompile Include="src\sofia\sofia-ml-methods_test.cc" />
-    <ClCompile Include="src\sofia\sofia-ml.cc" />
     <ClCompile Include="src\Testers\ClassifierTester.cpp" />
     <ClCompile Include="src\vowpalwabbit\accumulate.cc" />
     <ClCompile Include="src\vowpalwabbit\active.cc" />
@@ -118,8 +103,6 @@
     <ClCompile Include="src\vowpalwabbit\loss_functions.cc" />
     <ClCompile Include="src\vowpalwabbit\lrq.cc" />
     <ClCompile Include="src\vowpalwabbit\main.cc" />
-    <ClCompile Include="src\vowpalwabbit\main\active_interactor.cc" />
-    <ClCompile Include="src\vowpalwabbit\main\main.cc" />
     <ClCompile Include="src\vowpalwabbit\memory.cc" />
     <ClCompile Include="src\vowpalwabbit\mf.cc" />
     <ClCompile Include="src\vowpalwabbit\multiclass.cc" />
@@ -146,7 +129,6 @@
     <ClCompile Include="src\vowpalwabbit\stagewise_poly.cc" />
     <ClCompile Include="src\vowpalwabbit\topk.cc" />
     <ClCompile Include="src\vowpalwabbit\unique_sort.cc" />
-    <ClCompile Include="src\vowpalwabbit\vwdll.cpp" />
     <ClCompile Include="src\Wrapper\PredictorFactory.cpp" />
     <ClCompile Include="test\test_auc.cc" />
     <ClCompile Include="test\test_bins.cc" />
@@ -163,6 +145,8 @@
     <ClCompile Include="tools\calibrate.cc" />
     <ClCompile Include="tools\fastrank_predict.cc" />
     <ClCompile Include="tools\fastrank_text2bin.cc" />
+    <ClCompile Include="tools\melt.cc" />
+    <ClCompile Include="tools\PLSA\plsa.cc" />
     <ClCompile Include="tools\predict.cc" />
     <ClCompile Include="tools\vw.cc" />
   </ItemGroup>
@@ -205,18 +189,12 @@
     <ClInclude Include="include\Predictors\LinearPredictor.h" />
     <ClInclude Include="include\Predictors\PredictorFactory.h" />
     <ClInclude Include="include\Predictors\RandomPredictor.h" />
+    <ClInclude Include="include\Predictors\VWPredictor.h" />
     <ClInclude Include="include\PythonWrapper\Predictor.h" />
     <ClInclude Include="include\PythonWrapper\PredictorFactory.h" />
     <ClInclude Include="include\Run\CVFoldCreator.h" />
     <ClInclude Include="include\Run\Melt.h" />
     <ClInclude Include="include\Run\MeltArguments.h" />
-    <ClInclude Include="include\sofia\sf-data-set.h" />
-    <ClInclude Include="include\sofia\sf-hash-inline.h" />
-    <ClInclude Include="include\sofia\sf-hash-weight-vector.h" />
-    <ClInclude Include="include\sofia\sf-sparse-vector.h" />
-    <ClInclude Include="include\sofia\sf-weight-vector.h" />
-    <ClInclude Include="include\sofia\simple-cmd-line-helper.h" />
-    <ClInclude Include="include\sofia\sofia-ml-methods.h" />
     <ClInclude Include="include\Testers\ClassifierTester.h" />
     <ClInclude Include="include\Testers\DatasetMetrics.h" />
     <ClInclude Include="include\Testers\MulticlassTester.h" />
@@ -298,6 +276,22 @@
     <ClInclude Include="include\Wrapper\PredictorFactory.h" />
     <ClInclude Include="include\Wrapper\SharedPredictor.h" />
     <ClInclude Include="include\Wrapper\SharedPredictors.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="tools\data\test.20140115-0304\feature\feature.def" />
+    <None Include="tools\data\thread.20140319-1444\feature\feature.def" />
+    <None Include="tools\data\train.20140316.all\feature\feature.def" />
+    <None Include="tools\data\train.v1\feature\feature.def" />
+    <None Include="tools\data\train.v1\train\feature.def" />
+    <None Include="tools\model\calibrator.bin" />
+    <None Include="tools\model\model.bin" />
+    <None Include="tools\model\normalizer.bin" />
+    <None Include="tools\PLSA\data\ltrate.reply.model\identifer.bin" />
+    <None Include="tools\PLSA\data\ltrate.thread.model\identifer.bin" />
+    <None Include="tools\PLSA\data\plsa.model\identifer.bin" />
+    <None Include="tools\PLSA\data\rsc.model\identifer.bin" />
+    <None Include="tools\PLSA\identifer.bin" />
+    <None Include="tools\PLSA\plsa.model\identifer.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

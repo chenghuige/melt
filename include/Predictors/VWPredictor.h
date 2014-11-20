@@ -46,6 +46,11 @@ public:
 	}
 
 
+	virtual string Name() override
+	{
+		return "VW";
+	}
+
 	virtual Float Output(InstancePtr instance) override
 	{
 		example* ec = Instance2Example(instance, false);

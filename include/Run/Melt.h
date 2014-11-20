@@ -109,11 +109,7 @@ namespace gezi {
 		void PrintCommands()
 		{
 			VLOG(0) << "Supported commands now are below: [commandName or commandShortName] <-> [commandId]";
-			for (auto item : _commands)
-			{
-				VLOG(0) << setiosflags(ios::left) << setfill(' ') << setw(40)
-					<< item.first << " " << (int)item.second;
-			}
+			print_enum_map(_commands);
 			int i = (int)RunType::HELP_TRAINERS; // 0 UNKNOWN, 1 HELP, 2 HELP_TRAINERS
 			VLOG(0) << i++ << " HELP_TRAINERS, //Melt现在支持的trainers信息打印";
 			VLOG(0) << i++ << " HELP_TRAINER, //打印当前-cl指定的trainer的Help信息(如果tainer有实现ShowHelp)";
@@ -589,21 +585,21 @@ namespace gezi {
 		}
 
 #define  SAVE_SHARED_PTR_ALL(obj)\
-				{\
+						{\
 		SAVE_SHARED_PTR(obj, _cmd.modelFolder); \
 		if (_cmd.modelfileXml)\
-				{\
+						{\
 		SAVE_SHARED_PTR_ASXML(obj, _cmd.modelFolder); \
-				}\
+						}\
 		if (_cmd.modelfileJson)\
-				{\
+						{\
 		SAVE_SHARED_PTR_ASJSON(obj, _cmd.modelFolder); \
-				}\
+						}\
 		if (_cmd.modelfileText)\
-				{\
+						{\
 		SAVE_SHARED_PTR_ASTEXT(obj, _cmd.modelFolder); \
-				}\
-				}
+						}\
+						}
 
 		void RunNormalize()
 		{

@@ -782,6 +782,7 @@ namespace gezi {
 
 		void PrintInfo()
 		{
+			Pval(kFormatNames[_fileFormat]);
 			Pval(_instances.FeatureNum());
 			Pval(_instances.Count());
 			uint64 positiveCount = _instances.PositiveCount();

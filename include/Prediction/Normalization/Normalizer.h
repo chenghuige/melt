@@ -94,6 +94,18 @@ namespace gezi {
 			return temp;
 		}
 
+		Instances NormalizeCopy(Instances& instances)  //@TODO can not be const Instances&
+		{
+			Instances newInstances;
+			newInstances.schema = instances.schema;
+			for (InstancePtr instance : instances)
+			{
+				newInstances.push_back(NormalizeCopy(instance));
+			}
+			newInstances.SetNormalized();
+			return newInstances;
+		}
+
 		void Normalize(InstancePtr instance)
 		{
 			if (!instance->normalized)
@@ -136,6 +148,7 @@ namespace gezi {
 			Prepare(instances);
 			Normalize(instances);
 		}
+
 		void Normalize(Instances& instances)
 		{
 			if (!instances.IsNormalized())

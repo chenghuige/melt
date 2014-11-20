@@ -60,6 +60,18 @@ struct FeatureValuePair {
 
 class SfSparseVector {
  public:
+	 //chg added
+	 SfSparseVector(bool use_bias_term)
+	 {
+		 if (use_bias_term)
+		 {
+			 SetBias();
+		 }
+		 else
+		 {
+			 NoBias();
+		 }
+	 }
   // Construct a new vector from a string.  Input format is svm-light format:
   // <label> <feature>:<value> ... <feature:value> # comment<\n>
   // No bias term is used.
@@ -122,15 +134,16 @@ class SfSparseVector {
   // special feature id 0 is always set to 1, encoding bias.
   vector<FeatureValuePair> features_;
 
+	//chg modify
   // y_ is the class label.  We store this as a float, rather than an int,
   // so that this class may be used for regression problems, etc., if desired.
-  float y_;
+  float y_ = 0;
 
   // a_ is the current alpha value in optimization.
-  float a_;
+  float a_ = 0;
 
   // squared_norm_ = x1*x1 + ... + xN*xN
-  float squared_norm_;
+  float squared_norm_ = 0;
 
   // Use this member when examples belong to distinct groups.  For instance,
   // in ranking problems examples are grouped by query id.  By default,

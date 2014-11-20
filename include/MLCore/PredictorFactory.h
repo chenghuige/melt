@@ -21,9 +21,36 @@ namespace gezi {
 class PredictorFactory 
 {
 public:
+	enum class PredictorType
+	{
+		Unknown,
+		Linear,
+		BinaryClassificationFastRank,
+		RandomForest,
+		DecisionTree,
+		KernalSVM,
+		BinaryNeuralNetwork,
+		VW,
+		LibSVM,
+	};
+
 	static PredictorPtr CreatePredictor(string name)
 	{
-		boost::to_lower(name);
+		map<string, PredictorType> _predictorTypes = {
+			{ "unknown", PredictorType::Unknown },
+			{ "linear", PredictorType::Linear },
+			{ "sofia", PredictorType::Linear },
+			{ "liblinear", PredictorType::Linear },
+			{ "binaryclassificationfastrank", PredictorType::BinaryClassificationFastRank },
+			{ "randomforest", PredictorType::RandomForest },
+			{ "decisiontree", PredictorType::DecisionTree },
+			{ "kernalsvm", PredictorType::KernalSVM },
+			{ "binaryneuralnetwork", PredictorType::BinaryNeuralNetwork },
+			{ "vw", PredictorType::VW },
+			{ "libsvm", PredictorType::LibSVM },
+		};
+
+		name = arg(name);
 		if (contains(name, "linear"))
 		{
 			return make_shared<LinearPredictor>();
@@ -32,7 +59,19 @@ public:
 		{
 			return make_shared<FastRankPredictor>();
 		}
-		
+		else
+		{
+			PredictorType predictorType = _predictorTypes[name];
+			switch (predictorType)
+			{
+			case PredictorType::Linear:
+				return make_shared<LinearPredictor>();
+			case  PredictorType::BinaryClassificationFastRank:
+				return make_shared<FastRankPredictor>();
+			default:
+				break;
+			}
+		}
 		LOG(WARNING) << name << " is not supported now, return nullptr";
 		return nullptr;
 	}
