@@ -42,7 +42,7 @@ namespace gezi {
 
 			Finalize(instances);
 
-			VLOG(0) << GetParam() << endl;
+			VLOG(0) << "Param: [" << GetParam() << " ]" << endl;
 		}
 
 		virtual void InitializeNormalizer(Instances& instances)

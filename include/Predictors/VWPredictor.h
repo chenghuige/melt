@@ -54,7 +54,7 @@ public:
 	virtual Float Output(InstancePtr instance) override
 	{
 		example* ec = Instance2Example(instance, false);
-		_vw->learn(ec);
+		_vw->learn(ec); //@TODO TLC还是learn了 在predict的时候 check this
 		Float output = VW::get_prediction(ec);
 		VW::finish_example(*_vw, ec);
 		return output;
