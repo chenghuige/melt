@@ -53,7 +53,7 @@ DEFINE_string(ev, "", "evaluate: use what to evalute the result like ~/tools/eva
 
 DEFINE_bool(calibrate, true, "calibrateOutput: use calibrator to gen probability? if not will use logistice function which will map 0 to 0.5");
 DEFINE_string(calibrator, "sigmoid", "calibratorName: sigmoid/platt naive pav");
-DEFINE_bool(pn, false, "preNormalize:");
+DEFINE_bool(pn, false, "preNormalize:if set true will normlize the whole data before cross validation start");
 
 DEFINE_string(format, "unknow", "inputFileFormat: will not to set it for most cases will auto parse input file, like sparse(index starts 0), dense(index starts 0), libsvm(index starts 1), if other formats or sparse format without length info(like libsvm but index starts 0| like sparse but no length info) you must set -format sparse2 or -format sparse_no_length");
 DEFINE_string(off, "unknown", "ouput_file_format: if unknow using it's input format");

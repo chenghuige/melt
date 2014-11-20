@@ -29,33 +29,37 @@ namespace gezi {
 		virtual void Train(Instances& instances, bool isStreaming = false)
 		{
 			_trainingSchema = instances.schema;
+			_instances = &instances;
 
 			Init();
 			Initialize(instances);
 
-			if (!isStreaming)
-			{
-				InitializeNormalizer(instances);
-			}
-		
-			InnerTrain(instances);
+			InitializeNormalizer(instances, isStreaming); //normalize and set _instances
 
-			Finalize(instances);
+			InnerTrain(*_instances);
+
+			Finalize(*_instances);
 
 			VLOG(0) << "Param: [" << GetParam() << " ]" << endl;
 		}
 
-		virtual void InitializeNormalizer(Instances& instances)
+		virtual void InitializeNormalizer(Instances& instances, bool isStreaming)
 		{
 			//--- 将所有数据归一化 和TLC策略不同 TLC将normalize混在训练过程中(主要可能是兼容streaming模式)
 			//特别是hadoop scope训练  @TODO  也许这里也会变化
 			//如果不是类似交叉验证 比如就是训练测试 默认是 no normalize copy
-			if (_normalizer != nullptr && !instances.IsNormalized())
+			//目前这种就是全部normalize 可能有些情况 比如训练随机抽取一小部分 那么训练过程再normalize可能更合适@TODO
+			if (!isStreaming && _normalizer != nullptr && !instances.IsNormalized())
 			{
 				if (!_normalizeCopy)
+				{
 					_normalizer->RunNormalize(instances);
+				}
 				else
-					_normalizer->Prepare(instances);
+				{
+					normalizedInstances() = _normalizer->RunNormalizeCopy(instances);
+					_instances = &normalizedInstances();
+				}
 			}
 		}
 
@@ -131,6 +135,13 @@ namespace gezi {
 		CalibratorPtr _calibrator = nullptr;
 
 		bool _normalizeCopy = false;
+
+		static Instances& normalizedInstances()
+		{
+			static thread_local Instances _normalizedInstances;
+			return _normalizedInstances;
+		}
+		Instances* _instances = NULL;
 	};
 
 	typedef shared_ptr<Trainer> TrainerPtr;

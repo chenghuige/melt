@@ -40,7 +40,7 @@ namespace gezi {
 		{
 
 		}
-	
+
 		virtual string Name() override
 		{
 			return "Normalizer";
@@ -149,6 +149,13 @@ namespace gezi {
 			Normalize(instances);
 		}
 
+		Instances RunNormalizeCopy(Instances& instances)
+		{
+			Prepare(instances);
+			Instances newInstances = NormalizeCopy(instances);
+			return newInstances;
+		}
+
 		void Normalize(Instances& instances)
 		{
 			if (!instances.IsNormalized())
@@ -246,12 +253,12 @@ namespace gezi {
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-	/*		ar & _numFeatures;
-			ar & _featureNames;
-			ar & _morphIndices;
-			ar & _shiftIndices;
-			ar & _normType;
-			ar & _trunct;*/
+			/*		ar & _numFeatures;
+					ar & _featureNames;
+					ar & _morphIndices;
+					ar & _shiftIndices;
+					ar & _normType;
+					ar & _trunct;*/
 			ar & GEZI_SERIALIZATION_NVP(_normType);
 			ar & GEZI_SERIALIZATION_NVP(_numFeatures);
 			ar & GEZI_SERIALIZATION_NVP(_featureNames);
@@ -259,7 +266,7 @@ namespace gezi {
 			ar & GEZI_SERIALIZATION_NVP(_shiftIndices);
 			ar & GEZI_SERIALIZATION_NVP(_trunct);
 		}
-		
+
 	protected:
 		std::function<void(int, Float&)> _func;
 
@@ -273,7 +280,7 @@ namespace gezi {
 		//|if feature is out of bounds, threshold at 0/1, or return values below 0 and above 1?
 		//bool _trunct = false; //@TODO 似乎只有MinMax才可能越界吧
 		bool _trunct = true;
-		
+
 		uint64 _maxNormalizationExamples = 1000000;//numNorm|
 		//-----------------------------args end
 		uint64 _numProcessedInstances = 1; //处理的instance数目
