@@ -26,15 +26,20 @@ namespace gezi {
 	class Trainer : public WithArgs, public WithHelp
 	{
 	public:
+
+		//默认流程特别为类似线性分类需要normalize的流程准备 如果不需要比如Fastrank 可以自己override
 		virtual void Train(Instances& instances, bool isStreaming = false)
 		{
 			_trainingSchema = instances.schema;
 			_instances = &instances;
+			
+			_featureNames = instances.schema.featureNames;
+			_numFeatures = instances.NumFeatures();
 
 			Init();
 			Initialize(instances);
 
-			InitializeNormalizer(instances, isStreaming); //normalize and set _instances
+			TryInitializeNormalizer(instances, isStreaming); //normalize and set _instances
 
 			InnerTrain(*_instances);
 
@@ -43,7 +48,7 @@ namespace gezi {
 			VLOG(0) << "Param: [" << GetParam() << " ]" << endl;
 		}
 
-		virtual void InitializeNormalizer(Instances& instances, bool isStreaming)
+		virtual void TryInitializeNormalizer(Instances& instances, bool isStreaming)
 		{
 			//--- 将所有数据归一化 和TLC策略不同 TLC将normalize混在训练过程中(主要可能是兼容streaming模式)
 			//特别是hadoop scope训练  @TODO  也许这里也会变化
@@ -133,6 +138,11 @@ namespace gezi {
 		RandomRangePtr _randRange = nullptr;
 		NormalizerPtr _normalizer = nullptr;
 		CalibratorPtr _calibrator = nullptr;
+
+		FeatureNamesVector _featureNames;
+		/// <summary> Total number of features </summary>
+		int _numFeatures;
+
 
 		bool _normalizeCopy = false;
 

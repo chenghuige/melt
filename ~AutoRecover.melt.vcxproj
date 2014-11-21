@@ -153,6 +153,7 @@
     <ClCompile Include="test\test_fastrank_classification.cc" />
     <ClCompile Include="test\test_fastrank_loadtlc.cc" />
     <ClCompile Include="test\test_normalize.cc" />
+    <ClCompile Include="test\test_normalize_copy.cc" />
     <ClCompile Include="test\test_parse_input.cc" />
     <ClCompile Include="test\test_seralize.cc" />
     <ClCompile Include="test\test_shared_predictors.cc" />

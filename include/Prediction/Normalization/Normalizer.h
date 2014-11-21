@@ -90,17 +90,19 @@ namespace gezi {
 			if (!temp->normalized)
 			{
 				Normalize(temp->features, _func);
+				temp->normalized = true;
 			}
 			return temp;
 		}
 
 		Instances NormalizeCopy(Instances& instances)  //@TODO can not be const Instances&
 		{
-			Instances newInstances;
-			newInstances.schema = instances.schema;
-			for (InstancePtr instance : instances)
+			Instances newInstances = instances;
+#pragma omp parallel for 
+			for (uint64 i = 0; i < instances.Size(); i++)
 			{
-				newInstances.push_back(NormalizeCopy(instance));
+				newInstances[i] = NormalizeCopy(newInstances[i]);
+				newInstances[i]->normalized = true;
 			}
 			newInstances.SetNormalized();
 			return newInstances;
@@ -165,6 +167,7 @@ namespace gezi {
 				for (uint64 i = 0; i < instances.Size(); i++)
 				{
 					Normalize(instances[i]->features);
+					instances[i]->normalized = true;
 				}
 			}
 			instances.SetNormalized();

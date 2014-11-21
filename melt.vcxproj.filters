@@ -312,9 +312,6 @@
     <ClCompile Include="tools\vw.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tools\melt.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MLCore\IPredictor.h">
@@ -720,9 +717,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Predictors\VWPredictor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MLCore\ThirdTrainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

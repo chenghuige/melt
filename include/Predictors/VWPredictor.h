@@ -34,11 +34,14 @@ namespace gezi {
 
 		}
 
-		VWPredictor(vw* vw_, VW::primitive_feature_space* psf_)
-			:_vw(vw_), _pFeatureSpace(psf_)
+		VWPredictor(vw* vw_, VW::primitive_feature_space* psf_,
+			NormalizerPtr normalizer, CalibratorPtr calibrator,
+			const FeatureNamesVector& featureNames)
+			:Predictor(normalizer, calibrator, featureNames), _vw(vw_), _pFeatureSpace(psf_)
 		{
 
 		}
+
 		~VWPredictor()
 		{
 			FREE_ARRAY(_pFeatureSpace->fs);
@@ -51,25 +54,25 @@ namespace gezi {
 			return "VW";
 		}
 
-		virtual Float Output(InstancePtr instance_) override
+		InstancePtr GetNormalizedInstance(InstancePtr instance)
 		{
-			InstancePtr instance;
-			if (_normalizer != nullptr && !instance_->normalized)
+			if (_normalizer != nullptr && !instance->normalized)
 			{
 				if (!_normalizeCopy)
 				{
-					_normalizer->Normalize(instance_);
-					instance = instance_;
+					_normalizer->Normalize(instance);
 				}
 				else
 				{
-					instance = _normalizer->NormalizeCopy(instance_);
+					return _normalizer->NormalizeCopy(instance);
 				}
 			}
-			else
-			{
-				instance = instance_;
-			}
+			return instance;
+		}
+
+		virtual Float Output(InstancePtr instance) override
+		{
+			//InstancePtr instance = GetNormalizedInstance(instance);
 			example* ec = Instance2Example(instance, false);
 			_vw->learn(ec); //@TODO TLC还是learn了 在predict的时候 check this
 			Float output = VW::get_prediction(ec);
@@ -88,8 +91,8 @@ namespace gezi {
 
 		virtual Float Predict(InstancePtr instance) override
 		{
-			Float result;
-			return Predict(instance, result);
+			Float output;
+			return Predict(instance, output);
 		}
 
 	protected:
