@@ -44,17 +44,17 @@ namespace gezi {
 			schema = schema_;
 		}
 
-		uint64 InstanceNum() const
+		size_t InstanceNum() const
 		{
 			return this->size();
 		}
 
-		uint64 Size() const
+		size_t Size() const
 		{
 			return this->size();
 		}
 
-		uint64 Count() const
+		size_t Count() const
 		{
 			return this->size();
 		}

@@ -101,7 +101,7 @@ ImportConfigsFrom('../')
 CONFIGS('third-64/gtest@base')
 CONFIGS('myspace/sep/chenghuige/melt-train@base')
 
-LIBS('../libmelt.a ../libsofia.a ../libvw.a')
+LIBS('../libmelt.a ../libsofia.a ../libvw.a ../libblas.a ../liblinear.a')
 #srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/vowpalwabbit/*.cc ./src/sofia/*.cc'.replace('./',RELATIVE_PATH))
 srcs = ''
 Application('melt', Sources('melt.cc', srcs))

@@ -20,6 +20,7 @@ using namespace std;
 using namespace gezi;
 DEFINE_int32(vl, 0, "vlog level");
 DECLARE_string(c);
+DECLARE_bool(quiet);
 
 const char* const kVersion = "1-0-0-11";
 
@@ -56,8 +57,11 @@ int main(int argc, char *argv[])
 	}
 
 	int s = google::ParseCommandLineFlags(&argc, &argv, false);
+
 	if (FLAGS_log_dir.empty())
 		FLAGS_logtostderr = true;
+	if (FLAGS_quiet)
+		FLAGS_vl = -1;
 	if (FLAGS_v == 0)
 		FLAGS_v = FLAGS_vl;
 
@@ -71,6 +75,7 @@ int main(int argc, char *argv[])
 		if (s >= argc)
 		{
 			google::ShowUsageWithFlags(argv[0]);
+
 			cout << "	No input data file use -i filename or just input filename after ./melt\n";
 			ShowMeltHelp();
 			return -1;

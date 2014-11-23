@@ -28,7 +28,7 @@ namespace gezi {
 	public:
 
 		//默认流程特别为类似线性分类需要normalize的流程准备 如果不需要比如Fastrank 可以自己override
-		virtual void Train(Instances& instances, bool isStreaming = false)
+		virtual void Train(Instances& instances)
 		{
 			_trainingSchema = instances.schema;
 			_instances = &instances;
@@ -39,7 +39,7 @@ namespace gezi {
 			Init();
 			Initialize(instances);
 
-			TryInitializeNormalizer(instances, isStreaming); //normalize and set _instances
+			TryInitializeNormalizer(instances, _isStreaming); //normalize and set _instances
 
 			InnerTrain(*_instances);
 
@@ -111,6 +111,11 @@ namespace gezi {
 			_calibrator = calibrator;
 		}
 
+		void SetStreaming()
+		{
+			_isStreaming = true;
+		}
+
 	protected:
 		virtual void Init()
 		{
@@ -133,7 +138,8 @@ namespace gezi {
 
 	protected:
 		HeaderSchema _trainingSchema;
-
+		
+		bool _isStreaming = false;
 		RandomPtr _rand = nullptr;
 		RandomRangePtr _randRange = nullptr;
 		NormalizerPtr _normalizer = nullptr;

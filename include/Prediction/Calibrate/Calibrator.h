@@ -163,9 +163,9 @@ namespace gezi {
 		}
 
 		template<typename MarginFunc>
-		void Train(Instances& instances, MarginFunc marginFunc, int maxCount)
+		void Train(Instances& instances, MarginFunc marginFunc, size_t maxCount)
 		{
-			int dealCount = std::min((uint64)maxCount, instances.Count());
+			size_t dealCount = std::min((size_t)maxCount, instances.Count());
 			ProgressBar pb(dealCount, Name() + " calibrating");
 			for (InstancePtr instance : instances) 
 			{

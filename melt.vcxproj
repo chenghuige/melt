@@ -171,6 +171,7 @@
     <ClCompile Include="tools\calibrate.cc" />
     <ClCompile Include="tools\fastrank_predict.cc" />
     <ClCompile Include="tools\fastrank_text2bin.cc" />
+    <ClCompile Include="tools\melt.cc" />
     <ClCompile Include="tools\predict.cc" />
     <ClCompile Include="tools\vw.cc" />
   </ItemGroup>

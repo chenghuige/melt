@@ -102,6 +102,7 @@ CONFIGS('ps/se/toolchain@base')
 CONFIGS('third-64/zlib@base') #used in vowpalwabbit
 CONFIGS('third-64/boost@base')
 #CONFIGS('third-gcc4/boost@base')
+#CONFIGS('third-64/gflags@base')
 CONFIGS('third-64/gflags@base')
 CONFIGS('third-64/glog@base')
 #CONFIGS('third-64/gtest@base')
@@ -122,9 +123,11 @@ StaticLibrary('sofia',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 srcs = GLOB('./src/blas/*.c')
 StaticLibrary('blas',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 
+#LIBS('./libblas.a')
 srcs = GLOB('./src/liblinear/*.cpp')
 StaticLibrary('linear',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 
+#LIBS('')
 srcs = GLOB('./src/Wrapper/*.cpp ./src/Prediction/Instances/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp')
 StaticLibrary('melt',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 

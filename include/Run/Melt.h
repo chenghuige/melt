@@ -878,10 +878,10 @@ namespace gezi {
 			double posPart = DOUBLE(segs[0]);
 			double negPart = DOUBLE(segs[1]);
 
-			uint64 posNum = instances.PositiveCount();
-			uint64 negNum = instances.Count() - posNum;
+			size_t posNum = instances.PositiveCount();
+			size_t negNum = instances.Count() - posNum;
 
-			uint64 posAdjustedNum = negNum / negPart * posPart;
+			size_t posAdjustedNum = negNum / negPart * posPart;
 
 			string infile = _cmd.datafile;
 			string suffix = replace(_cmd.commandInput, ':', '-');
@@ -896,9 +896,9 @@ namespace gezi {
 				Instances newInstances(instances.schema);
 				if (posAdjustedNum > posNum)
 				{
-					uint64 negAdjustedNum = posNum / posPart * negPart;
+					size_t negAdjustedNum = posNum / posPart * negPart;
 					VLOG(0) << "Shrink neg part num to " << negAdjustedNum;
-					uint64 negCount = 0;
+					size_t negCount = 0;
 					for (InstancePtr instance : instances)
 					{
 						if (instance->IsNegative())
@@ -915,7 +915,7 @@ namespace gezi {
 				else
 				{
 					VLOG(0) << "Shrink pos part num to " << posAdjustedNum;
-					uint64 posCount = 0;
+					size_t posCount = 0;
 					for (InstancePtr instance : instances)
 					{
 						if (instance->IsPositive())

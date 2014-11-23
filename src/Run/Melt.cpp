@@ -5,7 +5,7 @@
 DEFINE_string(c, "cv", "command: Options are: Train, Test, CV (cross validation), TrainTest, FeatureSelection, CreateInstances, Norm, Check");
 DEFINE_string(ci, "", "commandInput: Some commands need additional input like split data you need to iput like 1:1");
 DEFINE_string(cl, "LinearSVM", "classifierName: Classifier to use");
-DEFINE_string(cls, "", "classifierSettings: Classifier settings");
+DEFINE_string(cls, "", "classifierSettings: Classifier settings, this is now only used for third part classifers like sofia,vw,liblinear eg.<-cls -B=1,-s=5>");
 
 //---------------cross validation 
 DEFINE_int32(k, 5, "numFolds: Number of folds in k-fold cross-validation");
@@ -41,7 +41,7 @@ DEFINE_string(rd, "./result", "resultDir: where to put the result data");
 DEFINE_string(rf, "", "resultFile: not used in cross validation which use resultDir only, can be used in test or train-test, if set FLAGS_rf than will write result to resultFile instead of to resultDir/0.inst.txt or resultDir/n.inst.txt if you set Flags_ri");
 DEFINE_int32(ri, 0, "resultIndex: the name ouf out file like 0.model.txt 0.model 0.inst.txt");
 
-DEFINE_int64(num, 0, "choose num instances or use as other number realted meaning");
+DEFINE_uint64(num, 0, "choose num instances or use as other number realted meaning");
 
 DEFINE_bool(norm, true, "Normalize features");
 DEFINE_string(normalizer, "MinMax", "Which normalizer? can also try gaussian or bin");
@@ -53,12 +53,14 @@ DEFINE_string(ev, "", "evaluate: use what to evalute the result like ~/tools/eva
 
 DEFINE_bool(calibrate, true, "calibrateOutput: use calibrator to gen probability? if not will use logistice function which will map 0 to 0.5");
 DEFINE_string(calibrator, "sigmoid", "calibratorName: sigmoid/platt naive pav");
+DEFINE_uint64(numCali, 1000000, "maxCalibrationExamples: Number of instances to train the calibrator");
 DEFINE_bool(pn, false, "preNormalize:if set true will normlize the whole data before cross validation start");
 
 DEFINE_string(format, "unknow", "inputFileFormat: will not to set it for most cases will auto parse input file, like sparse(index starts 0), dense(index starts 0), libsvm(index starts 1), if other formats or sparse format without length info(like libsvm but index starts 0| like sparse but no length info) you must set -format sparse2 or -format sparse_no_length");
 DEFINE_string(off, "unknown", "ouput_file_format: if unknow using it's input format");
 
 DEFINE_bool(fast, false, "fast mode, will try fastest training, like calibrate = false");
+DEFINE_bool(quiet, false, "quiet mode, will set vl= -1");
 
 namespace gezi {
 	void Melt::ParseArguments()

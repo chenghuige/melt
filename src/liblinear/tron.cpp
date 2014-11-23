@@ -12,18 +12,19 @@ template <class T> static inline T min(T x,T y) { return (x<y)?x:y; }
 template <class T> static inline T max(T x,T y) { return (x>y)?x:y; }
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+//chg modifed
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
+//
 extern double dnrm2_(int *, double *, int *);
 extern double ddot_(int *, double *, int *, double *, int *);
 extern int daxpy_(int *, double *, double *, int *, double *, int *);
 extern int dscal_(int *, double *, double *, int *);
 
-#ifdef __cplusplus
-}
-#endif
+//#ifdef __cplusplus
+//}
+//#endif
 
 static void default_print(const char *buf)
 {
