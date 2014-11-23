@@ -34,6 +34,7 @@ void ShowMeltHelp()
 	cout << "	Try <./melt --helpmatch Melt> for melt common settings\n";
 	cout << "	Try <./melt --helpmatch Instance> for melt input instances parser settings\n";
 	cout << "	The default trainer is LinearSVM, for other trainers use -cl, eg. <./melt feature.txt -c train -cl gbdt> will train feature.txt using gbdt trainer\n";
+	cout << " For third party trainers like sofia or vw, you may use -cls to set the classifer settings, eg. <./melt feature.txt -cl sofia -cls --looptype=roc,--iterations=100000,--lambda=0.001>\n";
 	cout << " Recommed to use melt internal format(0 started index, can be sparse or dense) but you can also use libsvm format(1 started sparse format) directly\n";
 }
 

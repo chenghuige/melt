@@ -180,35 +180,20 @@ bool ParseGeneralFlag(int argc,
   }    
   return false;
 }
-//chg modified
-//void ParseFlags(int argc, char** argv) {
-//  if (argc == 1) ShowHelp();
-//
-//  int i = 1;
-//  while (i < argc) {
-//    bool good_parse = false;
-//    good_parse = good_parse || ParseBoolFlag(argv, &i);
-//    good_parse = good_parse || ParseGeneralFlag(argc, argv, &i);
-//    if (!good_parse) {
-//      std::cerr << "Error. " << argv[i] << " is not a valid flag." << std::endl;
-//      exit(1);	
-//    }
-//  }
-//}
 
-void ParseFlags(int argc, char** argv, int start = 1) {
-	if (start == 1 && argc == 1) ShowHelp();
+void ParseFlags(int argc, char** argv) {
+  if (argc == 1) ShowHelp();
 
-	int i = start;
-	while (i < argc) {
-		bool good_parse = false;
-		good_parse = good_parse || ParseBoolFlag(argv, &i);
-		good_parse = good_parse || ParseGeneralFlag(argc, argv, &i);
-		if (!good_parse) {
-			std::cerr << "Error. " << argv[i] << " is not a valid flag." << std::endl;
-			exit(1);
-		}
-	}
+  int i = 1;
+  while (i < argc) {
+    bool good_parse = false;
+    good_parse = good_parse || ParseBoolFlag(argv, &i);
+    good_parse = good_parse || ParseGeneralFlag(argc, argv, &i);
+    if (!good_parse) {
+      std::cerr << "Error. " << argv[i] << " is not a valid flag." << std::endl;
+      exit(1);	
+    }
+  }
 }
 
 #endif  // SIMPLE_CMD_LINE_HELPER_H__

@@ -167,7 +167,7 @@ namespace gezi {
 			}
 			string trainerParam;
 			TesterPtr tester = nullptr;
-			for (size_t runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
+			for (int runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
 			{
 				VLOG(0) << "The " << runIdx << " round";
 				RandomEngine rng = random_engine(_cmd.randSeed, runIdx * randomStep);
@@ -175,7 +175,7 @@ namespace gezi {
 					instances.Randomize(rng);
 
 				ivec instanceFoldIndices = CVFoldCreator::CreateFoldIndices(instances, _cmd, rng);
-				for (size_t foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
+				for (int foldIdx = 0; foldIdx < _cmd.numFolds; foldIdx++)
 				{
 					VLOG(0) << "Cross validaion foldIdx " << foldIdx;
 					string instfile = format("{}/{}_{}_{}.inst.txt", _cmd.resultDir, _cmd.resultIndex
@@ -189,6 +189,7 @@ namespace gezi {
 
 					//------------------------------------Train
 					TrainerPtr trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
+					CHECK(trainer != nullptr);
 					if (foldIdx == 0)
 					{
 						VLOG(0) << "Folds " << foldIdx << " are trained with " << trainData.Size() << " instances, and tested on " << testData.Size() << " instances";
@@ -404,11 +405,7 @@ namespace gezi {
 		{
 			Pval(_cmd.classifierName);
 			auto trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
-			if (trainer == nullptr)
-			{
-				LOG(WARNING) << _cmd.classifierName << " has not been supported yet";
-				return nullptr;
-			}
+			CHECK(trainer != nullptr);
 			trainer->Train(instances);
 			auto predictor = trainer->CreatePredictor();
 			predictor->SetParam(trainer->GetParam());
@@ -951,7 +948,7 @@ namespace gezi {
 			string outfile = _cmd.outfile.empty() ? GetOutputFileName(_cmd.datafile, suffix) : _cmd.outfile;
 			Pval(outfile);
 
-			if (_cmd.num > 0 && _cmd.num < instances.Count())
+			if (_cmd.num > 0 && _cmd.num < (int64)instances.Count())
 			{
 				Instances newInstances(instances.schema);
 				if (_cmd.commandInput == "fr" || _cmd.commandInput == "forceRatio")
@@ -990,7 +987,7 @@ namespace gezi {
 				}
 				else
 				{ //ÍêÈ«ÒÀ¿¿Ëæ»ú
-					for (size_t i = 0; i < _cmd.num; i++)
+					for (int i = 0; i < _cmd.num; i++)
 					{
 						newInstances.push_back(instances[i]);
 					}

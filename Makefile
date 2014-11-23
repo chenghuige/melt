@@ -37,7 +37,9 @@ CPPFLAGS=-D_GNU_SOURCE \
 INCPATH=-I./ \
   -I./include/ \
   -I./include/vowpalwabbit/ \
-  -I./include/sofia/
+  -I./include/sofia/ \
+  -I./include/blas/ \
+  -I./include/liblinear/
 DEP_INCPATH=-I../../../../../app/search/sep/anti-spam/gezi \
   -I../../../../../app/search/sep/anti-spam/gezi/include \
   -I../../../../../app/search/sep/anti-spam/gezi/output \
@@ -149,11 +151,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=e8311aec0a8cfd2ef2ceea0bd467e0da  COMAKE
+COMAKE_MD5=2b71f44ac49eba4fccb19ef5bc7c3d8e  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check libvw.a libsofia.a libmelt.a libmelt_predict.a 
+all:comake2_makefile_check libvw.a libsofia.a libblas.a liblinear.a libmelt.a libmelt_predict.a 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -177,6 +179,10 @@ clean:ccpclean
 	rm -rf ./output/lib/libvw.a
 	rm -rf libsofia.a
 	rm -rf ./output/lib/libsofia.a
+	rm -rf libblas.a
+	rm -rf ./output/lib/libblas.a
+	rm -rf liblinear.a
+	rm -rf ./output/lib/liblinear.a
 	rm -rf libmelt.a
 	rm -rf ./output/lib/libmelt.a
 	rm -rf libmelt_predict.a
@@ -239,6 +245,12 @@ clean:ccpclean
 	rm -rf src/sofia/sofia_sf-sparse-vector.o
 	rm -rf src/sofia/sofia_sf-weight-vector.o
 	rm -rf src/sofia/sofia_sofia-ml-methods.o
+	rm -rf src/blas/blas_daxpy.o
+	rm -rf src/blas/blas_ddot.o
+	rm -rf src/blas/blas_dnrm2.o
+	rm -rf src/blas/blas_dscal.o
+	rm -rf src/liblinear/linear_linear.o
+	rm -rf src/liblinear/linear_tron.o
 	rm -rf src/Wrapper/melt_PredictorFactory.o
 	rm -rf src/Prediction/Instances/melt_InstanceParser.o
 	rm -rf src/Run/melt_Melt.o
@@ -387,6 +399,26 @@ libsofia.a:src/sofia/sofia_sf-data-set.o \
   src/sofia/sofia_sofia-ml-methods.o
 	mkdir -p ./output/lib
 	cp -f --link libsofia.a ./output/lib
+
+libblas.a:src/blas/blas_daxpy.o \
+  src/blas/blas_ddot.o \
+  src/blas/blas_dnrm2.o \
+  src/blas/blas_dscal.o
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibblas.a[0m']"
+	ar crs libblas.a src/blas/blas_daxpy.o \
+  src/blas/blas_ddot.o \
+  src/blas/blas_dnrm2.o \
+  src/blas/blas_dscal.o
+	mkdir -p ./output/lib
+	cp -f --link libblas.a ./output/lib
+
+liblinear.a:src/liblinear/linear_linear.o \
+  src/liblinear/linear_tron.o
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mliblinear.a[0m']"
+	ar crs liblinear.a src/liblinear/linear_linear.o \
+  src/liblinear/linear_tron.o
+	mkdir -p ./output/lib
+	cp -f --link liblinear.a ./output/lib
 
 libmelt.a:src/Wrapper/melt_PredictorFactory.o \
   src/Prediction/Instances/melt_InstanceParser.o \
@@ -873,6 +905,54 @@ src/sofia/sofia_sofia-ml-methods.o:src/sofia/sofia-ml-methods.cc
   -DVERSION=\"1.9.8.7\" \
   -O3 \
   -DNDEBUG $(CXXFLAGS)  -o src/sofia/sofia_sofia-ml-methods.o src/sofia/sofia-ml-methods.cc
+
+src/blas/blas_daxpy.o:src/blas/daxpy.c
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/blas/blas_daxpy.o[0m']"
+	$(CC) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CFLAGS)  -o src/blas/blas_daxpy.o src/blas/daxpy.c
+
+src/blas/blas_ddot.o:src/blas/ddot.c
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/blas/blas_ddot.o[0m']"
+	$(CC) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CFLAGS)  -o src/blas/blas_ddot.o src/blas/ddot.c
+
+src/blas/blas_dnrm2.o:src/blas/dnrm2.c
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/blas/blas_dnrm2.o[0m']"
+	$(CC) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CFLAGS)  -o src/blas/blas_dnrm2.o src/blas/dnrm2.c
+
+src/blas/blas_dscal.o:src/blas/dscal.c
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/blas/blas_dscal.o[0m']"
+	$(CC) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CFLAGS)  -o src/blas/blas_dscal.o src/blas/dscal.c
+
+src/liblinear/linear_linear.o:src/liblinear/linear.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/liblinear/linear_linear.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o src/liblinear/linear_linear.o src/liblinear/linear.cpp
+
+src/liblinear/linear_tron.o:src/liblinear/tron.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/liblinear/linear_tron.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o src/liblinear/linear_tron.o src/liblinear/tron.cpp
 
 src/Wrapper/melt_PredictorFactory.o:src/Wrapper/PredictorFactory.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Wrapper/melt_PredictorFactory.o[0m']"

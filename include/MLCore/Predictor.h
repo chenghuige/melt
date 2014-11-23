@@ -28,7 +28,6 @@ namespace gezi {
 	{
 		Unknown = 0,
 		Custom = 1,
-
 		BinaryClassification = 2,
 		MultiClassClassification = 3,
 		Regression = 4,

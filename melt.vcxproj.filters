@@ -312,6 +312,30 @@
     <ClCompile Include="tools\vw.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="main\liblinear\predict.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main\liblinear\train.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\blas\daxpy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\blas\ddot.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\blas\dnrm2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\blas\dscal.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\liblinear\linear.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\liblinear\tron.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MLCore\IPredictor.h">
@@ -717,6 +741,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Predictors\VWPredictor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\liblinear\linear.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\liblinear\tron.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\blas\blas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\blas\blasp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

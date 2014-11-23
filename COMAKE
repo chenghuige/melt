@@ -91,7 +91,7 @@ if GCC_HIGH  == 1:
 LDFLAGS('-lpthread -lcrypto -lrt -lssl -lldap -lcurl -ldl -rdynamic', GCC_LDFLAGS)
 
 #头文件路径.
-INCPATHS('./ ./include/ ./include/vowpalwabbit/ ./include/sofia/'.replace('./', RELATIVE_PATH))
+INCPATHS('./ ./include/ ./include/vowpalwabbit/ ./include/sofia/ ./include/blas/ ./include/liblinear/'.replace('./', RELATIVE_PATH))
 
 #使用库
 #LIBS('./librsc-sender.a')
@@ -118,6 +118,12 @@ StaticLibrary('vw',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 
 srcs = GLOB('./src/sofia/*.cc')
 StaticLibrary('sofia',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
+
+srcs = GLOB('./src/blas/*.c')
+StaticLibrary('blas',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
+
+srcs = GLOB('./src/liblinear/*.cpp')
+StaticLibrary('linear',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 
 srcs = GLOB('./src/Wrapper/*.cpp ./src/Prediction/Instances/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp')
 StaticLibrary('melt',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))

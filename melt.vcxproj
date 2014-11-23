@@ -66,7 +66,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main\liblinear\predict.c" />
+    <ClCompile Include="main\liblinear\train.c" />
     <ClCompile Include="melt.cc" />
+    <ClCompile Include="src\blas\daxpy.c" />
+    <ClCompile Include="src\blas\ddot.c" />
+    <ClCompile Include="src\blas\dnrm2.c" />
+    <ClCompile Include="src\blas\dscal.c" />
+    <ClCompile Include="src\liblinear\linear.cpp" />
+    <ClCompile Include="src\liblinear\tron.cpp" />
     <ClCompile Include="src\Prediction\Instances\InstanceParser.cpp" />
     <ClCompile Include="src\Prediction\Normalization\BinNormalizer.cpp" />
     <ClCompile Include="src\Prediction\Trainers\LinearSVM.cpp" />
@@ -167,6 +175,10 @@
     <ClCompile Include="tools\vw.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\blas\blas.h" />
+    <ClInclude Include="include\blas\blasp.h" />
+    <ClInclude Include="include\liblinear\linear.h" />
+    <ClInclude Include="include\liblinear\tron.h" />
     <ClInclude Include="include\MLCore\IPredictor.h" />
     <ClInclude Include="include\MLCore\IterativeTrainer.h" />
     <ClInclude Include="include\MLCore\ITrainer.h" />
@@ -202,9 +214,13 @@
     <ClInclude Include="include\Predictors\FastRank\FastRankClassification.h" />
     <ClInclude Include="include\Predictors\FastRank\FastRankRanking.h" />
     <ClInclude Include="include\Predictors\FastRank\FastRankRegression.h" />
+    <ClInclude Include="include\Predictors\LibLinearPredictor.h" />
+    <ClInclude Include="include\Predictors\LibSVMPredictor.h" />
     <ClInclude Include="include\Predictors\LinearPredictor.h" />
     <ClInclude Include="include\Predictors\PredictorFactory.h" />
     <ClInclude Include="include\Predictors\RandomPredictor.h" />
+    <ClInclude Include="include\Predictors\SofiaPredictor.h" />
+    <ClInclude Include="include\Predictors\VWPredictor.h" />
     <ClInclude Include="include\PythonWrapper\Predictor.h" />
     <ClInclude Include="include\PythonWrapper\PredictorFactory.h" />
     <ClInclude Include="include\Run\CVFoldCreator.h" />
