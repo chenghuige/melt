@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="melt.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Prediction\Instances\InstanceParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -337,6 +334,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tools\melt.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\libsvm\svm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main\libsvm\svm-predict.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main\libsvm\svm-scale.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main\libsvm\svm-train.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Predictors\LibSVMPredictor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Predictors\VWPredictor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -756,6 +771,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\blas\blasp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libsvm\svm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Predictors\ThirdPredictor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

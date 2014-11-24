@@ -1157,7 +1157,9 @@ namespace gezi {
 		map<string, RunType> _commands = {
 			{ "help", RunType::HELP },
 			{ "helptrainers", RunType::HELP_TRAINERS },
+			{ "hts", RunType::HELP_TRAINERS },
 			{ "helptrainer", RunType::HELP_TRAINER },
+			{ "ht", RunType::HELP_TRAINER },
 			{ "cv", RunType::EVAL },
 			{ "eval", RunType::EVAL },
 			{ "evalParam", RunType::EVAL_PARAM },

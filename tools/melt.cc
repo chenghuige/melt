@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 		FLAGS_v = FLAGS_vl;
 
 	Melt melt;
-	set<string> ignores = { "help", "helptrainers", "help_trainers", "helptrainer", "help_trainer" };
+	set<string> ignores = { "help", "helptrainers", "help_trainers", "helptrainer", "help_trainer", "hts", "ht" };
 	if (!ignores.count(FLAGS_c)
 		&& !(FLAGS_c == "write_text_model" || FLAGS_c == "wtm" || FLAGS_c == "binary_model_to_text" || FLAGS_c == "bm2t")
 		&& !(FLAGS_c == "text_model_to_binary" || FLAGS_c == "tm2b")

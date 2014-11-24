@@ -68,6 +68,9 @@
   <ItemGroup>
     <ClCompile Include="main\liblinear\predict.c" />
     <ClCompile Include="main\liblinear\train.c" />
+    <ClCompile Include="main\libsvm\svm-predict.c" />
+    <ClCompile Include="main\libsvm\svm-scale.c" />
+    <ClCompile Include="main\libsvm\svm-train.c" />
     <ClCompile Include="melt.cc" />
     <ClCompile Include="src\blas\daxpy.c" />
     <ClCompile Include="src\blas\ddot.c" />
@@ -75,9 +78,12 @@
     <ClCompile Include="src\blas\dscal.c" />
     <ClCompile Include="src\liblinear\linear.cpp" />
     <ClCompile Include="src\liblinear\tron.cpp" />
+    <ClCompile Include="src\libsvm\svm.cpp" />
     <ClCompile Include="src\Prediction\Instances\InstanceParser.cpp" />
     <ClCompile Include="src\Prediction\Normalization\BinNormalizer.cpp" />
     <ClCompile Include="src\Prediction\Trainers\LinearSVM.cpp" />
+    <ClCompile Include="src\Predictors\LibSVMPredictor.cpp" />
+    <ClCompile Include="src\Predictors\VWPredictor.cpp" />
     <ClCompile Include="src\PythonWrapper\Predictor.cpp" />
     <ClCompile Include="src\PythonWrapper\PredictorFactory.cpp" />
     <ClCompile Include="src\Run\Melt.cpp" />
@@ -180,6 +186,7 @@
     <ClInclude Include="include\blas\blasp.h" />
     <ClInclude Include="include\liblinear\linear.h" />
     <ClInclude Include="include\liblinear\tron.h" />
+    <ClInclude Include="include\libsvm\svm.h" />
     <ClInclude Include="include\MLCore\IPredictor.h" />
     <ClInclude Include="include\MLCore\IterativeTrainer.h" />
     <ClInclude Include="include\MLCore\ITrainer.h" />
@@ -221,12 +228,16 @@
     <ClInclude Include="include\Predictors\PredictorFactory.h" />
     <ClInclude Include="include\Predictors\RandomPredictor.h" />
     <ClInclude Include="include\Predictors\SofiaPredictor.h" />
+    <ClInclude Include="include\Predictors\ThirdPredictor.h" />
     <ClInclude Include="include\Predictors\VWPredictor.h" />
     <ClInclude Include="include\PythonWrapper\Predictor.h" />
     <ClInclude Include="include\PythonWrapper\PredictorFactory.h" />
+    <ClInclude Include="include\python_util.h" />
     <ClInclude Include="include\Run\CVFoldCreator.h" />
     <ClInclude Include="include\Run\Melt.h" />
     <ClInclude Include="include\Run\MeltArguments.h" />
+    <ClInclude Include="include\Simple\Predictor.h" />
+    <ClInclude Include="include\Simple\PredictorFactory.h" />
     <ClInclude Include="include\sofia\sf-data-set.h" />
     <ClInclude Include="include\sofia\sf-hash-inline.h" />
     <ClInclude Include="include\sofia\sf-hash-weight-vector.h" />
@@ -241,9 +252,16 @@
     <ClInclude Include="include\Testers\RankerTester.h" />
     <ClInclude Include="include\Testers\RegressorTester.h" />
     <ClInclude Include="include\Testers\Tester.h" />
+    <ClInclude Include="include\Testers\testers.h" />
     <ClInclude Include="include\Tools\FeatureStatus.h" />
+    <ClInclude Include="include\TopicModel\PLSA\mpi_help.h" />
     <ClInclude Include="include\TopicModel\PLSA\plsa.h" />
     <ClInclude Include="include\TopicModel\PLSA\PLSAModel.h" />
+    <ClInclude Include="include\TopicModel\PLSA\PLSATrainer.h" />
+    <ClInclude Include="include\TopicModel\PLSA\plsa_inference.h" />
+    <ClInclude Include="include\TopicModel\PLSA\plsa_mixed.h" />
+    <ClInclude Include="include\TopicModel\PLSA\plsa_mpi.h" />
+    <ClInclude Include="include\TopicModel\PLSA\plsa_online.h" />
     <ClInclude Include="include\Trainers\BoostedTree\RegressionTree.h" />
     <ClInclude Include="include\Trainers\FastRank\OnlineRegressionTree.h" />
     <ClInclude Include="include\Trainers\FastRank\RegressionTree.h" />
