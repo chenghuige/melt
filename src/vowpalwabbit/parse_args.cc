@@ -1089,8 +1089,10 @@ namespace VW {
   {
     int argc = 0;
     s += " --no_stdin";
+		printf("s:%s\n", s.c_str()); //chg
     char** argv = get_argv_from_string(s,argc);
 
+		printf("argc:%d,argv[0]:%s\n", argc, argv[0]); //chg
     vw* all = parse_args(argc, argv);
     
     initialize_parser_datastructures(*all);

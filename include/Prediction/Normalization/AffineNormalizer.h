@@ -7,7 +7,7 @@
  *
  *          \date   2014-04-01 17:07:57.638996
  *
- *  \Description:
+ *  \Description:   @TODO 总结归一化的速度优化技巧写博客。。
  *  ==============================================================================
  */
 
@@ -20,6 +20,32 @@ namespace gezi {
 	{
 	public:
 		virtual ~AffineNormalizer() {}
+		//AffineNormalizer()
+		//{
+		//	_func = [this](int index, Float& value)
+		//	{ //index >= _numFeatures 只有在train-test模式 读取最大index不同的libsvm或者其它没有指定最大特征数目的文件可能
+		//		if (index >= _numFeatures || _scales[index] <= 0)
+		//		{//保持不变 Dense Sparse 保持逻辑一致 如果置为0 
+		//			//需要AffineInit函数中shiftIndices增加scale <=0 且offset!=0的点
+		//			//value = .0;
+		//			return;
+		//		}
+		//		else if (_trunct)
+		//		{
+		//			if (value >= _offsets[index] + _scales[index])
+		//				value = 1.0;
+		//			else if (value <= _offsets[index])
+		//				value = 0.0;
+		//			else
+		//				value = (value - _offsets[index]) / _scales[index];
+		//		}
+		//		else
+		//		{
+		//			value = (value - _offsets[index]) / _scales[index];
+		//		}
+		//	};
+		//}
+
 		AffineNormalizer()
 		{
 			_func = [this](int index, Float& value)
@@ -27,7 +53,7 @@ namespace gezi {
 				if (index >= _numFeatures || _scales[index] <= 0)
 				{//保持不变 Dense Sparse 保持逻辑一致 如果置为0 
 					//需要AffineInit函数中shiftIndices增加scale <=0 且offset!=0的点
-					//value = .0;
+					value = .0; //为了VW不能正常运行 train test norm模式
 					return;
 				}
 				else if (_trunct)
@@ -102,6 +128,36 @@ namespace gezi {
 
 		}
 
+		//void AffineInit()
+		//{
+		//	for (int i = 0; i < _numFeatures; i++)
+		//	{
+		//		if (_scales[i] <= 0)
+		//		{ //按照TLC 如果是始终值一样 仍然维持原样 不scale 不置为0 @TODO
+		//			//无效特征 始终是6的比如 还是6 不变成0 @TODO 需要置为0？
+		//			if (!_featureNames.empty())
+		//			{
+		//				VLOG(4) << "Feature " << i << " : " << _featureNames[i]
+		//					<< " always take value " << _offsets[i];
+		//			}
+		//		}
+		//		else if (_offsets[i] != 0.0)
+		//		{ //如果最小值是0 那么 所有的点都只需要morph不需要shift，同时如果是0值点 不需要变化,dense 使用morphIndices, sparse使用shiftIdices 就是求并集 非0 union 需要moph的0值点
+		//			_shiftIndices.push_back(i);
+		//			_morphIndices.push_back(i);
+		//		}
+		//		else if (_scales[i] != 1.0)
+		//		{
+		//			_morphIndices.push_back(i);
+		//		} //like [0,1] 这样的所有点都不需要变化
+		//	}
+
+		//	PVEC(_offsets);
+		//	PVEC(_scales);
+		//	PVEC(_morphIndices);
+		//	PVEC(_shiftIndices);
+		//}
+
 		void AffineInit()
 		{
 			for (int i = 0; i < _numFeatures; i++)
@@ -113,6 +169,11 @@ namespace gezi {
 					{
 						VLOG(4) << "Feature " << i << " : " << _featureNames[i]
 							<< " always take value " << _offsets[i];
+					}
+
+					if (_offsets[i] != 0.0)
+					{
+						_shiftIndices.push_back(i);
 					}
 				}
 				else if (_offsets[i] != 0.0)
