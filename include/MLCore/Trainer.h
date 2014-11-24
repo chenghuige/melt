@@ -45,7 +45,10 @@ namespace gezi {
 
 			Finalize(*_instances);
 
-			VLOG(0) << "Param: [" << GetParam() << " ]" << endl;
+			if (!GetParam().empty())
+			{
+				VLOG(0) << "Param: [" << GetParam() << " ]" << endl;
+			}
 		}
 
 		virtual void TryInitializeNormalizer(Instances& instances, bool isStreaming)

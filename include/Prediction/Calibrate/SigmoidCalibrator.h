@@ -233,8 +233,8 @@ protected:
 			if (count == 3)
 				break;
 		}
-		Pval(paramA);
-		Pval(paramB);
+		Pval_2(paramA);
+		Pval_2(paramB);
 	}
 
 	

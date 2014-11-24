@@ -1062,10 +1062,10 @@ namespace gezi {
 		}
 
 
-		Instances&& Parse(string dataFile)
+		Instances&& Parse(string dataFile, bool printInfo = false)
 		{
 			Noticer timer("ParseInputDataFile", 0);
-			Parse_(dataFile);
+			Parse_(dataFile, printInfo);
 			Finallize();
 			return move(_instances);
 		}
@@ -1092,7 +1092,7 @@ namespace gezi {
 		}
 
 	protected:
-		Instances&& Parse_(string dataFile)
+		Instances&& Parse_(string dataFile, bool printInfo = false)
 		{
 			Timer timer;
 			vector<string> lines = read_lines_fast(dataFile, "//");
@@ -1161,7 +1161,10 @@ namespace gezi {
 
 			PVAL_(timer.elapsed_ms(), "CreateInstances");
 
-			PrintInfo();
+			if (printInfo)
+			{
+				PrintInfo();
+			}
 			return move(_instances);
 		}
 

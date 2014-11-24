@@ -35,10 +35,10 @@ namespace gezi {
 	};
 
 	//@TODO下面不做修改 但是实际设计使用InstacesUtil::CreateInstance InstancesUtil::Write更好一些
-	inline Instances create_instances(string infile)
+	inline Instances create_instances(string infile, bool printInfo = false)
 	{
 		InstanceParser parser;
-		return parser.Parse(infile);
+		return parser.Parse(infile, printInfo);
 	}
 
 	//注意修改了intance 特别是最后clear了 sparse 转dense 暂未验证

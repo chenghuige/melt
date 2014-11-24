@@ -193,8 +193,8 @@ namespace gezi {
 					if (foldIdx == 0)
 					{
 						VLOG(0) << "Folds " << foldIdx << " are trained with " << trainData.Size() << " instances, and tested on " << testData.Size() << " instances";
-						Pval3(trainData[0]->name, trainData.PositiveCount(), trainData.NegativeCount());
-						Pval3(testData[0]->name, testData.PositiveCount(), testData.NegativeCount());
+						PVAL3(trainData[0]->name, trainData.PositiveCount(), trainData.NegativeCount());
+						PVAL3(testData[0]->name, testData.PositiveCount(), testData.NegativeCount());
 					}
 
 					trainer->SetNormalizeCopy();
@@ -675,7 +675,7 @@ namespace gezi {
 
 		void RunShowInfos()
 		{
-			auto instances = create_instances(_cmd.datafile); //内部打印信息
+			auto instances = create_instances(_cmd.datafile, true); //内部打印信息
 		}
 
 		void RunFeatureStatus()
