@@ -22,6 +22,10 @@ class LibSVMPredictor : public ThirdPredictor
 {
 public:
 
+	LibSVMPredictor()
+	{
+
+	}
 	LibSVMPredictor(svm_model* model_, 
 		NormalizerPtr normalizer, CalibratorPtr calibrator,
 		const FeatureNamesVector& featureNames);

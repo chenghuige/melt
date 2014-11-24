@@ -16,51 +16,44 @@
 
 #include "Predictors/LinearPredictor.h"
 #include "Predictors/FastRankPredictor.h"
+#include "Predictors/LibSVMPredictor.h"
+#include "Predictors/VWPredictor.h"
 namespace gezi {
 
-class PredictorFactory 
-{
-public:
-	enum class PredictorType
+	class PredictorFactory
 	{
-		Unknown,
-		Linear,
-		BinaryClassificationFastRank,
-		RandomForest,
-		DecisionTree,
-		KernalSVM,
-		BinaryNeuralNetwork,
-		VW,
-		LibSVM,
-	};
-
-	static PredictorPtr CreatePredictor(string name)
-	{
-		map<string, PredictorType> _predictorTypes = {
-			{ "unknown", PredictorType::Unknown },
-			{ "linear", PredictorType::Linear },
-			{ "sofia", PredictorType::Linear },
-			{ "liblinear", PredictorType::Linear },
-			{ "binaryclassificationfastrank", PredictorType::BinaryClassificationFastRank },
-			{ "randomforest", PredictorType::RandomForest },
-			{ "decisiontree", PredictorType::DecisionTree },
-			{ "kernalsvm", PredictorType::KernalSVM },
-			{ "binaryneuralnetwork", PredictorType::BinaryNeuralNetwork },
-			{ "vw", PredictorType::VW },
-			{ "libsvm", PredictorType::LibSVM },
+	public:
+		enum class PredictorType
+		{
+			Unknown,
+			Linear,
+			BinaryClassificationFastRank,
+			RandomForest,
+			DecisionTree,
+			KernalSVM,
+			BinaryNeuralNetwork,
+			VW,
+			LibSVM,
 		};
 
-		name = arg(name);
-		if (contains(name, "linear"))
+		static PredictorPtr CreatePredictor(string name)
 		{
-			return make_shared<LinearPredictor>();
-		}
-		else if (contains(name, "fastrank"))
-		{
-			return make_shared<FastRankPredictor>();
-		}
-		else
-		{
+			map<string, PredictorType> _predictorTypes = {
+				{ "unknown", PredictorType::Unknown },
+				{ "linear", PredictorType::Linear },
+				{ "sofia", PredictorType::Linear },
+				{ "liblinear", PredictorType::Linear },
+				{ "binaryclassificationfastrank", PredictorType::BinaryClassificationFastRank },
+				{ "randomforest", PredictorType::RandomForest },
+				{ "decisiontree", PredictorType::DecisionTree },
+				{ "kernalsvm", PredictorType::KernalSVM },
+				{ "binaryneuralnetwork", PredictorType::BinaryNeuralNetwork },
+				{ "vw", PredictorType::VW },
+				{ "libsvm", PredictorType::LibSVM },
+			};
+
+			name = arg(name);
+
 			PredictorType predictorType = _predictorTypes[name];
 			switch (predictorType)
 			{
@@ -68,87 +61,92 @@ public:
 				return make_shared<LinearPredictor>();
 			case  PredictorType::BinaryClassificationFastRank:
 				return make_shared<FastRankPredictor>();
+			case  PredictorType::LibSVM:
+				return make_shared<LibSVMPredictor>();
+			case PredictorType::VW:
+				return make_shared<VWPredictor>();
 			default:
 				break;
 			}
-		}
-		LOG(WARNING) << name << " is not supported now, return nullptr";
-		return nullptr;
-	}
 
-	static PredictorPtr CreatePredictor(string name, string path)
-	{
-		PredictorPtr predictor = CreatePredictor(name);
-		if (predictor != nullptr)
-		{
-			predictor->Load(path);
-		}
-		else
-		{
-			LOG(WARNING) << "CreatePredictor fail! path: " << path << " name: " << name;
-		}
-		return predictor;
-	}
 
-	//Mostly used
-	static PredictorPtr LoadPredictor(string path)
-	{
-		string name = read_file(path + "/model.name.txt");
-		PredictorPtr predictor = CreatePredictor(name);
-		if (predictor != nullptr)
-		{
-			predictor->Load(path);
+			LOG(WARNING) << name << " is not supported now, return nullptr";
+			return nullptr;
 		}
-		else
-		{
-			LOG(WARNING) << "CreatePredictor fail! path: " << path << " name: " << name;
-		}
-		return predictor;
-	}
 
-	//主要用于线性分类器 用于接受其他外部分类器的结果转换为melt接受的文本格式后载入
-	static PredictorPtr CreatePredictorFromTextFormat(string name, string path)
-	{
-		PredictorPtr predictor = CreatePredictor(name);
-		if (predictor != nullptr)
+		static PredictorPtr CreatePredictor(string name, string path)
 		{
-			predictor->LoadText(path);
+			PredictorPtr predictor = CreatePredictor(name);
+			if (predictor != nullptr)
+			{
+				predictor->Load(path);
+			}
+			else
+			{
+				LOG(WARNING) << "CreatePredictor fail! path: " << path << " name: " << name;
+			}
+			return predictor;
 		}
-		else
-		{
-			LOG(WARNING) << "CreatePredictor fail! path: " << path << " name: " << name;
-		}
-		return predictor;
-	}
 
-	static PredictorPtr LoadTextPredictor(string path)
-	{
-		string name = read_file(path + "/model.name.txt");
-		PredictorPtr predictor = CreatePredictor(name);
-		if (predictor != nullptr)
+		//Mostly used
+		static PredictorPtr LoadPredictor(string path)
 		{
-			predictor->LoadText(path);
+			string name = read_file(path + "/model.name.txt");
+			PredictorPtr predictor = CreatePredictor(name);
+			if (predictor != nullptr)
+			{
+				predictor->Load(path);
+			}
+			else
+			{
+				LOG(WARNING) << "CreatePredictor fail! path: " << path << " name: " << name;
+			}
+			return predictor;
 		}
-		else
-		{
-			LOG(WARNING) << "CreatePredictor fail! path: " << path << " name: " << name;
-		}
-		return predictor;
-	}
 
-	static Predictors LoadPredictors(const svec& paths)
-	{
-		Predictors predictors;
-		for (string path : paths)
+		//主要用于线性分类器 用于接受其他外部分类器的结果转换为melt接受的文本格式后载入
+		static PredictorPtr CreatePredictorFromTextFormat(string name, string path)
 		{
-			predictors.push_back(LoadPredictor(path));
+			PredictorPtr predictor = CreatePredictor(name);
+			if (predictor != nullptr)
+			{
+				predictor->LoadText(path);
+			}
+			else
+			{
+				LOG(WARNING) << "CreatePredictor fail! path: " << path << " name: " << name;
+			}
+			return predictor;
 		}
-		return predictors;
-	}
-protected:
-private:
 
-};
+		static PredictorPtr LoadTextPredictor(string path)
+		{
+			string name = read_file(path + "/model.name.txt");
+			PredictorPtr predictor = CreatePredictor(name);
+			if (predictor != nullptr)
+			{
+				predictor->LoadText(path);
+			}
+			else
+			{
+				LOG(WARNING) << "CreatePredictor fail! path: " << path << " name: " << name;
+			}
+			return predictor;
+		}
+
+		static Predictors LoadPredictors(const svec& paths)
+		{
+			Predictors predictors;
+			for (string path : paths)
+			{
+				predictors.push_back(LoadPredictor(path));
+			}
+			return predictors;
+		}
+	protected:
+	private:
+
+	};
 
 }  //----end of namespace gezi
 

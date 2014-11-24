@@ -25,6 +25,10 @@ namespace gezi {
 	class VWPredictor : public ThirdPredictor
 	{
 	public:
+		VWPredictor()
+		{
+
+		}
 		VWPredictor(vw* vw_, VW::primitive_feature_space* psf_,
 			NormalizerPtr normalizer, CalibratorPtr calibrator,
 			const FeatureNamesVector& featureNames);

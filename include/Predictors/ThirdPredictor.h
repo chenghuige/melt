@@ -22,6 +22,10 @@ class ThirdPredictor : public Predictor
 {
 public:
 	using Predictor::Predictor;
+	ThirdPredictor()
+	{
+
+	}
 	ThirdPredictor(NormalizerPtr normalizer, CalibratorPtr calibrator, const FeatureNamesVector& featuresNames)
 		:Predictor(normalizer, calibrator, featuresNames)
 	{
