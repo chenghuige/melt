@@ -257,7 +257,7 @@ namespace gezi {
 
 		virtual void Save_(string file)
 		{
-			VLOG(0) << Name() << " currently not support saving model";
+			LOG(WARNING) << Name() << " currently not support saving model";
 		}
 
 		void LoadNormalizerAndCalibrator(string path)
@@ -294,7 +294,7 @@ namespace gezi {
 
 		virtual void Load_(string file)
 		{
-			VLOG(0) << Name() << " currently not support loading model";
+			LOG(FATAL) << Name() << " currently not support loading model";
 		}
 
 		//注意不管是save xml还是save text 都不要单独使用 并且 都在Save 也就是存储二进制之后使用
@@ -309,7 +309,7 @@ namespace gezi {
 
 		virtual void SaveXml_(string file)
 		{
-			VLOG(0) << Name() << " currently not support saving xml";
+			LOG(WARNING) << Name() << " currently not support saving xml";
 		}
 
 		virtual void SaveJson(string file) override
@@ -321,7 +321,7 @@ namespace gezi {
 
 		virtual void SaveJson_(string file)
 		{
-			VLOG(0) << Name() << " currently not support saving json";
+			LOG(WARNING) << Name() << " currently not support saving json";
 		}
 
 		virtual void SaveText(string file) override
@@ -333,7 +333,7 @@ namespace gezi {
 
 		virtual void SaveText_(string file)
 		{
-			VLOG(0) << Name() << " currently not support saving text format! Try SaveJson or SaveXml";
+			LOG(WARNING) << Name() << " currently not support saving text format! Try SaveJson or SaveXml";
 		}
 
 		void SaveXml()
@@ -353,7 +353,7 @@ namespace gezi {
 
 		virtual void LoadText_(string file)
 		{
-			VLOG(0) << Name() << " currently not support loading text format!";
+			LOG(FATAL) << Name() << " currently not support loading text format!";
 		}
 
 		virtual void LoadText(string path) override

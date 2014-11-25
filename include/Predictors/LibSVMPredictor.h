@@ -14,11 +14,14 @@
 #ifndef PREDICTORS__LIB_S_V_M_PREDICTOR_H_
 #define PREDICTORS__LIB_S_V_M_PREDICTOR_H_
 
-#include "ThirdPredictor.h"
+#include "MLCore/Predictor.h"
 class svm_model;
+class svm_problem;
+class svm_node;
+class svm_parameter;
 namespace gezi {
 
-class LibSVMPredictor : public ThirdPredictor
+class LibSVMPredictor : public Predictor
 {
 public:
 
@@ -26,7 +29,7 @@ public:
 	{
 
 	}
-	LibSVMPredictor(svm_model* model_, 
+	LibSVMPredictor(svm_model* model_, svm_problem* probl_, svm_node* node_, svm_parameter* param_,
 		NormalizerPtr normalizer, CalibratorPtr calibrator,
 		const FeatureNamesVector& featureNames);
 
@@ -41,9 +44,12 @@ public:
 	virtual void Save_(string file) override;
 
 protected:
-	virtual Float Output_(InstancePtr instance) override;
+	virtual Float Margin(Vector& features) override;
 private:
-	svm_model* _model;
+	svm_model* _model = NULL;
+	svm_problem* _prob = NULL;
+	svm_node* _xspace = NULL;
+	svm_parameter* _param = NULL;
 };
 
 }  //----end of namespace gezi

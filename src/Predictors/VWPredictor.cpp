@@ -23,11 +23,23 @@
 #include "Predictors/VWPredictor.h"
 
 namespace gezi {
+	namespace {
+		void dispatch_example(vw& all, example& ec) //copied from learner.cc
+		{
+			if (ec.test_only || !all.training)
+				all.l->predict(ec);
+			else
+				all.l->learn(ec);
+			all.l->finish_example(all, ec);
+		}
+
+	
+	}
 
 	VWPredictor::VWPredictor(vw* vw_, VW::primitive_feature_space* psf_,
 		NormalizerPtr normalizer, CalibratorPtr calibrator,
 		const FeatureNamesVector& featureNames)
-		:ThirdPredictor(normalizer, calibrator, featureNames), _vw(vw_), _pFeatureSpace(psf_)
+		:Predictor(normalizer, calibrator, featureNames), _vw(vw_), _pFeatureSpace(psf_)
 	{
 
 	}
@@ -38,32 +50,28 @@ namespace gezi {
 		VW::finish(*_vw);
 	}
 
-	Float VWPredictor::Output_(InstancePtr instance) 
-	{
-		example* ec = Instance2Example(instance, false);
-		_vw->learn(ec); //@TODO TLC还是learn了 在predict的时候 check this
-		Float output = VW::get_prediction(ec);
-		VW::finish_example(*_vw, ec);
-		return output;
-	}
-
-	example* VWPredictor::Instance2Example(InstancePtr instance, bool includeLabel)
+	example* VWPredictor::Vector2Example(Vector& features)
 	{
 		int idx = 0;
-		instance->features.ForEach([&](int index, Float value) {
+		features.ForEachNonZero([&](int index, Float value) {
 			_pFeatureSpace->fs[idx].weight_index = index;
 			_pFeatureSpace->fs[idx].x = value;
 			idx++;
 		});
 		_pFeatureSpace->len = idx;
 		example* ec = import_example(*_vw, _pFeatureSpace, 1);
-
-		if (includeLabel)
-		{
-			Float label = instance->label <= 0 ? -1 : 1;
-			VW::add_label(ec, label, instance->weight);
-		}
+		ec->test_only = true;
 		return ec;
+	}
+
+	Float VWPredictor::Margin(Vector& features)
+	{
+		example* ec = Vector2Example(features);
+		//_vw->learn(ec); //@TODO TLC还是learn了 在predict的时候 check this
+		dispatch_example(*_vw, *ec);
+		Float output = VW::get_prediction(ec);
+		//VW::finish_example(*_vw, ec);
+		return output;
 	}
 
 }  //----end of namespace gezi

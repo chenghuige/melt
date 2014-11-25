@@ -48,7 +48,7 @@ namespace gezi {
 		bool foldsSequential = false;
 		double trainProportion = 1.0;
 		
-		bool selfTest = true; //st| when -c train will test the train data its self after training
+		bool selfTest = false; //st| when -c train will test the train data its self after training
 
 		string modelDir = "";
 		string outDir = "";

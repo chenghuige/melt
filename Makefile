@@ -4,7 +4,7 @@ ifeq ($(shell uname -m),x86_64)
 CC=/opt/compiler/gcc-4.8.2/bin/g++
 CXX=/opt/compiler/gcc-4.8.2/bin/g++
 CXXFLAGS=-g \
-  -O4 \
+  -O3 \
   -pipe \
   -W \
   -Wall \
@@ -18,7 +18,7 @@ CXXFLAGS=-g \
   -Wno-literal-suffix \
   -Wno-unused-local-typedefs
 CFLAGS=-g \
-  -O4 \
+  -O3 \
   -pipe \
   -W \
   -Wall \
@@ -152,7 +152,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=8050028ef7625e1ac58fa36f2f384bb9  COMAKE
+COMAKE_MD5=e17e60b3c8781dd0d90e52b134e5f15c  COMAKE
 
 
 .PHONY:all

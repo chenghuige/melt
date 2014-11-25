@@ -78,6 +78,8 @@
     <ClCompile Include="src\Prediction\Instances\InstanceParser.cpp" />
     <ClCompile Include="src\Prediction\Normalization\BinNormalizer.cpp" />
     <ClCompile Include="src\Prediction\Trainers\LinearSVM.cpp" />
+    <ClCompile Include="src\Predictors\LibSVMPredictor.cpp" />
+    <ClCompile Include="src\Predictors\VWPredictor.cpp" />
     <ClCompile Include="src\PythonWrapper\Predictor.cpp" />
     <ClCompile Include="src\PythonWrapper\PredictorFactory.cpp" />
     <ClCompile Include="src\Run\Melt.cpp" />
@@ -221,6 +223,7 @@
     <ClInclude Include="include\Predictors\PredictorFactory.h" />
     <ClInclude Include="include\Predictors\RandomPredictor.h" />
     <ClInclude Include="include\Predictors\SofiaPredictor.h" />
+    <ClInclude Include="include\Predictors\ThirdPredictor.h" />
     <ClInclude Include="include\Predictors\VWPredictor.h" />
     <ClInclude Include="include\PythonWrapper\Predictor.h" />
     <ClInclude Include="include\PythonWrapper\PredictorFactory.h" />

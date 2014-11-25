@@ -41,6 +41,7 @@ namespace gezi {
 			map<string, PredictorType> _predictorTypes = {
 				{ "unknown", PredictorType::Unknown },
 				{ "linear", PredictorType::Linear },
+				{ "linearsvm", PredictorType::Linear },
 				{ "sofia", PredictorType::Linear },
 				{ "liblinear", PredictorType::Linear },
 				{ "binaryclassificationfastrank", PredictorType::BinaryClassificationFastRank },

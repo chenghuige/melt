@@ -20,39 +20,59 @@
 
 namespace gezi {
 
-	LibSVMPredictor::LibSVMPredictor(svm_model* model_,
+	LibSVMPredictor::LibSVMPredictor(svm_model* model_, svm_problem* prob_, svm_node* node_, svm_parameter* param_,
 		NormalizerPtr normalizer, CalibratorPtr calibrator,
 		const FeatureNamesVector& featureNames)
-		:ThirdPredictor(normalizer, calibrator, featureNames), _model(model_)
+		:Predictor(normalizer, calibrator, featureNames), _model(model_), _prob(prob_), _xspace(node_), _param(param_)
 	{
 
 	}
 
 	LibSVMPredictor::~LibSVMPredictor()
 	{
-		svm_free_and_destroy_model(&_model);
+		if (_model)
+		{
+			svm_free_and_destroy_model(&_model);
+		}
+		
+		if (_param)
+		{
+			svm_destroy_param(_param);
+		}
+	
+		if (_prob)
+		{
+			free(_prob->y);
+			free(_prob->x);
+		}
+
+		FREE(_xspace);
 	}
 
-	//@TODO can be static share with LibSVMTrainer.cpp
-	vector<svm_node> Instance2SvmNodeVec(InstancePtr instance)
+	namespace
 	{
-		vector<svm_node> vec;
-		instance->features.ForEachNonZero([&](int index, Float value) { 
+		//@TODO can be static share with LibSVMTrainer.cpp
+		vector<svm_node> Vector2SvmNodeVec(Vector& features)
+		{
+			vector<svm_node> vec;
+			features.ForEachNonZero([&](int index, Float value) {
+				svm_node node;
+				node.index = index + 1;
+				node.value = value;
+				vec.emplace_back(node);
+			});
 			svm_node node;
-			node.index = index + 1;
-			node.value = value;
+			node.index = -1;
 			vec.emplace_back(node);
-		});
-		svm_node node;
-		node.index = -1;
-		vec.emplace_back(node);
-		return vec;
+			return vec;
+		}
 	}
 
-	Float LibSVMPredictor::Output_(InstancePtr instance)
+	Float LibSVMPredictor::Margin(Vector& features)
 	{
-		vector<svm_node> vec = Instance2SvmNodeVec(instance);
+		vector<svm_node> vec = Vector2SvmNodeVec(features);
 		svm_node* x = vec.empty() ? NULL : &vec[0];
+		CHECK_EQ(_model->nr_class, 2);
 		vector<double> probs(_model->nr_class, 0);
 		svm_predict_probability(_model, x, &probs[0]); //@TODO 注意svm_predict输出就是0,1 那么svm predict_probability [0-1]?不需要再calibrate?
 		return probs[1];

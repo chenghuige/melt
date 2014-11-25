@@ -35,7 +35,7 @@ DEFINE_bool(mxml, false, "modelfileXml:  Gen model file to save in xml format ? 
 DEFINE_bool(mjson, false, "modelfileJson:  Gen model file to save in json format ? (for Train or TrainTest");
 DEFINE_bool(snt, false, "saveNormalizerText: wether save normalizer as text/xml/json");
 DEFINE_bool(sct, false, "saveCalibratorText: wether save calibrator as text/xml/json");
-DEFINE_bool(st, true, "selftTest: when -c train will test the train data its self after training");
+DEFINE_bool(st, false, "selftTest: when -c train will test the train data its self after training");
 
 DEFINE_string(rd, "./result", "resultDir: where to put the result data");
 DEFINE_string(rf, "", "resultFile: not used in cross validation which use resultDir only, can be used in test or train-test, if set FLAGS_rf than will write result to resultFile instead of to resultDir/0.inst.txt or resultDir/n.inst.txt if you set Flags_ri");

@@ -401,11 +401,12 @@ namespace gezi {
 			}
 		}
 
-		PredictorPtr Train(Instances& instances)
+		PredictorPtr Train(Instances& instances, bool normalizeCopy = false)
 		{
 			Pval(_cmd.classifierName);
 			auto trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
 			CHECK(trainer != nullptr);
+			trainer->SetNormalizeCopy(normalizeCopy);
 			trainer->Train(instances);
 			auto predictor = trainer->CreatePredictor();
 			predictor->SetParam(trainer->GetParam());
@@ -432,11 +433,11 @@ namespace gezi {
 				Noticer nt("Train!");
 				instances = create_instances(_cmd.datafile);
 				CHECK_GT(instances.Count(), 0) << "Read 0 test instances, aborting experiment";
-				predictor = Train(instances);
+				predictor = Train(instances, _cmd.selfTest);
 			}
 			if (_cmd.selfTest)
 			{
-				Noticer nt("Test itself!(if not want test itself use --st=0)");
+				Noticer nt("Test itself!");
 				try_create_dir(_cmd.resultDir);
 				string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
 				//auto testInstances = create_instances(_cmd.datafile);

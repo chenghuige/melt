@@ -14,7 +14,7 @@
 #ifndef PREDICTORS__V_W_PREDICTOR_H_
 #define PREDICTORS__V_W_PREDICTOR_H_
 
-#include "ThirdPredictor.h"
+#include "MLCore/Predictor.h"
 class example;
 class vw;
 namespace VW{
@@ -22,7 +22,7 @@ namespace VW{
 }
 namespace gezi {
 
-	class VWPredictor : public ThirdPredictor
+	class VWPredictor : public Predictor
 	{
 	public:
 		VWPredictor()
@@ -40,10 +40,10 @@ namespace gezi {
 			return "VW";
 		}
 
-	protected:
-		virtual Float Output_(InstancePtr instance) override;
-		example* Instance2Example(InstancePtr instance, bool includeLabel);
+		example* Vector2Example(Vector& features);
 
+	protected:
+		virtual Float Margin(Vector& features) override;
 	protected:
 
 	private:
