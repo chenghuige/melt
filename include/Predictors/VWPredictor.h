@@ -25,10 +25,8 @@ namespace gezi {
 	class VWPredictor : public Predictor
 	{
 	public:
-		VWPredictor()
-		{
+		VWPredictor();
 
-		}
 		VWPredictor(vw* vw_, VW::primitive_feature_space* psf_,
 			NormalizerPtr normalizer, CalibratorPtr calibrator,
 			const FeatureNamesVector& featureNames);
@@ -42,13 +40,24 @@ namespace gezi {
 
 		example* Vector2Example(Vector& features);
 
+		bool InitFeatureSapce(Vector& features);
+
+		virtual void Load_(string file) override;
+		virtual void Save_(string file) override;
+
+		friend class cereal::access;
+		template<class Archive>
+		void serialize(Archive &ar, const unsigned int version)
+		{
+			ar & CEREAL_BASE_OBJECT_NVP(Predictor);
+		}
 	protected:
 		virtual Float Margin(Vector& features) override;
 	protected:
-
+		void Free();
 	private:
-		vw* _vw;
-		VW::primitive_feature_space* _pFeatureSpace;
+		vw* _vw = NULL;
+		VW::primitive_feature_space* _pFeatureSpace = NULL;
 	};
 
 }  //----end of namespace gezi

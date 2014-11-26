@@ -388,6 +388,11 @@ namespace gezi {
 			return *this;
 		}
 
+		static string ThirdModelName(string file)
+		{
+			return boost::replace_last_copy(file, ".bin", ".extra");
+		}
+
 		static bool& loadNormalizerAndCalibrator()
 		{
 			static bool _loadNormalizerAndCalibrator = true;

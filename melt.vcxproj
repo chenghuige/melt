@@ -68,6 +68,9 @@
   <ItemGroup>
     <ClCompile Include="main\liblinear\predict.c" />
     <ClCompile Include="main\liblinear\train.c" />
+    <ClCompile Include="main\libsvm\svm-predict.c" />
+    <ClCompile Include="main\libsvm\svm-scale.c" />
+    <ClCompile Include="main\libsvm\svm-train.c" />
     <ClCompile Include="melt.cc" />
     <ClCompile Include="src\blas\daxpy.c" />
     <ClCompile Include="src\blas\ddot.c" />
@@ -75,6 +78,7 @@
     <ClCompile Include="src\blas\dscal.c" />
     <ClCompile Include="src\liblinear\linear.cpp" />
     <ClCompile Include="src\liblinear\tron.cpp" />
+    <ClCompile Include="src\libsvm\svm.cpp" />
     <ClCompile Include="src\Prediction\Instances\InstanceParser.cpp" />
     <ClCompile Include="src\Prediction\Normalization\BinNormalizer.cpp" />
     <ClCompile Include="src\Prediction\Trainers\LinearSVM.cpp" />
@@ -182,6 +186,7 @@
     <ClInclude Include="include\blas\blasp.h" />
     <ClInclude Include="include\liblinear\linear.h" />
     <ClInclude Include="include\liblinear\tron.h" />
+    <ClInclude Include="include\libsvm\svm.h" />
     <ClInclude Include="include\MLCore\IPredictor.h" />
     <ClInclude Include="include\MLCore\IterativeTrainer.h" />
     <ClInclude Include="include\MLCore\ITrainer.h" />

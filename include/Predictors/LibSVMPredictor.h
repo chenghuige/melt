@@ -43,6 +43,13 @@ public:
 	virtual void Load_(string file) override;
 	virtual void Save_(string file) override;
 
+	friend class cereal::access;
+	template<class Archive>
+	void serialize(Archive &ar, const unsigned int version)
+	{
+		ar & CEREAL_BASE_OBJECT_NVP(Predictor);
+	}
+
 protected:
 	virtual Float Margin(Vector& features) override;
 private:

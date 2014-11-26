@@ -58,7 +58,7 @@ CXX(GCC_BIN)
 CPPFLAGS('-D_GNU_SOURCE -D__STDC_LIMIT_MACROS -DVERSION=\\\"1.9.8.7\\\"')
 
 #±‡“Î≤Œ ˝…Ë÷√
-COMMON_FLAGS = '-g -O%d -pipe -W -Wall -fPIC -DNO_BAIDU_DEP -DHAVE_NETINET_IN_H -Wno-unused-parameter -Wno-deprecated'%LEVEL
+COMMON_FLAGS = '-g -O%d -pipe -W -Wall -fPIC -DHAVE_NETINET_IN_H -Wno-unused-parameter -Wno-deprecated'%LEVEL
 
 if GCC_HIGH  == 1:
 	GCC_FLAGS += '-std=c++11 -fpermissive -Wno-write-strings -Wno-literal-suffix -Wno-unused-local-typedefs'
@@ -104,7 +104,6 @@ CONFIGS('myspace/sep/chenghuige/melt-train@base')
 LIBS('../libmelt.a ../libsofia.a ../libvw.a ../libblas.a ../liblinear.a ../libsvm.a')
 #srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/vowpalwabbit/*.cc ./src/sofia/*.cc'.replace('./',RELATIVE_PATH))
 srcs = ''
-Application('melt', Sources('melt.cc', srcs))
 #Application('calibrate',Sources('calibrate.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 Application('calibrate',Sources('calibrate.cc',srcs))
 #Application('predict',Sources('predict.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
@@ -114,8 +113,11 @@ Application('fastrank_text2bin',Sources('fastrank_text2bin.cc',srcs))
 #Application('fastrank_predict',Sources('fastrank_predict.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 Application('fastrank_predict',Sources('fastrank_predict.cc',srcs))
 
-LIBS('../libmelt.a ../libsofia.a ../libblas.a ../liblinear.a ../libsvm.a')
-srcs  = GLOB('../src/vowpalwabbit/*.cc')
+LIBS('../libvw.a ../libsofia.a ../libblas.a ../liblinear.a ../libsvm.a')
+srcs = GLOB('../src/Wrapper/*.cpp ../src/Prediction/Instances/*.cpp ../src/Run/*.cpp ../src/Testers/*.cpp ../src/Prediction/Normalization/*.cpp ../src/Predictors/*.cpp')
+Application('melt', Sources('melt.cc', srcs))
+LIBS('../libsofia.a ../libblas.a ../liblinear.a ../libsvm.a')
+srcs = GLOB('../src/Wrapper/*.cpp ../src/Prediction/Instances/*.cpp ../src/Run/*.cpp ../src/Testers/*.cpp ../src/Prediction/Normalization/*.cpp ../src/Predictors/*.cpp ../src/vowpalwabbit/*.cc')
 Application('melt.debug', Sources('melt.cc', srcs, ENV.CppFlags()+CppFlags('-O0')))
 
 LIBS('../libvw.a')

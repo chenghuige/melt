@@ -80,13 +80,15 @@ namespace gezi {
 
 	void LibSVMPredictor::Load_(string file)
 	{
-		_model = svm_load_model(file.c_str());
+		serialize_util::load(*this, file);
+		_model = svm_load_model(ThirdModelName(file).c_str());
 		CHECK_NOTNULL(_model);
 	}
 	
 	void LibSVMPredictor::Save_(string file)
 	{
-		svm_save_model(file.c_str(), _model);
+		serialize_util::save(*this, file);
+		svm_save_model(ThirdModelName(file).c_str(), _model);
 	}
 
 }  //----end of namespace gezi

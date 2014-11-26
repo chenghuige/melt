@@ -13,7 +13,7 @@
 
 #define private public
 #define protected public
-#define NO_BAIDU_DEP
+//#define NO_BAIDU_DEP
 #include "common_util.h"
 #include "Run/Melt.h"
 using namespace std;

@@ -32,9 +32,9 @@ namespace gezi {
 		{
 			_trainingSchema = instances.schema;
 			_instances = &instances;
-			
-			_featureNames = instances.schema.featureNames;
+
 			_numFeatures = instances.NumFeatures();
+			_featureNames = instances.schema.featureNames;
 
 			Init();
 			Initialize(instances);
@@ -141,7 +141,7 @@ namespace gezi {
 
 	protected:
 		HeaderSchema _trainingSchema;
-		
+
 		bool _isStreaming = false;
 		RandomPtr _rand = nullptr;
 		RandomRangePtr _randRange = nullptr;
@@ -150,8 +150,7 @@ namespace gezi {
 
 		FeatureNamesVector _featureNames;
 		/// <summary> Total number of features </summary>
-		int _numFeatures;
-
+		int _numFeatures = 0;
 
 		bool _normalizeCopy = false;
 

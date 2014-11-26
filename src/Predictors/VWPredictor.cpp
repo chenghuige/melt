@@ -19,7 +19,9 @@
 #include "vowpalwabbit/parse_args.h"
 #include "vowpalwabbit/vw.h"
 #include "vowpalwabbit/example.h"
+#include "vowpalwabbit/parse_regressor.h"
 
+#include "common_util.h"
 #include "Predictors/VWPredictor.h"
 
 namespace gezi {
@@ -32,8 +34,6 @@ namespace gezi {
 				all.l->learn(ec);
 			all.l->finish_example(all, ec);
 		}
-
-	
 	}
 
 	VWPredictor::VWPredictor(vw* vw_, VW::primitive_feature_space* psf_,
@@ -44,14 +44,49 @@ namespace gezi {
 
 	}
 
+	VWPredictor::VWPredictor()
+	{
+
+	}
+
 	VWPredictor::~VWPredictor()
 	{
-		FREE_ARRAY(_pFeatureSpace->fs);
-		VW::finish(*_vw);
+		Free();
+	}
+
+	void VWPredictor::Free()
+	{
+		if (_pFeatureSpace)
+		{
+			FREE_ARRAY(_pFeatureSpace->fs);
+			_pFeatureSpace = NULL;
+		}
+		if (_vw)
+		{
+			VW::finish(*_vw);
+			_vw = NULL;
+		}
+	}
+
+	namespace {
+		static thread_local VW::primitive_feature_space _pFeatureSpaceForPredict;
+	}
+
+	bool VWPredictor::InitFeatureSapce(Vector& features)
+	{
+		if (!_pFeatureSpace)
+		{
+			_pFeatureSpace = &_pFeatureSpaceForPredict;
+			_pFeatureSpace->name = 'a';
+			_pFeatureSpace->fs = new feature[_featureNames.size()];
+			Pval(_featureNames.size());
+		}
+		return true;
 	}
 
 	example* VWPredictor::Vector2Example(Vector& features)
 	{
+		static thread_local bool isInited = InitFeatureSapce(features);
 		int idx = 0;
 		features.ForEachNonZero([&](int index, Float value) {
 			_pFeatureSpace->fs[idx].weight_index = index;
@@ -72,6 +107,23 @@ namespace gezi {
 		Float output = VW::get_prediction(ec);
 		//VW::finish_example(*_vw, ec);
 		return output;
+	}
+
+	void VWPredictor::Load_(string file)
+	{
+		serialize_util::load(*this, file);
+		_vw = NULL;
+		_pFeatureSpace = NULL;
+		_vw = VW::initialize(format("-i {}", ThirdModelName(file)));
+		CHECK_NOTNULL(_vw);
+		_vw->training = false;
+		CHECK_NOTNULL(_vw->l);
+	}
+
+	void VWPredictor::Save_(string file)
+	{
+		serialize_util::save(*this, file);
+		save_predictor(*_vw, ThirdModelName(file), _vw->current_pass);
 	}
 
 }  //----end of namespace gezi
