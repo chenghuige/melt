@@ -939,7 +939,10 @@ namespace gezi {
 		{
 			auto instances = create_instances(_cmd.datafile);
 			RandomEngine rng = random_engine(_cmd.randSeed);
-			instances.Randomize(rng);
+			if (!_cmd.foldsSequential)
+			{
+				instances.Randomize(rng);
+			}
 			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
 			string suffix = "rand";
 			if (_cmd.num > 0)

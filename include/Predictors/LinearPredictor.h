@@ -26,7 +26,7 @@ namespace gezi {
 		LinearPredictor(const Vector& weights, Float bias,
 			NormalizerPtr normalizer, CalibratorPtr calibrator,
 			const FeatureNamesVector& featureNames,
-			string name = "LinearPredictor")
+			string name = "")
 			:Predictor(normalizer, calibrator, featureNames),
 			_weights(weights), _bias(bias),
 			_name(name)

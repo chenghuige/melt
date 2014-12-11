@@ -113,6 +113,7 @@ public:
 	bool sparse = false;
 	Float weight = 1.0;
 	bool normalized = false;
+	string line; //for vw instance will store ori input line
 };
 typedef shared_ptr<Instance> InstancePtr;
 typedef vector<InstancePtr> ListInstances;

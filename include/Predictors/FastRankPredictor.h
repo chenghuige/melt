@@ -24,7 +24,7 @@ namespace gezi {
 	public:
 		virtual string Name() override
 		{
-			return "FastRankPredictor";
+			return "FastRank";
 		}
 
 		FastRankPredictor() = default;

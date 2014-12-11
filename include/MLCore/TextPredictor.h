@@ -15,54 +15,89 @@
 #define M_L_CORE__TEXT_PREDICTOR_H_
 #include "common_util.h"
 #include "Segmentor.h"
+#include "tools/content_process.h"
+
 namespace gezi {
 
-class TextPredictor 
-{
-public:
-	static void Prase(svec& words_, map<int, double>& m, const DoubleIdentifer& identifer, int startIndex = 0, int ngram = 3, string sep = "$#$")
+	class TextPredictor
 	{
-		svec words = get_words(words_, ngram, sep);
-		get_skip_bigram(words_, words, 2, sep);
-		for (string word : words)
+	public:
+		static void Prase(svec& words_, map<int, double>& m, const DoubleIdentifer& identifer, int startIndex = 0,
+			int ngram = 3, int skip = 2, string sep = "$#$", bool hasPic = false, bool hasUrl = false, bool hasAt = false)
 		{
-			int id = identifer.id(word);
-			if (id != identifer.null_id())
+			svec words = get_words(words_, ngram, sep);
+			get_skip_bigram(words_, words, skip, sep);
+			for (string word : words)
 			{
-				m[id + startIndex] += identifer.value(id);
+				int id = identifer.id(word);
+				if (id != identifer.null_id())
+				{
+					m[id + startIndex] += identifer.value(id);
+					if (hasPic)
+					{
+						id = identifer.id(format("{}{}{}", word, sep, "<pic>"));
+						if (id != identifer.null_id())
+						{
+							m[id + startIndex] += identifer.value(id);
+						}
+					}
+					if (hasUrl)
+					{
+						id = identifer.id(format("{}{}{}", word, sep, "<url>"));
+						if (id != identifer.null_id())
+						{
+							m[id + startIndex] += identifer.value(id);
+						}
+					}
+					if (hasAt)
+					{
+						id = identifer.id(format("{}{}{}", word, sep, "<at>"));
+						if (id != identifer.null_id())
+						{
+							m[id + startIndex] += identifer.value(id);
+						}
+					}
+				}
 			}
 		}
-	}
 
-	static double Predict(string title, string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
-		int segType = SEG_BASIC, int ngram = 3, string sep = "$#$")
-	{
-		int wordNum = identifer.size();
-		map<int, double> m; //确保按key排序
-		Segmentor::Init(); //最好还是外部Init好 这里为了安全仍然保有
-		svec twords = Segmentor::Segment(title, segType);
-		Prase(twords, m, identifer, 0);
+		static double Predict(string title, string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
+			int segType = SEG_BASIC, bool useMedia = false, int ngram = 3, int skip = 2, string sep = "$#$")
+		{
+			int wordNum = identifer.size();
+			map<int, double> m; //确保按key排序
+			Segmentor::Init(); //最好还是外部Init好 这里为了安全仍然保有
 
-		svec cwords = Segmentor::Segment(content, segType);
-		Prase(cwords, m, identifer, wordNum);
+			bool hasPic = false, hasUrl = false, hasAt = false;
+			if (useMedia)
+			{
+				hasPic = gezi::contains_pic(content);
+				hasUrl = gezi::contains_url(content);
+				hasAt = gezi::contains_at(content);
+			}
+			svec twords = Segmentor::Segment(title, segType);
+			Prase(twords, m, identifer, 0, ngram, skip, sep, hasPic, hasUrl, hasAt);
 
-		double score = predictor->Predict(m);
-		return score;
-	}
+			svec cwords = Segmentor::Segment(content, segType);
+			Prase(cwords, m, identifer, wordNum, ngram, skip, sep, hasPic, hasUrl, hasAt);
 
-	static double Predict(string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor, 
-		int segType = SEG_BASIC, int ngram = 3, string sep = "$#$")
-	{
-		int wordNum = identifer.size();
-		map<int, double> m; //确保按key排序
-		Segmentor::Init();
-		svec words = Segmentor::Segment(content, segType);
-		Prase(words, m, identifer, 0);
+			double score = predictor->Predict(m);
+			return score;
+		}
 
-		double score = predictor->Predict(m);
-		return score;
-	}
-};
+		static double Predict(string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
+			int segType = SEG_BASIC, int ngram = 3, int skip = 2, string sep = "$#$")
+		{
+			int wordNum = identifer.size();
+			map<int, double> m; //确保按key排序
+			Segmentor::Init();
+			svec words = Segmentor::Segment(content, segType);
+			Prase(words, m, identifer, 0, ngram, skip, sep);
+
+			double score = predictor->Predict(m);
+			return score;
+		}
+	};
 
 }  //----end of namespace gezi
 

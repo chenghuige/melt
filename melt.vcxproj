@@ -186,7 +186,6 @@
     <ClInclude Include="include\blas\blasp.h" />
     <ClInclude Include="include\liblinear\linear.h" />
     <ClInclude Include="include\liblinear\tron.h" />
-    <ClInclude Include="include\libsvm\svm.h" />
     <ClInclude Include="include\MLCore\IPredictor.h" />
     <ClInclude Include="include\MLCore\IterativeTrainer.h" />
     <ClInclude Include="include\MLCore\ITrainer.h" />

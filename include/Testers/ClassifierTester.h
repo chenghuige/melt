@@ -45,21 +45,36 @@ namespace gezi {
 			if (std::isnan(prediction))
 				return results;
 
+			//if (label > 0)
+			//{
+			//	if (prediction > 0)
+			//		numTruePos += weight;
+			//	else
+			//		numFalseNeg += weight;
+			//}
+			//else
+			//{
+			//	if (prediction <= 0)
+			//		numTrueNeg += weight;
+			//	else
+			//		numFalsePos += weight;
+			//}
+			//results[0] = (prediction > 0 ? 1 : 0);
 			if (label > 0)
 			{
-				if (prediction > 0)
+				if (probability > 0.5)
 					numTruePos += weight;
 				else
 					numFalseNeg += weight;
 			}
 			else
 			{
-				if (prediction <= 0)
+				if (probability <= 0.5)
 					numTrueNeg += weight;
 				else
 					numFalsePos += weight;
 			}
-			results[0] = (prediction > 0 ? 1 : 0);
+			results[0] = (probability > 0.5 ? 1 : 0);
 			results[1] = prediction;
 
 			Float currLogLoss;

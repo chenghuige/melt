@@ -38,6 +38,20 @@ namespace gezi {
 			return "VW";
 		}
 
+		virtual Float Output(InstancePtr instance) override
+		{
+			if (instance->line.empty())
+			{
+				return Predictor::Output(instance);
+			}
+			else
+			{
+				return Output(instance->line);
+			}
+		}
+
+		virtual Float Output(string line) override;
+
 		example* Vector2Example(Vector& features);
 
 		bool InitFeatureSapce(Vector& features);

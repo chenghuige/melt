@@ -135,6 +135,7 @@ namespace gezi {
 			}
 			return result;
 		}
+
 		void InitParam()
 		{
 			_format = boost::to_lower_copy(_args.inputFormat);
@@ -275,7 +276,10 @@ namespace gezi {
 					}
 					for (int idx : excls)
 					{
-						LOG(INFO) << "Excluding feature: " << _instances.schema.featureNames[idx];
+						if (excls.size() < 100)
+						{
+							LOG(INFO) << "Excluding feature: " << _instances.schema.featureNames[idx];
+						}
 						filterArray[idx] = false;
 					}
 				}
@@ -615,7 +619,7 @@ namespace gezi {
 			VLOG(1) << "CreateInstancesFromSparseNoLengthFormat";
 			uint64 end = start + _instanceNum;
 			int maxIndex = 0;
-//#pragma omp parallel for 
+			//#pragma omp parallel for 
 #pragma omp parallel for reduction(max : maxIndex)
 			for (uint64 i = start; i < end; i++)
 			{
@@ -631,7 +635,7 @@ namespace gezi {
 
 					if (index > maxIndex)
 					{
-//#pragma omp critical //锁的代价 是否值得并行@TODO
+						//#pragma omp critical //锁的代价 是否值得并行@TODO
 						maxIndex = index;
 					}
 				},
@@ -695,6 +699,11 @@ namespace gezi {
 					{
 						//return FileFormat::SparseNoLength; //去掉默认解析 sparse no length因为不常用,为了更好兼容libsvm格式
 						return FileFormat::LibSVM;
+					}
+
+					if (i > 0 && contains(_firstColums[i], '|'))
+					{
+						return FileFormat::VW;
 					}
 
 					int j = i + 1;
@@ -902,6 +911,19 @@ namespace gezi {
 			_featureNum = maxIndex;
 			_instances.schema.featureNames.SetNumFeatures(_featureNum);
 			return move(_instances);
+		}
+
+		void CreateInstancesFromVWFormat(svec& lines, uint64 start)
+		{
+			VLOG(0) << "CreateInstancesFromVWFormat";
+			uint64 end = start + _instanceNum;
+			for (uint64 i = start; i < end; i++)
+			{
+				_instances[i - start] = make_shared<Instance>(_featureNum);
+				Instance& instance = *_instances[i - start];
+				instance.line = lines[i];
+				instance.label = lines[i][0] == '1' ? 1 : -1;
+			}
 		}
 
 		//训练文本解析 暂时都是只支持单一char的分隔符 没有必要支持string分割
@@ -1150,6 +1172,9 @@ namespace gezi {
 				break;
 			case  FileFormat::LibSVM:
 				CreateInstancesFromLibSVMFormat(lines, _hasHeader);
+				break;
+			case  FileFormat::VW:
+				CreateInstancesFromVWFormat(lines, _hasHeader);
 				break;
 			case FileFormat::Text:
 				CreateInstancesFromTextFormat(lines, _hasHeader);

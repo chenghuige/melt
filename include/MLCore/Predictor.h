@@ -169,6 +169,16 @@ namespace gezi {
 			return Predict(features);
 		}
 
+		virtual Float Output(string line)
+		{
+			return 0.0;
+		}
+
+		virtual Float Predict(string line, Float& output)
+		{
+			return 0.0;
+		}
+
 		virtual Float Predict(InstancePtr instance)
 		{
 			return Predict(instance->features);

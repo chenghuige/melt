@@ -79,7 +79,7 @@ namespace gezi {
 			_pFeatureSpace = &_pFeatureSpaceForPredict;
 			_pFeatureSpace->name = 'a';
 			_pFeatureSpace->fs = new feature[_featureNames.size()];
-			Pval(_featureNames.size());
+			PVAL(_featureNames.size());
 		}
 		return true;
 	}
@@ -97,6 +97,14 @@ namespace gezi {
 		example* ec = import_example(*_vw, _pFeatureSpace, 1);
 		ec->test_only = true;
 		return ec;
+	}
+
+	Float VWPredictor::Output(string line)
+	{
+		example* ec = VW::read_example(*_vw, line);
+		dispatch_example(*_vw, *ec);
+		Float output = VW::get_prediction(ec);
+		return output;
 	}
 
 	Float VWPredictor::Margin(Vector& features)
