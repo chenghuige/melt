@@ -16,6 +16,9 @@
 #include "common_util.h"
 #include "Segmentor.h"
 #include "tools/content_process.h"
+#ifdef _DEBUG
+#include "feature/Features.h"
+#endif
 
 namespace gezi {
 
@@ -61,6 +64,7 @@ namespace gezi {
 			}
 		}
 
+
 		static double Predict(string title, string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
 			int segType = SEG_BASIC, bool useMedia = false, int ngram = 3, int skip = 2, string sep = "$#$")
 		{
@@ -82,6 +86,35 @@ namespace gezi {
 			Prase(cwords, m, identifer, wordNum, ngram, skip, sep, hasPic, hasUrl, hasAt);
 
 			double score = predictor->Predict(m);
+
+#ifdef _DEBUG
+			Pval(gezi::join(twords, "$#$"));
+			Pval(gezi::join(cwords, "$#$"));
+			Vector fe(m);
+			PVAL(fe.str());
+			predictor->_normalizer->Normalize(fe);
+			Vector& weights = dynamic_pointer_cast<LinearPredictor>(predictor)->_weights;
+			double total = 0;
+			vector<pair<string, double> > sortedByGain;
+			map<string, double> m_;
+			fe.ForEach([&](int index, double value)
+			{
+				if (weights[index] != 0)
+				{
+					string key = index < identifer.size() ? "t:" + identifer.key(index) : "c:" + identifer.key(index - identifer.size());
+					m_[format("{}\t{}\t{}\t{}", index, key, value, weights[index])] = value * weights[index];
+					//Pval5(index, key, value, weights[index], (value * weights[index]));
+					total += value * weights[index];
+				}
+			});
+			sort_map_by_absvalue_reverse(m_, sortedByGain);
+			for (auto item : sortedByGain)
+			{
+				LOG(INFO) << item.first << "\t" << item.second;
+			}
+			total += dynamic_pointer_cast<LinearPredictor>(predictor)->_bias;
+			Pval(total);
+#endif
 			return score;
 		}
 
@@ -92,9 +125,38 @@ namespace gezi {
 			map<int, double> m; //È·±£°´keyÅÅÐò
 			Segmentor::Init();
 			svec words = Segmentor::Segment(content, segType);
+			PVAL(gezi::join(words, "$#$"));
 			Prase(words, m, identifer, 0, ngram, skip, sep);
 
 			double score = predictor->Predict(m);
+#ifdef _DEBUG
+			Pval(gezi::join(words, "$#$"));
+			Vector fe(m);
+			PVAL(fe.str());
+			predictor->_normalizer->Normalize(fe);
+			Vector& weights = dynamic_pointer_cast<LinearPredictor>(predictor)->_weights;
+			double total = 0;
+			vector<pair<string, double> > sortedByGain;
+			map<string, double> m_;
+			fe.ForEach([&](int index, double value)
+			{
+				if (weights[index] != 0)
+				{
+					string key = index < identifer.size() ? "t:" + identifer.key(index) : "c:" + identifer.key(index - identifer.size());
+					m_[format("{}\t{}\t{}\t{}", index, key, value, weights[index])] = value * weights[index];
+					//Pval5(index, key, value, weights[index], (value * weights[index]));
+					total += value * weights[index];
+				}
+			});
+			sort_map_by_absvalue_reverse(m_, sortedByGain);
+			for (auto item : sortedByGain)
+			{
+				LOG(INFO) << item.first << "\t" << item.second;
+			}
+			total += dynamic_pointer_cast<LinearPredictor>(predictor)->_bias;
+			Pval(total);
+#endif
+
 			return score;
 		}
 	};

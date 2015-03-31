@@ -474,7 +474,7 @@ namespace gezi {
 
 					if (count != _columnNum)
 					{
-						LOG(WARNING) << "has bad line " << i;
+						LOG(WARNING) << "has bad line " << i << "count: " << count << " _columnNum: " << _columnNum;
 						LOG(WARNING) << line;
 						_instances[i - start] = nullptr;
 					}
@@ -751,7 +751,7 @@ namespace gezi {
 
 			if (_firstColums.size() < 2)
 			{
-				char sep = GuessSeparator(lines[0], "\t ");
+				char sep = GuessSeparator(lines[0], "\t ,");
 				_firstColums = split(line, sep);
 				//_sep = string(sep); //Ã²ËÆÕâÑùchar to string »ácore¡£¡£
 				_sep = STRING(sep);

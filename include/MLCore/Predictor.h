@@ -236,8 +236,8 @@ namespace gezi {
 				return _calibrator->PredictProbability(output);
 			}
 			else
-			{
-				return 1.0 / (1.0 + exp(-output));
+			{ //f(x) = (1/2) * log(pr(true) / 1 - pr(true))
+				return 1.0 / (1.0 + exp(-2.0 * output));
 			}
 		}
 

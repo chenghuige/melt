@@ -29,17 +29,20 @@ namespace gezi {
 			int featureNum = instances.FeatureNum();
 			dvec means(featureNum, 0);
 			dvec mins(featureNum, std::numeric_limits<double>::max());
-			dvec maxes(featureNum, std::numeric_limits<double>::min());
+			dvec maxes(featureNum, std::numeric_limits<double>::lowest());
 			dvec posMeans(featureNum, 0);
 			dvec negMeans(featureNum, 0);
 			dvec posMins(featureNum, std::numeric_limits<double>::max());
 			dvec negMins(featureNum, std::numeric_limits<double>::max());
-			dvec posMaxes(featureNum, std::numeric_limits<double>::min());
-			dvec negMaxes(featureNum, std::numeric_limits<double>::min());
+			dvec posMaxes(featureNum, std::numeric_limits<double>::lowest());
+			dvec negMaxes(featureNum, std::numeric_limits<double>::lowest());
 			dvec vars(featureNum, 0);
 			dvec posVars(featureNum, 0);
 			dvec negVars(featureNum, 0);
 
+			ulvec nonZeroCountVec(featureNum, 0);
+			ulvec nonZeroPosCountVec(featureNum, 0);
+			ulvec nonZeroNegCountVec(featureNum, 0);
 			uint64 instanceNum = instances.Count();
 			uint64 posNum = 0, negNum = 0;
 			{
@@ -52,6 +55,8 @@ namespace gezi {
 					{
 						instance->features.ForEach([&](int index, double value)
 						{
+							nonZeroCountVec[index] += 1;
+							nonZeroPosCountVec[index] += 1;
 							double val2 = pow(value, 2);
 							means[index] += value;
 							vars[index] += val2;
@@ -80,6 +85,8 @@ namespace gezi {
 					{
 						instance->features.ForEach([&](int index, double value)
 						{
+							nonZeroCountVec[index] += 1;
+							nonZeroNegCountVec[index] += 1;
 							double val2 = pow(value, 2);
 							means[index] += value;
 							vars[index] += val2;
@@ -103,6 +110,43 @@ namespace gezi {
 							}
 						});
 						negNum++;
+					}
+				}
+			}
+
+			for (size_t i = 0; i < featureNum; i++)
+			{
+				if (nonZeroCountVec[i] != instanceNum)
+				{
+					if (0 < mins[i])
+					{
+						mins[i] = 0;
+					}
+					if (0 > maxes[i])
+					{
+						maxes[i] = 0;
+					}
+				}
+				if (nonZeroPosCountVec[i] != posNum)
+				{
+					if (0 < posMins[i])
+					{
+						posMins[i] = 0;
+					}
+					if (0 > posMaxes[i])
+					{
+						posMaxes[i] = 0;
+					}
+				}
+				if (nonZeroNegCountVec[i] != negNum)
+				{
+					if (0 < negMins[i])
+					{
+						negMins[i] = 0;
+					}
+					if (0 > negMaxes[i])
+					{
+						negMaxes[i] = 0;
 					}
 				}
 			}

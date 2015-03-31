@@ -1064,8 +1064,13 @@ namespace gezi {
 				omp_set_num_threads(_cmd.numThreads);
 			}
 			else
-			{
-				omp_set_num_threads(omp_get_num_procs());
+			{ //hive集群上 32，31，30都会失败 12比较安全 @TODO @FIXME openmp本身的问题吗？ 可能是tester hang 也可能是 bin finder
+				int numProcs = omp_get_num_procs();
+				if (numProcs > 12)
+				{
+					numProcs = 12;
+				}
+				omp_set_num_threads(numProcs);
 			}
 			Pval(get_num_threads());
 			//解析命令模式
