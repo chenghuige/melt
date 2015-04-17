@@ -252,8 +252,15 @@ namespace gezi {
 				else
 				{
 					filterArray.resize(_featureNum, false);
+					int count = 0;
 					for (int idx : incls)
 					{
+						count++;
+						if (count > 100)
+						{
+							LOG(INFO) << "Total incls features is " << incls.size() << " only print top 100";
+							break;
+						}
 						LOG(INFO) << "Including feature: " << _instances.schema.featureNames[idx];
 						filterArray[idx] = true;
 					}
@@ -274,12 +281,16 @@ namespace gezi {
 					{
 						filterArray.resize(_featureNum, true);
 					}
+					int count = 0;
 					for (int idx : excls)
 					{
-						if (excls.size() < 100)
+						count++;
+						if (count > 100)
 						{
-							LOG(INFO) << "Excluding feature: " << _instances.schema.featureNames[idx];
+							LOG(INFO) << "Total excls features is " << excls.size() << " only print top 100";
+							break;
 						}
+						LOG(INFO) << "Excluding feature: " << _instances.schema.featureNames[idx];
 						filterArray[idx] = false;
 					}
 				}
@@ -472,49 +483,49 @@ namespace gezi {
 						break;
 					} });
 
-					if (count != _columnNum)
-					{
-						LOG(WARNING) << "has bad line " << i << "count: " << count << " _columnNum: " << _columnNum;
-						LOG(WARNING) << line;
-						_instances[i - start] = nullptr;
-					}
+				if (count != _columnNum)
+				{
+					LOG(WARNING) << "has bad line " << i << "count: " << count << " _columnNum: " << _columnNum;
+					LOG(WARNING) << line;
+					_instances[i - start] = nullptr;
+				}
 
-					//svec l = split(line, _sep);
-					////CHECK_EQ(l.size(), _columnNum) << "has bad line " << i; //不允许有坏数据行
-					//if ((int)l.size() != _columnNum)
-					//{
-					//	LOG(WARNING) << "has bad line " << i;
-					//	LOG(WARNING) << line;
-					//	continue;
-					//}
+				//svec l = split(line, _sep);
+				////CHECK_EQ(l.size(), _columnNum) << "has bad line " << i; //不允许有坏数据行
+				//if ((int)l.size() != _columnNum)
+				//{
+				//	LOG(WARNING) << "has bad line " << i;
+				//	LOG(WARNING) << line;
+				//	continue;
+				//}
 
-					//int fidx = 0;
-					//double value = 0;
-					//for (int j = 0; j < _columnNum; j++)
-					//{
-					//	string item = l[j];
-					//	switch (_columnTypes[j])
-					//	{
-					//	case ColumnType::Feature:
-					//		value = _selectedArray[fidx++] ? DOUBLE(item) : 0;
-					//		features.Add(value);
-					//		break;
-					//	case ColumnType::Name:
-					//		instance.names.push_back(item);
-					//		break;
-					//	case ColumnType::Label:
-					//		instance.label = DOUBLE(item);
-					//		break;
-					//	case ColumnType::Weight:
-					//		instance.weight = DOUBLE(item);
-					//		break;
-					//	case ColumnType::Attribute:
-					//		instance.attributes.push_back(item);
-					//		break;
-					//	default:
-					//		break;
-					//	}
-					//}
+				//int fidx = 0;
+				//double value = 0;
+				//for (int j = 0; j < _columnNum; j++)
+				//{
+				//	string item = l[j];
+				//	switch (_columnTypes[j])
+				//	{
+				//	case ColumnType::Feature:
+				//		value = _selectedArray[fidx++] ? DOUBLE(item) : 0;
+				//		features.Add(value);
+				//		break;
+				//	case ColumnType::Name:
+				//		instance.names.push_back(item);
+				//		break;
+				//	case ColumnType::Label:
+				//		instance.label = DOUBLE(item);
+				//		break;
+				//	case ColumnType::Weight:
+				//		instance.weight = DOUBLE(item);
+				//		break;
+				//	case ColumnType::Attribute:
+				//		instance.attributes.push_back(item);
+				//		break;
+				//	default:
+				//		break;
+				//	}
+				//}
 			}
 			ufo::erase(_instances, nullptr);
 			_instanceNum = (uint64)_instances.size();
@@ -567,13 +578,16 @@ namespace gezi {
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
 
-				splits_int_double(line, _sep[0], ':', [&, this](int index, Float value) {
+				splits_int_double(line, _sep[0], ':',
+					[&, this](int index, Float value)
+				{
 					if (_selectedArray[index])
 					{
 						features.Add(index, value);
 					}
 				},
-					[&, this](int index, string item) {
+					[&, this](int index, string item)
+				{
 					ParseSparseAttributes(instance, index, item);
 				});
 				//svec l = split(line, _sep);
@@ -611,6 +625,17 @@ namespace gezi {
 				//	}
 				//}
 			}
+
+			//int count = 0;
+			//for (auto& instance : _instances)
+			//{
+			//	//cout << "al:" << instance->attributes.size() << endl;
+			//	if (instance->attributes.size() == 0)
+			//	{
+			//		cout << lines[count] << endl;
+			//	}
+			//	count++;
+			//}
 		}
 
 		//如果没有提前声明向量最大长度SparseNoLength 那么不支持特征选择,否则影响解析速度 可以先转换为正常的sparse格式

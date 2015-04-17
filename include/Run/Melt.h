@@ -1064,12 +1064,9 @@ namespace gezi {
 				omp_set_num_threads(_cmd.numThreads);
 			}
 			else
-			{ //hive集群上 32，31，30都会失败 12比较安全 @TODO @FIXME openmp本身的问题吗？ 可能是tester hang 也可能是 bin finder
+			{ //@TODO openmp设置线程数目很微妙。。 如果有其它程序在跑12核 设置12 很慢 11，13 等都比12快很多。。
 				int numProcs = omp_get_num_procs();
-				if (numProcs > 12)
-				{
-					numProcs = 12;
-				}
+				numProcs = std::max(1, numProcs - 2);
 				omp_set_num_threads(numProcs);
 			}
 			Pval(get_num_threads());
