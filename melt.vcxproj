@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\glog.0.3.3.0\build\native\glog.props" Condition="Exists('C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\glog.0.3.3.0\build\native\glog.props')" />
+  <Import Project="C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\gflags.2.1.1.2\build\native\gflags.props" Condition="Exists('C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\gflags.2.1.1.2\build\native\gflags.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -17,9 +19,9 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -45,7 +47,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include;.\include\blas;.\include\libsvm;.\include\vowpalwabbit;.\include\sofia;.\include\liblinear;..\gezi\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDLL;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_XKEYCHECK_H</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -162,24 +165,9 @@
     <ClCompile Include="src\vowpalwabbit\unique_sort.cc" />
     <ClCompile Include="src\vowpalwabbit\vwdll.cpp" />
     <ClCompile Include="src\Wrapper\PredictorFactory.cpp" />
-    <ClCompile Include="test\test_auc.cc" />
-    <ClCompile Include="test\test_bins.cc" />
-    <ClCompile Include="test\test_fastrank_classification.cc" />
-    <ClCompile Include="test\test_fastrank_loadtlc.cc" />
-    <ClCompile Include="test\test_normalize.cc" />
-    <ClCompile Include="test\test_parse_input.cc" />
-    <ClCompile Include="test\test_seralize.cc" />
-    <ClCompile Include="test\test_shared_predictors.cc" />
-    <ClCompile Include="test\test_vector.cc" />
     <ClCompile Include="tools3\fastrank_predict.cc" />
     <ClCompile Include="tools3\melt.cc" />
     <ClCompile Include="tools3\PLSA\plsa.cc" />
-    <ClCompile Include="tools\calibrate.cc" />
-    <ClCompile Include="tools\fastrank_predict.cc" />
-    <ClCompile Include="tools\fastrank_text2bin.cc" />
-    <ClCompile Include="tools\melt.cc" />
-    <ClCompile Include="tools\predict.cc" />
-    <ClCompile Include="tools\vw.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\blas\blas.h" />
@@ -218,6 +206,7 @@
     <ClInclude Include="include\Prediction\Normalization\Normalizer.h" />
     <ClInclude Include="include\Prediction\Normalization\NormalizerFactory.h" />
     <ClInclude Include="include\Predictors\BoostedTreePredictor.h" />
+    <ClInclude Include="include\Predictors\EnsemblePredictor.h" />
     <ClInclude Include="include\Predictors\FastRankPredictor.h" />
     <ClInclude Include="include\Predictors\FastRank\FastRankClassification.h" />
     <ClInclude Include="include\Predictors\FastRank\FastRankRanking.h" />
@@ -324,7 +313,20 @@
     <ClInclude Include="include\Wrapper\SharedPredictor.h" />
     <ClInclude Include="include\Wrapper\SharedPredictors.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\boost.1.58.0.0\build\native\boost.targets" Condition="Exists('C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\boost.1.58.0.0\build\native\boost.targets')" />
+    <Import Project="C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\zlib.redist.1.2.8.7\build\native\zlib.redist.targets" Condition="Exists('C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\zlib.redist.1.2.8.7\build\native\zlib.redist.targets')" />
+    <Import Project="C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\zlib.1.2.8.7\build\native\zlib.targets" Condition="Exists('C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\zlib.1.2.8.7\build\native\zlib.targets')" />
+    <Import Project="C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\gtest.1.7.0.1\build\native\gtest.targets" Condition="Exists('C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\gtest.1.7.0.1\build\native\gtest.targets')" />
+    <Import Project="C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\gflags.2.1.1.2\build\native\gflags.targets" Condition="Exists('C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\gflags.2.1.1.2\build\native\gflags.targets')" />
+    <Import Project="C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\glog.0.3.3.0\build\native\glog.targets" Condition="Exists('C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\glog.0.3.3.0\build\native\glog.targets')" />
+    <Import Project="C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\boost_system-vc120.1.58.0.0\build\native\boost_system-vc120.targets" Condition="Exists('C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\boost_system-vc120.1.58.0.0\build\native\boost_system-vc120.targets')" />
+    <Import Project="C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\boost_regex-vc120.1.58.0.0\build\native\boost_regex-vc120.targets" Condition="Exists('C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\boost_regex-vc120.1.58.0.0\build\native\boost_regex-vc120.targets')" />
+    <Import Project="C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\boost_date_time-vc120.1.58.0.0\build\native\boost_date_time-vc120.targets" Condition="Exists('C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\boost_date_time-vc120.1.58.0.0\build\native\boost_date_time-vc120.targets')" />
+    <Import Project="C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\boost_filesystem-vc120.1.58.0.0\build\native\boost_filesystem-vc120.targets" Condition="Exists('C:\Users\chg\Documents\Visual Studio 2013\Projects\melt-win\packages\boost_filesystem-vc120.1.58.0.0\build\native\boost_filesystem-vc120.targets')" />
   </ImportGroup>
 </Project>

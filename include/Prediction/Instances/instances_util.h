@@ -172,9 +172,9 @@ namespace gezi {
 			ofs << "\t" << index << ":" << value;
 		});
 
-		if (instance.features.numNonZeros <= 0)
+		if (instance.features.NumNonZeros() == 0)
 		{
-			ofs << "\t" << "0:0.0";
+			ofs << "\t0:0.0";
 		}
 
 		ofs << endl;
@@ -241,6 +241,11 @@ namespace gezi {
 		{
 			ofs << " " << index + 1 << ":" << value;
 		});
+		
+		if (instance.features.NumNonZeros() == 0)
+		{
+			ofs << " 1:0.0";
+		}
 		ofs << endl;
 	}
 

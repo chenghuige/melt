@@ -22,7 +22,7 @@ DEFINE_int32(vl, 0, "vlog level");
 DECLARE_string(c);
 DECLARE_bool(quiet);
 
-const char* const kVersion = "1-0-0-11";
+const char* const kVersion = __VERSION_ID__;
 
 void ShowMeltHelp()
 {

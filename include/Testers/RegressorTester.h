@@ -15,22 +15,75 @@
 #define TESTERS__REGRESSOR_TESTER_H_
 #include "Tester.h"
 namespace gezi {
-
-class RegressorTester : public Tester
-{
-public:
-	virtual PredictionKind GetPredictionKind()
+	class RegressorMetrics : public DatasetMetrics
 	{
-		return PredictionKind::Regression;
-	}
-	virtual vector<DatasetMetricsPtr> ConstructDatasetMetrics()
-	{
-		return vector<DatasetMetricsPtr>();
-	}
-protected:
-private:
+	public:
+		virtual string LabelColumnName() override
+		{
+			return "True";
+		}
 
-};
+		virtual vector<string> PerInstanceColumnNames() override
+		{
+			return vector<string>({ "Predicted", "L1-loss", "L2-loss" });
+		}
+
+		virtual vector<string> Names() override
+		{
+			return vector<string>({"L1(avg)", "L2(avg)", "RMS(avg)"});
+		}
+		/// <summary>
+		/// Process an instance and aggregate metrics
+		/// </summary>
+		virtual Fvec ProcessInstance(Float label, Float prediction, Float probability = std::numeric_limits<double>::quiet_NaN(), Float weight = 1.0) override
+		{
+			vector<Float> results(3, std::numeric_limits<Float>::quiet_NaN());
+			if (std::isnan(label))
+			{
+				return results;
+			}
+			
+			sumWeights += weight;
+			Float currL1Loss = std::abs(label - prediction);
+			totalL1Loss += currL1Loss * weight;
+			totalL2Loss += currL1Loss * currL1Loss * weight;
+
+			results[0] = prediction;
+			results[1] = currL1Loss;
+			results[2] = currL1Loss * currL1Loss;
+			return results;
+		}
+		
+		virtual void Finish()
+		{
+			_results = Fvec{
+				sumWeights > 0 ? totalL1Loss / sumWeights : 0,
+				sumWeights > 0 ? totalL2Loss / sumWeights : 0,
+				sumWeights > 0 ? std::sqrt(totalL2Loss / sumWeights) : 0,
+			};
+		}
+		
+	private:
+		Float sumWeights = 0;
+		Float totalL1Loss = 0, totalL2Loss = 0;
+	};
+
+	class RegressorTester : public Tester
+	{
+	public:
+		virtual PredictionKind GetPredictionKind()
+		{
+			return PredictionKind::Regression;
+		}
+
+		virtual vector<DatasetMetricsPtr> ConstructDatasetMetrics()
+		{
+			return vector<DatasetMetricsPtr>({ make_shared<RegressorMetrics>() });
+		}
+	protected:
+	private:
+
+	};
 
 }  //----end of namespace gezi
 

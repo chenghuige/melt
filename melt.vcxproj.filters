@@ -21,52 +21,16 @@
     <ClCompile Include="src\Run\Melt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test\test_fastrank_classification.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_normalize.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_parse_input.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_vector.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Prediction\Trainers\LinearSVM.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test\test_seralize.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tools\calibrate.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_fastrank_loadtlc.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tools\predict.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tools\fastrank_predict.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tools\fastrank_text2bin.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Wrapper\PredictorFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_shared_predictors.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\PythonWrapper\Predictor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\PythonWrapper\PredictorFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_bins.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tools3\fastrank_predict.cc">
@@ -82,9 +46,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tools3\melt.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_auc.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Testers\ClassifierTester.cpp">
@@ -306,9 +267,6 @@
     <ClCompile Include="src\vowpalwabbit\vwdll.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tools\vw.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main\liblinear\predict.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -331,9 +289,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\liblinear\tron.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tools\melt.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="melt.cc">
@@ -782,5 +737,11 @@
     <ClInclude Include="include\libsvm\svm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Predictors\EnsemblePredictor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

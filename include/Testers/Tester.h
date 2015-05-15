@@ -190,29 +190,7 @@ namespace gezi {
 				WriteHeader(instances);
 			}
 
-			PredictionKind kind = GetPredictionKind();
-			switch (kind)
-			{
-			case gezi::PredictionKind::Unknown:
-				break;
-			case gezi::PredictionKind::Custom:
-				break;
-			case gezi::PredictionKind::BinaryClassification:
-				ProcessInstances(instances, predictor);
-				break;
-			case gezi::PredictionKind::MultiClassClassification:
-				break;
-			case gezi::PredictionKind::Regression:
-				break;
-			case gezi::PredictionKind::MultiOutputRegression:
-				break;
-			case gezi::PredictionKind::Ranking:
-				break;
-			case gezi::PredictionKind::Recommendation:
-				break;
-			default:
-				break;
-			}
+			ProcessInstances(instances, predictor);
 		}
 
 	public:

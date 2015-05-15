@@ -96,7 +96,7 @@ namespace gezi {
 			}
 			return (*_featureNames)[index];
 		}
-
+		
 		size_t size() const
 		{
 			return std::max((size_t)_numFeatures, _featureNames->size());

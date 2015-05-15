@@ -888,7 +888,7 @@ namespace gezi {
 #pragma omp parallel for reduction(max : maxIndex)
 			for (uint64 i = start; i < end; i++)
 			{
-				string line = lines[i];
+				string line = boost::trim_right_copy(lines[i]);
 				_instances[i - start] = make_shared<Instance>(_featureNum);
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;;
@@ -1224,6 +1224,10 @@ namespace gezi {
 			for (uint64 i = 0; i < _instanceNum; i++)
 			{
 				_instances[i]->name = join(_instances[i]->names, _args.ncsep);
+				if (startswith(_instances[i]->name, '_'))
+				{
+					_instances[i]->name = _instances[i]->name.substr(1);
+				}
 				Vector& features = _instances[i]->features;
 				features.SetLength(_featureNum);
 

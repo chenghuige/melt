@@ -28,6 +28,11 @@ public:
 	virtual string LabelColumnName() = 0;
 	virtual vector<string> PerInstanceColumnNames() = 0;
 
+	virtual vector<string> Names()
+	{
+		return vector<string>();
+	}
+
 	virtual Fvec ProcessInstance(InstancePtr instance, PredictorPtr predictor) 
 	{
 		Float label = instance->label;
@@ -38,18 +43,19 @@ public:
 		return ProcessInstance(label, prediction, probability, weight);
 	}
 
-	virtual Fvec ProcessInstance(Float label, Float prediction, Float probability = std::numeric_limits<double>::quiet_NaN(), Float weight = 1.)
+	virtual Fvec ProcessInstance(Float label, Float prediction, Float probability = std::numeric_limits<double>::quiet_NaN(), Float weight = 1.0)
 	{
 		return Fvec();
 	}
 
-	virtual Fvec ProcessInstance(Float label,const Fvec& prediction, Float probability = std::numeric_limits<double>::quiet_NaN(), Float weight = 1.)
+	virtual Fvec ProcessInstance(Float label,const Fvec& prediction, Float probability = std::numeric_limits<double>::quiet_NaN(), Float weight = 1.0)
 	{
 		return Fvec();
 	}
 
 	void Print(string prefix = "")
 	{
+		_names = Names();
 		Finish();
 		Print_(prefix);
 	}
@@ -62,11 +68,18 @@ protected:
 
 	virtual void Print_(string prefix)
 	{
-
+		CHECK_EQ(_names.size(), _results.size());
+		for (size_t i = 0; i < _names.size(); i++)
+		{
+			std::cerr << setiosflags(ios::left) << setfill(' ') << setw(40)
+				<< _names[i] << "\t" << _results[i] << std::endl;
+		}
 	}
 
+protected:
+	Fvec _results;
+	svec _names;
 private:
-
 };
 
 typedef shared_ptr<DatasetMetrics> DatasetMetricsPtr;

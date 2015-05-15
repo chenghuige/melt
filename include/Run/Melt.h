@@ -39,10 +39,7 @@
 #include "Utils/FeatureStatus.h"
 #include "Prediction/Instances/instances_util.h"
 #include "MLCore/TrainerFactory.h"
-
 #include "MLCore/Predictor.h"
-
-#include "Prediction/Instances/instances_util.h"
 #include "MLCore/PredictorFactory.h"
 
 #include "Utils/performance_evaluate.h"
@@ -162,7 +159,7 @@ namespace gezi {
 			//const int randomStep = 1;
 			BinaryClassficationEvaluatorPtr evaluator = nullptr;
 			if (cvType == CrossValidationType::AUC)
-			{
+			{ //@TODO 只支持二分类当前
 				evaluator = make_shared<AucEvaluator>();
 			}
 			string trainerParam;
@@ -306,6 +303,7 @@ namespace gezi {
 		{
 			int idx = 0;
 			ProgressBar pb(instances.Count(), "Testing");
+			//@TODO 并行加速预测？ BulkPredict ?  目前算法预测都很快 串行即可 暂时意义不大
 			for (InstancePtr instance : instances)
 			{
 				++pb;
@@ -497,13 +495,13 @@ namespace gezi {
 			auto testInstances = create_instances(testDatafile);
 			CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
 			if (!_cmd.evaluate.empty())
-			{
+			{ //使用外部脚本 目前只支持二分类
 				Test(testInstances, predictor, instFile);
 				string command = _cmd.evaluate + instFile;
 				EXECUTE(command);
 			}
 			else
-			{
+			{ //默认走这里
 				auto tester = PredictorUtils::GetTester(predictor);
 				tester->Test(testInstances, predictor, instFile);
 			}
@@ -722,7 +720,7 @@ namespace gezi {
 			}
 		}
 
-		void SplitDataByLabel(Instances& instances)
+		void SplitDataByLabel(const Instances& instances)
 		{
 			Instances posInstances(instances.schema);
 			Instances negInstances(instances.schema);
@@ -746,15 +744,15 @@ namespace gezi {
 				write(negInstances, outfile, fileFormat);
 			}
 		}
-		//当前复用cross fold思路 
-		void RunSplitData()
+
+		vector<Instances> SplitData(const Instances& instances)
 		{
-			auto instances = create_instances(_cmd.datafile);
+			vector<Instances> parts;
 			if (_cmd.commandInput.empty())
 			{
 				VLOG(0) << "No input assume to split by label";
 				SplitDataByLabel(instances);
-				return;
+				return parts;
 			}
 			RandomEngine rng = random_engine(_cmd.randSeed);
 			if (!_cmd.foldsSequential)
@@ -771,7 +769,7 @@ namespace gezi {
 				if (segs_.size() <= 1)
 				{
 					LOG(WARNING) << "Need input like -ci 1:1  -ci 1:3:2 or -ci 5";
-					return;
+					return parts;
 				}
 				segs = from(segs_) >> select([](string a) { return INT(a); }) >> to_vector();
 			}
@@ -779,7 +777,7 @@ namespace gezi {
 			Pval(_cmd.numFolds);
 			int partNum = segs.size();
 			ivec instanceFoldIndices = CVFoldCreator::CreateFoldIndices(instances, _cmd, rng);
-			vector<Instances> parts(partNum);
+			parts.resize(partNum);
 
 			ivec maps(_cmd.numFolds);
 			int idx = 0;
@@ -801,22 +799,33 @@ namespace gezi {
 				parts[maps[instanceFoldIndices[i]]].push_back(instances[i]);
 			}
 
-			string infile = _cmd.datafile;
-			//FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
-			FileFormat fileFormat = kFormats[_cmd.outputFileFormat];
-			for (int i = 0; i < partNum; i++)
+			return parts;
+		}
+		//当前复用cross fold思路 
+		void RunSplitData()
+		{
+			auto instances = create_instances(_cmd.datafile);
+			vector<Instances> parts = SplitData(instances);
+			int partNum = parts.size();
+			if (partNum > 0)
 			{
-				string suffix = STR(i) + "_" + STR(partNum);
-				string outfile = GetOutputFileName(infile, suffix);
+				string infile = _cmd.datafile;
+				//FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
+				FileFormat fileFormat = kFormats[_cmd.outputFileFormat];
+				for (int i = 0; i < partNum; i++)
 				{
-					string suffix = kFormatSuffixes[fileFormat];
-					if (suffix != "txt")
+					string suffix = STR(i) + "_" + STR(partNum);
+					string outfile = GetOutputFileName(infile, suffix);
 					{
-						outfile = GetOutputFileName(outfile, suffix, true);
+						string suffix = kFormatSuffixes[fileFormat];
+						if (suffix != "txt")
+						{
+							outfile = GetOutputFileName(outfile, suffix, true);
+						}
 					}
+					Pval(outfile);
+					write(parts[i], outfile, fileFormat);
 				}
-				Pval(outfile);
-				write(parts[i], outfile, fileFormat);
 			}
 		}
 

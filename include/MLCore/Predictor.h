@@ -92,7 +92,7 @@ namespace gezi {
 		{
 			return Output(instance.features);
 		}
-		
+
 		//在Melt.h 统一使用虚函数接口  输入是 InstancePtr
 		virtual Float Output(InstancePtr instance)
 		{
@@ -117,6 +117,7 @@ namespace gezi {
 			return namedFeatures;
 		}
 
+		//@TODO 考虑尽可能 输入 const 否则容易引起混淆错误
 		Float Output(Vector& features)
 		{
 			if (_normalizer != nullptr && !features.normalized)
@@ -184,9 +185,18 @@ namespace gezi {
 			return Predict(instance->features);
 		}
 
+		//@TODO  提供const 版本
 		Float Predict(Vector& features)
 		{
-			return Predict(Output(features));
+			if (GetPredictionKind() == PredictionKind::Regression
+				|| GetPredictionKind() == PredictionKind::MultiOutputRegression)
+			{
+				return Output(features);
+			}
+			else
+			{
+				return Predict(Output(features));
+			}
 		}
 
 		Float Predict(Instance& instance, Float& output)

@@ -273,6 +273,7 @@ namespace gezi {
 		{
 			return PredictionKind::BinaryClassification;
 		}
+
 		virtual vector<DatasetMetricsPtr> ConstructDatasetMetrics()
 		{
 			return vector<DatasetMetricsPtr>({

@@ -321,6 +321,15 @@ namespace gezi {
 		string _textModelPath;
 	};
 
+	class FastRankRegressionPredictor : public FastRankPredictor
+	{
+	public:
+		using FastRankPredictor::FastRankPredictor;
+		virtual PredictionKind GetPredictionKind()
+		{
+			return PredictionKind::Regression;
+		}
+	};
 }  //----end of namespace gezi
 
 #endif  //----end of PREDICTORS__FAST_RANK_PREDICTOR_H_
