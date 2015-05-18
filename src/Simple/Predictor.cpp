@@ -12,6 +12,8 @@
  */
 
 #include "Simple/Predictor.h"
+#define MELT_NO_THIRD_PREDICTOR
+#define  MELT_ONLINE
 #include "MLCore/Predictor.h"
 namespace gezi {
 	namespace simple {

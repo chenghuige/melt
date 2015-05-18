@@ -16,8 +16,10 @@
 
 #include "Predictors/LinearPredictor.h"
 #include "Predictors/FastRankPredictor.h"
+#ifndef MELT_NO_THIRD_PREDICTOR
 #include "Predictors/LibSVMPredictor.h"
 #include "Predictors/VWPredictor.h"
+#endif
 namespace gezi {
 
 	class PredictorFactory
@@ -76,10 +78,12 @@ namespace gezi {
 				return make_shared<LinearPredictor>();
 			case  PredictorType::FastRankBinaryClassification:
 				return make_shared<FastRankPredictor>();
+#ifndef MELT_NO_THIRD_PREDICTOR
 			case  PredictorType::LibSVM:
 				return make_shared<LibSVMPredictor>();
 			case PredictorType::VW:
 				return make_shared<VWPredictor>();
+#endif
 				//---- Regression
 			case PredictorType::FastRankRegression:
 				return make_shared<FastRankRegressionPredictor>();

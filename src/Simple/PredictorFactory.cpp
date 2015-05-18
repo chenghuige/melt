@@ -13,7 +13,8 @@
 
 #ifndef PREDICTOR_FACTORY_CPP_
 #define PREDICTOR_FACTORY_CPP_
-
+#define  MELT_NO_THIRD_PREDICTOR
+#define  MELT_ONLINE
 #include "Simple/PredictorFactory.h"
 #include "MLCore/PredictorFactory.h"
 #include "MLCore/Predictor.h"

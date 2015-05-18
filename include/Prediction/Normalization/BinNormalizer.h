@@ -41,7 +41,14 @@ namespace gezi {
 			};
 		}
 
+#ifndef MELT_ONLINE
 		void ParseArgs();
+#else 
+		void ParseArgs()
+		{
+
+		}
+#endif
 
 		BinNormalizer(string path)
 		{

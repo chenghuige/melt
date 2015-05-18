@@ -15,7 +15,6 @@
 #define SIMPLE__PREDICTOR_H_
 
 #include <vector>
-#include <utility>
 namespace gezi {
 	namespace simple {
 		/*注意输入都不是const,输入的vector会被改变*/
