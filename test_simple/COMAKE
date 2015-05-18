@@ -21,7 +21,6 @@ UBRPCFLAGS('--compack')
 
 INCPATHS('../include/')
 
-CONFIGS('ps/se/toolchain@base')
 CONFIGS('third-64/boost@base')
 CONFIGS('third-64/glog@base')
 LDFLAGS('-lpthread -static-libgcc -static-libstdc++')

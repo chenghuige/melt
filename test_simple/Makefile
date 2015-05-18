@@ -18,11 +18,7 @@ CPPFLAGS=-D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION="1.9.8.7"
 INCPATH=-I../include/
-DEP_INCPATH=-I../../../../../../ps/se/toolchain \
-  -I../../../../../../ps/se/toolchain/include \
-  -I../../../../../../ps/se/toolchain/output \
-  -I../../../../../../ps/se/toolchain/output/include \
-  -I../../../../../../third-64/boost \
+DEP_INCPATH=-I../../../../../../third-64/boost \
   -I../../../../../../third-64/boost/include \
   -I../../../../../../third-64/boost/output \
   -I../../../../../../third-64/boost/output/include \
@@ -41,7 +37,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=581e92bf81ced52a5a1b588e19882c7e  COMAKE
+COMAKE_MD5=5057cd2f7cd90f2c3c4718eed0aff2f5  COMAKE
 
 
 .PHONY:all
