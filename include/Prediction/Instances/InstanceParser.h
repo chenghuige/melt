@@ -95,6 +95,7 @@ namespace gezi {
 			bool keepSparse = false; //sparse|
 			bool keepDense = false; //dense|
 			string inputFormat = "normal";//format|support melt/tlc format as normal, also support libSVM, may support weka/arff, malloc format later
+			int libsvmStartIndex = 1;
 
 			string resultDir = "";//rd|
 		};
@@ -882,7 +883,7 @@ namespace gezi {
 		{
 			VLOG(0) << "CreateInstancesFromLibSVMFormat";
 			uint64 end = start + _instanceNum;
-			int maxIndex = 1;
+			int maxIndex = _args.libsvmStartIndex;
 			//char sep = GuessSeparator(lines[0], "\t "); //已经在ParseFirstLine的时候确定了
 			char sep = _sep[0];
 #pragma omp parallel for reduction(max : maxIndex)
@@ -894,9 +895,9 @@ namespace gezi {
 				Vector& features = instance.features;;
 
 				splits_int_double(line, sep, ':', [&, this](int index, Float value) {
-					if (_selectedArray[index - 1])
+					if (_selectedArray[index - _args.libsvmStartIndex])
 					{
-						features.Add(index - 1, value);
+						features.Add(index - _args.libsvmStartIndex, value);
 					}
 
 					if (index > maxIndex)
@@ -933,7 +934,7 @@ namespace gezi {
 				//					features.Add(index - 1, value); //libsvm 是1开始 melt/tlc内部0开始处理
 				//				}
 			}
-			_featureNum = maxIndex;
+			_featureNum = _args.libsvmStartIndex == 1 ? maxIndex : maxIndex + 1;
 			_instances.schema.featureNames.SetNumFeatures(_featureNum);
 			return move(_instances);
 		}

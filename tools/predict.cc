@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 {
 	google::InitGoogleLogging(argv[0]);
 	google::InstallFailureSignalHandler();
+        google::SetVersionString(get_version());
 	int s = google::ParseCommandLineFlags(&argc, &argv, false);
 	if (FLAGS_log_dir.empty())
 		FLAGS_logtostderr = true;

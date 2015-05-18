@@ -22,8 +22,6 @@ DEFINE_int32(vl, 0, "vlog level");
 DECLARE_string(c);
 DECLARE_bool(quiet);
 
-const char* const kVersion = VERSION;
-
 void ShowMeltHelp()
 {
 	cout << "\n";
@@ -43,7 +41,7 @@ int main(int argc, char *argv[])
 {
 	google::InitGoogleLogging(argv[0]);
 	google::InstallFailureSignalHandler();
-	google::SetVersionString(kVersion);
+	google::SetVersionString(get_version());
 
 	for (size_t i = 0; i < argc; i++)
 	{

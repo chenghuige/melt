@@ -7,8 +7,8 @@
  *
  *          \date   2014-04-13 18:24:51.525674
  *
- *  \Description: 
- *              
+ *  \Description:
+ *
  *  ==============================================================================
  */
 
@@ -22,14 +22,14 @@ namespace gezi {
 	class FastRankPredictor : public Predictor
 	{
 	public:
-		virtual string Name() override
+		virtual string Name()
 		{
-			return "FastRank";
+			return "gbdt";
 		}
 
 		FastRankPredictor() = default;
 
-		FastRankPredictor(vector<OnlineRegressionTree>& trees, CalibratorPtr calibrator, 
+		FastRankPredictor(vector<OnlineRegressionTree>& trees, CalibratorPtr calibrator,
 			svec&& featureNames)
 			:Predictor(nullptr, calibrator, featureNames)
 		{
@@ -217,14 +217,14 @@ namespace gezi {
 			{
 				tree.GainMap(features, m);
 			}
-			
+
 			return m;
 		}
 
 		string ToGainSummary(Vector& features)
 		{
 			map<int, double> m = GainMap(features);
-	
+
 			vector<pair<int, double> > sortedByGain;
 			sort_map_by_absvalue_reverse(m, sortedByGain);
 
@@ -234,7 +234,7 @@ namespace gezi {
 			{
 				ss << setiosflags(ios::left) << setfill(' ') << setw(40)
 					<< STR(id++) + ":" + _featureNames[item.first]
-					<< "\t" << m[item.first] 
+					<< "\t" << m[item.first]
 					<< "\t" << features[item.first]
 					<< endl;
 			}
@@ -292,8 +292,8 @@ namespace gezi {
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-		/*	ar & boost::serialization::base_object<Predictor>(*this);
-			ar & _trees;*/
+			/*	ar & boost::serialization::base_object<Predictor>(*this);
+				ar & _trees;*/
 			ar & CEREAL_BASE_OBJECT_NVP(Predictor);
 			ar & CEREAL_NVP(_trees);
 		}
@@ -309,7 +309,7 @@ namespace gezi {
 		}
 #endif // _DEBUG
 
-	private:
+	protected:
 #ifdef _DEBUG
 		vector<OnlineRegressionTree::DebugNode> _debugNodes;
 		bool _reverse = false;
@@ -325,6 +325,12 @@ namespace gezi {
 	{
 	public:
 		using FastRankPredictor::FastRankPredictor;
+
+		virtual string Name() override
+		{
+			return "gbdtRegression";
+		}
+
 		virtual PredictionKind GetPredictionKind()
 		{
 			return PredictionKind::Regression;

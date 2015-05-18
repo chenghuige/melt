@@ -165,19 +165,29 @@
     <ClCompile Include="src\vowpalwabbit\unique_sort.cc" />
     <ClCompile Include="src\vowpalwabbit\vwdll.cpp" />
     <ClCompile Include="src\Wrapper\PredictorFactory.cpp" />
+    <ClCompile Include="test\test_active_select.cc" />
+    <ClCompile Include="test\test_auc.cc" />
+    <ClCompile Include="test\test_bins.cc" />
+    <ClCompile Include="test\test_fastrank_classification.cc" />
+    <ClCompile Include="test\test_fastrank_loadtlc.cc" />
+    <ClCompile Include="test\test_fastrank_train.cc" />
+    <ClCompile Include="test\test_linearsvm_train.cc" />
+    <ClCompile Include="test\test_load_libsvm.cc" />
+    <ClCompile Include="test\test_normalize.cc" />
+    <ClCompile Include="test\test_normalize_copy.cc" />
+    <ClCompile Include="test\test_parse_input.cc" />
+    <ClCompile Include="test\test_plsa.cc" />
+    <ClCompile Include="test\test_seralize.cc" />
+    <ClCompile Include="test\test_seralize2.cc" />
+    <ClCompile Include="test\test_shared_predictors.cc" />
+    <ClCompile Include="test\test_sim.cc" />
+    <ClCompile Include="test\test_vector.cc" />
+    <ClCompile Include="test\test_vw_read_example.cc" />
     <ClCompile Include="tools3\fastrank_predict.cc" />
     <ClCompile Include="tools3\melt.cc" />
     <ClCompile Include="tools3\PLSA\plsa.cc" />
-    <ClCompile Include="tools\active-learning\other\SampleSelect.cpp" />
-    <ClCompile Include="tools\active-learning\other\Strategy.cpp" />
-    <ClCompile Include="tools\bin_sampling.cc" />
-    <ClCompile Include="tools\calibrate.cc" />
     <ClCompile Include="tools\fastrank_predict.cc" />
-    <ClCompile Include="tools\fastrank_text2bin.cc" />
     <ClCompile Include="tools\melt.cc" />
-    <ClCompile Include="tools\PLSA\plsa.cc" />
-    <ClCompile Include="tools\predict.cc" />
-    <ClCompile Include="tools\vw.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\blas\blas.h" />
@@ -323,31 +333,9 @@
     <ClInclude Include="include\Wrapper\PredictorFactory.h" />
     <ClInclude Include="include\Wrapper\SharedPredictor.h" />
     <ClInclude Include="include\Wrapper\SharedPredictors.h" />
-    <ClInclude Include="tools\active-learning\other\Sample.h" />
-    <ClInclude Include="tools\active-learning\other\Strategy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="tools\active-learning\gbdt\model2\calibrator.bin" />
-    <None Include="tools\active-learning\gbdt\model2\model.bin" />
-    <None Include="tools\active-learning\gbdt\model3\calibrator.bin" />
-    <None Include="tools\active-learning\gbdt\model3\model.bin" />
-    <None Include="tools\active-learning\gbdt\model4\calibrator.bin" />
-    <None Include="tools\active-learning\gbdt\model4\model.bin" />
-    <None Include="tools\active-learning\gbdt\model\calibrator.bin" />
-    <None Include="tools\active-learning\gbdt\model\model.bin" />
-    <None Include="tools\active-learning\gbdt\model\normalizer.bin" />
-    <None Include="tools\data\test.20140115-0304\feature\feature.def" />
-    <None Include="tools\data\thread.20140319-1444\feature\feature.def" />
-    <None Include="tools\data\train.20140316.all\feature\feature.def" />
-    <None Include="tools\data\train.v1\feature\feature.def" />
-    <None Include="tools\data\train.v1\train\feature.def" />
-    <None Include="tools\PLSA\data\ltrate.reply.model\identifer.bin" />
-    <None Include="tools\PLSA\data\ltrate.thread.model\identifer.bin" />
-    <None Include="tools\PLSA\data\plsa.model\identifer.bin" />
-    <None Include="tools\PLSA\data\rsc.model\identifer.bin" />
-    <None Include="tools\PLSA\identifer.bin" />
-    <None Include="tools\PLSA\plsa.model\identifer.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

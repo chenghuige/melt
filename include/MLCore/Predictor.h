@@ -45,6 +45,8 @@ namespace gezi {
 	//var stronglyTypedPredictor = predictor as IPredictor<Instance, float>;
 	//dvec Predicts(const Vector&) 
 	//double Predict(const Vector&, dvec&)
+	//@TODO 是否直接seralize整个PredictorPtr更方便 尝试cereal序列化shared ptr 但是可能不如现有分别序列化model,calibrator,normalizer更加清晰
+	//当前设计利用文本存储名字的方式 手工存储shared ptr
 	class Predictor : public LoadSave
 	{
 	public:

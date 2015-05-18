@@ -23,6 +23,7 @@ DEFINE_string(sep, "tab", "or space or something like , ; etc.");
 DEFINE_string(ncsep, "|", "contact names filed like pid|title|content 4003|good title|good content");
 DEFINE_string(excl, "", "excl vs. incl determines whether features for the expression below are included or excluded. expression=[s:substringList | r:regexList | i:indexList | e:exactNameList]");
 DEFINE_string(incl, "", "use excl will exlude those specified, use incl will only include those specified, use incl + excl means first incl then excl");
+DEFINE_int32(libsvmSI, 1, "For non libsvm sparse input file the startIndex is 0, for default libsvm startIndex is 1, here will also allow 0 start libsvm");
 DEFINE_bool(sparse, false, "keep sparse");
 DEFINE_bool(dense, false, "keep dense");
 DECLARE_string(format);
@@ -45,6 +46,7 @@ namespace gezi {
 		_args.keepDense = FLAGS_dense;
 		_args.inputFormat = FLAGS_format;
 		_args.resultDir = FLAGS_rd;
+		_args.libsvmStartIndex = FLAGS_libsvmSI;
 	}
 
 }  //----end of namespace gezi

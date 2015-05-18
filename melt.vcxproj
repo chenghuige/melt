@@ -165,9 +165,29 @@
     <ClCompile Include="src\vowpalwabbit\unique_sort.cc" />
     <ClCompile Include="src\vowpalwabbit\vwdll.cpp" />
     <ClCompile Include="src\Wrapper\PredictorFactory.cpp" />
+    <ClCompile Include="test\test_active_select.cc" />
+    <ClCompile Include="test\test_auc.cc" />
+    <ClCompile Include="test\test_bins.cc" />
+    <ClCompile Include="test\test_fastrank_classification.cc" />
+    <ClCompile Include="test\test_fastrank_loadtlc.cc" />
+    <ClCompile Include="test\test_fastrank_train.cc" />
+    <ClCompile Include="test\test_linearsvm_train.cc" />
+    <ClCompile Include="test\test_load_libsvm.cc" />
+    <ClCompile Include="test\test_normalize.cc" />
+    <ClCompile Include="test\test_normalize_copy.cc" />
+    <ClCompile Include="test\test_parse_input.cc" />
+    <ClCompile Include="test\test_plsa.cc" />
+    <ClCompile Include="test\test_seralize.cc" />
+    <ClCompile Include="test\test_seralize2.cc" />
+    <ClCompile Include="test\test_shared_predictors.cc" />
+    <ClCompile Include="test\test_sim.cc" />
+    <ClCompile Include="test\test_vector.cc" />
+    <ClCompile Include="test\test_vw_read_example.cc" />
     <ClCompile Include="tools3\fastrank_predict.cc" />
     <ClCompile Include="tools3\melt.cc" />
     <ClCompile Include="tools3\PLSA\plsa.cc" />
+    <ClCompile Include="tools\fastrank_predict.cc" />
+    <ClCompile Include="tools\melt.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\blas\blas.h" />
@@ -238,6 +258,7 @@
     <ClInclude Include="include\Testers\RankerTester.h" />
     <ClInclude Include="include\Testers\RegressorTester.h" />
     <ClInclude Include="include\Testers\Tester.h" />
+    <ClInclude Include="include\Testers\testers.h" />
     <ClInclude Include="include\Tools\FeatureStatus.h" />
     <ClInclude Include="include\TopicModel\PLSA\plsa.h" />
     <ClInclude Include="include\TopicModel\PLSA\PLSAModel.h" />

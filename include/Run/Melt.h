@@ -187,12 +187,9 @@ namespace gezi {
 					//------------------------------------Train
 					TrainerPtr trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
 					CHECK(trainer != nullptr);
-					if (foldIdx == 0)
-					{
-						VLOG(0) << "Folds " << foldIdx << " are trained with " << trainData.Size() << " instances, and tested on " << testData.Size() << " instances";
-						PVAL3(trainData[0]->name, trainData.PositiveCount(), trainData.NegativeCount());
-						PVAL3(testData[0]->name, testData.PositiveCount(), testData.NegativeCount());
-					}
+					VLOG(0) << "Folds " << foldIdx << " are trained with " << trainData.Size() << " instances, and tested on " << testData.Size() << " instances";
+					PVAL3(trainData[0]->name, trainData.PositiveCount(), trainData.NegativeCount());
+					PVAL3(testData[0]->name, testData.PositiveCount(), testData.NegativeCount());
 
 					trainer->SetNormalizeCopy();
 					trainer->Train(trainData);
@@ -581,21 +578,21 @@ namespace gezi {
 		}
 
 #define  SAVE_SHARED_PTR_ALL(obj)\
-						{\
+		{\
 		SAVE_SHARED_PTR(obj, _cmd.modelFolder); \
 		if (_cmd.modelfileXml)\
-						{\
+		{\
 		SAVE_SHARED_PTR_ASXML(obj, _cmd.modelFolder); \
-						}\
+		}\
 		if (_cmd.modelfileJson)\
-						{\
+		{\
 		SAVE_SHARED_PTR_ASJSON(obj, _cmd.modelFolder); \
-						}\
+		}\
 		if (_cmd.modelfileText)\
-						{\
+		{\
 		SAVE_SHARED_PTR_ASTEXT(obj, _cmd.modelFolder); \
-						}\
-						}
+		}\
+		}
 
 		void RunNormalize()
 		{

@@ -25,15 +25,18 @@ namespace gezi {
 	public:
 		enum class PredictorType
 		{
+			//-------------- BinaryClassification
 			Unknown,
 			Linear,
-			BinaryClassificationFastRank,
+			FastRankBinaryClassification,
 			RandomForest,
 			DecisionTree,
 			KernalSVM,
 			BinaryNeuralNetwork,
 			VW,
 			LibSVM,
+			//------------- Regression
+			FastRankRegression,
 		};
 
 		static PredictorPtr CreatePredictor(string name)
@@ -44,10 +47,9 @@ namespace gezi {
 				{ "linearsvm", PredictorType::Linear },
 				{ "sofia", PredictorType::Linear },
 				{ "liblinear", PredictorType::Linear },
-				{ "binaryclassificationfastrank", PredictorType::BinaryClassificationFastRank },
-				{ "fastrank", PredictorType::BinaryClassificationFastRank },
-				{ "fr", PredictorType::BinaryClassificationFastRank },
-				{ "gbdt", PredictorType::BinaryClassificationFastRank },
+				{ "fastrank", PredictorType::FastRankBinaryClassification },
+				{ "fr", PredictorType::FastRankBinaryClassification },
+				{ "gbdt", PredictorType::FastRankBinaryClassification },
 				{ "randomforest", PredictorType::RandomForest },
 				{ "rf", PredictorType::RandomForest },
 				{ "decisiontree", PredictorType::DecisionTree },
@@ -58,6 +60,10 @@ namespace gezi {
 				{ "neural", PredictorType::BinaryNeuralNetwork },
 				{ "vw", PredictorType::VW },
 				{ "libsvm", PredictorType::LibSVM },
+				{"fastrankregression", PredictorType::FastRankRegression},
+				{ "gbdtregression", PredictorType::FastRankRegression },
+				{ "frr", PredictorType::FastRankRegression },
+				{ "gbrt", PredictorType::FastRankRegression },
 			};
 
 			name = arg(name);
@@ -65,18 +71,21 @@ namespace gezi {
 			PredictorType predictorType = _predictorTypes[name];
 			switch (predictorType)
 			{
+				//------ Binary Classification
 			case PredictorType::Linear:
 				return make_shared<LinearPredictor>();
-			case  PredictorType::BinaryClassificationFastRank:
+			case  PredictorType::FastRankBinaryClassification:
 				return make_shared<FastRankPredictor>();
 			case  PredictorType::LibSVM:
 				return make_shared<LibSVMPredictor>();
 			case PredictorType::VW:
 				return make_shared<VWPredictor>();
+				//---- Regression
+			case PredictorType::FastRankRegression:
+				return make_shared<FastRankRegressionPredictor>();
 			default:
 				break;
 			}
-
 
 			LOG(WARNING) << name << " is not supported now, return nullptr";
 			return nullptr;
