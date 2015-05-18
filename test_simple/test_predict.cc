@@ -15,7 +15,6 @@
 #include <iostream>
 #include <stdio.h>
 
-#define  MELT_NO_THIRD_PREDICTOR
 #include "PredictorFactory.h"
 
 using namespace std;
