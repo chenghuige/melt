@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 {
 	using gezi::simple::Predictor;
 	using gezi::simple::PredictorFactory;
-	Predictor predictor = PredictorFactory::LoadPredictor("./thread.model");
+	Predictor predictor = PredictorFactory::LoadPredictor("./model");
 
 	{
 		vector<int> indices;
