@@ -169,7 +169,6 @@ namespace gezi {
 
 		BitArray _included;
 	};
-
 }  //----end of namespace gezi
-
+CEREAL_REGISTER_TYPE(gezi::BinNormalizer);
 #endif  //----end of PREDICTION__NORMALIZATION__BIN_NORMALIZER_H_

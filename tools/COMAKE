@@ -112,6 +112,7 @@ Application('predict',Sources('predict.cc',srcs))
 Application('fastrank_text2bin',Sources('fastrank_text2bin.cc',srcs))
 #Application('fastrank_predict',Sources('fastrank_predict.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 Application('fastrank_predict',Sources('fastrank_predict.cc',srcs))
+Application('fastrank2gcc3',Sources('fastrank2gcc3.cc',srcs))
 
 Application('bin_sampling',Sources('bin_sampling.cc',srcs))
 
@@ -128,3 +129,4 @@ Application('vw',Sources('vw.cc',srcs))
 srcs  = GLOB('../src/vowpalwabbit/*.cc')
 Application('vw.debug',Sources('vw.cc',srcs, ENV.CppFlags()+CppFlags('-O0')))
 #Application('bin_sampling',Sources('bin_sampling.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
+#Application('fastrank2gcc3',Sources('fastrank2gcc3.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))

@@ -69,6 +69,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="gcc3\predict.cc" />
     <ClCompile Include="main\liblinear\predict.c" />
     <ClCompile Include="main\liblinear\train.c" />
     <ClCompile Include="main\libsvm\svm-predict.c" />
@@ -169,10 +170,14 @@
     <ClCompile Include="tools3\fastrank_predict.cc" />
     <ClCompile Include="tools3\melt.cc" />
     <ClCompile Include="tools3\PLSA\plsa.cc" />
+    <ClCompile Include="tools\calibrate.cc" />
+    <ClCompile Include="tools\fastrank2gcc3.cc" />
+    <ClCompile Include="tools\fastrank_predict.cc" />
     <ClCompile Include="tools\melt.cc" />
     <ClCompile Include="tools\vw.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="gcc3\GbdtPredictor.h" />
     <ClInclude Include="include\blas\blas.h" />
     <ClInclude Include="include\blas\blasp.h" />
     <ClInclude Include="include\liblinear\linear.h" />
@@ -227,6 +232,8 @@
     <ClInclude Include="include\Run\CVFoldCreator.h" />
     <ClInclude Include="include\Run\Melt.h" />
     <ClInclude Include="include\Run\MeltArguments.h" />
+    <ClInclude Include="include\Simple\Predictor.h" />
+    <ClInclude Include="include\Simple\PredictorFactory.h" />
     <ClInclude Include="include\sofia\sf-data-set.h" />
     <ClInclude Include="include\sofia\sf-hash-inline.h" />
     <ClInclude Include="include\sofia\sf-hash-weight-vector.h" />

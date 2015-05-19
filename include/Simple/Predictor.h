@@ -30,7 +30,7 @@ namespace gezi {
 			//output返回回归实数值，函数返回[0-1]概率值
 			double Predict(std::vector<double>& values, double& output);
 
-			//----------------输入向量稠密表示
+			//----------------输入向量稀疏表示
 			double Output(std::vector<int>& indices, std::vector<double>& values);
 			double Predict(std::vector<int>& indices, std::vector<double>& values);
 			double Predict(std::vector<int>& indices, std::vector<double>& values, double& output);

@@ -106,5 +106,5 @@ namespace gezi {
 	};
 
 }  //----end of namespace gezi
-
+CEREAL_REGISTER_TYPE(gezi::MinMaxNormalizer);
 #endif  //----end of PREDICTION__NORMALIZATION__MIN_MAX_NORMALIZER_H_

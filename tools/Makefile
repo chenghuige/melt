@@ -35,7 +35,7 @@ CFLAGS=-g \
   -fopenmp
 CPPFLAGS=-D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\"
+  -DVERSION=\"1.9.8.7\"
 INCPATH=-I../ \
   -I../include/ \
   -I../include/vowpalwabbit/ \
@@ -159,11 +159,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=caa8fbe7ab581f8d26e083121c2024c1  COMAKE
+COMAKE_MD5=51e434a14a7c1e41b644df54f52e74c3  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check calibrate predict fastrank_text2bin fastrank_predict melt melt.debug vw vw.debug
+all:comake2_makefile_check calibrate predict fastrank_text2bin fastrank_predict fastrank2gcc3 bin_sampling melt melt.debug vw vw.debug 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -191,6 +191,10 @@ clean:ccpclean
 	rm -rf ./output/bin/fastrank_text2bin
 	rm -rf fastrank_predict
 	rm -rf ./output/bin/fastrank_predict
+	rm -rf fastrank2gcc3
+	rm -rf ./output/bin/fastrank2gcc3
+	rm -rf bin_sampling
+	rm -rf ./output/bin/bin_sampling
 	rm -rf melt
 	rm -rf ./output/bin/melt
 	rm -rf melt.debug
@@ -203,6 +207,8 @@ clean:ccpclean
 	rm -rf predict_predict.o
 	rm -rf fastrank_text2bin_fastrank_text2bin.o
 	rm -rf fastrank_predict_fastrank_predict.o
+	rm -rf fastrank2gcc3_fastrank2gcc3.o
+	rm -rf bin_sampling_bin_sampling.o
 	rm -rf melt_melt.o
 	rm -rf ../src/Wrapper/melt_PredictorFactory.o
 	rm -rf ../src/Prediction/Instances/melt_InstanceParser.o
@@ -271,7 +277,6 @@ clean:ccpclean
 	rm -rf ../src/vowpalwabbit/melt.debug_stagewise_poly.o
 	rm -rf ../src/vowpalwabbit/melt.debug_topk.o
 	rm -rf ../src/vowpalwabbit/melt.debug_unique_sort.o
-	rm -rf ../src/vowpalwabbit/melt.debug_vwdll.o
 	rm -rf vw_vw.o
 	rm -rf ../src/Wrapper/vw_PredictorFactory.o
 	rm -rf ../src/Prediction/Instances/vw_InstanceParser.o
@@ -332,7 +337,6 @@ clean:ccpclean
 	rm -rf ../src/vowpalwabbit/vw_stagewise_poly.o
 	rm -rf ../src/vowpalwabbit/vw_topk.o
 	rm -rf ../src/vowpalwabbit/vw_unique_sort.o
-	rm -rf ../src/vowpalwabbit/vw_vwdll.o
 	rm -rf vw.debug_vw.o
 	rm -rf ../src/vowpalwabbit/vw.debug_accumulate.o
 	rm -rf ../src/vowpalwabbit/vw.debug_active.o
@@ -876,6 +880,242 @@ fastrank_predict:fastrank_predict_fastrank_predict.o \
 	mkdir -p ./output/bin
 	cp -f --link fastrank_predict ./output/bin
 
+fastrank2gcc3:fastrank2gcc3_fastrank2gcc3.o \
+  ../libmelt.a \
+  ../libsofia.a \
+  ../libvw.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank2gcc3[0m']"
+	$(CXX) fastrank2gcc3_fastrank2gcc3.o -Xlinker "-(" ../libmelt.a \
+  ../libsofia.a \
+  ../libvw.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../com/btest/gtest/output/lib/libgtest.a \
+  ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_archive.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_buffer.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_check_cast.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_exception.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_pool.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_utils.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var_implement.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var_utils.a \
+  ../../../../../../lib2-64/ccode/lib/libulccode.a \
+  ../../../../../../lib2-64/dict/lib/libuldict.a \
+  ../../../../../../lib2-64/libcrf/lib/libcrf.a \
+  ../../../../../../lib2-64/others-ex/lib/libullib_ex.a \
+  ../../../../../../lib2-64/postag/lib/libpostag.a \
+  ../../../../../../lib2-64/ullib/lib/libullib.a \
+  ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
+  ../../../../../../public/comlog-plugin/libcomlog.a \
+  ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
+  ../../../../../../public/configure/libconfig.a \
+  ../../../../../../public/connectpool/libconnectpool.a \
+  ../../../../../../public/odict/libodict.a \
+  ../../../../../../public/spreg/libspreg.a \
+  ../../../../../../public/uconv/libuconv.a \
+  ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
+  ../../../../../../third-64/boost/lib/libboost_atomic.a \
+  ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_date_time.a \
+  ../../../../../../third-64/boost/lib/libboost_exception.a \
+  ../../../../../../third-64/boost/lib/libboost_filesystem.a \
+  ../../../../../../third-64/boost/lib/libboost_graph.a \
+  ../../../../../../third-64/boost/lib/libboost_locale.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99f.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99l.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
+  ../../../../../../third-64/boost/lib/libboost_program_options.a \
+  ../../../../../../third-64/boost/lib/libboost_python.a \
+  ../../../../../../third-64/boost/lib/libboost_random.a \
+  ../../../../../../third-64/boost/lib/libboost_regex.a \
+  ../../../../../../third-64/boost/lib/libboost_serialization.a \
+  ../../../../../../third-64/boost/lib/libboost_signals.a \
+  ../../../../../../third-64/boost/lib/libboost_system.a \
+  ../../../../../../third-64/boost/lib/libboost_test_exec_monitor.a \
+  ../../../../../../third-64/boost/lib/libboost_thread.a \
+  ../../../../../../third-64/boost/lib/libboost_timer.a \
+  ../../../../../../third-64/boost/lib/libboost_unit_test_framework.a \
+  ../../../../../../third-64/boost/lib/libboost_wave.a \
+  ../../../../../../third-64/boost/lib/libboost_wserialization.a \
+  ../../../../../../third-64/gflags/lib/libgflags.a \
+  ../../../../../../third-64/gflags/lib/libgflags_nothreads.a \
+  ../../../../../../third-64/glog/lib/libglog.a \
+  ../../../../../../third-64/gtest/lib/libgtest.a \
+  ../../../../../../third-64/gtest/lib/libgtest_main.a \
+  ../../../../../../third-64/libcurl/lib/libcurl.a \
+  ../../../../../../third-64/pcre/lib/libpcre.a \
+  ../../../../../../third-64/pcre/lib/libpcrecpp.a \
+  ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_debug.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal_debug.a \
+  ../../../../../../third-64/zlib/lib/libz.a -lpthread \
+  -lrt \
+  -ldl \
+  -rdynamic \
+  -lgomp -Xlinker "-)" -o fastrank2gcc3
+	mkdir -p ./output/bin
+	cp -f --link fastrank2gcc3 ./output/bin
+
+bin_sampling:bin_sampling_bin_sampling.o \
+  ../libmelt.a \
+  ../libsofia.a \
+  ../libvw.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mbin_sampling[0m']"
+	$(CXX) bin_sampling_bin_sampling.o -Xlinker "-(" ../libmelt.a \
+  ../libsofia.a \
+  ../libvw.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../com/btest/gtest/output/lib/libgtest.a \
+  ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_archive.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_buffer.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_check_cast.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_exception.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_pool.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_utils.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var_implement.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var_utils.a \
+  ../../../../../../lib2-64/ccode/lib/libulccode.a \
+  ../../../../../../lib2-64/dict/lib/libuldict.a \
+  ../../../../../../lib2-64/libcrf/lib/libcrf.a \
+  ../../../../../../lib2-64/others-ex/lib/libullib_ex.a \
+  ../../../../../../lib2-64/postag/lib/libpostag.a \
+  ../../../../../../lib2-64/ullib/lib/libullib.a \
+  ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
+  ../../../../../../public/comlog-plugin/libcomlog.a \
+  ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
+  ../../../../../../public/configure/libconfig.a \
+  ../../../../../../public/connectpool/libconnectpool.a \
+  ../../../../../../public/odict/libodict.a \
+  ../../../../../../public/spreg/libspreg.a \
+  ../../../../../../public/uconv/libuconv.a \
+  ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
+  ../../../../../../third-64/boost/lib/libboost_atomic.a \
+  ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_date_time.a \
+  ../../../../../../third-64/boost/lib/libboost_exception.a \
+  ../../../../../../third-64/boost/lib/libboost_filesystem.a \
+  ../../../../../../third-64/boost/lib/libboost_graph.a \
+  ../../../../../../third-64/boost/lib/libboost_locale.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99f.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99l.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
+  ../../../../../../third-64/boost/lib/libboost_program_options.a \
+  ../../../../../../third-64/boost/lib/libboost_python.a \
+  ../../../../../../third-64/boost/lib/libboost_random.a \
+  ../../../../../../third-64/boost/lib/libboost_regex.a \
+  ../../../../../../third-64/boost/lib/libboost_serialization.a \
+  ../../../../../../third-64/boost/lib/libboost_signals.a \
+  ../../../../../../third-64/boost/lib/libboost_system.a \
+  ../../../../../../third-64/boost/lib/libboost_test_exec_monitor.a \
+  ../../../../../../third-64/boost/lib/libboost_thread.a \
+  ../../../../../../third-64/boost/lib/libboost_timer.a \
+  ../../../../../../third-64/boost/lib/libboost_unit_test_framework.a \
+  ../../../../../../third-64/boost/lib/libboost_wave.a \
+  ../../../../../../third-64/boost/lib/libboost_wserialization.a \
+  ../../../../../../third-64/gflags/lib/libgflags.a \
+  ../../../../../../third-64/gflags/lib/libgflags_nothreads.a \
+  ../../../../../../third-64/glog/lib/libglog.a \
+  ../../../../../../third-64/gtest/lib/libgtest.a \
+  ../../../../../../third-64/gtest/lib/libgtest_main.a \
+  ../../../../../../third-64/libcurl/lib/libcurl.a \
+  ../../../../../../third-64/pcre/lib/libpcre.a \
+  ../../../../../../third-64/pcre/lib/libpcrecpp.a \
+  ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_debug.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal_debug.a \
+  ../../../../../../third-64/zlib/lib/libz.a -lpthread \
+  -lrt \
+  -ldl \
+  -rdynamic \
+  -lgomp -Xlinker "-)" -o bin_sampling
+	mkdir -p ./output/bin
+	cp -f --link bin_sampling ./output/bin
+
 melt:melt_melt.o \
   ../src/Wrapper/melt_PredictorFactory.o \
   ../src/Prediction/Instances/melt_InstanceParser.o \
@@ -1068,7 +1308,6 @@ melt.debug:melt.debug_melt.o \
   ../src/vowpalwabbit/melt.debug_stagewise_poly.o \
   ../src/vowpalwabbit/melt.debug_topk.o \
   ../src/vowpalwabbit/melt.debug_unique_sort.o \
-  ../src/vowpalwabbit/melt.debug_vwdll.o \
   ../libmelt.a \
   ../libsofia.a \
   ../libvw.a \
@@ -1145,8 +1384,7 @@ melt.debug:melt.debug_melt.o \
   ../src/vowpalwabbit/melt.debug_simple_label.o \
   ../src/vowpalwabbit/melt.debug_stagewise_poly.o \
   ../src/vowpalwabbit/melt.debug_topk.o \
-  ../src/vowpalwabbit/melt.debug_unique_sort.o \
-  ../src/vowpalwabbit/melt.debug_vwdll.o -Xlinker "-(" ../libmelt.a \
+  ../src/vowpalwabbit/melt.debug_unique_sort.o -Xlinker "-(" ../libmelt.a \
   ../libsofia.a \
   ../libvw.a \
   ../libblas.a \
@@ -1306,7 +1544,6 @@ vw:vw_vw.o \
   ../src/vowpalwabbit/vw_stagewise_poly.o \
   ../src/vowpalwabbit/vw_topk.o \
   ../src/vowpalwabbit/vw_unique_sort.o \
-  ../src/vowpalwabbit/vw_vwdll.o \
   ../libmelt.a \
   ../libsofia.a \
   ../libvw.a \
@@ -1383,8 +1620,7 @@ vw:vw_vw.o \
   ../src/vowpalwabbit/vw_simple_label.o \
   ../src/vowpalwabbit/vw_stagewise_poly.o \
   ../src/vowpalwabbit/vw_topk.o \
-  ../src/vowpalwabbit/vw_unique_sort.o \
-  ../src/vowpalwabbit/vw_vwdll.o -Xlinker "-(" ../libmelt.a \
+  ../src/vowpalwabbit/vw_unique_sort.o -Xlinker "-(" ../libmelt.a \
   ../libsofia.a \
   ../libvw.a \
   ../libblas.a \
@@ -1722,6 +1958,14 @@ fastrank_predict_fastrank_predict.o:fastrank_predict.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_predict_fastrank_predict.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o fastrank_predict_fastrank_predict.o fastrank_predict.cc
 
+fastrank2gcc3_fastrank2gcc3.o:fastrank2gcc3.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank2gcc3_fastrank2gcc3.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o fastrank2gcc3_fastrank2gcc3.o fastrank2gcc3.cc
+
+bin_sampling_bin_sampling.o:bin_sampling.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mbin_sampling_bin_sampling.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o bin_sampling_bin_sampling.o bin_sampling.cc
+
 melt_melt.o:melt.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt_melt.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o melt_melt.o melt.cc
@@ -1758,428 +2002,421 @@ melt.debug_melt.o:melt.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt.debug_melt.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o melt.debug_melt.o melt.cc
 
 ../src/Wrapper/melt.debug_PredictorFactory.o:../src/Wrapper/PredictorFactory.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Wrapper/melt.debug_PredictorFactory.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/Wrapper/melt.debug_PredictorFactory.o ../src/Wrapper/PredictorFactory.cpp
 
 ../src/Prediction/Instances/melt.debug_InstanceParser.o:../src/Prediction/Instances/InstanceParser.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Prediction/Instances/melt.debug_InstanceParser.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/Prediction/Instances/melt.debug_InstanceParser.o ../src/Prediction/Instances/InstanceParser.cpp
 
 ../src/Run/melt.debug_Melt.o:../src/Run/Melt.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Run/melt.debug_Melt.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/Run/melt.debug_Melt.o ../src/Run/Melt.cpp
 
 ../src/Testers/melt.debug_ClassifierTester.o:../src/Testers/ClassifierTester.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/melt.debug_ClassifierTester.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/Testers/melt.debug_ClassifierTester.o ../src/Testers/ClassifierTester.cpp
 
 ../src/Prediction/Normalization/melt.debug_BinNormalizer.o:../src/Prediction/Normalization/BinNormalizer.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Prediction/Normalization/melt.debug_BinNormalizer.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/Prediction/Normalization/melt.debug_BinNormalizer.o ../src/Prediction/Normalization/BinNormalizer.cpp
 
 ../src/Predictors/melt.debug_LibSVMPredictor.o:../src/Predictors/LibSVMPredictor.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Predictors/melt.debug_LibSVMPredictor.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/Predictors/melt.debug_LibSVMPredictor.o ../src/Predictors/LibSVMPredictor.cpp
 
 ../src/Predictors/melt.debug_VWPredictor.o:../src/Predictors/VWPredictor.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Predictors/melt.debug_VWPredictor.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/Predictors/melt.debug_VWPredictor.o ../src/Predictors/VWPredictor.cpp
 
 ../src/vowpalwabbit/melt.debug_accumulate.o:../src/vowpalwabbit/accumulate.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_accumulate.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_accumulate.o ../src/vowpalwabbit/accumulate.cc
 
 ../src/vowpalwabbit/melt.debug_active.o:../src/vowpalwabbit/active.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_active.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_active.o ../src/vowpalwabbit/active.cc
 
 ../src/vowpalwabbit/melt.debug_allreduce.o:../src/vowpalwabbit/allreduce.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_allreduce.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_allreduce.o ../src/vowpalwabbit/allreduce.cc
 
 ../src/vowpalwabbit/melt.debug_autolink.o:../src/vowpalwabbit/autolink.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_autolink.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_autolink.o ../src/vowpalwabbit/autolink.cc
 
 ../src/vowpalwabbit/melt.debug_bfgs.o:../src/vowpalwabbit/bfgs.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_bfgs.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_bfgs.o ../src/vowpalwabbit/bfgs.cc
 
 ../src/vowpalwabbit/melt.debug_binary.o:../src/vowpalwabbit/binary.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_binary.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_binary.o ../src/vowpalwabbit/binary.cc
 
 ../src/vowpalwabbit/melt.debug_bs.o:../src/vowpalwabbit/bs.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_bs.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_bs.o ../src/vowpalwabbit/bs.cc
 
 ../src/vowpalwabbit/melt.debug_cache.o:../src/vowpalwabbit/cache.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_cache.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_cache.o ../src/vowpalwabbit/cache.cc
 
 ../src/vowpalwabbit/melt.debug_cb.o:../src/vowpalwabbit/cb.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_cb.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_cb.o ../src/vowpalwabbit/cb.cc
 
 ../src/vowpalwabbit/melt.debug_cb_algs.o:../src/vowpalwabbit/cb_algs.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_cb_algs.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_cb_algs.o ../src/vowpalwabbit/cb_algs.cc
 
 ../src/vowpalwabbit/melt.debug_cbify.o:../src/vowpalwabbit/cbify.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_cbify.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_cbify.o ../src/vowpalwabbit/cbify.cc
 
 ../src/vowpalwabbit/melt.debug_cost_sensitive.o:../src/vowpalwabbit/cost_sensitive.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_cost_sensitive.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_cost_sensitive.o ../src/vowpalwabbit/cost_sensitive.cc
 
 ../src/vowpalwabbit/melt.debug_csoaa.o:../src/vowpalwabbit/csoaa.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_csoaa.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_csoaa.o ../src/vowpalwabbit/csoaa.cc
 
 ../src/vowpalwabbit/melt.debug_ect.o:../src/vowpalwabbit/ect.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_ect.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_ect.o ../src/vowpalwabbit/ect.cc
 
 ../src/vowpalwabbit/melt.debug_example.o:../src/vowpalwabbit/example.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_example.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_example.o ../src/vowpalwabbit/example.cc
 
 ../src/vowpalwabbit/melt.debug_gd.o:../src/vowpalwabbit/gd.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_gd.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_gd.o ../src/vowpalwabbit/gd.cc
 
 ../src/vowpalwabbit/melt.debug_gd_mf.o:../src/vowpalwabbit/gd_mf.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_gd_mf.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_gd_mf.o ../src/vowpalwabbit/gd_mf.cc
 
 ../src/vowpalwabbit/melt.debug_global_data.o:../src/vowpalwabbit/global_data.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_global_data.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_global_data.o ../src/vowpalwabbit/global_data.cc
 
 ../src/vowpalwabbit/melt.debug_hash.o:../src/vowpalwabbit/hash.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_hash.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_hash.o ../src/vowpalwabbit/hash.cc
 
 ../src/vowpalwabbit/melt.debug_io_buf.o:../src/vowpalwabbit/io_buf.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_io_buf.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_io_buf.o ../src/vowpalwabbit/io_buf.cc
 
 ../src/vowpalwabbit/melt.debug_kernel_svm.o:../src/vowpalwabbit/kernel_svm.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_kernel_svm.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_kernel_svm.o ../src/vowpalwabbit/kernel_svm.cc
 
 ../src/vowpalwabbit/melt.debug_lda_core.o:../src/vowpalwabbit/lda_core.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_lda_core.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_lda_core.o ../src/vowpalwabbit/lda_core.cc
 
 ../src/vowpalwabbit/melt.debug_learner.o:../src/vowpalwabbit/learner.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_learner.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_learner.o ../src/vowpalwabbit/learner.cc
 
 ../src/vowpalwabbit/melt.debug_log_multi.o:../src/vowpalwabbit/log_multi.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_log_multi.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_log_multi.o ../src/vowpalwabbit/log_multi.cc
 
 ../src/vowpalwabbit/melt.debug_loss_functions.o:../src/vowpalwabbit/loss_functions.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_loss_functions.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_loss_functions.o ../src/vowpalwabbit/loss_functions.cc
 
 ../src/vowpalwabbit/melt.debug_lrq.o:../src/vowpalwabbit/lrq.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_lrq.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_lrq.o ../src/vowpalwabbit/lrq.cc
 
 ../src/vowpalwabbit/melt.debug_memory.o:../src/vowpalwabbit/memory.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_memory.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_memory.o ../src/vowpalwabbit/memory.cc
 
 ../src/vowpalwabbit/melt.debug_mf.o:../src/vowpalwabbit/mf.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_mf.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_mf.o ../src/vowpalwabbit/mf.cc
 
 ../src/vowpalwabbit/melt.debug_multiclass.o:../src/vowpalwabbit/multiclass.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_multiclass.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_multiclass.o ../src/vowpalwabbit/multiclass.cc
 
 ../src/vowpalwabbit/melt.debug_network.o:../src/vowpalwabbit/network.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_network.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_network.o ../src/vowpalwabbit/network.cc
 
 ../src/vowpalwabbit/melt.debug_nn.o:../src/vowpalwabbit/nn.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_nn.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_nn.o ../src/vowpalwabbit/nn.cc
 
 ../src/vowpalwabbit/melt.debug_noop.o:../src/vowpalwabbit/noop.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_noop.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_noop.o ../src/vowpalwabbit/noop.cc
 
 ../src/vowpalwabbit/melt.debug_oaa.o:../src/vowpalwabbit/oaa.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_oaa.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_oaa.o ../src/vowpalwabbit/oaa.cc
 
 ../src/vowpalwabbit/melt.debug_parse_args.o:../src/vowpalwabbit/parse_args.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_parse_args.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_parse_args.o ../src/vowpalwabbit/parse_args.cc
 
 ../src/vowpalwabbit/melt.debug_parse_example.o:../src/vowpalwabbit/parse_example.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_parse_example.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_parse_example.o ../src/vowpalwabbit/parse_example.cc
 
 ../src/vowpalwabbit/melt.debug_parse_primitives.o:../src/vowpalwabbit/parse_primitives.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_parse_primitives.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_parse_primitives.o ../src/vowpalwabbit/parse_primitives.cc
 
 ../src/vowpalwabbit/melt.debug_parse_regressor.o:../src/vowpalwabbit/parse_regressor.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_parse_regressor.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_parse_regressor.o ../src/vowpalwabbit/parse_regressor.cc
 
 ../src/vowpalwabbit/melt.debug_parser.o:../src/vowpalwabbit/parser.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_parser.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_parser.o ../src/vowpalwabbit/parser.cc
 
 ../src/vowpalwabbit/melt.debug_print.o:../src/vowpalwabbit/print.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_print.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_print.o ../src/vowpalwabbit/print.cc
 
 ../src/vowpalwabbit/melt.debug_rand48.o:../src/vowpalwabbit/rand48.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_rand48.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_rand48.o ../src/vowpalwabbit/rand48.cc
 
 ../src/vowpalwabbit/melt.debug_scorer.o:../src/vowpalwabbit/scorer.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_scorer.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_scorer.o ../src/vowpalwabbit/scorer.cc
 
 ../src/vowpalwabbit/melt.debug_search.o:../src/vowpalwabbit/search.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_search.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_search.o ../src/vowpalwabbit/search.cc
 
 ../src/vowpalwabbit/melt.debug_search_dep_parser.o:../src/vowpalwabbit/search_dep_parser.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_search_dep_parser.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_search_dep_parser.o ../src/vowpalwabbit/search_dep_parser.cc
 
 ../src/vowpalwabbit/melt.debug_search_entityrelationtask.o:../src/vowpalwabbit/search_entityrelationtask.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_search_entityrelationtask.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_search_entityrelationtask.o ../src/vowpalwabbit/search_entityrelationtask.cc
 
 ../src/vowpalwabbit/melt.debug_search_hooktask.o:../src/vowpalwabbit/search_hooktask.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_search_hooktask.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_search_hooktask.o ../src/vowpalwabbit/search_hooktask.cc
 
 ../src/vowpalwabbit/melt.debug_search_multiclasstask.o:../src/vowpalwabbit/search_multiclasstask.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_search_multiclasstask.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_search_multiclasstask.o ../src/vowpalwabbit/search_multiclasstask.cc
 
 ../src/vowpalwabbit/melt.debug_search_sequencetask.o:../src/vowpalwabbit/search_sequencetask.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_search_sequencetask.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_search_sequencetask.o ../src/vowpalwabbit/search_sequencetask.cc
 
 ../src/vowpalwabbit/melt.debug_sender.o:../src/vowpalwabbit/sender.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_sender.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_sender.o ../src/vowpalwabbit/sender.cc
 
 ../src/vowpalwabbit/melt.debug_simple_label.o:../src/vowpalwabbit/simple_label.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_simple_label.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_simple_label.o ../src/vowpalwabbit/simple_label.cc
 
 ../src/vowpalwabbit/melt.debug_stagewise_poly.o:../src/vowpalwabbit/stagewise_poly.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_stagewise_poly.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_stagewise_poly.o ../src/vowpalwabbit/stagewise_poly.cc
 
 ../src/vowpalwabbit/melt.debug_topk.o:../src/vowpalwabbit/topk.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_topk.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_topk.o ../src/vowpalwabbit/topk.cc
 
 ../src/vowpalwabbit/melt.debug_unique_sort.o:../src/vowpalwabbit/unique_sort.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_unique_sort.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_unique_sort.o ../src/vowpalwabbit/unique_sort.cc
-
-../src/vowpalwabbit/melt.debug_vwdll.o:../src/vowpalwabbit/vwdll.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/melt.debug_vwdll.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
-  -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/melt.debug_vwdll.o ../src/vowpalwabbit/vwdll.cpp
 
 vw_vw.o:vw.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mvw_vw.o[0m']"
@@ -2421,379 +2658,375 @@ vw_vw.o:vw.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw_unique_sort.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/vw_unique_sort.o ../src/vowpalwabbit/unique_sort.cc
 
-../src/vowpalwabbit/vw_vwdll.o:../src/vowpalwabbit/vwdll.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw_vwdll.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/vw_vwdll.o ../src/vowpalwabbit/vwdll.cpp
-
 vw.debug_vw.o:vw.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mvw.debug_vw.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o vw.debug_vw.o vw.cc
 
 ../src/vowpalwabbit/vw.debug_accumulate.o:../src/vowpalwabbit/accumulate.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_accumulate.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_accumulate.o ../src/vowpalwabbit/accumulate.cc
 
 ../src/vowpalwabbit/vw.debug_active.o:../src/vowpalwabbit/active.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_active.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_active.o ../src/vowpalwabbit/active.cc
 
 ../src/vowpalwabbit/vw.debug_allreduce.o:../src/vowpalwabbit/allreduce.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_allreduce.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_allreduce.o ../src/vowpalwabbit/allreduce.cc
 
 ../src/vowpalwabbit/vw.debug_autolink.o:../src/vowpalwabbit/autolink.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_autolink.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_autolink.o ../src/vowpalwabbit/autolink.cc
 
 ../src/vowpalwabbit/vw.debug_bfgs.o:../src/vowpalwabbit/bfgs.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_bfgs.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_bfgs.o ../src/vowpalwabbit/bfgs.cc
 
 ../src/vowpalwabbit/vw.debug_binary.o:../src/vowpalwabbit/binary.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_binary.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_binary.o ../src/vowpalwabbit/binary.cc
 
 ../src/vowpalwabbit/vw.debug_bs.o:../src/vowpalwabbit/bs.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_bs.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_bs.o ../src/vowpalwabbit/bs.cc
 
 ../src/vowpalwabbit/vw.debug_cache.o:../src/vowpalwabbit/cache.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_cache.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_cache.o ../src/vowpalwabbit/cache.cc
 
 ../src/vowpalwabbit/vw.debug_cb.o:../src/vowpalwabbit/cb.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_cb.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_cb.o ../src/vowpalwabbit/cb.cc
 
 ../src/vowpalwabbit/vw.debug_cb_algs.o:../src/vowpalwabbit/cb_algs.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_cb_algs.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_cb_algs.o ../src/vowpalwabbit/cb_algs.cc
 
 ../src/vowpalwabbit/vw.debug_cbify.o:../src/vowpalwabbit/cbify.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_cbify.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_cbify.o ../src/vowpalwabbit/cbify.cc
 
 ../src/vowpalwabbit/vw.debug_cost_sensitive.o:../src/vowpalwabbit/cost_sensitive.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_cost_sensitive.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_cost_sensitive.o ../src/vowpalwabbit/cost_sensitive.cc
 
 ../src/vowpalwabbit/vw.debug_csoaa.o:../src/vowpalwabbit/csoaa.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_csoaa.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_csoaa.o ../src/vowpalwabbit/csoaa.cc
 
 ../src/vowpalwabbit/vw.debug_ect.o:../src/vowpalwabbit/ect.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_ect.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_ect.o ../src/vowpalwabbit/ect.cc
 
 ../src/vowpalwabbit/vw.debug_example.o:../src/vowpalwabbit/example.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_example.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_example.o ../src/vowpalwabbit/example.cc
 
 ../src/vowpalwabbit/vw.debug_gd.o:../src/vowpalwabbit/gd.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_gd.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_gd.o ../src/vowpalwabbit/gd.cc
 
 ../src/vowpalwabbit/vw.debug_gd_mf.o:../src/vowpalwabbit/gd_mf.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_gd_mf.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_gd_mf.o ../src/vowpalwabbit/gd_mf.cc
 
 ../src/vowpalwabbit/vw.debug_global_data.o:../src/vowpalwabbit/global_data.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_global_data.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_global_data.o ../src/vowpalwabbit/global_data.cc
 
 ../src/vowpalwabbit/vw.debug_hash.o:../src/vowpalwabbit/hash.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_hash.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_hash.o ../src/vowpalwabbit/hash.cc
 
 ../src/vowpalwabbit/vw.debug_io_buf.o:../src/vowpalwabbit/io_buf.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_io_buf.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_io_buf.o ../src/vowpalwabbit/io_buf.cc
 
 ../src/vowpalwabbit/vw.debug_kernel_svm.o:../src/vowpalwabbit/kernel_svm.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_kernel_svm.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_kernel_svm.o ../src/vowpalwabbit/kernel_svm.cc
 
 ../src/vowpalwabbit/vw.debug_lda_core.o:../src/vowpalwabbit/lda_core.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_lda_core.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_lda_core.o ../src/vowpalwabbit/lda_core.cc
 
 ../src/vowpalwabbit/vw.debug_learner.o:../src/vowpalwabbit/learner.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_learner.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_learner.o ../src/vowpalwabbit/learner.cc
 
 ../src/vowpalwabbit/vw.debug_log_multi.o:../src/vowpalwabbit/log_multi.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_log_multi.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_log_multi.o ../src/vowpalwabbit/log_multi.cc
 
 ../src/vowpalwabbit/vw.debug_loss_functions.o:../src/vowpalwabbit/loss_functions.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_loss_functions.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_loss_functions.o ../src/vowpalwabbit/loss_functions.cc
 
 ../src/vowpalwabbit/vw.debug_lrq.o:../src/vowpalwabbit/lrq.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_lrq.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_lrq.o ../src/vowpalwabbit/lrq.cc
 
 ../src/vowpalwabbit/vw.debug_memory.o:../src/vowpalwabbit/memory.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_memory.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_memory.o ../src/vowpalwabbit/memory.cc
 
 ../src/vowpalwabbit/vw.debug_mf.o:../src/vowpalwabbit/mf.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_mf.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_mf.o ../src/vowpalwabbit/mf.cc
 
 ../src/vowpalwabbit/vw.debug_multiclass.o:../src/vowpalwabbit/multiclass.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_multiclass.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_multiclass.o ../src/vowpalwabbit/multiclass.cc
 
 ../src/vowpalwabbit/vw.debug_network.o:../src/vowpalwabbit/network.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_network.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_network.o ../src/vowpalwabbit/network.cc
 
 ../src/vowpalwabbit/vw.debug_nn.o:../src/vowpalwabbit/nn.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_nn.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_nn.o ../src/vowpalwabbit/nn.cc
 
 ../src/vowpalwabbit/vw.debug_noop.o:../src/vowpalwabbit/noop.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_noop.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_noop.o ../src/vowpalwabbit/noop.cc
 
 ../src/vowpalwabbit/vw.debug_oaa.o:../src/vowpalwabbit/oaa.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_oaa.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_oaa.o ../src/vowpalwabbit/oaa.cc
 
 ../src/vowpalwabbit/vw.debug_parse_args.o:../src/vowpalwabbit/parse_args.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_parse_args.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_parse_args.o ../src/vowpalwabbit/parse_args.cc
 
 ../src/vowpalwabbit/vw.debug_parse_example.o:../src/vowpalwabbit/parse_example.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_parse_example.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_parse_example.o ../src/vowpalwabbit/parse_example.cc
 
 ../src/vowpalwabbit/vw.debug_parse_primitives.o:../src/vowpalwabbit/parse_primitives.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_parse_primitives.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_parse_primitives.o ../src/vowpalwabbit/parse_primitives.cc
 
 ../src/vowpalwabbit/vw.debug_parse_regressor.o:../src/vowpalwabbit/parse_regressor.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_parse_regressor.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_parse_regressor.o ../src/vowpalwabbit/parse_regressor.cc
 
 ../src/vowpalwabbit/vw.debug_parser.o:../src/vowpalwabbit/parser.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_parser.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_parser.o ../src/vowpalwabbit/parser.cc
 
 ../src/vowpalwabbit/vw.debug_print.o:../src/vowpalwabbit/print.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_print.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_print.o ../src/vowpalwabbit/print.cc
 
 ../src/vowpalwabbit/vw.debug_rand48.o:../src/vowpalwabbit/rand48.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_rand48.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_rand48.o ../src/vowpalwabbit/rand48.cc
 
 ../src/vowpalwabbit/vw.debug_scorer.o:../src/vowpalwabbit/scorer.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_scorer.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_scorer.o ../src/vowpalwabbit/scorer.cc
 
 ../src/vowpalwabbit/vw.debug_search.o:../src/vowpalwabbit/search.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_search.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_search.o ../src/vowpalwabbit/search.cc
 
 ../src/vowpalwabbit/vw.debug_search_dep_parser.o:../src/vowpalwabbit/search_dep_parser.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_search_dep_parser.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_search_dep_parser.o ../src/vowpalwabbit/search_dep_parser.cc
 
 ../src/vowpalwabbit/vw.debug_search_entityrelationtask.o:../src/vowpalwabbit/search_entityrelationtask.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_search_entityrelationtask.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_search_entityrelationtask.o ../src/vowpalwabbit/search_entityrelationtask.cc
 
 ../src/vowpalwabbit/vw.debug_search_hooktask.o:../src/vowpalwabbit/search_hooktask.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_search_hooktask.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_search_hooktask.o ../src/vowpalwabbit/search_hooktask.cc
 
 ../src/vowpalwabbit/vw.debug_search_multiclasstask.o:../src/vowpalwabbit/search_multiclasstask.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_search_multiclasstask.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_search_multiclasstask.o ../src/vowpalwabbit/search_multiclasstask.cc
 
 ../src/vowpalwabbit/vw.debug_search_sequencetask.o:../src/vowpalwabbit/search_sequencetask.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_search_sequencetask.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_search_sequencetask.o ../src/vowpalwabbit/search_sequencetask.cc
 
 ../src/vowpalwabbit/vw.debug_sender.o:../src/vowpalwabbit/sender.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_sender.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_sender.o ../src/vowpalwabbit/sender.cc
 
 ../src/vowpalwabbit/vw.debug_simple_label.o:../src/vowpalwabbit/simple_label.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_simple_label.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_simple_label.o ../src/vowpalwabbit/simple_label.cc
 
 ../src/vowpalwabbit/vw.debug_stagewise_poly.o:../src/vowpalwabbit/stagewise_poly.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_stagewise_poly.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_stagewise_poly.o ../src/vowpalwabbit/stagewise_poly.cc
 
 ../src/vowpalwabbit/vw.debug_topk.o:../src/vowpalwabbit/topk.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_topk.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_topk.o ../src/vowpalwabbit/topk.cc
 
 ../src/vowpalwabbit/vw.debug_unique_sort.o:../src/vowpalwabbit/unique_sort.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/vw.debug_unique_sort.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.0.0.13\" \
+  -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_unique_sort.o ../src/vowpalwabbit/unique_sort.cc
 
 endif #ifeq ($(shell uname -m),x86_64)

@@ -212,4 +212,5 @@ private:
 
 }  //----end of namespace gezi
 
+CEREAL_REGISTER_TYPE(gezi::PAVCalibrator);
 #endif  //----end of PREDICTION__CALIBRATE__P_A_V_CALIBRATOR_H_

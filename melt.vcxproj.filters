@@ -312,64 +312,25 @@
     <ClCompile Include="main\libsvm\svm-train.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test\test_active_select.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_auc.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_bins.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_fastrank_classification.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_fastrank_loadtlc.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_fastrank_train.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_linearsvm_train.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_load_libsvm.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_normalize.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_normalize_copy.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_parse_input.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_plsa.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_seralize.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_seralize2.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_shared_predictors.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_sim.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_vector.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test\test_vw_read_example.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="tools\melt.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tools\vw.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test_simple\test_predict.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gcc3\predict.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tools\calibrate.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="tools\fastrank_predict.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tools\fastrank2gcc3.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -801,6 +762,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Testers\testers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Simple\Predictor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Simple\PredictorFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gcc3\GbdtPredictor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -262,4 +262,5 @@ private:
 
 }  //----end of namespace gezi
 
+CEREAL_REGISTER_TYPE(gezi::SigmoidCalibrator);
 #endif  //----end of INCLUDE__PREDICTION__CALIBRATE__SIGMOID_CALIBRATOR_H_

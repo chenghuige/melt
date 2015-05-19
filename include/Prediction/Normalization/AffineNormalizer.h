@@ -212,5 +212,5 @@ namespace gezi {
 	};
 
 }  //----end of namespace gezi
-
+CEREAL_REGISTER_TYPE(gezi::AffineNormalizer);
 #endif  //----end of PREDICTION__NORMALIZATION__AFFINE_NORMALIZER_H_

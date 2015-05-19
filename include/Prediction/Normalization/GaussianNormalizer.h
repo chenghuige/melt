@@ -78,4 +78,5 @@ private:
 
 }  //----end of namespace gezi
 
+CEREAL_REGISTER_TYPE(gezi::GaussianNormalizer);
 #endif  //----end of PREDICTION__NORMALIZATION__GAUSSIAN_NORMALIZER_H_

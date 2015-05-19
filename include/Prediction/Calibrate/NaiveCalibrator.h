@@ -161,7 +161,6 @@ private:
 	Float _max = std::numeric_limits<Float>::min();
 	Fvec binProbs;
 };
-
 }  //----end of namespace gezi
 
 #endif  //----end of PREDICTION__CALIBRATE__NAIVE_CALIBRATOR_H_

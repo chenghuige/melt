@@ -257,7 +257,7 @@ namespace gezi {
 		CalibratorStorePtr _data = nullptr;
 	};
 
-
 }  //----end of namespace gezi
 
+CEREAL_REGISTER_TYPE(gezi::CalibratorWrapper);
 #endif  //----end of INCLUDE__PREDICTION__CALIBRATE__CALIBRATOR_H_

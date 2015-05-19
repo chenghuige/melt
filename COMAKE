@@ -14,7 +14,7 @@ GCC_HIGH=1
 print 'GCC_HIGH: %d'%GCC_HIGH
 GCC_DYNAMIC=0
 if GCC_LOCAL==1:
-  GCC_DYNAMIC=1
+	GCC_DYNAMIC=1
 print 'GCC_DYNAMIC: %d'%GCC_DYNAMIC
 GCC_VERSION='3.4.5'
 if  GCC_HIGH == 1: 
@@ -83,7 +83,7 @@ if GCC_HIGH  == 1:
 		if GCC_LOCAL == 0:
 			GCC_LDFLAGS += ' -Wl,--dynamic-linker=./ld-linux-x86-64.so.2 -L%s'%(LIBS_DIR)
 		TARGET('.copy-so', ShellCommands('ln -s %s/ld-linux-x86-64.so.2 ld-linux-x86-64.so.2'%(LIBS_DIR)), 
-          CleanCommands('rm -rf ld-linux-x86-64.so.2')) 
+					CleanCommands('rm -rf ld-linux-x86-64.so.2')) 
 	else: 
 		GCC_LDFLAGS  += ' -static-libgcc -static-libstdc++'
 

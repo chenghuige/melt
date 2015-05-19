@@ -69,6 +69,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="gcc3\predict.cc" />
     <ClCompile Include="main\liblinear\predict.c" />
     <ClCompile Include="main\liblinear\train.c" />
     <ClCompile Include="main\libsvm\svm-predict.c" />
@@ -165,31 +166,18 @@
     <ClCompile Include="src\vowpalwabbit\unique_sort.cc" />
     <ClCompile Include="src\vowpalwabbit\vwdll.cpp" />
     <ClCompile Include="src\Wrapper\PredictorFactory.cpp" />
-    <ClCompile Include="test\test_active_select.cc" />
-    <ClCompile Include="test\test_auc.cc" />
-    <ClCompile Include="test\test_bins.cc" />
-    <ClCompile Include="test\test_fastrank_classification.cc" />
-    <ClCompile Include="test\test_fastrank_loadtlc.cc" />
-    <ClCompile Include="test\test_fastrank_train.cc" />
-    <ClCompile Include="test\test_linearsvm_train.cc" />
-    <ClCompile Include="test\test_load_libsvm.cc" />
-    <ClCompile Include="test\test_normalize.cc" />
-    <ClCompile Include="test\test_normalize_copy.cc" />
-    <ClCompile Include="test\test_parse_input.cc" />
-    <ClCompile Include="test\test_plsa.cc" />
-    <ClCompile Include="test\test_seralize.cc" />
-    <ClCompile Include="test\test_seralize2.cc" />
-    <ClCompile Include="test\test_shared_predictors.cc" />
-    <ClCompile Include="test\test_sim.cc" />
-    <ClCompile Include="test\test_vector.cc" />
-    <ClCompile Include="test\test_vw_read_example.cc" />
+    <ClCompile Include="test_simple\test_predict.cc" />
     <ClCompile Include="tools3\fastrank_predict.cc" />
     <ClCompile Include="tools3\melt.cc" />
     <ClCompile Include="tools3\PLSA\plsa.cc" />
+    <ClCompile Include="tools\calibrate.cc" />
+    <ClCompile Include="tools\fastrank2gcc3.cc" />
     <ClCompile Include="tools\fastrank_predict.cc" />
     <ClCompile Include="tools\melt.cc" />
+    <ClCompile Include="tools\vw.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="gcc3\GbdtPredictor.h" />
     <ClInclude Include="include\blas\blas.h" />
     <ClInclude Include="include\blas\blasp.h" />
     <ClInclude Include="include\liblinear\linear.h" />
@@ -244,6 +232,8 @@
     <ClInclude Include="include\Run\CVFoldCreator.h" />
     <ClInclude Include="include\Run\Melt.h" />
     <ClInclude Include="include\Run\MeltArguments.h" />
+    <ClInclude Include="include\Simple\Predictor.h" />
+    <ClInclude Include="include\Simple\PredictorFactory.h" />
     <ClInclude Include="include\sofia\sf-data-set.h" />
     <ClInclude Include="include\sofia\sf-hash-inline.h" />
     <ClInclude Include="include\sofia\sf-hash-weight-vector.h" />
