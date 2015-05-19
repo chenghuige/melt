@@ -1,7 +1,7 @@
 [[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mcomake2_makefile_check[0m']
 #in case of error, update 'Makefile' by 'comake2'
 [[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mpredict_predict.o[0m']
-g++ -c -I../include/  -D_GNU_SOURCE -D__STDC_LIMIT_MACROS -DVERSION="1.9.8.7" -g -O3 -pipe -fPIC -fpermissive  -o predict_predict.o predict.cc
+g++ -c -I../include/  -D_GNU_SOURCE -D__STDC_LIMIT_MACROS -DVERSION="1.9.8.7" -g -O0 -pipe -fPIC -fpermissive  -o predict_predict.o predict.cc
 [[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mpredict[0m']
 g++ predict_predict.o -Xlinker "-("    -Xlinker "-)" -o predict
 mkdir -p ./output/bin

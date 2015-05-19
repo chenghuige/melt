@@ -12,9 +12,9 @@ CopyUsingHardLink(True)
 
 CPPFLAGS('-D_GNU_SOURCE -D__STDC_LIMIT_MACROS -DVERSION=\"1.9.8.7\"')
 
-CFLAGS('-g -O3 -pipe -W -Wall -fPIC')
+CFLAGS('-g -O0 -pipe -W -Wall -fPIC')
 
-CXXFLAGS('-g -O3 -pipe -fPIC -fpermissive')
+CXXFLAGS('-g -O0 -pipe -fPIC -fpermissive')
 
 IDLFLAGS('--compack')
 UBRPCFLAGS('--compack')
