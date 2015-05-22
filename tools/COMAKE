@@ -58,7 +58,7 @@ CXX(GCC_BIN)
 CPPFLAGS('-D_GNU_SOURCE -D__STDC_LIMIT_MACROS -DVERSION=\\\"1.9.8.7\\\"')
 
 #±‡“Î≤Œ ˝…Ë÷√
-COMMON_FLAGS = '-g -O%d -pipe -W -Wall -fPIC -DHAVE_NETINET_IN_H -Wno-unused-parameter -Wno-deprecated'%LEVEL
+COMMON_FLAGS = '-g -O%d -msse2 -pipe -W -Wall -fPIC -DHAVE_NETINET_IN_H -Wno-unused-parameter -Wno-deprecated'%LEVEL
 
 if GCC_HIGH  == 1:
 	GCC_FLAGS += '-std=c++11 -fpermissive -Wno-write-strings -Wno-literal-suffix -Wno-unused-local-typedefs'

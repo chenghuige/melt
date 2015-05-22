@@ -25,6 +25,7 @@ DECLARE_bool(quiet);
 void ShowMeltHelp()
 {
 	cout << "\n";
+	cout << " version: " << get_version() << "\n";
 	cout << "	Default command is cross validation: <./melt feature.txt> will do 5 fold cross validation using LinearSVM trainer with it's default settings\n";
 	fmt::print_colored(fmt::RED, "	For more commands: <./melt -c help>\n");
 	fmt::print_colored(fmt::RED, "	Show supported trainers: <./melt -c helptrainers>\n");
@@ -33,8 +34,9 @@ void ShowMeltHelp()
 	cout << "	Try <./melt --helpmatch Melt> for melt common settings\n";
 	cout << "	Try <./melt --helpmatch Instance> for melt input instances parser settings\n";
 	cout << "	The default trainer is LinearSVM, for other trainers use -cl, eg. <./melt feature.txt -c train -cl gbdt> will train feature.txt using gbdt trainer\n";
-	cout << " For third party trainers like sofia or vw, you may use -cls to set the classifer settings, eg. <./melt feature.txt -cl sofia -cls --looptype=roc,--iterations=100000,--lambda=0.001>\n";
-	cout << " Recommed to use melt internal format(0 started index, can be sparse or dense) but you can also use libsvm format(1 started sparse format) directly\n";
+	cout << "	For third party trainers like sofia or vw, you may use -cls to set the classifer settings, eg. <./melt feature.txt -cl sofia -cls --looptype=roc,--iterations=100000,--lambda=0.001>\n";
+	cout << "	Recommed to use melt internal format(0 started index, can be sparse or dense) but you can also use libsvm format(1 started sparse format) directly\n";
+
 }
 
 int main(int argc, char *argv[])
@@ -49,7 +51,6 @@ int main(int argc, char *argv[])
 		if (arg == "-help" || arg == "--help" || arg == "-h" || arg == "--h")
 		{
 			ShowMeltHelp();
-			cout << endl;
 			break;
 		}
 	}
@@ -62,6 +63,8 @@ int main(int argc, char *argv[])
 		FLAGS_vl = -1;
 	if (FLAGS_v == 0)
 		FLAGS_v = FLAGS_vl;
+
+
 
 	Melt melt;
 	set<string> ignores = { "help", "helptrainers", "help_trainers", "helptrainer", "help_trainer", "hts", "ht" };
