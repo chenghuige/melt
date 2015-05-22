@@ -30,6 +30,7 @@ DEFINE_string(valid, "", "Data file used for training validation (with IValidati
 DEFINE_string(m, "model", "modelFolder");
 DEFINE_bool(mf, false, " modelfile: Gen model file£¿ (for TrainTest)");
 DEFINE_bool(mc, false, " modelfileCode: Gen model file to save in C++ code £¿ (for Train or TrainTest)");
+DEFINE_string(codeType, "cpp", "Which language for modelfileCode ? default is cpp->model.cpp, or c->model.c or py for python -> model.py, php -> mode.php");
 DEFINE_bool(mt, false, "modelfileText:  Gen model file to save in text format ? (for Train or TrainTest");
 DEFINE_bool(mxml, false, "modelfileXml:  Gen model file to save in xml format ? (for Train or TrainTest");
 DEFINE_bool(mjson, false, "modelfileJson:  Gen model file to save in json format ? (for Train or TrainTest");
@@ -49,7 +50,8 @@ DEFINE_string(normalizer, "MinMax", "Which normalizer? can also try gaussian or 
 DEFINE_string(fn, "", "featureName:");
 //@FIXME
 //DEFINE_string(ev, "/home/users/chenghuige/rsc/app/search/sep/anti-spam/melt/tools3/evaluate/evaluate", "evaluate: use what to evalute the result, notice if not find this one will try to use local evaluate");
-DEFINE_string(ev, "", "evaluate: use what to evalute the result like ~/tools/evaluate.py, notice if empty not find this one will try to use internal c++ evaluate");
+DEFINE_string(ev, "", "evaluate: use what to evalute the result like ~/tools/evaluate.py, notice if empty not find this one will try to use internal c++ evaluate, also this used for choosing interal evaluator like auc l1 l2..");
+DEFINE_string(evaluator, "", "evaluatorName|which evaluator for cross validation only show one evaluator result | or evaluators for ValidatingTrainers");
 
 DEFINE_bool(calibrate, true, "calibrateOutput: use calibrator to gen probability? if not will use logistice function which will map 0 to 0.5");
 DEFINE_string(calibrator, "sigmoid", "calibratorName: sigmoid/platt naive pav");
@@ -78,6 +80,7 @@ namespace gezi {
 		_cmd.modelFolder = FLAGS_m;
 		_cmd.modelfile = FLAGS_mf;
 		_cmd.modelfileCode = FLAGS_mc;
+		_cmd.codeType = FLAGS_codeType;
 		_cmd.modelfileText = FLAGS_mt;
 		_cmd.modelfileXml = FLAGS_mxml;
 		_cmd.modelfileJson = FLAGS_mjson;
@@ -118,10 +121,11 @@ namespace gezi {
 	
 		if (!FLAGS_ev.empty())
 		{
-			_cmd.evaluate = FLAGS_ev + " ";
-			Pval(_cmd.evaluate);
+			_cmd.evaluateScript = FLAGS_ev + " ";
+			Pval(_cmd.evaluateScript);
 		}
 
+		_cmd.evaluatorName = FLAGS_evaluator;
 		_cmd.inputFileFormat = FLAGS_format;
 		_cmd.outputFileFormat = FLAGS_off;
 
