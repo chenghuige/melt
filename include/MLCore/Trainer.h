@@ -20,12 +20,17 @@
 #include "MLCore/Predictor.h"
 #include "Prediction/Normalization/Normalizer.h"
 #include "Prediction/Calibrate/Calibrator.h"
+#include "Utils/Evaluator.h"
 
 namespace gezi {
 
 	class Trainer : public WithArgs, public WithHelp
 	{
 	public:
+		virtual PredictionKind GetPredictionKind()
+		{
+			return PredictionKind::BinaryClassification;
+		}
 
 		//默认流程特别为类似线性分类需要normalize的流程准备 如果不需要比如Fastrank 可以自己override
 		virtual void Train(Instances& instances)
@@ -154,15 +159,86 @@ namespace gezi {
 
 		bool _normalizeCopy = false;
 
+		//希望不同的子类Trainer Share相同的normalizedInstance 但是不同的线程各有一份,另外不用到norm则不产生_normalizedInstance
+		//@TODO 意义也不是很大。。  直接普通 Instances _normalizedInstances; 应该也ok了 如果避免多次normalize 应该先对输入做好norm，
+		//这里更多的一样可能是不希望一个线程的多个不同Trainer实例有多个内存占用存储_normalizedInstances
 		static Instances& normalizedInstances()
 		{
 			static thread_local Instances _normalizedInstances;
 			return _normalizedInstances;
 		}
+
 		Instances* _instances = NULL;
 	};
 
 	typedef shared_ptr<Trainer> TrainerPtr;
+
+	class ValidatingTrainer : public Trainer
+	{
+	public:
+		//尽管instances传入不使用const 但是注意trainer要SetNormalizeCopy 实际还是保证不改变所有输入
+		virtual void Train(Instances& instances, vector<Instances>& valicationInstances, vector<EvaluatorPtr>& evaluators)
+		{
+			Trainer::SetNormalizeCopy();
+			_validationSets = move(valicationInstances);
+			_evaluators = move(evaluators);
+			_validating = true;
+			_valdationSetNames = from(_validationSets) >> select([](const Instances& a) { return a.name; }) >> to_vector();
+			Trainer::Train(instances);  //@TODO 重载被覆盖了。。。 这样行吗？ 会不会后续override无效。。 @FIXME 还是外面使用using Trainer::Train; ?
+		}
+	protected:
+		bool IsValidating()
+		{
+			return _validating;
+		}
+
+		virtual void PrepareEvaluate()
+		{
+			_results.clear();
+		}
+
+		void Evaluate()
+		{
+			vector<Fvec> evaluateResults = GetEvaluateResults(_results);
+			PrintEvaluateResult(evaluateResults);
+		}
+
+		vector<Fvec> GetEvaluateResults(vector<vector<EvaluateNode> >& results)
+		{
+			vector<Fvec> evaluateResults(_evaluators.size()); //numRows=numEvaluators,numCols=numValidationInstances
+			for (size_t i = 0; i < _evaluators.size(); i++)
+			{
+				evaluateResults.resize(_validationSets.size());
+			}
+#pragma omp parallel for schedule(static)
+			for (size_t i = 0; i < _evaluators.size(); i++)
+			{
+#pragma omp parallel for schedule(static)
+				for (size_t j = 0; j < _validationSets.size(); j++)
+				{
+					evaluateResults[i][j] = _evaluators[i]->Evaluate(_results[j]);
+				}
+			}
+			return evaluateResults;
+		}
+
+		void PrintEvaluateResult(const vector<Fvec>&  evaluateResults)
+		{
+			for (size_t i = 0; i < _evaluators.size(); i++)
+			{
+				std::cerr << "[" << i << "]" << _evaluators[i]->Name() << " ";
+				gezi::print(_valdationSetNames, evaluateResults[i], ":", "\t");
+				std::cerr << std::endl;
+			}
+		}
+	protected:
+		bool _validating = false;
+
+		vector<vector<EvaluateNode> > _results; //_results.size() == numValidationInsatnces
+		vector<string> _valdationSetNames;
+		vector<Instances> _validationSets;
+		vector<EvaluatorPtr> _evaluators;
+	};
 
 }  //----end of namespace gezi
 

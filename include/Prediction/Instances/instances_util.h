@@ -15,6 +15,7 @@
 #define PREDICTION__INSTANCES_INSTANCES_UTIL_H_
 
 #include "InstanceParser.h"
+#include "random_util.h"
 namespace gezi {
 
 	class InstancesUtil
@@ -29,6 +30,28 @@ namespace gezi {
 				else
 					negInstances.push_back(instance);
 			}
+		}
+
+		static vector<Instances> RandomSplit(Instances& instances, double ratio, unsigned randSeed = 0)
+		{
+			RandomEngine rng = random_engine(randSeed);
+			instances.Randomize(rng);
+			size_t numTotalInsatnces = instances.size();
+			size_t numFirstPartInstances = (size_t)(numTotalInsatnces * (1 - ratio));
+			vector<Instances> parts(2);
+			parts[0].CopySchema(instances.schema);
+			parts[1].CopySchema(instances.schema);
+
+			for (size_t i = 0; i < numFirstPartInstances; i++)
+			{
+				parts[0].push_back(instances[i]);
+			}
+
+			for (size_t i = numFirstPartInstances; i < numTotalInsatnces; i++)
+			{
+				parts[1].push_back(instances[i]);
+			}
+			return parts;
 		}
 	protected:
 	private:

@@ -131,7 +131,7 @@ namespace gezi {
 				foldCnts[numFolds - 1]++;
 			}
 
-			Pvec(foldCnts);
+			PVEC(foldCnts);
 
 			return foldIndices;
 		}

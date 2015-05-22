@@ -31,7 +31,13 @@ namespace gezi {
 
 		FastRankPredictor(vector<OnlineRegressionTree>& trees, CalibratorPtr calibrator,
 			svec&& featureNames)
-			:Predictor(nullptr, calibrator, featureNames)
+			:Predictor(calibrator, featureNames)
+		{
+			_trees.swap(trees);
+		}
+
+		FastRankPredictor(vector<OnlineRegressionTree>& trees, svec&& featureNames)
+			:Predictor(featureNames)
 		{
 			_trees.swap(trees);
 		}
@@ -190,6 +196,26 @@ namespace gezi {
 			serialize_util::save_json(*this, file);
 		}
 
+
+		virtual void SaveCode_(string file, CodeType codeType) override
+		{
+			ofstream ofs(file);
+			switch (codeType)
+			{
+			case CodeType::C:
+				SaveCCode(ofs);
+				break;
+			case  CodeType::Php:
+				SavePhpCode(ofs);
+				break;
+			case  CodeType::Python:
+				SavePythonCode(ofs);
+				break;
+			default:
+				break;
+			}
+		}
+
 		virtual void Load_(string file) override
 		{
 			serialize_util::load(*this, file);
@@ -308,6 +334,125 @@ namespace gezi {
 			_reverse = reverse;
 		}
 #endif // _DEBUG
+
+	private:
+		void SaveCCode(ofstream& ofs)
+		{
+			int i = 0;
+			for (const auto& tree : _trees)
+			{
+				ofs << "double treeOutput" << i << "=";
+				SaveTreeAsCCode(tree, ofs);
+				ofs << ";\n";
+				i++;
+			}
+			ofs << "double output = treeOutput0";
+			for (int j = 1; j < i; j++)
+			{
+				ofs << "+treeOuput" << j;
+			}
+			ofs << ";\n";
+		}
+
+		void SavePhpCode(ofstream& ofs)
+		{
+			int i = 0;
+			for (const auto& tree : _trees)
+			{
+				ofs << "$treeOutput" << i << "=";
+				SaveTreeAsPhpCode(tree, ofs); //¸´ÓÃc code
+				ofs << ";\n";
+				i++;
+			}
+			ofs << "$output = $treeOutput0";
+			for (int j = 1; j < i; j++)
+			{
+				ofs << "+$treeOuput" << j;
+			}
+			ofs << ";\n";
+		}
+
+		void SavePythonCode(ofstream& ofs)
+		{
+			int i = 0;
+			for (const auto& tree : _trees)
+			{
+				ofs << "treeOutput" << i << "=";
+				SaveTreeAsPythonCode(tree, ofs);
+				ofs << "\n";
+				i++;
+			}
+			ofs << "output = treeOutput0";
+			for (int j = 1; j < i; j++)
+			{
+				ofs << "+treeOuput" << j;
+			}
+			ofs << "\n";
+		}
+
+		SaveTreeAsCCode(const OnlineRegressionTree& tree, ofstream& ofs)
+		{
+			ToCCode(tree, ofs, 0);
+		}
+
+		SaveTreeAsPhpCode(const OnlineRegressionTree& tree, ofstream& ofs)
+		{
+			ToPhpCode(tree, ofs, 0);
+		}
+
+		SaveTreeAsPythonCode(const OnlineRegressionTree& tree, ofstream& ofs)
+		{
+			ToPythonCode(tree, ofs, 0);
+		}
+
+		// converts a subtree into a freeform expression
+		void ToCCode(const OnlineRegressionTree& tree, ofstream& ofs, int node)
+		{
+			if (node < 0)
+			{
+				ofs << tree._leafValue[~node];
+			}
+			else
+			{
+				ofs << "((" << _featureNames[tree._splitFeature[node]] << " > " << tree._threshold[node] << ") ? ";
+				ToCCode(tree, ofs, tree._gtChild[node]);
+				ofs << " : ";
+				ToCCode(tree, ofs, tree._lteChild[node]);
+				ofs << ")";
+			}
+		}
+
+		void ToPhpCode(const OnlineRegressionTree& tree, ofstream& ofs, int node)
+		{
+			if (node < 0)
+			{
+				ofs << tree._leafValue[~node];
+			}
+			else
+			{
+				ofs << "(($" << _featureNames[tree._splitFeature[node]] << " > " << tree._threshold[node] << ") ? ";
+				ToPhpCode(tree, ofs, tree._gtChild[node]);
+				ofs << " : ";
+				ToPhpCode(tree, ofs, tree._lteChild[node]);
+				ofs << ")";
+			}
+		}
+
+		void ToPythonCode(const OnlineRegressionTree& tree, ofstream& ofs, int node)
+		{
+			if (node < 0)
+			{
+				ofs << tree._leafValue[~node];
+			}
+			else
+			{
+				ofs << "(";
+				ToPythonCode(tree, ofs, tree._gtChild[node]);
+				ofs << " if (" << _featureNames[tree._splitFeature[node]] << " > " << tree._threshold[node] << ") else ";
+				ToPythonCode(tree, ofs, tree._lteChild[node]);
+				ofs << ")";
+			}
+		}
 
 	protected:
 #ifdef _DEBUG

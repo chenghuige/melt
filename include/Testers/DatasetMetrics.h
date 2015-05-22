@@ -69,11 +69,7 @@ protected:
 	virtual void Print_(string prefix)
 	{
 		CHECK_EQ(_names.size(), _results.size());
-		for (size_t i = 0; i < _names.size(); i++)
-		{
-			std::cerr << setiosflags(ios::left) << setfill(' ') << setw(40)
-				<< _names[i] << "\t" << _results[i] << std::endl;
-		}
+		gezi::print(_names, _results);
 	}
 
 protected:

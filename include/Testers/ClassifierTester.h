@@ -15,7 +15,7 @@
 #define TESTERS__CLASSIFIER_TESTER_H_
 
 #include "Testers/Tester.h"
-#include "Utils/performance_evaluate.h"
+#include "Utils/Evaluator.h"
 
 namespace gezi {
 
@@ -241,7 +241,7 @@ namespace gezi {
 		{
 			Float val = useProbability ? probability : prediction;
 			//PVAL4(useProbability, prediction, probability, val);
-			_results.push_back(std::make_tuple(label, val, weight));
+			_evaluator.Add(label, val, weight);
 			return vector<Float>();
 		}
 
@@ -249,7 +249,7 @@ namespace gezi {
 	protected:
 		virtual void Finish() override
 		{
-			_auc = gezi::auc(_results);
+			_auc = _evaluator.Evaluate();
 		}
 
 		virtual void Print_(string prefix) override
@@ -261,8 +261,8 @@ namespace gezi {
 	public:
 		bool useProbability = true; //use ouput or use probability
 	private:
-		vector<std::tuple<int, Float, Float> > _results;
-		Float _auc = 0.;
+		AucStreamingEvaluator _evaluator;
+		Float _auc;
 	};
 
 

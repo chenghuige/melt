@@ -22,20 +22,14 @@
 #include "Prediction/Instances/Instance.h"
 #include "Prediction/Normalization/Normalizer.h"
 #include "Prediction/Calibrate/Calibrator.h"
+#include "PredictionKind.h"
 namespace gezi {
 
-	enum class PredictionKind
+	enum class CodeType
 	{
-		Unknown = 0,
-		Custom = 1,
-		BinaryClassification = 2,
-		MultiClassClassification = 3,
-		Regression = 4,
-		MultiOutputRegression = 5,
-		Ranking = 6,
-		Recommendation = 7,
-		// More to be added later.
-		// When adding values, also add to PredictionKindMask.
+		C = 0,
+		Python = 1,
+		Php = 2
 	};
 
 	//当前只是考虑 二分类模型
@@ -50,9 +44,26 @@ namespace gezi {
 	public:
 		Predictor() = default;
 		virtual ~Predictor() {}
+		
+		//fully create like LinearSVM 
 		Predictor(NormalizerPtr normalizer, CalibratorPtr calibrator, const FeatureNamesVector& featureNames)
 			:_normalizer(normalizer), _calibrator(calibrator), _featureNames(featureNames)
 		{
+		}
+
+
+		//no normalizer like Gbdt BinaryClassification
+		Predictor(CalibratorPtr calibrator, const FeatureNamesVector& featureNames)
+			:_calibrator(calibrator), _featureNames(featureNames)
+		{
+
+		}
+		
+		//no calibrator like Gbdt regression
+		Predictor(const FeatureNamesVector& featureNames)
+			:_featureNames(featureNames)
+		{
+
 		}
 
 		virtual PredictionKind GetPredictionKind()
@@ -329,7 +340,7 @@ namespace gezi {
 
 		virtual void SaveXml_(string file)
 		{
-			LOG(WARNING) << Name() << " currently not support saving xml";
+			LOG(WARNING) << Name() << " currently not support saving as xml";
 		}
 
 		virtual void SaveJson(string file) override
@@ -339,9 +350,32 @@ namespace gezi {
 			SaveJson_NormalizerAndCalibrator(_saveNormalizerText, _saveCalibratorText);
 		}
 
+		//only need to save model for code not care about normalizer or calibrator
+		//但是类似的也是需要先Save(path) 设定路径 也就是说必须在存储bin model之后,存储bin是必须,存储code是optional
+		virtual void SaveCode(string codeTypeStr = "cpp")
+		{
+			string file = _path + "/model." + codeTypeStr;
+			CodeType codeType = CodeType::C;
+			if (codeTypeStr == "py" || codeTypeStr == "python")
+			{
+				codeType = CodeType::Python;
+				VLOG(0) << "Save " << file << " as python code";
+			}
+			else if (codeTypeStr == "php")
+			{
+				codeType = CodeType::Php;
+				VLOG(0) << "Save " << file << " as php code";
+			}
+			else
+			{
+				VLOG(0) << "Save " << file << " as c/c++ code";
+			}
+			SaveCode_(file, codeType);
+		}
+
 		virtual void SaveJson_(string file)
 		{
-			LOG(WARNING) << Name() << " currently not support saving json";
+			LOG(WARNING) << Name() << " currently not support saving as json";
 		}
 
 		virtual void SaveText(string file) override
@@ -354,6 +388,11 @@ namespace gezi {
 		virtual void SaveText_(string file)
 		{
 			LOG(WARNING) << Name() << " currently not support saving text format! Try SaveJson or SaveXml";
+		}
+
+		virtual void SaveCode_(string file, CodeType codeType)
+		{
+			LOG(WARNING) << Name() << " currently not support saving as code";
 		}
 
 		void SaveXml()
@@ -476,7 +515,7 @@ namespace gezi {
 	protected:
 		bool _normalizeCopy = false;
 		NormalizerPtr _normalizer = nullptr;
-		CalibratorPtr _calibrator = nullptr;
+		CalibratorPtr _calibrator = nullptr; //for classification
 
 		//svec _featureNames;
 		FeatureNamesVector _featureNames;

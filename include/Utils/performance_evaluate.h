@@ -33,81 +33,105 @@ namespace gezi {
 		看公式有点抽象，用上面的例子解释一下
 		模型1：首先对预测的score进行排序，排序后的样本为：负（6），正（5），正（4），负（3），负（2），正（1）
 		AUC的值为：(（5 + 4 + 1） - 3 * （3 + 1） / 2) / (3 * 3) = 4 / 9。可以看到跟方法二的计算结果一致，我们看一下这个计算公式，首先分子上后面的部分M*（M + 1） / 2。是不是很熟悉，小学就知道，上底加下底括号起来除以2，既是求梯形的面积公式，也是求连续值的公式，例如1 + 2 + 3 + 4。在这里指的就是所有的正样本的得分都小于所有的负样本的得分的情况下，计算出来的值。前半部分指的是实际的情况下正样本的排序。应该比较好理解了吧*/
-	inline Float auc(vector<std::tuple<int, Float, Float> >& results, bool needSort = true)
+	namespace evaluate
 	{
-		if (needSort)
+		struct Node
 		{
-			stable_sort(results.begin(), results.end(),
-				[](const std::tuple<int, Float, Float>& l, const std::tuple<int, Float, Float>& r) {
-				return std::get<1>(l) > std::get<1>(r); });
-		}
+			Float label;
+			Float prediction;
+			Float weight = 1.0;
 
-		Float oldFalsePos = 0;
-		Float oldTruePos = 0;
-		Float falsePos = 0;
-		Float truePos = 0;
-		Float oldOut = std::numeric_limits<Float>::infinity();
-		Float result = 0;
-
-		for (auto& item : results)
-		{
-			int label = std::get<0>(item);
-			Float output = std::get<1>(item);
-			Float weight = std::get<2>(item);
-			//Pval3(label, output, weight);
-			if (output != oldOut) //存在相同值得情况是特殊处理的
+			Node()
 			{
-				result += 0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos);
-				//Pval((0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos)));
-				//Pval4(oldTruePos, truePos, oldFalsePos, falsePos);
-				oldOut = output;
-				oldFalsePos = falsePos;
-				oldTruePos = truePos;
+
 			}
-			if (label > 0)
-				truePos += weight;
-			else
-				falsePos += weight;
-		}
-		//Pval((0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos)));
-		result += 0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos);
-		Float AUC = result / (truePos * falsePos);
-		return AUC;
-	}
+			Node(Float label_, Float prediction_, Float weight_ = 1.0)
+				:label(label_), prediction(prediction_), weight(weight_)
+			{
 
+			}
+		};
 
-	//-----------------below depreciated
-	class BinaryClassificationEvaluator
-	{
-	public:
-		virtual void Add(int label, Float output, Float weight = 1.0)
+		//need label, prediction and weight
+		inline Float auc(vector<Node>& results, bool needSort = true)
 		{
+			if (needSort)
+			{
+				stable_sort(results.begin(), results.end(),
+					[](const Node& l, const Node& r) {
+					return l.prediction > r.prediction; });
+			}
 
+			Float oldFalsePos = 0;
+			Float oldTruePos = 0;
+			Float falsePos = 0;
+			Float truePos = 0;
+			Float oldOut = std::numeric_limits<Float>::infinity();
+			Float result = 0;
+
+			for (auto& item : results)
+			{
+				Float label = item.label;
+				Float prediction = item.prediction;
+				Float weight = item.weight;
+				//Pval3(label, output, weight);
+				if (prediction != oldOut) //存在相同值得情况是特殊处理的
+				{
+					result += 0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos);
+					//Pval((0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos)));
+					//Pval4(oldTruePos, truePos, oldFalsePos, falsePos);
+					oldOut = prediction;
+					oldFalsePos = falsePos;
+					oldTruePos = truePos;
+				}
+				if (label > 0)
+					truePos += weight;
+				else
+					falsePos += weight;
+			}
+			//Pval((0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos)));
+			result += 0.5 * (oldTruePos + truePos) * (falsePos - oldFalsePos);
+			Float AUC = result / (truePos * falsePos);
+			return AUC;
 		}
 
-		virtual double Finish()
+		inline Float l1(vector<Node>& results)
 		{
-			return 0;
+			if (results.empty())
+			{
+				return 0;
+			}
+			Float error = 0;
+			for (size_t i = 0; i < results.size(); i++)
+			{
+				error += std::abs(results[i].prediction - results[i].label);
+			}
+			return error / results.size();
 		}
-	};
 
-	typedef shared_ptr<BinaryClassificationEvaluator> BinaryClassficationEvaluatorPtr;
-	class AucEvaluator : public BinaryClassificationEvaluator
-	{
-	public:
-		virtual void Add(int label, Float output, Float weight = 1.0) override
+		inline Float l2(vector<Node>& results)
 		{
-			_results.push_back(std::make_tuple(label, output, weight));
+			if (results.empty())
+			{
+				return 0;
+			}
+			Float error = 0;
+			for (size_t i = 0; i < results.size(); i++)
+			{
+				Float temp = results[i].prediction - results[i].label;
+				error += temp * temp;
+			}
+			return error / results.size();
 		}
 
-		virtual double Finish() override
+		inline Float rmse(vector<Node>& results)
 		{
-			return auc(_results);
+			return std::sqrt(l2(results));
 		}
-	private:
-		vector<std::tuple<int, Float, Float> > _results;
-	};
+	} //---- end of namespace evaluate
 
+	typedef evaluate::Node EvaluateNode;
+	namespace ev = evaluate;
 }  //----end of namespace gezi
 
 #endif  //----end of PERFORMANCE_EVALUATE_H_

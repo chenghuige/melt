@@ -20,6 +20,7 @@
 
 namespace gezi {
 
+	//@TODO Clone() ?   copy on write ?
 	struct Instances : public ListInstances
 	{
 	public:
@@ -161,6 +162,7 @@ namespace gezi {
 		}
 	public:
 		HeaderSchema schema;
+		string name; 
 	};
 
 }  //----end of namespace gezi

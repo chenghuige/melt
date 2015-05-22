@@ -38,6 +38,7 @@ namespace gezi {
 		string modelFolder = "model"; //m|
 		bool modelfile = false; //mf|
 		bool modelfileCode = false; //mc|
+		string codeType = "c"; //
 		bool modelfileText = false; //mt|
 		bool modelfileXml = false; //mxml|
 		bool modelfileJson = false; //mjson|
@@ -56,7 +57,7 @@ namespace gezi {
 		string resultFile = "";
 		int resultIndex = 0;
 
-		string evaluate = "";
+		string evaluateScript = "";
 
 		bool preNormalize = false;
 
@@ -65,6 +66,8 @@ namespace gezi {
 		string normalizerName = "MinMax"; //normalizer| Which normalizer?
 
 		string calibratorName = "sigmoid"; //calibrator| Which calibrator?
+
+		string evaluatorName = ""; //evaluator|which evaluator for cross validation which only show one evaluator result or evaluators for ValidatingTrainers
 
 		string inputFileFormat = "normal"; //if | input file format
 		string outputFileFormat = "unknown";//of| output file format
