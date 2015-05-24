@@ -125,7 +125,7 @@ namespace gezi {
 			Pval(_cmd.evaluateScript);
 		}
 
-		_cmd.evaluatorName = FLAGS_evaluator;
+		_cmd.evaluatorNames = FLAGS_evaluator;
 		_cmd.inputFileFormat = FLAGS_format;
 		_cmd.outputFileFormat = FLAGS_off;
 
