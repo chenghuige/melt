@@ -75,6 +75,46 @@ public:
 		return nullptr;
 	}
 
+	static vector<StreamingEvaluatorPtr> GetStreamingEvaluator(PredictionKind predictionKind)
+	{
+		typedef vector<StreamingEvaluatorPtr> Vec;
+		if (predictionKind == PredictionKind::BinaryClassification)
+		{
+			return  Vec{make_shared<AucStreamingEvaluator>()};
+		}
+		else if (predictionKind == PredictionKind::Regression)
+		{
+			return Vec{make_shared<RMSEStreamingEvaluator>()};
+		}
+		return nullptr;
+	}
+
+	static EvaluatorPtr GetEvaluator(PredictionKind predictionKind)
+	{
+		if (predictionKind == PredictionKind::BinaryClassification)
+		{
+			return make_shared<AucEvaluator>();
+		}
+		else if (predictionKind == PredictionKind::Regression)
+		{
+			return make_shared<RMSEEvaluator>();
+		}
+		return nullptr;
+	}
+
+	static vector<EvaluatorPtr> GetEvaluators(PredictionKind predictionKind)
+	{
+		if (predictionKind == PredictionKind::BinaryClassification)
+		{
+			return make_shared<AucEvaluator>();
+		}
+		else if (predictionKind == PredictionKind::Regression)
+		{
+			return make_shared<RMSEEvaluator>();
+		}
+		return nullptr;
+	}
+
 	static StreamingEvaluatorPtr CreateStreamingEvaluator(string evaluatorName)
 	{
 		evaluatorName = gezi::arg(evaluatorName);

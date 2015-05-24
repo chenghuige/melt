@@ -161,13 +161,13 @@ namespace gezi {
 			StreamingEvaluatorPtr evaluator = nullptr;
 			if (cvType == CrossValidationType::EVAL_PARAM)
 			{ //@TODO check是否和PredictoionKind相匹配
-				if (_cmd.evaluatorName.empty())
+				if (_cmd.evaluatorNames.empty())
 				{
 					evaluator = EvaluatorUtils::GetStreamingEvaluator(TrainerFactory::CreateTrainer(_cmd.classifierName)->GetPredictionKind());
 				}
 				else
 				{
-					evaluator = EvaluatorUtils::CreateStreamingEvaluator(_cmd.evaluatorName);
+					evaluator = EvaluatorUtils::CreateStreamingEvaluator(_cmd.evaluatorNames);
 				}
 				CHECK(evaluator != nullptr);
 			}
@@ -410,6 +410,23 @@ namespace gezi {
 			}
 		}
 
+		void Test(const Instances& instances, PredictorPtr predictor, vector<StreamingEvaluatorPtr>& evaluators)
+		{
+			vector<Float> predictions(instances.size(), 0);
+#pragma omp parallel for schedule(static)
+			for (size_t i = 0; i < instances.size(); i++)
+			{
+				predictions[i] = predictor->Predict(instances[i]);
+			}
+			for (size_t i = 0; i < instances.size(); i++)
+			{
+				for (auto& evaluator : evaluators)
+				{
+					evaluator->Add(instances[i]->label, predictions[i], instances[i]->weight);
+				}
+			}
+		}
+
 		PredictorPtr Train(Instances& instances, bool normalizeCopy = false)
 		{
 			Pval(_cmd.classifierName);
@@ -434,7 +451,7 @@ namespace gezi {
 			trainer->ShowHelp();
 		}
 
-		void RunTrain()
+		PredictorPtr RunTrain(bool trainOnly = true)
 		{
 			PredictorPtr predictor;
 			Instances instances;
@@ -464,6 +481,8 @@ namespace gezi {
 					tester->Test(testInstances, predictor, instFile);
 				}
 			}
+			//如果是训练模式肯定save模型,如果是TrainTest模式为了速度默认是不save模型的可以同名--mf=1开启
+			if (trainOnly || _cmd.modelfile)
 			{
 				Noticer nt("Write train result!");
 
@@ -492,18 +511,11 @@ namespace gezi {
 					}
 				}
 			}
+			return predictor;
 		}
 
-		void RunTest()
+		void RunTest(PredictorPtr predictor)
 		{
-			Noticer nt("Test! with model from " + _cmd.modelFolder);
-			//------load predictor
-			PredictorPtr predictor;
-			{
-				Noticer nt("Loading predictor");
-				predictor = PredictorFactory::LoadPredictor(_cmd.modelFolder);
-				CHECK(predictor != nullptr);
-			}
 			//------test
 			try_create_dir(_cmd.resultDir);
 			string instFile = _cmd.resultFile.empty() ? format("{}/{}.inst.txt", _cmd.resultDir, _cmd.resultIndex) : _cmd.resultFile;
@@ -526,59 +538,29 @@ namespace gezi {
 			}
 		}
 
+		void RunTest()
+		{
+			Noticer nt("Test! with model from " + _cmd.modelFolder);
+			//------load predictor
+			PredictorPtr predictor;
+			{
+				Noticer nt("Loading predictor");
+				predictor = PredictorFactory::LoadPredictor(_cmd.modelFolder);
+				CHECK(predictor != nullptr);
+			}
+			RunTest(predictor);
+		}
+
 		void RunTrainTest()
 		{
 			Noticer nt("TrainTest!");
-			PredictorPtr predictor;
-			Instances instances;
-			{
-				Noticer nt("Train!");
-				instances = create_instances(_cmd.datafile);
-				CHECK_GT(instances.Count(), 0) << "Read 0 train instances, aborting experiment";
-				predictor = Train(instances);
-				CHECK(predictor != nullptr);
-			}
-			{
-				Noticer nt("Test!");
-				try_create_dir(_cmd.resultDir);
-				string instFile = _cmd.resultFile.empty() ? format("{}/{}.inst.txt", _cmd.resultDir, _cmd.resultIndex) : _cmd.resultFile;
-
-				auto testInstances = create_instances(_cmd.testDatafile);
-				CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
-				CHECK_EQ(instances.schema == testInstances.schema, 1);
-				if (!_cmd.evaluateScript.empty())
-				{
-					Test(testInstances, predictor, instFile);
-					string command = _cmd.evaluateScript + instFile;
-					EXECUTE(command);
-				}
-				else
-				{
-					auto tester = PredictorUtils::GetTester(predictor);
-					tester->Test(testInstances, predictor, instFile);
-				}
-			}
-			if (_cmd.modelfile)
-			{
-				Noticer nt("Write train result!");
-				predictor->Save(_cmd.modelFolder);
-				if (_cmd.modelfileXml)
-				{
-					predictor->SaveXml();
-				}
-				if (_cmd.modelfileJson)
-				{
-					predictor->SaveJson();
-				}
-				if (_cmd.modelfileText)
-				{
-					predictor->SaveText();
-				}
-			}
+			PredictorPtr predictor = RunTrain(false);
+			Noticer nt("Test!");
+			RunTest(predictor);
 		}
 
 		void RunFeatureSelection()
-		{
+		{ //@TODO
 			Noticer nt("FeatureSelection!");
 			Instances instances = create_instances(_cmd.datafile);
 		}

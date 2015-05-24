@@ -67,7 +67,7 @@ namespace gezi {
 
 		string calibratorName = "sigmoid"; //calibrator| Which calibrator?
 
-		string evaluatorName = ""; //evaluator|which evaluator for cross validation which only show one evaluator result or evaluators for ValidatingTrainers
+		string evaluatorNames = ""; //evaluator|evaluators for ValidatingTrainers(Inside Trainer) or for CrsossValidation train, test.. 
 
 		string inputFileFormat = "normal"; //if | input file format
 		string outputFileFormat = "unknown";//of| output file format

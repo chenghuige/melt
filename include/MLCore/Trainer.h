@@ -184,7 +184,7 @@ namespace gezi {
 			_evaluators = move(evaluators);
 			_validating = true;
 			_valdationSetNames = from(_validationSets) >> select([](const Instances& a) { return a.name; }) >> to_vector();
-			Trainer::Train(instances);  //@TODO 重载被覆盖了。。。 这样行吗？ 会不会后续override无效。。 @FIXME 还是外面使用using Trainer::Train; ?
+			Trainer::Train(instances);  //不用Trainer::会提示找不到 重载覆盖 另外也可以函数外面类里面 using Trainer::Train
 		}
 	protected:
 		bool IsValidating()
@@ -203,6 +203,7 @@ namespace gezi {
 			PrintEvaluateResult(evaluateResults);
 		}
 
+	private:
 		vector<Fvec> GetEvaluateResults(vector<vector<EvaluateNode> >& results)
 		{
 			vector<Fvec> evaluateResults(_evaluators.size()); //numRows=numEvaluators,numCols=numValidationInstances
