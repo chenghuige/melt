@@ -25,7 +25,10 @@ DEFINE_string(o, "", "outfile: specified output file(not modelfile)");
 DEFINE_bool(sof, true, "saveOutputFile: wehter save the outputfile");
 
 DEFINE_string(test, "", "testDatafile: Data file used for test");
-DEFINE_string(valid, "", "Data file used for training validation (with IValidatingPredictor classifiers)");
+DEFINE_string(valid, "", "Data file used for training validation (with IValidatingPredictor classifiers where validation is done with training)");
+DEFINE_bool(se, false, "selfEvaluate: when trainer is ValidatingTrainer will do self evaluate during training process");
+DEFINE_int32(efreq, 1, "evaluateFrequencey: when trainer is ValidatingTrainer will do evaluate every ef round");
+DEFINE_double(efrac, 0, "evaluateFraction: when trainer is ValidatingTrainer will split evaluateFraction instances to use as evaluation set");
 
 DEFINE_string(m, "model", "modelFolder");
 DEFINE_bool(mf, false, " modelfile: Gen model file£¿ (for TrainTest)");
@@ -94,6 +97,9 @@ namespace gezi {
 		_cmd.numRuns = FLAGS_nr;
 
 		_cmd.selfTest = FLAGS_st;
+		_cmd.selfEvaluate = FLAGS_se;
+		_cmd.evaluateFrequency = FLAGS_efreq;
+		_cmd.evaluateFraction = FLAGS_efrac;
 
 		if (FLAGS_rs == 0)
 		{
