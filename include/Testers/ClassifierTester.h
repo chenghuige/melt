@@ -249,7 +249,7 @@ namespace gezi {
 	protected:
 		virtual void Finish() override
 		{
-			_auc = _evaluator.Evaluate();
+			_auc = _evaluator.Finalize();
 		}
 
 		virtual void Print_(string prefix) override
@@ -261,7 +261,7 @@ namespace gezi {
 	public:
 		bool useProbability = true; //use ouput or use probability
 	private:
-		AucStreamingEvaluator _evaluator;
+		AucEvaluator _evaluator;
 		Float _auc;
 	};
 

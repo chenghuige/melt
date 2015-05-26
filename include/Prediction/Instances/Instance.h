@@ -28,10 +28,18 @@ public:
 	Instance(const Instance&) = default;
 	Instance& operator = (const Instance&) = default;
 
+	typedef Vector::value_type value_type;
+	typedef Vector::index_type index_type;
+
 	Instance(int length)
 		:features(length)
 	{
 
+	}
+
+	size_t size() const
+	{
+		return features.size();
 	}
 
 	int FeatureNum() const
@@ -102,16 +110,29 @@ public:
 		return hasMissingFeatures;
 	}
 
+	value_type operator[](index_type index) const
+	{
+		return features[index];
+	}
+
+	value_type& operator[](index_type index)
+	{
+		return features[index];
+	}
+
 	//TODO size_t counter; 计数 第几个instance
+	//------Evaluate相关的信息在基础的IsEvaluateAble中
+	Float label = std::numeric_limits<double>::quiet_NaN(); 
+	Float weight = 1.0;
+
 	Vector features;
 	bool hasMissingFeatures = false;
-	Float label = std::numeric_limits<double>::quiet_NaN();
+	
 	string name;
 	svec names;
 	svec attributes;
 	string metaData;
 	bool sparse = false;
-	Float weight = 1.0;
 	bool normalized = false;
 	string line; //for vw instance will store ori input line
 };

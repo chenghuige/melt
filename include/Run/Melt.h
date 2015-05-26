@@ -134,6 +134,21 @@ namespace gezi {
 			VLOG(0) << i++ << " TEXT_MODEL_TO_BINARY //读取-m 指定路径下的model.txt 用户指定模型名称-cl 默认是LinearSVM 按照文本格式模型载入写出binary模型到-m路径";
 		}
 
+		vector<EvaluatorPtr> CreateOrGetEvaluators()
+		{
+			vector<EvaluatorPtr> evaluators;
+			if (!_cmd.evaluatorNames.empty())
+			{
+				evaluators = EvaluatorUtils::CreateEvaluators(_cmd.evaluatorNames);
+			}
+			else
+			{
+				evaluators = EvaluatorUtils::GetEvaluators(TrainerFactory::CreateTrainer(_cmd.classifierName)->GetPredictionKind());
+			}
+			CHECK_GT(evaluators.size(), 0);
+			return evaluators;
+		}
+
 		void RunCrossValidation(Instances& instances, CrossValidationType cvType)
 		{
 			//--------------------------- 输出文件头
@@ -158,18 +173,12 @@ namespace gezi {
 			}
 			const int randomStep = 10000;
 			//const int randomStep = 1;
-			StreamingEvaluatorPtr evaluator = nullptr;
+			vector<EvaluatorPtr> evaluators;
+			vector<Float> evaluatePredictions;
+			vector<InstancePtr> evaluateInstances;
 			if (cvType == CrossValidationType::EVAL_PARAM)
 			{ //@TODO check是否和PredictoionKind相匹配
-				if (_cmd.evaluatorNames.empty())
-				{
-					evaluator = EvaluatorUtils::GetStreamingEvaluator(TrainerFactory::CreateTrainer(_cmd.classifierName)->GetPredictionKind());
-				}
-				else
-				{
-					evaluator = EvaluatorUtils::CreateStreamingEvaluator(_cmd.evaluatorNames);
-				}
-				CHECK(evaluator != nullptr);
+				evaluators = CreateOrGetEvaluators();
 			}
 			string trainerParam;
 			TesterPtr tester = nullptr;
@@ -234,7 +243,7 @@ namespace gezi {
 					}
 					else if (cvType == CrossValidationType::EVAL_PARAM)
 					{
-						Test(testData, predictor, evaluator);
+						Evaluate(testData, predictor, evaluatePredictions, evaluateInstances);
 					}
 					else
 					{
@@ -262,8 +271,14 @@ namespace gezi {
 			}
 			else if (cvType == CrossValidationType::EVAL_PARAM)
 			{
-				double auc = evaluator->Evaluate();
-				cout << auc << "\t" << "trainerParam: " << trainerParam << endl;
+				vector<double> results(evaluators.size(), 0);
+#pragma omp parallel for
+				for (size_t i = 0; i < evaluators.size(); i++)
+				{
+					results[i] = evaluators[i]->Evaluate(evaluatePredictions, evaluateInstances);
+				}
+				cout << results[0] << "\t" << "trainerParam: " << trainerParam << endl;
+				gezi::print(EvaluatorUtils::GetEvaluatorsNames(evaluators), results);
 			}
 		}
 
@@ -333,7 +348,7 @@ namespace gezi {
 				ofs << name << "\t" << instance->label << "\t"
 					<< assigned << "\t" << output << "\t"
 					<< probability << endl;
-				
+
 				idx++;
 			}
 		}
@@ -363,7 +378,7 @@ namespace gezi {
 				currentOfs << name << "\t" << instance->label << "\t"
 					<< assigned << "\t" << output << "\t"
 					<< probability << endl;
-		
+
 				idx++;
 			}
 		}
@@ -388,29 +403,26 @@ namespace gezi {
 				ofs << name << "\t" << instance->label << "\t"
 					<< assigned << "\t" << output << "\t"
 					<< probability << endl;
-			
+
 				idx++;
 			}
 			return ofs.str();
 		}
 
-
-		//AUC test
-		void Test(const Instances& instances, PredictorPtr predictor, StreamingEvaluatorPtr evaluator)
+		void Evaluate(const Instances& instances, PredictorPtr predictor, vector<Float>& predictions, vector<InstancePtr>& evaluateInstances)
 		{
-			vector<Float> predictions(instances.size(), 0);
+			int begin = predictions.size();
+			predictions.resize(begin + instances.size());
+			evaluateInstances.resize(begin + instances.size());
 #pragma omp parallel for schedule(static)
 			for (size_t i = 0; i < instances.size(); i++)
 			{
-				 predictions[i] = predictor->Predict(instances[i]);
-			}
-			for (size_t i = 0; i < instances.size(); i++)
-			{
-				evaluator->Add(instances[i]->label, predictions[i], instances[i]->weight);
+				predictions[begin + i] = predictor->Predict(instances[i]);
+				evaluateInstances[begin + i] = instances[i];
 			}
 		}
 
-		void Test(const Instances& instances, PredictorPtr predictor, vector<StreamingEvaluatorPtr>& evaluators)
+		vector<Float> Evaluate(const Instances& instances, PredictorPtr predictor, vector<EvaluatorPtr>& evaluators)
 		{
 			vector<Float> predictions(instances.size(), 0);
 #pragma omp parallel for schedule(static)
@@ -418,22 +430,62 @@ namespace gezi {
 			{
 				predictions[i] = predictor->Predict(instances[i]);
 			}
-			for (size_t i = 0; i < instances.size(); i++)
+			vector<Float> results(evaluators.size(), 0);
+#pragma omp parallel for 
+			for (size_t i = 0; i < evaluators.size(); i++)
 			{
-				for (auto& evaluator : evaluators)
-				{
-					evaluator->Add(instances[i]->label, predictions[i], instances[i]->weight);
-				}
+				results[i] = evaluators[i]->Evaluate(predictions, instances);
 			}
+			return results;
 		}
 
-		PredictorPtr Train(Instances& instances, bool normalizeCopy = false)
+		PredictorPtr Train(Instances& instances)
 		{
-			Pval(_cmd.classifierName);
 			auto trainer = TrainerFactory::CreateTrainer(_cmd.classifierName);
 			CHECK(trainer != nullptr);
-			trainer->SetNormalizeCopy(normalizeCopy);
-			trainer->Train(instances);
+			if (_cmd.selfTest)
+			{
+				trainer->SetNormalizeCopy();
+			}
+			auto validatingTrainer = dynamic_pointer_cast<ValidatingTrainer>(trainer);
+			if (validatingTrainer != nullptr && (_cmd.selfEvaluate || !_cmd.validationDatafile.empty() || _cmd.evaluateFraction > 0))
+			{ //-----------------------Train with validation
+				//对于可以在Training过程中支持Validating的ValidatingTrainer，如果输入-valid不是空， 那么
+				//@TODO 对于后续的EarlyStop 考虑的效果 针对evaluateSet中的第一个数据的evaluate效果
+				Instances* pTrainInstances = &instances;
+				vector<EvaluatorPtr> evaluators = CreateOrGetEvaluators();
+				VLOG(0) << "TrainWithValidating -- selfEvaluate:" << _cmd.selfEvaluate <<
+					" validationDataFiles:" << _cmd.validationDatafile << " evaluators:" << gezi::join(EvaluatorUtils::GetEvaluatorsNames(evaluators), ",");
+
+				vector<Instances> validatingSet;
+				if (!_cmd.validationDatafile.empty())
+				{
+					vector<string> validatingSetNames = gezi::split(_cmd.validationDatafile, ',');
+					for (string validatingSetName : validatingSetNames)
+					{
+						validatingSet.push_back(create_instances(validatingSetName));
+						CHECK_GT(validatingSet.back().Count(), 0) << "Read 0 evaluate instances, aborting experiment";
+					}
+				}
+
+				vector<Instances> parts;
+				if (_cmd.evaluateFraction > 0)
+				{
+					parts = InstancesUtil::RandomSplit(instances, _cmd.evaluateFraction, _cmd.randSeed);
+					VLOG(0) << "Split input insatnces to train and valid part with numTrainInsatnces: " << parts[0].Size()
+						<< " numValidInstances: " << parts[1].Size();
+					validatingSet.push_back(parts[1]);
+					pTrainInstances = &parts[0];
+				}
+
+				validatingTrainer->Train(*pTrainInstances, validatingSet, evaluators,
+					_cmd.selfEvaluate, _cmd.evaluateFrequency);
+			}
+			else
+			{//--------------------------Simple Train
+				trainer->Train(instances);
+			}
+
 			auto predictor = trainer->CreatePredictor();
 			predictor->SetParam(trainer->GetParam());
 			return predictor;
@@ -451,6 +503,37 @@ namespace gezi {
 			trainer->ShowHelp();
 		}
 
+		void SavePredictor(PredictorPtr predictor)
+		{
+			Noticer nt("Save predictor");
+
+			(*predictor).SetSaveNormalizerText(_cmd.saveNormalizerText)
+				.SetSaveCalibratorText(_cmd.saveCalibratorText);
+
+			predictor->Save(_cmd.modelFolder);
+			if (_cmd.modelfileXml)
+			{
+				predictor->SaveXml();
+			}
+			if (_cmd.modelfileJson)
+			{
+				predictor->SaveJson();
+			}
+			if (_cmd.modelfileText)
+			{
+				predictor->SaveText();
+			}
+			if (_cmd.modelfileCode)
+			{
+				svec codeTypes = gezi::split(_cmd.codeType, ',');
+				for (const auto& codeType : codeTypes)
+				{
+					predictor->SaveCode(codeType);
+				}
+			}
+		}
+
+		//if trainOnly = false means will do Test after RunTrain
 		PredictorPtr RunTrain(bool trainOnly = true)
 		{
 			PredictorPtr predictor;
@@ -459,57 +542,16 @@ namespace gezi {
 				Noticer nt("Train!");
 				instances = create_instances(_cmd.datafile);
 				CHECK_GT(instances.Count(), 0) << "Read 0 test instances, aborting experiment";
-				predictor = Train(instances, _cmd.selfTest);
+				predictor = Train(instances);
 			}
 			if (_cmd.selfTest)
 			{
-				Noticer nt("Test itself!");
-				try_create_dir(_cmd.resultDir);
-				string instFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
-				//auto testInstances = create_instances(_cmd.datafile);
-				auto& testInstances = instances; //train的过程中没有改变instance！ 用了normalize copy
-				CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
-				if (!_cmd.evaluateScript.empty())
-				{
-					Test(testInstances, predictor, instFile);
-					string command = _cmd.evaluateScript + instFile;
-					EXECUTE(command);
-				}
-				else
-				{
-					auto tester = PredictorUtils::GetTester(predictor);
-					tester->Test(testInstances, predictor, instFile);
-				}
+				RunTest(predictor);
 			}
-			//如果是训练模式肯定save模型,如果是TrainTest模式为了速度默认是不save模型的可以同名--mf=1开启
+			//如果是训练模式肯定save模型,如果是TrainTest模式为了速度默认是不save模型的可以通过--mf=1开启
 			if (trainOnly || _cmd.modelfile)
 			{
-				Noticer nt("Write train result!");
-
-				(*predictor).SetSaveNormalizerText(_cmd.saveNormalizerText)
-					.SetSaveCalibratorText(_cmd.saveCalibratorText);
-
-				predictor->Save(_cmd.modelFolder);
-				if (_cmd.modelfileXml)
-				{
-					predictor->SaveXml();
-				}
-				if (_cmd.modelfileJson)
-				{
-					predictor->SaveJson();
-				}
-				if (_cmd.modelfileText)
-				{
-					predictor->SaveText();
-				}
-				if (_cmd.modelfileCode)
-				{
-					svec codeTypes = gezi::split(_cmd.codeType, ',');
-					for (const auto& codeType : codeTypes)
-					{
-						predictor->SaveCode(codeType);
-					}
-				}
+				SavePredictor(predictor);
 			}
 			return predictor;
 		}
@@ -525,6 +567,11 @@ namespace gezi {
 			string testDatafile = _cmd.testDatafile.empty() ? _cmd.datafile : _cmd.testDatafile;
 			auto testInstances = create_instances(testDatafile);
 			CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
+
+			if (!_cmd.evaluatorNames.empty())
+			{//多次test,确保testInstances不被改变
+				predictor->SetNormalizeCopy();
+			}
 			if (!_cmd.evaluateScript.empty())
 			{ //使用外部脚本 目前只支持二分类
 				Test(testInstances, predictor, instFile);
@@ -536,6 +583,14 @@ namespace gezi {
 				auto tester = PredictorUtils::GetTester(predictor);
 				tester->Test(testInstances, predictor, instFile);
 			}
+			//使用Evaluator进行附加的evaluate 
+			if (!_cmd.evaluatorNames.empty())
+			{
+				vector<EvaluatorPtr> evaluators = EvaluatorUtils::CreateEvaluators(_cmd.evaluatorNames);
+				vector<Float> results = Evaluate(testInstances, predictor, evaluators);
+				gezi::print(EvaluatorUtils::GetEvaluatorsNames(evaluators), results);
+			}
+
 		}
 
 		void RunTest()
@@ -555,7 +610,7 @@ namespace gezi {
 		{
 			Noticer nt("TrainTest!");
 			PredictorPtr predictor = RunTrain(false);
-			Noticer nt("Test!");
+			Noticer nt2("Test!");
 			RunTest(predictor);
 		}
 
@@ -582,21 +637,21 @@ namespace gezi {
 		}
 
 #define  SAVE_SHARED_PTR_ALL(obj)\
-				{\
+						{\
 		SAVE_SHARED_PTR(obj, _cmd.modelFolder); \
 		if (_cmd.modelfileXml)\
-				{\
+						{\
 		SAVE_SHARED_PTR_ASXML(obj, _cmd.modelFolder); \
-				}\
+						}\
 		if (_cmd.modelfileJson)\
-				{\
+						{\
 		SAVE_SHARED_PTR_ASJSON(obj, _cmd.modelFolder); \
-				}\
+						}\
 		if (_cmd.modelfileText)\
-				{\
+						{\
 		SAVE_SHARED_PTR_ASTEXT(obj, _cmd.modelFolder); \
-				}\
-				}
+						}\
+						}
 
 		void RunNormalize()
 		{

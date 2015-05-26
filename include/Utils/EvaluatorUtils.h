@@ -19,141 +19,73 @@
 #include "MLCore/Trainer.h"
 namespace gezi {
 
-class EvaluatorUtils 
-{
-public:
-
-	//跟进trainer的type给出默认的Evaluators
-	static vector<EvaluatorPtr> GetEvaluators(PredictionKind predictionKind)
+	class EvaluatorUtils
 	{
-		vector<EvaluatorPtr> evaluators;
-		if (predictionKind == PredictionKind::BinaryClassification)
+	public:
+		static vector<EvaluatorPtr> GetEvaluators(TrainerPtr trainer)
 		{
-			evaluators.push_back(make_shared<AucEvaluator>());
+			return GetEvaluators(trainer->GetPredictionKind());
 		}
-		return evaluators;
-	}
 
-	static vector<EvaluatorPtr> GetEvaluators(TrainerPtr trainer)
-	{
-		return GetEvaluators(trainer->GetPredictionKind());
-	}
+		static EvaluatorPtr CreateEvaluator(string evaluatorName)
+		{
+			evaluatorName = gezi::arg(evaluatorName);
+			if (evaluatorName == "auc")
+			{
+				return make_shared<AucEvaluator>();
+			}
+			else if (evaluatorName == "l1")
+			{
+				return make_shared<L1Evaluator>();
+			}
+			else if (evaluatorName == "l2")
+			{
+				return make_shared<L2Evaluator>();
+			}
+			else if (evaluatorName == "rmse")
+			{
+				return make_shared<RMSEEvaluator>();
+			}
+			LOG(WARNING) << "Not supported evaluator: " << evaluatorName;
+			return nullptr;
+		}
 
-	static EvaluatorPtr CreateEvaluator(string evaluatorName)
-	{
-		evaluatorName = gezi::arg(evaluatorName);
-		if (evaluatorName == "auc")
+		static vector<EvaluatorPtr> GetEvaluators(PredictionKind predictionKind)
 		{
-			return make_shared<AucEvaluator>();
+			typedef vector<EvaluatorPtr> Vec;
+			if (predictionKind == PredictionKind::BinaryClassification)
+			{
+				return Vec{ make_shared<AucEvaluator>() };
+			}
+			else if (predictionKind == PredictionKind::Regression)
+			{
+				return Vec{ make_shared<RMSEEvaluator>() };
+			}
+			return Vec();
 		}
-		else if (evaluatorName == "l1")
-		{
-			return make_shared<L1Evaluator>();
-		}
-		else if (evaluatorName == "l2")
-		{
-			return make_shared<L2Evaluator>();
-		}
-		else if (evaluatorName == "rmse")
-		{
-			return make_shared<RMSEEvaluator>();
-		}
-		LOG(WARNING) << "Not supported evaluator: " << evaluatorName;
-		return nullptr;
-	}
 
-	static StreamingEvaluatorPtr GetStreamingEvaluator(PredictionKind predictionKind)
-	{
-		if (predictionKind == PredictionKind::BinaryClassification)
+		static vector<EvaluatorPtr> CreateEvaluators(string evaluatorNames)
 		{
-			return make_shared<AucStreamingEvaluator>();
+			vector<EvaluatorPtr> evaluators;
+			vector<string> evaluatorNamesVec = gezi::split(evaluatorNames, ',');
+			for (string evaluatorName : evaluatorNamesVec)
+			{
+				EvaluatorPtr evaluator = CreateEvaluator(evaluatorName);
+				CHECK(evaluator != nullptr);
+				evaluators.push_back(evaluator);
+			}
+			return evaluators;
 		}
-		else if (predictionKind == PredictionKind::Regression)
-		{
-			return make_shared<RMSEStreamingEvaluator>();
-		}
-		return nullptr;
-	}
 
-	static vector<StreamingEvaluatorPtr> GetStreamingEvaluator(PredictionKind predictionKind)
-	{
-		typedef vector<StreamingEvaluatorPtr> Vec;
-		if (predictionKind == PredictionKind::BinaryClassification)
+		static vector<string> GetEvaluatorsNames(const vector<EvaluatorPtr>& evaluators)
 		{
-			return  Vec{make_shared<AucStreamingEvaluator>()};
+			return from(evaluators) >> select([](const EvaluatorPtr& a){return a->Name(); }) >> to_vector();
 		}
-		else if (predictionKind == PredictionKind::Regression)
-		{
-			return Vec{make_shared<RMSEStreamingEvaluator>()};
-		}
-		return nullptr;
-	}
 
-	static EvaluatorPtr GetEvaluator(PredictionKind predictionKind)
-	{
-		if (predictionKind == PredictionKind::BinaryClassification)
-		{
-			return make_shared<AucEvaluator>();
-		}
-		else if (predictionKind == PredictionKind::Regression)
-		{
-			return make_shared<RMSEEvaluator>();
-		}
-		return nullptr;
-	}
+	protected:
+	private:
 
-	static vector<EvaluatorPtr> GetEvaluators(PredictionKind predictionKind)
-	{
-		if (predictionKind == PredictionKind::BinaryClassification)
-		{
-			return make_shared<AucEvaluator>();
-		}
-		else if (predictionKind == PredictionKind::Regression)
-		{
-			return make_shared<RMSEEvaluator>();
-		}
-		return nullptr;
-	}
-
-	static StreamingEvaluatorPtr CreateStreamingEvaluator(string evaluatorName)
-	{
-		evaluatorName = gezi::arg(evaluatorName);
-		if (evaluatorName == "auc")
-		{
-			return make_shared<AucStreamingEvaluator>();
-		}
-		else if (evaluatorName == "l1")
-		{
-			return make_shared<L1StreamingEvaluator>();
-		}
-		else if (evaluatorName == "l2")
-		{
-			return make_shared<L2StreamingEvaluator>();
-		}
-		else if (evaluatorName == "rmse")
-		{
-			return make_shared<RMSEStreamingEvaluator>();
-		}
-		LOG(WARNING) << "Not supported evaluator: " << evaluatorName;
-		return nullptr;
-	}
-
-	static vector<EvaluatorPtr> CreateEvaluators(string evaluatorNames)
-	{
-		vector<EvaluatorPtr> evaluators;
-		vector<string> evaluatorNamesVec = gezi::split(evaluatorNames, ','); 
-		for (string evaluatorName : evaluatorNamesVec)
-		{
-			EvaluatorPtr evaluator = CreateEvaluator(evaluatorName);
-			CHECK(evaluator != nullptr);
-		}
-		return evaluators;
-	}
-
-protected:
-private:
-
-};
+	};
 
 }  //----end of namespace gezi
 

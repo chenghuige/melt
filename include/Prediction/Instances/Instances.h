@@ -50,6 +50,7 @@ namespace gezi {
 			return this->size();
 		}
 
+		//注意不要有size()函数 因为本身public vector<> 否则会莫名hang掉
 		size_t Size() const
 		{
 			return this->size();

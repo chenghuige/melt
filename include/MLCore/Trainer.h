@@ -176,69 +176,114 @@ namespace gezi {
 	class ValidatingTrainer : public Trainer
 	{
 	public:
+		using Trainer::Trainer;
+		ValidatingTrainer()
+		{//确保Scores至少有一个TrainingScore
+			Scores.resize(1);
+		}
+
 		//尽管instances传入不使用const 但是注意trainer要SetNormalizeCopy 实际还是保证不改变所有输入
-		virtual void Train(Instances& instances, vector<Instances>& valicationInstances, vector<EvaluatorPtr>& evaluators)
+		virtual void Train(Instances& instances,
+			vector<Instances>& validationInstances, vector<EvaluatorPtr>& evaluators,
+			bool selfEvaluate = false, int testFrequency = 1)
 		{
-			Trainer::SetNormalizeCopy();
-			_validationSets = move(valicationInstances);
+			//Trainer::SetNormalizeCopy();
+			PVAL2(validationInstances.size(), evaluators.size());
+			_validationSets = move(validationInstances);
 			_evaluators = move(evaluators);
+			PVAL2(validationInstances.size(), evaluators.size());
+			PVAL2(_validationSets.size(), _evaluators.size());
 			_validating = true;
-			_valdationSetNames = from(_validationSets) >> select([](const Instances& a) { return a.name; }) >> to_vector();
+			_testFrequency = testFrequency;
+			//_valdationSetNames = from(_validationSets) >> select([](const Instances& a) { return a.name; }) >> to_vector();
+
+			for (size_t i = 0; i < _validationSets.size(); i++)
+			{
+				_valdationSetNames.push_back(format("test[{}]", i));
+			}
+
+			_selfEvaluate = selfEvaluate;
+			_numValidationsExcludeSelf = _validationSets.size();
+			_numValidations = _validationSets.size() + (int)selfEvaluate;
+			_scoresSize = _numValidationsExcludeSelf + 1; //Scores至少要有TrainingScores 尽管最后可能不用
+			CHECK_GE(_scoresSize, 1);
+			Scores.resize(_scoresSize);
+
+			_evaluateResults.resize(_evaluators.size());
+			for (size_t i = 0; i < _evaluators.size(); i++)
+			{
+				_evaluateResults[i].resize(_numValidations, 0);
+			}
+
+			if (selfEvaluate)
+			{
+				_valdationSetNames.push_back("train");
+				_validationSets.push_back(instances);
+			}
+			PVAL4(_numValidations, _evaluators.size(), _validationSets.size(), _scoresSize);
 			Trainer::Train(instances);  //不用Trainer::会提示找不到 重载覆盖 另外也可以函数外面类里面 using Trainer::Train
 		}
+
+		virtual void Train(Instances& instances,
+			vector<Instances>&& validationInstances, vector<EvaluatorPtr>&& evaluators,
+			bool selfEvaluate = false, int testFrequency = 1)
+		{
+			PVAL2(validationInstances.size(), evaluators.size());
+			vector<Instances> _validationSets = move(validationInstances);
+			vector<EvaluatorPtr> _evaluators = move(evaluators);
+			PVAL2(validationInstances.size(), evaluators.size());
+			PVAL2(_validationSets.size(), _evaluators.size());
+			return Train(instances, _validationSets, _evaluators, selfEvaluate, testFrequency);
+		}
 	protected:
-		bool IsValidating()
-		{
-			return _validating;
-		}
-
-		virtual void PrepareEvaluate()
-		{
-			_results.clear();
-		}
-
+	
 		void Evaluate()
 		{
-			vector<Fvec> evaluateResults = GetEvaluateResults(_results);
-			PrintEvaluateResult(evaluateResults);
+			EvaluatePredicts();
+			PrintEvaluateResult();
+		}
+
+		virtual void EvaluatePredicts()
+		{
+			for (size_t i = 0; i < _evaluators.size(); i++)
+			{
+				for (size_t j = 0; j < _numValidations; j++)
+				{
+					_evaluateResults[i][j] = _evaluators[i]->Evaluate(Scores[j], _validationSets[j]);
+				}
+			}
 		}
 
 	private:
-		vector<Fvec> GetEvaluateResults(vector<vector<EvaluateNode> >& results)
-		{
-			vector<Fvec> evaluateResults(_evaluators.size()); //numRows=numEvaluators,numCols=numValidationInstances
-			for (size_t i = 0; i < _evaluators.size(); i++)
-			{
-				evaluateResults.resize(_validationSets.size());
-			}
-#pragma omp parallel for schedule(static)
-			for (size_t i = 0; i < _evaluators.size(); i++)
-			{
-#pragma omp parallel for schedule(static)
-				for (size_t j = 0; j < _validationSets.size(); j++)
-				{
-					evaluateResults[i][j] = _evaluators[i]->Evaluate(_results[j]);
-				}
-			}
-			return evaluateResults;
-		}
-
-		void PrintEvaluateResult(const vector<Fvec>&  evaluateResults)
+		void PrintEvaluateResult()
 		{
 			for (size_t i = 0; i < _evaluators.size(); i++)
 			{
 				std::cerr << "[" << i << "]" << _evaluators[i]->Name() << " ";
-				gezi::print(_valdationSetNames, evaluateResults[i], ":", "\t");
+				gezi::print(_valdationSetNames, _evaluateResults[i], ":", "\t", 5);
 				std::cerr << std::endl;
 			}
 		}
+
+	public:
+		//Fvec InitTrainScores;
+		vector<Fvec> Scores; //InitTrainScores 放在InitValidScores的最后,Scores可以看做Predictions
 	protected:
 		bool _validating = false;
 
-		vector<vector<EvaluateNode> > _results; //_results.size() == numValidationInsatnces
-		vector<string> _valdationSetNames;
+		vector<Fvec> _evaluateResults; //每个evaluator对应一个vec  长度是 _numValidations
+
 		vector<Instances> _validationSets;
 		vector<EvaluatorPtr> _evaluators;
+
+		vector<string> _valdationSetNames;
+
+		int _numValidations = 0;
+		int _numValidationsExcludeSelf = 0;
+		int _scoresSize = 1;
+
+		bool _selfEvaluate = false;
+		int _testFrequency = 1;
 	};
 
 }  //----end of namespace gezi
