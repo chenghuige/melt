@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 	google::InstallFailureSignalHandler();
 	google::SetVersionString(get_version());
 
-	for (size_t i = 0; i < argc; i++)
+	for (int i = 0; i < argc; i++)
 	{
 		string arg = argv[i];
 		if (arg == "-help" || arg == "--help" || arg == "-h" || arg == "--h")
