@@ -42,6 +42,7 @@ namespace gezi {
 		bool modelfileText = false; //mt|
 		bool modelfileXml = false; //mxml|
 		bool modelfileJson = false; //mjson|
+		bool modelfileFeature = false; //mfeature| feature info, usually means feature importance
 		bool saveNormalizerText = false; //snt|
 		bool saveCalibratorText = false; //sct|
 		string featureName = ""; //fn|
@@ -51,6 +52,7 @@ namespace gezi {
 		
 		bool selfTest = false; //st| when -c train will test the train data its self after training
 		bool selfEvaluate = false; //se|when trainer is validatingTrainer, will self evaluate during training
+		bool selfEvaluate2 = false;
 		int evaluateFrequency = 1; //efreq|when trainer is validatingTrainer, will self evaluate every evaluateFrequency round
 		double evaluateFraction = 0.0; //efrac|when trainer is ValidatingTrainer will split evaluateFraction instances to use as evaluation set
 

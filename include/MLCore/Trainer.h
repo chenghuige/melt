@@ -21,6 +21,8 @@
 #include "Prediction/Normalization/Normalizer.h"
 #include "Prediction/Calibrate/Calibrator.h"
 #include "Utils/Evaluator.h"
+#include "statistic_util.h"
+#include "MLCore/LossKind.h"
 
 namespace gezi {
 
@@ -30,6 +32,11 @@ namespace gezi {
 		virtual PredictionKind GetPredictionKind()
 		{
 			return PredictionKind::BinaryClassification;
+		}
+
+		virtual LossKind GetLossKind()
+		{
+			return LossKind::Unknown;
 		}
 
 		//默认流程特别为类似线性分类需要normalize的流程准备 如果不需要比如Fastrank 可以自己override
@@ -183,18 +190,13 @@ namespace gezi {
 		}
 
 		//尽管instances传入不使用const 但是注意trainer要SetNormalizeCopy 实际还是保证不改变所有输入
-		virtual void Train(Instances& instances,
-			vector<Instances>& validationInstances, vector<EvaluatorPtr>& evaluators,
-			bool selfEvaluate = false, int testFrequency = 1)
+		virtual void Train(Instances& instances, vector<Instances>& validationInstances, vector<EvaluatorPtr>& evaluators)
 		{
-			//Trainer::SetNormalizeCopy();
-			PVAL2(validationInstances.size(), evaluators.size());
+			_instances = &instances;
+			Trainer::SetNormalizeCopy(false);
 			_validationSets = move(validationInstances);
 			_evaluators = move(evaluators);
-			PVAL2(validationInstances.size(), evaluators.size());
-			PVAL2(_validationSets.size(), _evaluators.size());
 			_validating = true;
-			_testFrequency = testFrequency;
 			//_valdationSetNames = from(_validationSets) >> select([](const Instances& a) { return a.name; }) >> to_vector();
 
 			for (size_t i = 0; i < _validationSets.size(); i++)
@@ -202,72 +204,181 @@ namespace gezi {
 				_valdationSetNames.push_back(format("test[{}]", i));
 			}
 
-			_selfEvaluate = selfEvaluate;
-			_numValidationsExcludeSelf = _validationSets.size();
-			_numValidations = _validationSets.size() + (int)selfEvaluate;
-			_scoresSize = _numValidationsExcludeSelf + 1; //Scores至少要有TrainingScores 尽管最后可能不用
-			CHECK_GE(_scoresSize, 1);
-			Scores.resize(_scoresSize);
-
-			_evaluateResults.resize(_evaluators.size());
-			for (size_t i = 0; i < _evaluators.size(); i++)
-			{
-				_evaluateResults[i].resize(_numValidations, 0);
-			}
-
-			if (selfEvaluate)
+			if (_selfEvaluate)
 			{
 				_valdationSetNames.push_back("train");
 				_validationSets.push_back(instances);
 			}
-			PVAL4(_numValidations, _evaluators.size(), _validationSets.size(), _scoresSize);
+
+			if (_selfEvaluate2)
+			{
+				_valdationSetNames.push_back("itrain"); //inner-train
+			}
+
+			Scores.resize(_validationSets.size());
+			for (int i = 0; i < _validationSets.size(); i++)
+			{
+				Scores[i].resize(_validationSets[i].size(), 0.0);
+			}
+
+			TrainScores.resize(instances.size(), 0); //如果gbdt bagging sample with fraction then will modify this size
+
+			if (GetPredictionKind() == PredictionKind::BinaryClassification)
+			{
+				bool needProb = false;
+				for (auto& evaluator : _evaluators)
+				{
+					if (evaluator->UseProbability())
+					{
+						needProb = true;
+					}
+				}
+				if (needProb)
+				{
+					Probabilities.resize(_validationSets.size());
+					for (int i = 0; i < _validationSets.size(); i++)
+					{
+						Probabilities[i].resize(_validationSets[i].size(), 0.5);
+					}
+				}
+			}
+
+			_evaluateResults.resize(_evaluators.size());
+			for (size_t i = 0; i < _evaluators.size(); i++)
+			{
+				_evaluateResults[i].resize(_valdationSetNames.size(), 0);
+			}
+
 			Trainer::Train(instances);  //不用Trainer::会提示找不到 重载覆盖 另外也可以函数外面类里面 using Trainer::Train
 		}
 
-		virtual void Train(Instances& instances,
-			vector<Instances>&& validationInstances, vector<EvaluatorPtr>&& evaluators,
-			bool selfEvaluate = false, int testFrequency = 1)
+		virtual void Train(Instances& instances, vector<Instances>&& validationInstances, vector<EvaluatorPtr>&& evaluators)
 		{
-			PVAL2(validationInstances.size(), evaluators.size());
 			vector<Instances> _validationSets = move(validationInstances);
 			vector<EvaluatorPtr> _evaluators = move(evaluators);
-			PVAL2(validationInstances.size(), evaluators.size());
-			PVAL2(_validationSets.size(), _evaluators.size());
-			return Train(instances, _validationSets, _evaluators, selfEvaluate, testFrequency);
+			return Train(instances, _validationSets, _evaluators);
 		}
 	protected:
-	
-		void Evaluate()
+
+		void Evaluate(int round)
 		{
+			GenPredicts();
+			GenProabilites();
 			EvaluatePredicts();
-			PrintEvaluateResult();
+			PrintEvaluateResult(round);
+		}
+
+		//FastRank是在ScoreTracker中处理,没棵树建立完ScoreTracker会对所有TrackedScore更新Scores 所以空即可
+		virtual void GenPredicts()
+		{
+			//---below for one test check for same Insatnce DataSet
+			//static int round = 0;
+			//for (size_t i = 0; i < Scores[0].size(); i++)
+			//{
+			//	CHECK_EQ(Scores[0][i], Scores[1][i]) << "round:" << round << " instance:" << i;
+			//}
+			//round++;
+		}
+
+		template<typename Func>
+		void DoGenPredicts(Func func) 
+		{
+			for (size_t i = 0; i < Scores.size(); i++)
+			{
+				for (size_t j = 0; j < Scores[i].size(); j++)
+				{
+					Scores[i][j] = func(_validationSets[i][j]);
+				}
+			}
+		}
+
+		//每轮更新score  Fastrank自己再ScoreTracker中处理,linearSvm不需要UpdateScores 可以直接计算Predicts
+		virtual void UpdateScores()
+		{
+
+		}
+
+		virtual void GenProabilites()
+		{
+			if (!Probabilities.empty())
+			{
+				for (size_t i = 0; i < Scores.size(); i++)
+				{
+					for (size_t j = 0; j < Scores[i].size(); j++)
+					{//_calibrator 其实是 null的 train的iter过程中 没有calibrate 最后统一做的 所以 可能和test的值存在不一致
+						Probabilities[i][j] = _calibrator == nullptr ? gezi::sigmoid(Scores[i][j]) :
+							_calibrator->PredictProbability(Scores[i][j]);
+					}
+				}
+				TrainProbabilities.resize(TrainScores.size(), 0.5);
+				for (size_t i = 0; i < TrainScores.size(); i++)
+				{
+					TrainProbabilities[i] = _calibrator == nullptr ? gezi::sigmoid(TrainScores[i]) :
+						_calibrator->PredictProbability(TrainScores[i]);
+				}
+			}
 		}
 
 		virtual void EvaluatePredicts()
 		{
 			for (size_t i = 0; i < _evaluators.size(); i++)
 			{
-				for (size_t j = 0; j < _numValidations; j++)
+				for (size_t j = 0; j < _validationSets.size(); j++)
 				{
-					_evaluateResults[i][j] = _evaluators[i]->Evaluate(Scores[j], _validationSets[j]);
+					_evaluateResults[i][j] =
+						Probabilities.empty() || !_evaluators[i]->UseProbability() ?
+						_evaluators[i]->Evaluate(Scores[j], _validationSets[j]) :
+						_evaluators[i]->Evaluate(Probabilities[j], _validationSets[j]);
+				}
+				if (_selfEvaluate2)
+				{
+					_evaluateResults[i].back() =
+						TrainProbabilities.empty() || !_evaluators[i]->UseProbability() ?
+						_evaluators[i]->Evaluate(TrainScores, *_instances) :
+						_evaluators[i]->Evaluate(TrainProbabilities, *_instances);
 				}
 			}
 		}
 
 	private:
-		void PrintEvaluateResult()
+		void PrintEvaluateResult(int round)
 		{
+			static int evluateRound = 1;
 			for (size_t i = 0; i < _evaluators.size(); i++)
 			{
-				std::cerr << "[" << i << "]" << _evaluators[i]->Name() << " ";
-				gezi::print(_valdationSetNames, _evaluateResults[i], ":", "\t", 5);
-				std::cerr << std::endl;
+				std::cerr << std::setiosflags(ios::left) << std::setfill(' ') << std::setw(30)
+					<< format("[{}|{}]{}", evluateRound, round, _evaluators[i]->Name())
+					<< gezi::print2str_row(_valdationSetNames, _evaluateResults[i], 13)
+					<< std::endl;
 			}
+			evluateRound++;
 		}
 
 	public:
-		//Fvec InitTrainScores;
-		vector<Fvec> Scores; //InitTrainScores 放在InitValidScores的最后,Scores可以看做Predictions
+		ValidatingTrainer& SetTestFrequency(int freq)
+		{
+			_testFrequency = freq;
+			return *this;
+		}
+
+		ValidatingTrainer& SetSelfEvaluate(bool evaluate)
+		{
+			_selfEvaluate = evaluate;
+			return *this;
+		}
+
+		ValidatingTrainer& SetSelfEvaluate2(bool evaluate)
+		{
+			_selfEvaluate2 = evaluate;
+			return *this;
+		}
+
+	public:
+		vector<Fvec> Scores;    //即使是_selfEaluate那么也是加入输入的Insatnces在最后
+		vector<Fvec> Probabilities;
+
+		Fvec TrainScores;        //真实的内部训练数据实际score
+		Fvec TrainProbabilities;
 	protected:
 		bool _validating = false;
 
@@ -278,11 +389,8 @@ namespace gezi {
 
 		vector<string> _valdationSetNames;
 
-		int _numValidations = 0;
-		int _numValidationsExcludeSelf = 0;
-		int _scoresSize = 1;
-
-		bool _selfEvaluate = false;
+		bool _selfEvaluate = false; //the same as loading the training file again but only need loading once
+		bool _selfEvaluate2 = false; //truly internal self invaluate
 		int _testFrequency = 1;
 	};
 

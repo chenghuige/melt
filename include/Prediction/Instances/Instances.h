@@ -76,6 +76,16 @@ namespace gezi {
 			return schema.featureNames;
 		}
 
+		Float& operator()(size_t row, size_t col)
+		{
+			return (*this)[row]->features[col];
+		}
+
+		const Float operator()(size_t row, size_t col) const
+		{
+			return (*this)[row]->features[col];
+		}
+
 		FeatureNamesVector& FeatureNames()
 		{
 			return schema.featureNames;
@@ -101,6 +111,7 @@ namespace gezi {
 			shuffle(*this, rng);
 		}
 
+		//Ô­µØShrink
 		void ShrinkData(double trainProportion, const RandomEngine& rng)
 		{
 			if (trainProportion >= 1.0)
@@ -109,7 +120,6 @@ namespace gezi {
 			}
 			int removeSize = (int)((1.0 - trainProportion) * InstanceNum());
 			int afterSize = InstanceNum() - removeSize;
-			LOG(INFO) << format("Shrinking *thisset to {} of original from {} to {}", trainProportion , InstanceNum() , afterSize);
 			sample_reverse(*this, removeSize, rng);
 			this->resize(afterSize);
 		}

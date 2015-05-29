@@ -15,6 +15,7 @@
 #define UTILS_EVALUATE_H_
 
 #include "evaluate_def.h"
+#include "statistic_util.h"
 namespace gezi {
 
 	//测试任意给一个正类样本和一个负类样本，正类样本的score有多大的概率大于负类样本的score。有了这个定义，我们就得到了另外一中计算AUC的办法：得到这个概率。我们知道，在有限样本中我们常用的得到概率的办法就是通过频率来估计之。这种估计随着样本规模的扩大而逐渐逼近真实值。这 和上面的方法中，样本数越多，计算的AUC越准确类似，也和计算积分的时候，小区间划分的越细，计算的越准确是同样的道理。具体来说就是统计一下所有的 M×N(M为正类样本的数目，N为负类样本的数目)个正负样本对中，有多少个组中的正样本的score大于负样本的score。当二元组中正负样本的 score相等的时候，按照0.5计算。然后除以MN。实现这个方法的复杂度为O(n ^ 2)。n为样本数（即n = M + N）
@@ -112,19 +113,111 @@ namespace gezi {
 			Float error = 0;
 			for (size_t i = 0; i < predictions.size(); i++)
 			{
-				Float temp = predictions[i] - instances[i]->label;
-				error += temp * temp * instances[i]->weight;
+				Float diff = predictions[i] - instances[i]->label;
+				error += diff * diff * instances[i]->weight;
 			}
 			return error / predictions.size();
 		}
 
 		template<typename Vec>
-		inline rmse(const vector<Float>& predictions, const Vec& instances)
+		inline Float rmse(const vector<Float>& predictions, const Vec& instances)
 		{
 			return std::sqrt(l2(predictions, instances));
 		}
 
+		template<typename Vec>
+		inline Float logloss(const vector<Float>& predictions, const Vec& instances, Float logTolerence = 30)
+		{
+			if (predictions.empty())
+			{
+				return 0;
+			}
+			Float error = 0;
+			for (size_t i = 0; i < predictions.size(); i++)
+			{
+				Float trueProb = (instances[i]->label > 0 ? 1 : 0);
+				error += gezi::cross_entropy_toleranced(trueProb, predictions[i], logTolerence) * instances[i]->weight; //使用ln 不使用log2
+			}
+			return error / predictions.size();
+		}
+
+		//理论上通过output计算的LogLoss output 和通过probability计算的LogLoss Prob应该一样 但是考虑到浮点误差 比较大的ouput 很容易prob计算为1 带来log计算为inf 
+		//@TODO 看上去使用output计算更好
+		//所以log计算那里会有tolerence处理，也就是可能logloss ouput和logloss prob有微小的不一致
+		//W0528 14:54:09.922850 24084 ClassifierTester.h:109] Bad predict label:0 prediction:19.0708 probability:1 currLogLossProb:inf
+		template<typename Vec>
+		inline Float logloss_output(const vector<Float>& predictions, const Vec& instances, Float beta = 2.0)
+		{
+			if (predictions.empty())
+			{
+				return 0;
+			}
+			Float error = 0;
+			for (size_t i = 0; i < predictions.size(); i++)
+			{
+				Float trueOutput = (instances[i]->label > 0 ? 1 : -1);
+				error += loss::logistic(trueOutput, predictions[i], beta) * instances[i]->weight;
+			}
+			return error / predictions.size();
+		}
+
+		//输入是ouput 和 logloss_output实际差不多
+		template<typename Vec>
+		inline Float exploss(const vector<Float>& predictions, const Vec& instances, Float beta = 1.0)
+		{
+			if (predictions.empty())
+			{
+				return 0;
+			}
+			Float error = 0;
+			for (size_t i = 0; i < predictions.size(); i++)
+			{
+				Float trueOutput = (instances[i]->label > 0 ? 1 : -1);
+				error += std::exp(-beta * trueOutput * predictions[i]) * instances[i]->weight;
+			}
+			return error / predictions.size();
+		}
+
+		//thre = 0.5表示按照概率, 0 表示按照margin output
+		template<typename Vec>
+		inline Float gold_standard(const vector<Float>& predictions, const Vec& instances, Float thre = 0.5)
+		{
+			if (predictions.empty())
+			{
+				return 0;
+			}
+			Float error = 0;
+			for (size_t i = 0; i < predictions.size(); i++)
+			{
+				Float trueProb = (instances[i]->label > 0 ? 1 : 0);
+				error += (predictions[i] > thre ? 1 - trueProb : trueProb) * instances[i]->weight;
+			}
+			return error / predictions.size();
+		}
+
+		//只支持margin output作为输入
+		template<typename Vec>
+		inline Float hinge(const vector<Float>& predictions, const Vec& instances, Float margin = 1.0)
+		{
+			if (predictions.empty())
+			{
+				return 0;
+			}
+			Float error = 0;
+			for (size_t i = 0; i < predictions.size(); i++)
+			{
+				Float trueOutput = (instances[i]->label > 0 ? 1 : -1);
+				Float distance = predictions[i] * trueOutput;
+				if (distance <= margin)
+				{
+					error += (margin - distance) * instances[i]->weight;
+				}
+			}
+			return error / predictions.size();
+		}
+
 		//----------------------------- below is depreciated 不再维护 不要再使用EvaluateNode只是展示另外一种可能的接口设计 
+		//也可以使用3个vector labels, predictions, weights的设计
 		//need label, prediction and weight
 		inline Float auc(const vector<Node>& results, bool needSort = true)
 		{
@@ -195,8 +288,8 @@ namespace gezi {
 			Float error = 0;
 			for (size_t i = 0; i < results.size(); i++)
 			{
-				Float temp = results[i].prediction - results[i].label;
-				error += temp * temp * results[i].weight;
+				Float diff = results[i].prediction - results[i].label;
+				error += diff * diff * results[i].weight;
 			}
 			return error / results.size();
 		}

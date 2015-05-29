@@ -28,58 +28,12 @@ namespace gezi {
 		OnlineRegressionTree(const OnlineRegressionTree&) = default;
 		OnlineRegressionTree& operator = (const OnlineRegressionTree&) = default;
 
-#ifdef _DEBUG
-		struct DebugNode
-		{
-			int id;
-			svec paths;
-			double score;
-			bool operator < (const DebugNode& other) const
-			{
-				return score > other.score;
-			}
-		};
-#endif
-
 	public:
 
 		//输入特征 遍历树 输出叶子节点的数值
 		Float Output(Vector& features)
 		{
-			int node = 0;
-			while (node >= 0)
-			{
-				if (features[_splitFeature[node]] <= _threshold[node])
-				{
-#ifdef _DEBUG
-					/*_debugNode.paths.push_back((*_featureNames)[_splitFeature[node]] + " " +
-						STR(features[_splitFeature[node]]) + " <= " + STR(_threshold[node])
-						+ " " + STR(_splitGain[node]) + " " + STR(_gainPValue[node]));*/
-					string result = (boost::format("%s %.5f <= %.5f") % (*_featureNames)[_splitFeature[node]] %
-						features[_splitFeature[node]] % _threshold[node]).str();
-					_debugNode.paths.push_back(result);
-#endif // _DEBUG
-					node = _lteChild[node];
-				}
-				else
-				{
-#ifdef _DEBUG
-					/*_debugNode.paths.push_back((*_featureNames)[_splitFeature[node]] + " " +
-						STR(features[_splitFeature[node]]) + " > " + STR(_threshold[node])
-						+ " " + STR(_splitGain[node]) + " " + STR(_gainPValue[node]));*/
-					string result = (boost::format("%s %.5f > %.5f") % (*_featureNames)[_splitFeature[node]] %
-						features[_splitFeature[node]] % _threshold[node]).str();
-					_debugNode.paths.push_back(result);
-#endif // _DEBUG
-					node = _gtChild[node];
-				}
-			}
-#ifdef _DEBUG
-			{
-				_debugNode.score = _leafValue[~node];
-			}
-#endif // _DEBUG
-			return _leafValue[~node];
+			return _leafValue[GetLeaf(features)];
 		}
 
 		void GainMap(Vector& features, map<int, double>& m)
@@ -110,74 +64,123 @@ namespace gezi {
 		{
 			for (int i = 0; i < depth; i++)
 			{
-				cout << "|  ";
+				std::cerr << "|  ";
 			}
 			if (node < 0)
 			{
-				cout << _leafValue[~node] << endl;
+				std::cerr << _leafValue[~node] << endl;
 			}
 			else
 			{
-				cout << (*_featureNames)[_splitFeature[node]] << " <= " << _threshold[node] << " ?" << endl;
+				std::cerr << (*_featureNames)[_splitFeature[node]] << " <= " << _threshold[node] << " ?" << endl;
 				Print(_lteChild[node], depth + 1);
 				Print(_gtChild[node], depth + 1);
 			}
 		}
 
-		void Print(Vector& features, int node = 0, int depth = 0, string suffix = "$")
+		void Print(const Vector& features, int node = 0, int depth = 0, string suffix = "$")
+		{
+			Print(features, OnlineRegressionTree::_threshold, node, depth, suffix);
+		}
+
+		template<typename T, typename U>
+		void Print(const T& features, const U& threshold, int node = 0, int depth = 0, string suffix = "$")
 		{
 			for (int i = 0; i < depth; i++)
 			{
-				cout << "|  ";
+				std::cerr << "|  ";
 			}
-			cout << suffix;
+			std::cerr << suffix;
 
 			if (node < 0)
 			{
 				if (!suffix.empty())
-					cout << "[" << _leafValue[~node] << "]" << endl;
+					std::cerr << "[" << _leafValue[~node] << "]" << endl;
 				else
-					cout << _leafValue[~node] << endl;
+					std::cerr << _leafValue[~node] << endl;
 			}
 			else
 			{
-				cout << boost::format("%s %.5f <= %.5f ?") % (*_featureNames)[_splitFeature[node]] %
-					features[_splitFeature[node]] % _threshold[node] << endl;
+				std::cerr << boost::format("[%d] %s %.5f <= %.5f ?") %_splitFeature[node] % (*_featureNames)[_splitFeature[node]] %
+					features[_splitFeature[node]] % threshold[node] << endl;
 				string lsuffix = "", rsuffix = "";
 				if (!suffix.empty())
 				{
-					if (features[_splitFeature[node]] <= _threshold[node])
+					if (features[_splitFeature[node]] <= threshold[node])
 						lsuffix = "$";
 					else
 						rsuffix = "$";
 				}
-				Print(features, _lteChild[node], depth + 1, lsuffix);
-				Print(features, _gtChild[node], depth + 1, rsuffix);
+				Print(features, threshold, _lteChild[node], depth + 1, lsuffix);
+				Print(features, threshold, _gtChild[node], depth + 1, rsuffix);
 			}
 		}
 
+		int GetLeaf(const Vector& features)
+		{
+			return GetLeaf_(features, OnlineRegressionTree::_threshold);
+		}
+
+		void SetFeatureNames(const FeatureNamesVector& featureNames)
+		{
+			_featureNames = &featureNames;
+		}
+
+		FeatureNamesVector& FeatureNames()
+		{
+			return *_featureNames;
+		}
+
+		const FeatureNamesVector& FeatureNames() const
+		{
+			return *_featureNames;
+		}
+
+	protected:
+		template<typename T, typename U>
+		int GetLeaf_(const T& features, const U& threshold)
+		{
+			if (NumLeaves == 1)
+			{ //training may has this case? @TODO
+				return 0;
+			}
+			int node = 0;
+			while (node >= 0)
+			{
+				if (features[_splitFeature[node]] <= threshold[node])
+				{
+					node = _lteChild[node];
+				}
+				else
+				{
+
+					node = _gtChild[node];
+				}
+			}
+			return ~node; //~ means -node - 1 (~-3) --- [2]
+		}
 	public:
 		friend class cereal::access;
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
 		{
-		/*	ar & NumLeaves;
+			/*	ar & NumLeaves;
 
-			ar & _gainPValue;
-			ar & _gtChild;
-			ar & _leafValue;
-			ar & _lteChild;
-			ar & _maxOutput;
-			ar & _previousLeafValue;
-			ar & _splitFeature;
-			ar & _splitGain;
-			ar & _threshold;
-			ar & _weight;*/
+				ar & _gainPValue;
+				ar & _gtChild;
+				ar & _leafValue;
+				ar & _lteChild;
+				ar & _maxOutput;
+				ar & _previousLeafValue;
+				ar & _splitFeature;
+				ar & _splitGain;
+				ar & _threshold;
+				ar & _weight;*/
 			//ar & _featureNames; //不要序列化指针
 
 			ar & GEZI_SERIALIZATION_NVP(NumLeaves);
 
-			ar & GEZI_SERIALIZATION_NVP(_gainPValue); 
+			ar & GEZI_SERIALIZATION_NVP(_gainPValue);
 			ar & GEZI_SERIALIZATION_NVP(_gtChild);
 			ar & GEZI_SERIALIZATION_NVP(_leafValue);
 			ar & GEZI_SERIALIZATION_NVP(_lteChild);
@@ -205,7 +208,7 @@ namespace gezi {
 		dvec _previousLeafValue;
 		double _weight = 1.0;
 		//svec* _featureNames;
-		FeatureNamesVector* _featureNames; 
+		FeatureNamesVector* _featureNames = NULL;
 	};
 
 }  //----end of namespace gezi

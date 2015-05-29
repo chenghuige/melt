@@ -19,11 +19,17 @@
 #include "Prediction/Instances/Instance.h"
 namespace gezi {
 	namespace ev = evaluate;
+	//注意默认prediction类似二分类这种Output和probabilty不一致的 取的是probability,如果Evaluator表示NotUseProbability那么使用Output
+	//主要支持使用probability的，使用Output的只作为实验
 	class Evaluator
 	{
 	public:
 		virtual string Name() const = 0;
 		virtual bool LowerIsBetter() const
+		{
+			return true;
+		}
+		virtual bool UseProbability() const
 		{
 			return true;
 		}
@@ -36,6 +42,11 @@ namespace gezi {
 		virtual Float Evaluate(const vector<Float>& predictions, const vector<InstancePtr>& instances)
 		{
 			return 0;
+		}
+
+		virtual Float Evaluate(const vector<Float>& predictions, const vector<Float>& probabilities, const vector<InstancePtr>& instances)
+		{
+			return UseProbability() ? Evaluate(probabilities, instances) : Evaluate(predictions, instances);
 		}
 
 		virtual Float Evaluate(const vector<Float>& predictions, const vector<Float>& labels, const vector<Float>& weights)
@@ -125,11 +136,20 @@ namespace gezi {
 		{
 			return Derived::EvaluateInstances(predictions, instances);
 		}
-	
+	};
+
+	template<typename Derived>
+	class OuputEvaluatorImpl : public EvaluatorImpl < Derived >
+	{
+	public:
+		virtual bool UseProbability() const override
+		{
+			return false;
+		}
 	};
 
 	//auc can be used for binary classification or ranking
-	class AucEvaluator : public EvaluatorImpl<AucEvaluator>
+	class AucEvaluator : public OuputEvaluatorImpl<AucEvaluator>
 	{
 	public:
 		virtual string Name() const
@@ -173,7 +193,7 @@ namespace gezi {
 		}
 	};
 
-
+	//squared error
 	class L2Evaluator : public EvaluatorImpl<L2Evaluator>
 	{
 	public:
@@ -212,6 +232,97 @@ namespace gezi {
 		}
 	};
 
+	class GoldStandardEvaluator : public EvaluatorImpl < GoldStandardEvaluator >
+	{
+	public:
+		virtual string Name() const
+		{
+			return "GoldProb";
+		}
+
+		template<typename Vec>
+		static Float EvaluateInstances(const vector<Float>& predictions, const Vec& instances)
+		{
+			return ev::gold_standard(predictions, instances, 0.5);
+		}
+	};
+
+	class GoldStandardOutputEvaluator : public OuputEvaluatorImpl < GoldStandardOutputEvaluator >
+	{
+	public:
+		virtual string Name() const
+		{
+			return "Gold";
+		}
+
+		template<typename Vec>
+		static Float EvaluateInstances(const vector<Float>& predictions, const Vec& instances)
+		{
+			return ev::gold_standard(predictions, instances, 0);
+		}
+	};
+
+	class LogLossEvaluator : public EvaluatorImpl < LogLossEvaluator >
+	{
+	public:
+		virtual string Name() const
+		{
+			return "LogLossProb";
+		}
+
+		template<typename Vec>
+		static Float EvaluateInstances(const vector<Float>& predictions, const Vec& instances)
+		{
+			return ev::logloss(predictions, instances, 30);
+		}
+	};
+
+	//@TODO对于fastrank尽管理论上优化目标推导上看LogLoss by output和 LogLoss by prob应该一样 但实际仍然不一致 anyway 误差保持降低就好。。
+	class LogLossOutputEvaluator : public OuputEvaluatorImpl < LogLossOutputEvaluator >
+	{
+	public:
+		virtual string Name() const
+		{
+			return "LogLoss";
+		}
+
+		template<typename Vec>
+		static Float EvaluateInstances(const vector<Float>& predictions, const Vec& instances)
+		{
+			return ev::logloss_output(predictions, instances, 2.0);
+			//return ev::logloss_output(predictions, instances, 1.0);
+		}
+	};
+
+	class HingeLossEvaluator : public OuputEvaluatorImpl < HingeLossEvaluator >
+	{
+	public:
+		virtual string Name() const
+		{
+			return "Hinge";
+		}
+
+		template<typename Vec>
+		static Float EvaluateInstances(const vector<Float>& predictions, const Vec& instances)
+		{
+			return ev::hinge(predictions, instances, 1.0);
+		}
+	};
+
+	class ExpLossEvaluator : public OuputEvaluatorImpl < ExpLossEvaluator >
+	{
+	public:
+		virtual string Name() const
+		{
+			return "exp";
+		}
+
+		template<typename Vec>
+		static Float EvaluateInstances(const vector<Float>& predictions, const Vec& instances)
+		{
+			return ev::exploss(predictions, instances, 1.0);
+		}
+	};
 }  //----end of namespace gezi
 
 #endif  //----end of UTILS__EVALUATOR_H_

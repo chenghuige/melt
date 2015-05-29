@@ -42,6 +42,24 @@ namespace gezi {
 			_trees.swap(trees);
 		}
 
+		FastRankPredictor(vector<OnlineRegressionTree>& trees, CalibratorPtr calibrator,
+			const FeatureNamesVector& featureNames)
+			:Predictor(calibrator, featureNames)
+		{
+			_trees.swap(trees);
+		}
+
+		FastRankPredictor(vector<OnlineRegressionTree>& trees, const FeatureNamesVector& featureNames)
+			:Predictor(featureNames)
+		{
+			_trees.swap(trees);
+		}
+
+		FastRankPredictor(vector<OnlineRegressionTree>& trees)
+		{
+			_trees.swap(trees);
+		}
+
 		FastRankPredictor(string modelPath)
 		{
 			Load(modelPath);
@@ -166,7 +184,7 @@ namespace gezi {
 
 			for (auto& tree : _trees)
 			{
-				tree._featureNames = &_featureNames;
+				tree.SetFeatureNames(_featureNames);
 			}
 
 			//-------------calibrator
@@ -221,7 +239,7 @@ namespace gezi {
 			serialize_util::load(*this, file);
 			for (auto& tree : _trees)
 			{
-				tree._featureNames = &_featureNames;
+				tree.SetFeatureNames(_featureNames);
 			}
 		}
 
@@ -247,7 +265,7 @@ namespace gezi {
 			return m;
 		}
 
-		string ToGainSummary(Vector& features)
+		virtual string ToGainSummary(Vector& features) override
 		{
 			map<int, double> m = GainMap(features);
 
@@ -390,17 +408,17 @@ namespace gezi {
 			ofs << "\n";
 		}
 
-		SaveTreeAsCCode(const OnlineRegressionTree& tree, ofstream& ofs)
+		void SaveTreeAsCCode(const OnlineRegressionTree& tree, ofstream& ofs)
 		{
 			ToCCode(tree, ofs, 0);
 		}
 
-		SaveTreeAsPhpCode(const OnlineRegressionTree& tree, ofstream& ofs)
+		void SaveTreeAsPhpCode(const OnlineRegressionTree& tree, ofstream& ofs)
 		{
 			ToPhpCode(tree, ofs, 0);
 		}
 
-		SaveTreeAsPythonCode(const OnlineRegressionTree& tree, ofstream& ofs)
+		void SaveTreeAsPythonCode(const OnlineRegressionTree& tree, ofstream& ofs)
 		{
 			ToPythonCode(tree, ofs, 0);
 		}

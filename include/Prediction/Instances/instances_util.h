@@ -7,7 +7,7 @@
  *
  *          \date   2014-04-02 20:34:03.488226
  *
- *  \Description:
+ *  \Description: @FIXME 应该是 InstancesUtil.h
  *  ==============================================================================
  */
 
@@ -18,6 +18,7 @@
 #include "random_util.h"
 namespace gezi {
 
+	//@TODO 需要增加的 boot strap方式得到一个新的Insatnces, Shrink的方式得到一个新的
 	class InstancesUtil
 	{
 	public:

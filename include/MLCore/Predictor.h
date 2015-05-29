@@ -16,6 +16,7 @@
 
 #include "common_util.h"
 #include "serialize_util.h"
+#include "statistic_util.h"
 
 #include "Prediction/Normalization/NormalizerFactory.h"
 #include "Prediction/Calibrate/CalibratorFactory.h"
@@ -23,6 +24,7 @@
 #include "Prediction/Normalization/Normalizer.h"
 #include "Prediction/Calibrate/Calibrator.h"
 #include "PredictionKind.h"
+
 namespace gezi {
 
 	enum class CodeType
@@ -258,7 +260,10 @@ namespace gezi {
 			}
 			else
 			{ //f(x) = (1/2) * log(pr(true) / 1 - pr(true))
-				return 1.0 / (1.0 + exp(-2.0 * output));
+				//@TODO 按照fastrank的优化目标函数output->prob推导 应该是 -2*output 但是似乎这样比 -output对应的logloss要大 check 是否不同数据集合不一定
+				//return 1.0 / (1.0 + exp(-2.0 * output));
+				//return 1.0 / (1.0 + exp(-output)); // == gezi::sigmoid(output)
+				return gezi::sigmoid(output);
 			}
 		}
 
@@ -410,6 +415,11 @@ namespace gezi {
 			SaveText(_path + "/model.txt");
 		}
 
+		void SaveFeaturesGain(int topNum = 0)
+		{
+			write_file(ToFeaturesGainSummary(topNum), _path + "/model.featureGain");
+		}
+
 		virtual void LoadText_(string file)
 		{
 			LOG(FATAL) << Name() << " currently not support loading text format!";
@@ -428,6 +438,16 @@ namespace gezi {
 		NormalizerPtr& GetNormalizer()
 		{
 			return _normalizer;
+		}
+
+		void SetNormalizer(NormalizerPtr normalizer)
+		{
+			_normalizer = normalizer;
+		}
+
+		void SetCalibrator(CalibratorPtr calibrator)
+		{
+			_calibrator = calibrator;
 		}
 
 		CalibratorPtr& GetCalibrator()
@@ -456,6 +476,57 @@ namespace gezi {
 		{
 			static bool _loadNormalizerAndCalibrator = true;
 			return _loadNormalizerAndCalibrator;
+		}
+
+		//-Utils
+		//----------特征重要度 
+		//单次预测特征重要度打印
+		virtual string ToGainSummary(Vector& features)
+		{
+			return "";
+		}
+
+		template<typename Vec>
+		string ToFeaturesGainSummary_(const Vec& gains, int topNum = 0)
+		{
+			typedef typename Vec::value_type value_type;
+			int maxLen = (topNum == 0 || topNum > gains.size()) ? gains.size() : topNum;
+			ivec indexVec = gezi::index_sort(gains, [](value_type l, value_type r) { return abs(l) > abs(r); }, maxLen);
+			stringstream ss;
+			for (int i = 0; i < maxLen; i++)
+			{
+				int idx = indexVec[i];
+				ss << setiosflags(ios::left) << setfill(' ') << setw(100)
+					<< STR(i) + STR(":") + _featureNames[idx]
+					<< gains[idx] << endl;
+			}
+			return ss.str();
+		}
+		//整个模型中特征重要度的打印
+		virtual string ToFeaturesGainSummary(int topNum = 0)
+		{
+			return ToFeaturesGainSummary_(_featureGainVec, topNum);
+		}
+
+		void SetFeatureNames(const FeatureNamesVector& featureNames)
+		{
+			_featureNames = featureNames;
+		}
+
+		void SetFeatureGainVec(const vector<Float>& featureGainVec)
+		{
+			_featureGainVec = featureGainVec;
+		}
+
+		//可以避免风险 不提供& 如果必须显示通过move()调用下面的&& set一般两种语义 要么copy传值 要么转移传值 与传统的引用modify有区别
+		//void SetFeatureGainVec(vector<Float>& featureGainVec)
+		//{
+		//	_featureGainVec = move(featureGainVec);
+		//}
+
+		void SetFeatureGainVec(vector<Float>&& featureGainVec)
+		{
+			_featureGainVec = move(featureGainVec);
 		}
 
 		friend class cereal::access;
@@ -522,7 +593,7 @@ namespace gezi {
 
 		string _path;
 		string _param;
-
+		vector<Float> _featureGainVec;
 	private:
 		bool _saveNormalizerText = false; //是否输出文本格式 包括xml,json统一使用
 		bool _saveCalibratorText = false;

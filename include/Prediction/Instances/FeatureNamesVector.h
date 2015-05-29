@@ -56,12 +56,11 @@ namespace gezi {
 		FeatureNamesVector(const svec& featureNames)
 			:_numFeatures(0), _featureNames(make_shared<svec>(featureNames))
 		{
-
 		}
+
 		FeatureNamesVector(svec&& featureNames)
 			:_numFeatures(0), _featureNames(make_shared<svec>(move(featureNames)))
 		{
-
 		}
 
 		typedef svec::iterator iterator;
@@ -90,6 +89,7 @@ namespace gezi {
 		//@TODO int not enough? vector []ÊÇ what£¿ size_t
 		string operator[](int index) const
 		{
+			CHECK((_featureNames != nullptr));
 			if (_featureNames->empty())
 			{
 				return fmt::format("f{}", index);

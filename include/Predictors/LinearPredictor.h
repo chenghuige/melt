@@ -106,6 +106,11 @@ namespace gezi {
 			}
 		}
 
+		virtual string ToFeaturesGainSummary(int topNum = 0) override
+		{
+			return ToFeaturesGainSummary_(_weights, topNum);
+		}
+
 		friend class cereal::access;
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)

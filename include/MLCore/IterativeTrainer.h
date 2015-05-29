@@ -19,7 +19,7 @@
 
 namespace gezi {
 
-	class IterativeTrainer : public Trainer
+	class IterativeTrainer : public ValidatingTrainer
 	{
 	public:
 		virtual void BeginTrainingIteration()

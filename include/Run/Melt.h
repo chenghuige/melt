@@ -69,6 +69,7 @@ namespace gezi {
 			HELP_TRAINER, //打印当前-cl指定的trainer的Help信息(如果tainer有实现ShowHelp)
 			EVAL, //交叉验证,默认执行的command
 			EVAL_PARAM, //交叉验证 但是只输出auc的值,主要用于检测不同参数效果对比
+			EVAL_FULL, //生成instance文件使用Tester，同时也使用Evaluator
 			TRAIN, //训练
 			TEST,  //测试
 			TRAIN_TEST,  //训练+测试
@@ -96,7 +97,8 @@ namespace gezi {
 		{
 			DEFAULT = 0, //默认使用melt本身内置c++的Tester
 			USE_SCRIPT, //调用外部python脚本处理instance文件生成evaluate结果 如~/tools/evaluate.py ~/tools/evaluate.full.py可以辅助输出ROC,PR曲线，调节阈值展示召回
-			EVAL_PARAM //不生成instance文件,只是使用内置的Evaluator, 主要用于参数选取
+			EVAL_PARAM, //不生成instance文件,只是使用内置的Evalator不使用默认的Tester, 主要用于参数选取
+			EVAL_FULL, //生成instance文件使用Tester，同时也使用Evaluator
 		};
 
 		MeltArguments& Cmd()
@@ -143,7 +145,7 @@ namespace gezi {
 			}
 			else
 			{
-				evaluators = EvaluatorUtils::GetEvaluators(TrainerFactory::CreateTrainer(_cmd.classifierName)->GetPredictionKind());
+				evaluators = EvaluatorUtils::GetEvaluators(TrainerFactory::CreateTrainer(_cmd.classifierName));
 			}
 			CHECK_GT(evaluators.size(), 0);
 			return evaluators;
@@ -153,6 +155,7 @@ namespace gezi {
 		{
 			//--------------------------- 输出文件头
 			string fullInstFile = _cmd.resultDir + "/" + STR(_cmd.resultIndex) + ".inst.txt";
+			VLOG(0) << "Writting instance predict file to " << fullInstFile;
 			ofstream ofs; //如果 cvType == CrossValidationType::USE_SCRIPT  使用
 			if (cvType == CrossValidationType::USE_SCRIPT || cvType == CrossValidationType::DEFAULT)
 			{
@@ -174,9 +177,9 @@ namespace gezi {
 			const int randomStep = 10000;
 			//const int randomStep = 1;
 			vector<EvaluatorPtr> evaluators;
-			vector<Float> evaluatePredictions;
+			vector<Float> evaluatePredictions, evaluateProbabilities;
 			vector<InstancePtr> evaluateInstances;
-			if (cvType == CrossValidationType::EVAL_PARAM)
+			if (cvType == CrossValidationType::EVAL_PARAM || cvType == CrossValidationType::EVAL_FULL)
 			{ //@TODO check是否和PredictoionKind相匹配
 				evaluators = CreateOrGetEvaluators();
 			}
@@ -214,23 +217,7 @@ namespace gezi {
 					PredictorPtr predictor = trainer->CreatePredictor();
 					predictor->SetNormalizeCopy();
 
-					if (cvType == CrossValidationType::DEFAULT)
-					{
-						if (tester == nullptr)
-						{
-#pragma  omp critical
-							{
-								tester = PredictorUtils::GetTester(predictor);
-								tester->isCrossValidationMode = true;
-							}
-						}
-						else
-						{
-							tester->writeTSVHeader = false;
-						}
-						tester->Test(testData, predictor, fullInstFile);
-					}
-					else if (cvType == CrossValidationType::USE_SCRIPT)
+					if (cvType == CrossValidationType::USE_SCRIPT)
 					{
 						//@TODO 每个test 输出一个inst 文件也 然后每个给出一个结果
 						VLOG(0) << "-------------------------------------Testing";
@@ -241,15 +228,30 @@ namespace gezi {
 							EXECUTE(command);
 						}
 					}
-					else if (cvType == CrossValidationType::EVAL_PARAM)
-					{
-						Evaluate(testData, predictor, evaluatePredictions, evaluateInstances);
-					}
 					else
 					{
-						LOG(ERROR) << "Not supported crosss validation type";
-						return;
+						if (cvType == CrossValidationType::DEFAULT || cvType == CrossValidationType::EVAL_FULL)
+						{
+							if (tester == nullptr)
+							{
+#pragma  omp critical
+							{
+								tester = PredictorUtils::GetTester(predictor);
+								tester->isCrossValidationMode = true;
+							}
+							}
+							else
+							{
+								tester->writeTSVHeader = false;
+							}
+							tester->Test(testData, predictor, fullInstFile);
+						}
+						if (cvType == CrossValidationType::EVAL_PARAM || cvType == CrossValidationType::EVAL_FULL)
+						{
+							Evaluate(testData, predictor, evaluatePredictions, evaluateProbabilities, evaluateInstances);
+						}
 					}
+
 					if (foldIdx == 0)
 					{
 						trainerParam = trainer->GetParam();
@@ -257,11 +259,7 @@ namespace gezi {
 				}
 			}
 
-			if (cvType == CrossValidationType::DEFAULT)
-			{
-				tester->Finalize();
-			}
-			else if (cvType == CrossValidationType::USE_SCRIPT)
+			if (cvType == CrossValidationType::USE_SCRIPT)
 			{
 				string command = _cmd.evaluateScript + fullInstFile;
 #pragma omp critical
@@ -269,16 +267,23 @@ namespace gezi {
 					EXECUTE(command);
 				}
 			}
-			else if (cvType == CrossValidationType::EVAL_PARAM)
+			else
 			{
-				vector<double> results(evaluators.size(), 0);
-#pragma omp parallel for
-				for (size_t i = 0; i < evaluators.size(); i++)
+				if (cvType == CrossValidationType::DEFAULT || cvType == CrossValidationType::EVAL_FULL)
 				{
-					results[i] = evaluators[i]->Evaluate(evaluatePredictions, evaluateInstances);
+					tester->Finalize();
 				}
-				cout << results[0] << "\t" << "trainerParam: " << trainerParam << endl;
-				gezi::print(EvaluatorUtils::GetEvaluatorsNames(evaluators), results);
+				if (cvType == CrossValidationType::EVAL_PARAM || cvType == CrossValidationType::EVAL_FULL)
+				{
+					vector<double> results(evaluators.size(), 0);
+#pragma omp parallel for
+					for (size_t i = 0; i < evaluators.size(); i++)
+					{
+						results[i] = evaluators[i]->Evaluate(evaluatePredictions, evaluateProbabilities, evaluateInstances);
+					}
+					cout << results[0] << "\t" << "trainerParam: " << trainerParam << endl;
+					gezi::print(EvaluatorUtils::GetEvaluatorsNames(evaluators), results);
+				}
 			}
 		}
 
@@ -409,32 +414,34 @@ namespace gezi {
 			return ofs.str();
 		}
 
-		void Evaluate(const Instances& instances, PredictorPtr predictor, vector<Float>& predictions, vector<InstancePtr>& evaluateInstances)
+		void Evaluate(const Instances& instances, PredictorPtr predictor, vector<Float>& predictions,
+			vector<Float>& probabilities, vector<InstancePtr>& evaluateInstances)
 		{
 			int begin = predictions.size();
 			predictions.resize(begin + instances.size());
+			probabilities.resize(begin + instances.size());
 			evaluateInstances.resize(begin + instances.size());
 #pragma omp parallel for schedule(static)
 			for (size_t i = 0; i < instances.size(); i++)
 			{
-				predictions[begin + i] = predictor->Predict(instances[i]);
+				probabilities[begin + i] = predictor->Predict(instances[i], predictions[i]);
 				evaluateInstances[begin + i] = instances[i];
 			}
 		}
 
 		vector<Float> Evaluate(const Instances& instances, PredictorPtr predictor, vector<EvaluatorPtr>& evaluators)
 		{
-			vector<Float> predictions(instances.size(), 0);
+			vector<Float> predictions(instances.size(), 0), probabilities(instances.size(), 0);
 #pragma omp parallel for schedule(static)
 			for (size_t i = 0; i < instances.size(); i++)
 			{
-				predictions[i] = predictor->Predict(instances[i]);
+				probabilities[i] = predictor->Predict(instances[i], predictions[i]);
 			}
 			vector<Float> results(evaluators.size(), 0);
 #pragma omp parallel for 
 			for (size_t i = 0; i < evaluators.size(); i++)
 			{
-				results[i] = evaluators[i]->Evaluate(predictions, instances);
+				results[i] = evaluators[i]->Evaluate(predictions, probabilities, instances);
 			}
 			return results;
 		}
@@ -478,8 +485,10 @@ namespace gezi {
 					pTrainInstances = &parts[0];
 				}
 
-				validatingTrainer->Train(*pTrainInstances, validatingSet, evaluators,
-					_cmd.selfEvaluate, _cmd.evaluateFrequency);
+				(*validatingTrainer).SetTestFrequency(_cmd.evaluateFrequency).
+					SetSelfEvaluate(_cmd.selfEvaluate).
+					SetSelfEvaluate2(_cmd.selfEvaluate2);
+				validatingTrainer->Train(*pTrainInstances, validatingSet, evaluators);
 			}
 			else
 			{//--------------------------Simple Train
@@ -531,43 +540,44 @@ namespace gezi {
 					predictor->SaveCode(codeType);
 				}
 			}
+			if (_cmd.modelfileFeature)
+			{
+				predictor->SaveFeaturesGain(_cmd.num);
+			}
 		}
 
-		//if trainOnly = false means will do Test after RunTrain
-		PredictorPtr RunTrain(bool trainOnly = true)
+		PredictorPtr RunTrain(Instances& instances)
 		{
 			PredictorPtr predictor;
-			Instances instances;
 			{
 				Noticer nt("Train!");
 				instances = create_instances(_cmd.datafile);
 				CHECK_GT(instances.Count(), 0) << "Read 0 test instances, aborting experiment";
-				predictor = Train(instances);
+				VLOG(0) << "Train " << _cmd.datafile << " using " << _cmd.classifierName << " trainer";
 			}
-			if (_cmd.selfTest)
-			{
-				RunTest(predictor);
-			}
-			//如果是训练模式肯定save模型,如果是TrainTest模式为了速度默认是不save模型的可以通过--mf=1开启
-			if (trainOnly || _cmd.modelfile)
-			{
-				SavePredictor(predictor);
-			}
+			predictor = Train(instances);
 			return predictor;
 		}
 
-		void RunTest(PredictorPtr predictor)
+		PredictorPtr RunTrain()
 		{
-			//------test
-			try_create_dir(_cmd.resultDir);
+			Instances instances;
+			PredictorPtr predictor = RunTrain(instances);
+
+			if (_cmd.selfTest)
+			{
+				VLOG(0) << "Test train file itself";
+				RunTest(predictor, instances);
+			}
+			//如果是训练模式肯定save模型,如果是TrainTest模式为了速度默认是不save模型的可以通过--mf=1开启
+			SavePredictor(predictor);
+			return predictor;
+		}
+
+		void RunTest(PredictorPtr predictor, Instances& testInstances)
+		{
 			string instFile = _cmd.resultFile.empty() ? format("{}/{}.inst.txt", _cmd.resultDir, _cmd.resultIndex) : _cmd.resultFile;
-
-			//@TODO hack for text input format //Not tested correctness yet
-			InstanceParser::TextFormatParsedTime(); //++ pared text from time这样表示需要使用词表数据
-			string testDatafile = _cmd.testDatafile.empty() ? _cmd.datafile : _cmd.testDatafile;
-			auto testInstances = create_instances(testDatafile);
-			CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
-
+			VLOG(0) << "Test " << testInstances.name << " and writting instance predict file to " << instFile;
 			if (!_cmd.evaluatorNames.empty())
 			{//多次test,确保testInstances不被改变
 				predictor->SetNormalizeCopy();
@@ -590,7 +600,20 @@ namespace gezi {
 				vector<Float> results = Evaluate(testInstances, predictor, evaluators);
 				gezi::print(EvaluatorUtils::GetEvaluatorsNames(evaluators), results);
 			}
+		}
 
+		void RunTest(PredictorPtr predictor)
+		{
+			//------test
+			try_create_dir(_cmd.resultDir);
+		
+			//@TODO hack for text input format //Not tested correctness yet
+			InstanceParser::TextFormatParsedTime(); //++ pared text from time这样表示需要使用词表数据
+			string testDatafile = _cmd.testDatafile.empty() ? _cmd.datafile : _cmd.testDatafile;
+			auto testInstances = create_instances(testDatafile);
+			CHECK_GT(testInstances.Count(), 0) << "Read 0 test instances, aborting experiment";
+
+			RunTest(predictor, testInstances);
 		}
 
 		void RunTest()
@@ -609,8 +632,12 @@ namespace gezi {
 		void RunTrainTest()
 		{
 			Noticer nt("TrainTest!");
-			PredictorPtr predictor = RunTrain(false);
-			Noticer nt2("Test!");
+			Instances instances;
+			PredictorPtr predictor = RunTrain(instances);
+			if (_cmd.modelfile)
+			{ //训练+测试模式 默认是不save模型的 需要自己打开
+				SavePredictor(predictor);
+			}
 			RunTest(predictor);
 		}
 
@@ -637,21 +664,21 @@ namespace gezi {
 		}
 
 #define  SAVE_SHARED_PTR_ALL(obj)\
-						{\
+										{\
 		SAVE_SHARED_PTR(obj, _cmd.modelFolder); \
 		if (_cmd.modelfileXml)\
-						{\
+										{\
 		SAVE_SHARED_PTR_ASXML(obj, _cmd.modelFolder); \
-						}\
+										}\
 		if (_cmd.modelfileJson)\
-						{\
+										{\
 		SAVE_SHARED_PTR_ASJSON(obj, _cmd.modelFolder); \
-						}\
+										}\
 		if (_cmd.modelfileText)\
-						{\
+										{\
 		SAVE_SHARED_PTR_ASTEXT(obj, _cmd.modelFolder); \
-						}\
-						}
+										}\
+										}
 
 		void RunNormalize()
 		{
@@ -1024,10 +1051,7 @@ namespace gezi {
 		{
 			auto instances = create_instances(_cmd.datafile);
 			RandomEngine rng = random_engine(_cmd.randSeed);
-			if (!_cmd.foldsSequential)
-			{
-				instances.Randomize(rng);
-			}
+			
 			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
 			string suffix = "rand";
 			if (_cmd.num > 0)
@@ -1039,6 +1063,10 @@ namespace gezi {
 
 			if (_cmd.num > 0 && _cmd.num < (int64)instances.Count())
 			{
+				if (!_cmd.foldsSequential)
+				{
+					instances.Randomize(rng);
+				}
 				Instances newInstances(instances.schema);
 				if (_cmd.commandInput == "fr" || _cmd.commandInput == "forceRatio")
 				{ //保证正负比例
@@ -1085,6 +1113,15 @@ namespace gezi {
 			}
 			else
 			{
+				try
+				{
+					double ratio = DOUBLE(_cmd.commandInput);
+					instances.ShrinkData(ratio, rng);
+				}
+				catch (...)
+				{
+					instances.Randomize(rng);
+				}
 				write(instances, outfile, fileFormat);
 			}
 		}
@@ -1167,6 +1204,9 @@ namespace gezi {
 				break;
 			case  RunType::EVAL_PARAM:
 				RunCrossValidation(CrossValidationType::EVAL_PARAM);
+				break;
+			case RunType::EVAL_FULL:
+				RunCrossValidation(CrossValidationType::EVAL_FULL);
 				break;
 			case RunType::TRAIN:
 				RunTrain();
@@ -1257,6 +1297,9 @@ namespace gezi {
 			{ "cv2", RunType::EVAL_PARAM },
 			{ "cvparam", RunType::EVAL_PARAM },
 			{ "auc", RunType::EVAL_PARAM },
+			{ "cvfull", RunType::EVAL_FULL },
+			{ "cv3", RunType::EVAL_FULL },
+			{ "evalfull", RunType::EVAL_FULL },
 			{ "train", RunType::TRAIN },
 			{ "tr", RunType::TRAIN },
 			{ "test", RunType::TEST },

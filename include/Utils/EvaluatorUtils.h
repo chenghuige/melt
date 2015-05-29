@@ -24,7 +24,34 @@ namespace gezi {
 	public:
 		static vector<EvaluatorPtr> GetEvaluators(TrainerPtr trainer)
 		{
-			return GetEvaluators(trainer->GetPredictionKind());
+			vector<EvaluatorPtr> vec = GetEvaluators(trainer->GetPredictionKind());
+			EvaluatorPtr evaluator = GetEvaluator(trainer->GetLossKind());
+			if (evaluator != nullptr)
+			{
+				vec.push_back(evaluator);
+			}
+			return vec;
+		}
+
+		//每个Trainer训练过程会优化一个LossFunction根据这个种类 返回对应的Evaluator
+		static EvaluatorPtr GetEvaluator(LossKind lossKind)
+		{
+			switch (lossKind)
+			{
+			case LossKind::Squared:
+				return make_shared<L2Evaluator>();
+			case LossKind::Logistic:
+				return make_shared<LogLossOutputEvaluator>();
+			case LossKind::Exponential:
+				return make_shared<ExpLossEvaluator>();
+			case  LossKind::Hinge:
+				return make_shared<HingeLossEvaluator>();
+			case LossKind::GoldStandard:
+				return make_shared<GoldStandardOutputEvaluator>();
+			default:
+				return nullptr;
+			}
+			return nullptr;
 		}
 
 		static EvaluatorPtr CreateEvaluator(string evaluatorName)
@@ -45,6 +72,30 @@ namespace gezi {
 			else if (evaluatorName == "rmse")
 			{
 				return make_shared<RMSEEvaluator>();
+			}
+			else if (evaluatorName == "logprob")
+			{
+				return make_shared<LogLossEvaluator>();
+			}
+			else if (evaluatorName == "log")
+			{//just for experiment verify
+				return make_shared<LogLossOutputEvaluator>();
+			}
+			else if (evaluatorName == "goldprob")
+			{
+				return make_shared<GoldStandardEvaluator>();
+			}
+			else if (evaluatorName == "gold")
+			{
+				return make_shared<GoldStandardOutputEvaluator>();
+			}
+			else if (evaluatorName == "exp")
+			{
+				return make_shared<ExpLossEvaluator>();
+			}
+			else if (evaluatorName == "hinge")
+			{
+				return make_shared<HingeLossEvaluator>();
 			}
 			LOG(WARNING) << "Not supported evaluator: " << evaluatorName;
 			return nullptr;

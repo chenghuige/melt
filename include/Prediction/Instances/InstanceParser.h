@@ -936,7 +936,6 @@ namespace gezi {
 			}
 			_featureNum = _args.libsvmStartIndex == 1 ? maxIndex : maxIndex + 1;
 			_instances.schema.featureNames.SetNumFeatures(_featureNum);
-			return move(_instances);
 		}
 
 		void CreateInstancesFromVWFormat(svec& lines, uint64 start)
@@ -1113,6 +1112,7 @@ namespace gezi {
 		Instances&& Parse(string dataFile, bool printInfo = false)
 		{
 			Noticer timer("ParseInputDataFile", 0);
+			_instances.name = dataFile;
 			Parse_(dataFile, printInfo);
 			Finallize();
 			return move(_instances);

@@ -16,16 +16,23 @@
 
 #include "Testers/Tester.h"
 #include "Utils/Evaluator.h"
-
+#include "statistic_util.h"
 namespace gezi {
 
 	class ClassificationPrecisionRecall : public DatasetMetrics
 	{
 	public:
+		ClassificationPrecisionRecall()
+		{
+			ParseArgs();
+		}
+
 		virtual string LabelColumnName() override
 		{
 			return "True";
 		}
+
+		virtual void ParseArgs() override;
 
 		virtual vector<string> PerInstanceColumnNames() override
 		{
@@ -98,8 +105,13 @@ namespace gezi {
 			}
 
 			if (currLogLoss > logTolerance || std::isinf(currLogLoss))
+			{
+				VLOG(3) << format("Bad predict label:{} prediction:{} probability:{} currLogLossProb:{}", label, prediction, probability, currLogLoss);
 				currLogLoss = logTolerance;
-			logLoss += currLogLoss * weight;
+			}
+
+			logLossProb += currLogLoss * weight;
+			logLossOutput += loss::logistic(label2ProbTrueZeroNotMin(label), prediction) * weight;
 
 			results[2] = probability;
 			results[3] = currLogLoss;
@@ -123,17 +135,19 @@ namespace gezi {
 			logLossReduction = 0;
 			if (numLogLossPositives + numLogLossNegatives > 0)
 			{
-				logLoss = logLoss / Float(numLogLossPositives + numLogLossNegatives);
+				logLossProb = logLossProb / Float(numLogLossPositives + numLogLossNegatives);
+				logLossOutput = logLossOutput / Float(numLogLossPositives + numLogLossNegatives);
 
 				Float priorPos = numLogLossPositives / Float(numLogLossPositives + numLogLossNegatives);
 				priorLogLoss = gezi::entropy(priorPos, useLn);
-				logLossReduction = 100 * (priorLogLoss - logLoss) / priorLogLoss;
+				logLossReduction = 100 * (priorLogLoss - logLossProb) / priorLogLoss;
 			}
 		}
 
 		virtual void Print_(string prefix) override
 		{
-			avgLogLoss = logLoss;
+			avgLogLossProb = logLossProb;
+			avgLogLoss = logLossOutput;
 			Float testPrior = (numTruePos + numFalseNeg) / (numTruePos + numTrueNeg + numFalseNeg + numFalsePos);
 			Float testLogLoss = gezi::entropy(testPrior, useLn);
 
@@ -181,7 +195,8 @@ namespace gezi {
 				precisionNeg, numTrueNeg, (numTrueNeg + numFalseNeg));
 			fmt::print_line(line);
 
-			fmt::print_line(prefix + "LOG LOSS/instance:\t\t{0:.4f}", avgLogLoss);
+			fmt::print_line(prefix + "LOG-LOSS/instance:\t\t{0:.4f}", avgLogLoss);
+			fmt::print_line(prefix + "LOG-LOSS-PROB/instance:\t\t{0:.4f}", avgLogLossProb);
 			fmt::print_line(prefix + "TEST-SET ENTROPY (prior LL/in):\t{0:.4f}", testLogLoss);
 			fmt::print_line(prefix + "LOG-LOSS REDUCTION (RIG):\t{0:.4f}%", logLossReduction);
 			fmt::print_line("\n" + prefix + "OVERALL 0/1 ACCURACY:	{0:.4f} ({1}/{2})", accuracy,
@@ -204,19 +219,19 @@ namespace gezi {
 	protected:
 		Float numTruePos = 0, numFalsePos = 0, numTrueNeg = 0, numFalseNeg = 0;
 		int64 numUnlabeledInstances = 0;
-		Float logLoss = 0, priorLogLoss = 0;
+		Float logLossProb = 0, priorLogLoss = 0, logLossOutput;
 		// need to keep separate in case NaNs in probability
 		Float numLogLossPositives, numLogLossNegatives;
 		Float trainPrior = -1;
 
-		bool useLn = false;
+		bool useLn = true;  //change to use ln
 
 		//// cutoff for log-loss tolerances (to prevent infinite loss)
 		//[Argument(ArgumentType.AtMostOnce, HelpText = "Confidence threshold (log-loss limit)", ShortName = "logtol", DefaultValue = 30.0)]
 		//public Float logTolerance = 30.0;
-		Float logTolerance = 30.0;
+		Float logTolerance = 30.0; //@NOTICE和statistc_util.h中的的cross_entropy一致
 
-		Float accuracy, precisionPos, recallPos, precisionNeg, recallNeg, avgLogLoss, logLossReduction;
+		Float accuracy, precisionPos, recallPos, precisionNeg, recallNeg, avgLogLossProb, avgLogLoss, logLossReduction;
 	};
 
 	class ClassificationAUC : public DatasetMetrics
