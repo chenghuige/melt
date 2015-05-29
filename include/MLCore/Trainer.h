@@ -269,6 +269,7 @@ namespace gezi {
 		}
 
 		//FastRank是在ScoreTracker中处理,没棵树建立完ScoreTracker会对所有TrackedScore更新Scores 所以空即可
+		//Or UpdateScores
 		virtual void GenPredicts()
 		{
 			//---below for one test check for same Insatnce DataSet
@@ -281,7 +282,7 @@ namespace gezi {
 		}
 
 		template<typename Func>
-		void DoGenPredicts(Func func) 
+		void DoGenPredicts(Func func)
 		{
 			for (size_t i = 0; i < Scores.size(); i++)
 			{
@@ -292,12 +293,6 @@ namespace gezi {
 			}
 		}
 
-		//每轮更新score  Fastrank自己再ScoreTracker中处理,linearSvm不需要UpdateScores 可以直接计算Predicts
-		virtual void UpdateScores()
-		{
-
-		}
-
 		virtual void GenProabilites()
 		{
 			if (!Probabilities.empty())
@@ -306,35 +301,59 @@ namespace gezi {
 				{
 					for (size_t j = 0; j < Scores[i].size(); j++)
 					{//_calibrator 其实是 null的 train的iter过程中 没有calibrate 最后统一做的 所以 可能和test的值存在不一致
-						Probabilities[i][j] = _calibrator == nullptr ? gezi::sigmoid(Scores[i][j]) :
-							_calibrator->PredictProbability(Scores[i][j]);
+						Probabilities[i][j] = _calibrator == nullptr ? gezi::sigmoid(Scores[i][j] / _scale) :
+							_calibrator->PredictProbability(Scores[i][j] / _scale);
 					}
 				}
 				TrainProbabilities.resize(TrainScores.size(), 0.5);
 				for (size_t i = 0; i < TrainScores.size(); i++)
 				{
-					TrainProbabilities[i] = _calibrator == nullptr ? gezi::sigmoid(TrainScores[i]) :
-						_calibrator->PredictProbability(TrainScores[i]);
+					TrainProbabilities[i] = _calibrator == nullptr ? gezi::sigmoid(TrainScores[i] / _scale) :
+						_calibrator->PredictProbability(TrainScores[i] / _scale);
 				}
 			}
 		}
 
+
 		virtual void EvaluatePredicts()
 		{
+			Fvec scaledScores;
 			for (size_t i = 0; i < _evaluators.size(); i++)
 			{
 				for (size_t j = 0; j < _validationSets.size(); j++)
 				{
+					Fvec* pscore = &Scores[j];
+					if (_scale != 1.0)
+					{
+						scaledScores = Scores[j];
+						for (size_t k = 0; k < Scores[j].size(); k++)
+						{
+							scaledScores[k] /= _scale;
+						}
+						pscore = &scaledScores;
+					}
 					_evaluateResults[i][j] =
 						Probabilities.empty() || !_evaluators[i]->UseProbability() ?
-						_evaluators[i]->Evaluate(Scores[j], _validationSets[j]) :
+						//_evaluators[i]->Evaluate(Scores[j], _validationSets[j]) :
+						_evaluators[i]->Evaluate(*pscore, _validationSets[j]) :
 						_evaluators[i]->Evaluate(Probabilities[j], _validationSets[j]);
 				}
 				if (_selfEvaluate2)
 				{
+					Fvec* pscore = &TrainScores;
+					if (_scale != 1.0)
+					{
+						scaledScores = TrainScores;
+						for (size_t k = 0; k < TrainScores.size(); k++)
+						{
+							scaledScores[k] /= _scale;
+						}
+						pscore = &scaledScores;
+					}
 					_evaluateResults[i].back() =
 						TrainProbabilities.empty() || !_evaluators[i]->UseProbability() ?
-						_evaluators[i]->Evaluate(TrainScores, *_instances) :
+						//_evaluators[i]->Evaluate(TrainScores, *_instances) :
+						_evaluators[i]->Evaluate(*pscore, *_instances) :
 						_evaluators[i]->Evaluate(TrainProbabilities, *_instances);
 				}
 			}
@@ -373,8 +392,17 @@ namespace gezi {
 			return *this;
 		}
 
+		void SetScale(double scale)
+		{
+			_scale = scale;
+		}
+
+		void SetSelfEvaluateInstances(const Instances& instances)
+		{
+			_instances = &instances;
+		}
 	public:
-		vector<Fvec> Scores;    //即使是_selfEaluate那么也是加入输入的Insatnces在最后
+		vector<Fvec> Scores;    //在gbdt这种类型的迭代中Scores还起着保留现有结果后续累加的作用 引用传递给ScoreTracker处理
 		vector<Fvec> Probabilities;
 
 		Fvec TrainScores;        //真实的内部训练数据实际score
@@ -392,6 +420,7 @@ namespace gezi {
 		bool _selfEvaluate = false; //the same as loading the training file again but only need loading once
 		bool _selfEvaluate2 = false; //truly internal self invaluate
 		int _testFrequency = 1;
+		double _scale = 1.0; //目前主要是gbdt中bagging的时候 为了过程的output尽可能真实
 	};
 
 }  //----end of namespace gezi

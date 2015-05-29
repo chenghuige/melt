@@ -33,7 +33,7 @@ namespace gezi {
 			}
 		}
 
-		static vector<Instances> RandomSplit(Instances& instances, double ratio, unsigned randSeed = 0)
+		static vector<Instances> RandomSplit(const Instances& instances, double ratio, unsigned randSeed = 0)
 		{
 			RandomEngine rng = random_engine(randSeed);
 			instances.Randomize(rng);
@@ -53,6 +53,44 @@ namespace gezi {
 				parts[1].push_back(instances[i]);
 			}
 			return parts;
+		}
+
+		static	Instances GenPartionInstances(const Instances& instances, Random& rand, double fraction)
+		{
+			if (fraction >= 1.0)
+			{
+				return instances;
+			}
+			Instances partitionInstaces;
+			partitionInstaces.CopySchema(instances.schema);
+			for (const auto& instance : instances)
+			{
+				if (rand.NextDouble() < fraction)
+				{
+					partitionInstaces.push_back(instance);
+				}
+			}
+			return partitionInstaces;
+		}
+
+		static Instances GenBootstrapInstances(const Instances& instances, Random& rand, double fraction)
+		{
+			size_t nowCount = instances.size();
+			size_t destCount = nowCount * fraction;
+			Instances destInstaces;
+			destInstaces.CopySchema(instances.schema);
+			for (size_t i = 0; i < destCount; i++)
+			{
+				int idx = rand.Next((int)nowCount);
+				destInstaces.push_back(instances[idx]);
+			}
+			return destInstaces;
+		}
+
+		static InstancePtr SampleOneInstance(const Instances& instances, Random& rand)
+		{
+			size_t idx = rand.Next(instances.size());
+			return instances[idx];
 		}
 	protected:
 	private:
@@ -190,7 +228,7 @@ namespace gezi {
 		{//Sparse格式的话 已经有了Attribute记录了特征数目, 当然一般不需要sparse->sparse除了debug
 			ofs << "\t" << instance.NumFeatures();
 		}
-	
+
 		instance.features.ForEachNonZero([&ofs](int index, Float value)
 		{
 			ofs << "\t" << index << ":" << value;
@@ -255,7 +293,7 @@ namespace gezi {
 		{
 			ofs << instance.label;
 		}
-		
+
 		if (isVW)
 		{
 			ofs << " |n";
@@ -265,7 +303,7 @@ namespace gezi {
 		{
 			ofs << " " << index + 1 << ":" << value;
 		});
-		
+
 		if (instance.features.NumNonZeros() == 0)
 		{
 			ofs << " 1:0.0";

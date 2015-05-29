@@ -263,6 +263,7 @@ namespace gezi {
 				//@TODO 按照fastrank的优化目标函数output->prob推导 应该是 -2*output 但是似乎这样比 -output对应的logloss要大 check 是否不同数据集合不一定
 				//return 1.0 / (1.0 + exp(-2.0 * output));
 				//return 1.0 / (1.0 + exp(-output)); // == gezi::sigmoid(output)
+				//但是注意较大的值可能会都映射到0或者1从而损失排序信息,auc会变低
 				return gezi::sigmoid(output);
 			}
 		}
