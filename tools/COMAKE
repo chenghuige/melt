@@ -117,7 +117,7 @@ Application('fastrank2gcc3',Sources('fastrank2gcc3.cc',srcs))
 Application('bin_sampling',Sources('bin_sampling.cc',srcs))
 
 LIBS('../libvw.a ../libsofia.a ../libblas.a ../liblinear.a ../libsvm.a')
-srcs = GLOB('../src/Wrapper/*.cpp ../src/Prediction/Instances/*.cpp ../src/Run/*.cpp ../src/Testers/*.cpp ../src/Prediction/Normalization/*.cpp ../src/Predictors/*.cpp')
+#srcs = GLOB('../src/Wrapper/*.cpp ../src/Prediction/Instances/*.cpp ../src/Run/*.cpp ../src/Testers/*.cpp ../src/Prediction/Normalization/*.cpp ../src/Predictors/*.cpp')
 Application('melt', Sources('melt.cc', srcs))
 LIBS('../libsofia.a ../libblas.a ../liblinear.a ../libsvm.a')
 srcs = GLOB('../src/Wrapper/*.cpp ../src/Prediction/Instances/*.cpp ../src/Run/*.cpp ../src/Testers/*.cpp ../src/Prediction/Normalization/*.cpp ../src/Predictors/*.cpp ../src/vowpalwabbit/*.cc')

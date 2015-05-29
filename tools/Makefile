@@ -161,7 +161,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=ac16eef5dbede2a7d4473038d6a135a6  COMAKE
+COMAKE_MD5=1d82ea362a2dc227029c7798ab0fc05e  COMAKE
 
 
 .PHONY:all
@@ -212,13 +212,6 @@ clean:ccpclean
 	rm -rf fastrank2gcc3_fastrank2gcc3.o
 	rm -rf bin_sampling_bin_sampling.o
 	rm -rf melt_melt.o
-	rm -rf ../src/Wrapper/melt_PredictorFactory.o
-	rm -rf ../src/Prediction/Instances/melt_InstanceParser.o
-	rm -rf ../src/Run/melt_Melt.o
-	rm -rf ../src/Testers/melt_ClassifierTester.o
-	rm -rf ../src/Prediction/Normalization/melt_BinNormalizer.o
-	rm -rf ../src/Predictors/melt_LibSVMPredictor.o
-	rm -rf ../src/Predictors/melt_VWPredictor.o
 	rm -rf melt.debug_melt.o
 	rm -rf ../src/Wrapper/melt.debug_PredictorFactory.o
 	rm -rf ../src/Prediction/Instances/melt.debug_InstanceParser.o
@@ -1119,13 +1112,6 @@ bin_sampling:bin_sampling_bin_sampling.o \
 	cp -f --link bin_sampling ./output/bin
 
 melt:melt_melt.o \
-  ../src/Wrapper/melt_PredictorFactory.o \
-  ../src/Prediction/Instances/melt_InstanceParser.o \
-  ../src/Run/melt_Melt.o \
-  ../src/Testers/melt_ClassifierTester.o \
-  ../src/Prediction/Normalization/melt_BinNormalizer.o \
-  ../src/Predictors/melt_LibSVMPredictor.o \
-  ../src/Predictors/melt_VWPredictor.o \
   ../libmelt.a \
   ../libsofia.a \
   ../libvw.a \
@@ -1143,14 +1129,7 @@ melt:melt_melt.o \
   ../libsvm.a \
   ../libvw.a
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt[0m']"
-	$(CXX) melt_melt.o \
-  ../src/Wrapper/melt_PredictorFactory.o \
-  ../src/Prediction/Instances/melt_InstanceParser.o \
-  ../src/Run/melt_Melt.o \
-  ../src/Testers/melt_ClassifierTester.o \
-  ../src/Prediction/Normalization/melt_BinNormalizer.o \
-  ../src/Predictors/melt_LibSVMPredictor.o \
-  ../src/Predictors/melt_VWPredictor.o -Xlinker "-(" ../libmelt.a \
+	$(CXX) melt_melt.o -Xlinker "-(" ../libmelt.a \
   ../libsofia.a \
   ../libvw.a \
   ../libblas.a \
@@ -1971,34 +1950,6 @@ bin_sampling_bin_sampling.o:bin_sampling.cc
 melt_melt.o:melt.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt_melt.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o melt_melt.o melt.cc
-
-../src/Wrapper/melt_PredictorFactory.o:../src/Wrapper/PredictorFactory.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Wrapper/melt_PredictorFactory.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Wrapper/melt_PredictorFactory.o ../src/Wrapper/PredictorFactory.cpp
-
-../src/Prediction/Instances/melt_InstanceParser.o:../src/Prediction/Instances/InstanceParser.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Prediction/Instances/melt_InstanceParser.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Prediction/Instances/melt_InstanceParser.o ../src/Prediction/Instances/InstanceParser.cpp
-
-../src/Run/melt_Melt.o:../src/Run/Melt.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Run/melt_Melt.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Run/melt_Melt.o ../src/Run/Melt.cpp
-
-../src/Testers/melt_ClassifierTester.o:../src/Testers/ClassifierTester.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/melt_ClassifierTester.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Testers/melt_ClassifierTester.o ../src/Testers/ClassifierTester.cpp
-
-../src/Prediction/Normalization/melt_BinNormalizer.o:../src/Prediction/Normalization/BinNormalizer.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Prediction/Normalization/melt_BinNormalizer.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Prediction/Normalization/melt_BinNormalizer.o ../src/Prediction/Normalization/BinNormalizer.cpp
-
-../src/Predictors/melt_LibSVMPredictor.o:../src/Predictors/LibSVMPredictor.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Predictors/melt_LibSVMPredictor.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Predictors/melt_LibSVMPredictor.o ../src/Predictors/LibSVMPredictor.cpp
-
-../src/Predictors/melt_VWPredictor.o:../src/Predictors/VWPredictor.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Predictors/melt_VWPredictor.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Predictors/melt_VWPredictor.o ../src/Predictors/VWPredictor.cpp
 
 melt.debug_melt.o:melt.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt.debug_melt.o[0m']"
