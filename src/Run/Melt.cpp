@@ -27,6 +27,7 @@ DEFINE_bool(sof, true, "saveOutputFile: wehter save the outputfile");
 DEFINE_string(test, "", "testDatafile: Data file used for test");
 DEFINE_string(valid, "", "Data file used for training validation (with IValidatingPredictor classifiers where validation is done with training)");
 DEFINE_bool(se, false, "selfEvaluate: when trainer is ValidatingTrainer will do self evaluate during training process");
+DEFINE_bool(se2, false, "selfEvaluate2: like se but using trainer internal structure like in gbdt use DatSet also this might not the same as input training instance if you train some partions then some other partions");
 DEFINE_int32(efreq, 1, "evaluateFrequencey: when trainer is ValidatingTrainer will do evaluate every ef round");
 DEFINE_double(efrac, 0, "evaluateFraction: when trainer is ValidatingTrainer will split evaluateFraction instances to use as evaluation set");
 
@@ -37,6 +38,7 @@ DEFINE_string(codeType, "cpp", "Which language for modelfileCode ? default is cp
 DEFINE_bool(mt, false, "modelfileText:  Gen model file to save in text format ? (for Train or TrainTest");
 DEFINE_bool(mxml, false, "modelfileXml:  Gen model file to save in xml format ? (for Train or TrainTest");
 DEFINE_bool(mjson, false, "modelfileJson:  Gen model file to save in json format ? (for Train or TrainTest");
+DEFINE_bool(mfeature, false, "modelFeatureInfo: Gen model featureInfo file? which usually means feature gain store in model.featureInfo");
 DEFINE_bool(snt, false, "saveNormalizerText: wether save normalizer as text/xml/json");
 DEFINE_bool(sct, false, "saveCalibratorText: wether save calibrator as text/xml/json");
 DEFINE_bool(st, false, "selftTest: when -c train will test the train data its self after training");
@@ -87,6 +89,7 @@ namespace gezi {
 		_cmd.modelfileText = FLAGS_mt;
 		_cmd.modelfileXml = FLAGS_mxml;
 		_cmd.modelfileJson = FLAGS_mjson;
+		_cmd.modelfileFeature = FLAGS_mfeature;
 
 		_cmd.saveNormalizerText = FLAGS_snt;
 		_cmd.saveCalibratorText = FLAGS_sct;
@@ -98,6 +101,7 @@ namespace gezi {
 
 		_cmd.selfTest = FLAGS_st;
 		_cmd.selfEvaluate = FLAGS_se;
+		_cmd.selfEvaluate2 = FLAGS_se2;
 		_cmd.evaluateFrequency = FLAGS_efreq;
 		_cmd.evaluateFraction = FLAGS_efrac;
 

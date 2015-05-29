@@ -18,13 +18,20 @@
 #include "Testers/ClassifierTester.h"
 
 DEFINE_bool(useProb, true, "useProbForClassfierTester: ");
+DEFINE_bool(useLn, true, "For Classifier Tester useLn = false means use log2");
 
 namespace gezi {
+
+	void ClassificationPrecisionRecall::ParseArgs()
+	{
+		useLn = FLAGS_useLn;
+	}
 
 	void ClassificationAUC::ParseArgs()
 	{
 		useProbability = FLAGS_useProb;
 	}
+
 }
 
 #endif  //----end of CLASSIFIER_TESTER_CPP_
