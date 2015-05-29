@@ -151,7 +151,7 @@ namespace gezi {
 		}
 
 		template<typename MarginFunc>
-		void Train(Instances& instances, MarginFunc marginFunc)
+		void Train(const Instances& instances, MarginFunc marginFunc)
 		{
 			ProgressBar pb(instances.Count(), Name() + " calibrating");
 			for (InstancePtr instance : instances)
@@ -162,8 +162,20 @@ namespace gezi {
 			FinishTraining();
 		}
 
+		void Train(const vector<Float>& predictions, const Instances& instances)
+		{
+			ProgressBar pb(instances.Count(), Name() + " calibrating");
+                        int i = 0;
+			for (InstancePtr instance : instances)
+			{
+				++pb;
+				ProcessTrainingExample(predictions[i++], instance->label > 0, instance->weight);
+			}
+			FinishTraining();
+		}
+
 		template<typename MarginFunc>
-		void Train(Instances& instances, MarginFunc marginFunc, size_t maxCount)
+		void Train(const Instances& instances, MarginFunc marginFunc, size_t maxCount)
 		{
 			size_t dealCount = std::min((size_t)maxCount, instances.Count());
 			ProgressBar pb(dealCount, Name() + " calibrating");
