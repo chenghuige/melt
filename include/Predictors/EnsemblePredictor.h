@@ -14,24 +14,84 @@
 #ifndef PREDICTORS__ENSEMBLE_PREDICTOR_H_
 #define PREDICTORS__ENSEMBLE_PREDICTOR_H_
 #include "MLCore/Predictor.h"
+#include "MLCore/PredictorFactory.h"
+
 namespace gezi {
 
 	class EnsemblePredictor : public Predictor
 	{
 	public:
+		EnsemblePredictor(vector<PredictorPtr>&& predictors)
+		{
+			_predictors = move(predictors);
+		}
+		EnsemblePredictor() = default;
+
+		//@TODO  Ã·π©const ∞Ê±æ
+		virtual Float Predict(Vector& features) override
+		{
+			if (_calibrator != nullptr)
+			{
+				return Predictor::Predict(Output(features));
+			}
+			else
+			{
+				double probability = 0;
+#pragma omp parallel for reduction(+: probability)
+				for (size_t i = 0; i < _predictors.size(); i++)
+				{
+					probability += _predictors[i]->Predict(features);
+				}
+				return probability / _predictors.size();
+			}
+		}
 
 	protected:
 		virtual Float Margin(Vector& features) override
 		{
 			Float out = 0;
-			for (PredictorPtr predictor : _predictors)
+#pragma omp parallel for reduction(+: out)
+			for (size_t i = 0; i < _predictors.size(); i++)
 			{
-				out += predictor->Margin(features);
+				out += _predictors[i]->Predict(features);
 			}
 			return out / _predictors.size();
 		}
-	private:
+
+		virtual string Name() override
+		{
+			return "ensemble";
+		}
+
+		virtual void SaveBin(string path) override
+		{
+			string numPredictorsFile = path + "/numPredictors.txt";
+			write_file(_predictors.size(), numPredictorsFile);
+
+			for (size_t i = 0; i < _predictors.size(); i++)
+			{
+				string mpath = format("{}/model{}", path, i);
+				try_create_dir(mpath);
+				_predictors[i]->Save(mpath);
+			}
+		}
+
+		virtual void LoadBin(string path)
+		{
+			string numPredictorsFile = path + "/numPredictors.txt";
+			int numPredictors;
+			read_file(numPredictorsFile, numPredictors);
+			_predictors.resize(numPredictors);
+			for (size_t i = 0; i < _predictors.size(); i++)
+			{
+				string mpath = format("{}/model{}", path, i);
+				_predictors[i] = PredictorFactory::LoadPredictor(mpath);
+			}
+		}
+
+	protected:
 		vector<PredictorPtr> _predictors;
+	private:
 	};
 
 }  //----end of namespace gezi

@@ -216,7 +216,7 @@ namespace gezi {
 			}
 
 			Scores.resize(_validationSets.size());
-			for (int i = 0; i < _validationSets.size(); i++)
+			for (size_t i = 0; i < _validationSets.size(); i++)
 			{
 				Scores[i].resize(_validationSets[i].size(), 0.0);
 			}
@@ -236,7 +236,7 @@ namespace gezi {
 				if (needProb)
 				{
 					Probabilities.resize(_validationSets.size());
-					for (int i = 0; i < _validationSets.size(); i++)
+					for (size_t i = 0; i < _validationSets.size(); i++)
 					{
 						Probabilities[i].resize(_validationSets[i].size(), 0.5);
 					}
@@ -292,7 +292,7 @@ namespace gezi {
 				}
 			}
 		}
-
+	
 		virtual void GenProabilites()
 		{
 			if (!Probabilities.empty())
@@ -313,7 +313,6 @@ namespace gezi {
 				}
 			}
 		}
-
 
 		virtual void EvaluatePredicts()
 		{
@@ -421,6 +420,11 @@ namespace gezi {
 		bool _selfEvaluate2 = false; //truly internal self invaluate
 		int _testFrequency = 1;
 		double _scale = 1.0; //目前主要是gbdt中bagging的时候 为了过程的output尽可能真实
+
+		//-----------------------early stop
+		bool _earlyStop;
+		int _bestInteration; //最佳的迭代轮数
+		int _stopIterations; //如果_stopIterations轮表现没有提升 那么stop
 	};
 
 }  //----end of namespace gezi

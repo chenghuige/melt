@@ -464,6 +464,7 @@ namespace gezi {
 				VLOG(0) << "TrainWithValidating -- selfEvaluate:" << _cmd.selfEvaluate <<
 					" validationDataFiles:" << _cmd.validationDatafile << " evaluators:" << gezi::join(EvaluatorUtils::GetEvaluatorsNames(evaluators), ",");
 
+				vector<Instances> validatingSet;
 				//-----第一个validatingSet的数据 用于early stop
 				vector<Instances> parts;
 				if (_cmd.evaluateFraction > 0)
@@ -475,7 +476,6 @@ namespace gezi {
 					pTrainInstances = &parts[0];
 				}
 
-				vector<Instances> validatingSet;
 				if (!_cmd.validationDatafile.empty())
 				{
 					vector<string> validatingSetNames = gezi::split(_cmd.validationDatafile, ',');

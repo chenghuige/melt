@@ -41,6 +41,7 @@ namespace gezi {
 	//var stronglyTypedPredictor = predictor as IPredictor<Instance, float>;
 	//dvec Predicts(const Vector&) 
 	//double Predict(const Vector&, dvec&)
+	class EnsemblePredictor;
 	class Predictor : public LoadSave
 	{
 	public:
@@ -199,7 +200,7 @@ namespace gezi {
 		}
 
 		//@TODO  Ã·π©const ∞Ê±æ
-		Float Predict(Vector& features)
+		virtual Float Predict(Vector& features)
 		{
 			if (GetPredictionKind() == PredictionKind::Regression
 				|| GetPredictionKind() == PredictionKind::MultiOutputRegression)
@@ -279,13 +280,18 @@ namespace gezi {
 			Save(_path);
 		}
 
+		virtual void SaveBin(string path)
+		{
+			string modelFile = path + "/model.bin";
+			Save_(modelFile);
+		}
+
 		virtual void Save(string path) override
 		{
 			LoadSave::Save(path);
 			_path = path;
 			try_create_dir(path);
-			string modelFile = path + "/model.bin";
-			Save_(modelFile);
+			SaveBin(path);
 			write_file(Name(), path + "/model.name.txt");
 			write_file(_param, path + "/model.param.txt");
 			SAVE_SHARED_PTR(_normalizer, path);
@@ -319,13 +325,18 @@ namespace gezi {
 			}
 		}
 
+		virtual void LoadBin(string path)
+		{
+			string modelFile = path + "/model.bin";
+			Load_(modelFile);
+		}
+
 		virtual void Load(string path) override
 		{
 			_path = path;
 			_param = read_file(OBJ_NAME_PATH(_param, path));
 			LoadSave::Load(path);
-			string modelFile = path + "/model.bin";
-			Load_(modelFile);
+			LoadBin(path);
 			LoadNormalizerAndCalibrator(path);
 		}
 
@@ -542,6 +553,7 @@ namespace gezi {
 		}
 
 	protected:
+		friend EnsemblePredictor;
 		virtual Float Margin(Vector& features)
 		{
 			return 0;
