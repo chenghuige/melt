@@ -67,7 +67,6 @@ DEFINE_string(format, "unknow", "inputFileFormat: will not to set it for most ca
 DEFINE_string(off, "unknown", "ouput_file_format: if unknow using it's input format");
 
 DEFINE_bool(fast, false, "fast mode, will try fastest training, like calibrate = false");
-DEFINE_bool(quiet, false, "quiet mode, will set vl= -1");
 
 namespace gezi {
 	void Melt::ParseArguments()
