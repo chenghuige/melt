@@ -464,6 +464,17 @@ namespace gezi {
 				VLOG(0) << "TrainWithValidating -- selfEvaluate:" << _cmd.selfEvaluate <<
 					" validationDataFiles:" << _cmd.validationDatafile << " evaluators:" << gezi::join(EvaluatorUtils::GetEvaluatorsNames(evaluators), ",");
 
+				//-----第一个validatingSet的数据 用于early stop
+				vector<Instances> parts;
+				if (_cmd.evaluateFraction > 0)
+				{
+					parts = InstancesUtil::RandomSplit(instances, _cmd.evaluateFraction, _cmd.randSeed);
+					VLOG(0) << "Split input insatnces to train and valid part with numTrainInsatnces: " << parts[0].Size()
+						<< " numValidInstances: " << parts[1].Size();
+					validatingSet.push_back(parts[1]);
+					pTrainInstances = &parts[0];
+				}
+
 				vector<Instances> validatingSet;
 				if (!_cmd.validationDatafile.empty())
 				{
@@ -473,16 +484,6 @@ namespace gezi {
 						validatingSet.push_back(create_instances(validatingSetName));
 						CHECK_GT(validatingSet.back().Count(), 0) << "Read 0 evaluate instances, aborting experiment";
 					}
-				}
-
-				vector<Instances> parts;
-				if (_cmd.evaluateFraction > 0)
-				{
-					parts = InstancesUtil::RandomSplit(instances, _cmd.evaluateFraction, _cmd.randSeed);
-					VLOG(0) << "Split input insatnces to train and valid part with numTrainInsatnces: " << parts[0].Size()
-						<< " numValidInstances: " << parts[1].Size();
-					validatingSet.push_back(parts[1]);
-					pTrainInstances = &parts[0];
 				}
 
 				(*validatingTrainer).SetTestFrequency(_cmd.evaluateFrequency).
