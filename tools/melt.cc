@@ -19,8 +19,10 @@
 using namespace std;
 using namespace gezi;
 DEFINE_int32(vl, 0, "vlog level");
+DEFINE_bool(silent, false, "silent mode, will set vl = -1");
+DEFINE_bool(quiet, false, "quiet mode, will set vl = -1");
+
 DECLARE_string(c);
-DECLARE_bool(quiet);
 
 void ShowMeltHelp()
 {
@@ -59,7 +61,7 @@ int main(int argc, char *argv[])
 
 	if (FLAGS_log_dir.empty())
 		FLAGS_logtostderr = true;
-	if (FLAGS_quiet)
+	if (FLAGS_silent || FLAGS_quiet)
 		FLAGS_vl = -1;
 	if (FLAGS_v == 0)
 		FLAGS_v = FLAGS_vl;
