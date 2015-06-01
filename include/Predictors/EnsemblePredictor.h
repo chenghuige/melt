@@ -21,23 +21,26 @@ namespace gezi {
 	class EnsemblePredictor : public Predictor
 	{
 	public:
-		EnsemblePredictor(vector<PredictorPtr>&& predictors)
+		EnsemblePredictor(vector<PredictorPtr>&& predictors, CalibratorPtr calibrator)
 		{
 			_predictors = move(predictors);
+                        _calibrator = calibrator;
 		}
 		EnsemblePredictor() = default;
 
+                using Predictor::Predict;
+                using Predictor::Output;
 		//@TODO  Ã·π©const ∞Ê±æ
 		virtual Float Predict(Vector& features) override
 		{
 			if (_calibrator != nullptr)
 			{
-				return Predictor::Predict(Output(features));
+				return Predict(Output(features));
 			}
 			else
 			{
 				double probability = 0;
-#pragma omp parallel for reduction(+: probability)
+//#pragma omp parallel for reduction(+: probability)
 				for (size_t i = 0; i < _predictors.size(); i++)
 				{
 					probability += _predictors[i]->Predict(features);
@@ -50,12 +53,12 @@ namespace gezi {
 		virtual Float Margin(Vector& features) override
 		{
 			Float out = 0;
-#pragma omp parallel for reduction(+: out)
+//#pragma omp parallel for reduction(+: out)
 			for (size_t i = 0; i < _predictors.size(); i++)
 			{
-				out += _predictors[i]->Predict(features);
+				out += _predictors[i]->Output(features);
 			}
-			return out / _predictors.size();
+			return out / (Float)_predictors.size();
 		}
 
 		virtual string Name() override

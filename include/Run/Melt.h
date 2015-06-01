@@ -486,10 +486,13 @@ namespace gezi {
 					}
 				}
 
-				(*validatingTrainer).SetTestFrequency(_cmd.evaluateFrequency).
+				(*validatingTrainer).SetEvaluateFrequency(_cmd.evaluateFrequency).
 					SetSelfEvaluate(_cmd.selfEvaluate).
-					SetSelfEvaluate2(_cmd.selfEvaluate2);
-				validatingTrainer->Train(*pTrainInstances, validatingSet, evaluators);
+					SetSelfEvaluate2(_cmd.selfEvaluate2).
+					SetEarlyStop(_cmd.earlyStop).
+					SetEarlyStopCheckFrequency(_cmd.earlyStopCheckFrequency).
+					SetEarlyStopRounds(_cmd.earlyStopRounds);
+					validatingTrainer->Train(*pTrainInstances, validatingSet, evaluators);
 			}
 			else
 			{//--------------------------Simple Train
@@ -607,7 +610,7 @@ namespace gezi {
 		{
 			//------test
 			try_create_dir(_cmd.resultDir);
-		
+
 			//@TODO hack for text input format //Not tested correctness yet
 			InstanceParser::TextFormatParsedTime(); //++ pared text from time这样表示需要使用词表数据
 			string testDatafile = _cmd.testDatafile.empty() ? _cmd.datafile : _cmd.testDatafile;
@@ -665,21 +668,21 @@ namespace gezi {
 		}
 
 #define  SAVE_SHARED_PTR_ALL(obj)\
-										{\
+												{\
 		SAVE_SHARED_PTR(obj, _cmd.modelFolder); \
 		if (_cmd.modelfileXml)\
-										{\
+												{\
 		SAVE_SHARED_PTR_ASXML(obj, _cmd.modelFolder); \
-										}\
+												}\
 		if (_cmd.modelfileJson)\
-										{\
+												{\
 		SAVE_SHARED_PTR_ASJSON(obj, _cmd.modelFolder); \
-										}\
+												}\
 		if (_cmd.modelfileText)\
-										{\
+												{\
 		SAVE_SHARED_PTR_ASTEXT(obj, _cmd.modelFolder); \
-										}\
-										}
+												}\
+												}
 
 		void RunNormalize()
 		{
@@ -1052,7 +1055,7 @@ namespace gezi {
 		{
 			auto instances = create_instances(_cmd.datafile);
 			RandomEngine rng = random_engine(_cmd.randSeed);
-			
+
 			FileFormat fileFormat = get_value(kFormats, _cmd.outputFileFormat, FileFormat::Unknown);
 			string suffix = "rand";
 			if (_cmd.num > 0)

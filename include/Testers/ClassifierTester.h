@@ -239,7 +239,7 @@ namespace gezi {
 	public:
 		ClassificationAUC()
 		{
-			ParseArgs();
+			//ParseArgs();
 		}
 		virtual string LabelColumnName() override
 		{
@@ -254,30 +254,34 @@ namespace gezi {
 
 		virtual Fvec ProcessInstance(Float label, Float prediction, Float probability, Float weight) override
 		{
-			Float val = useProbability ? probability : prediction;
+			//Float val = useProbability ? probability : prediction;
 			//PVAL4(useProbability, prediction, probability, val);
-			_evaluator.Add(label, val, weight);
+			//_evaluator.Add(label, val, weight);
+			_evaluator.Add(label, probability, weight);
+			_evaluatorByOutput.Add(label, prediction, weight);
 			return vector<Float>();
 		}
 
-		virtual void ParseArgs() override;
+		//virtual void ParseArgs() override;
 	protected:
 		virtual void Finish() override
 		{
 			_auc = _evaluator.Finalize();
+			_aucByOutput = _evaluatorByOutput.Finalize();
 		}
 
 		virtual void Print_(string prefix) override
 		{
+			fmt::print(prefix + "OuputAUC:               {0:.4f}\n", _aucByOutput);
 			fmt::print_colored(fmt::RED, prefix + "AUC:                   [{0:.4f}]", _auc);
 			fmt::print("\n");
 		}
 
 	public:
-		bool useProbability = true; //use ouput or use probability
+		//bool useProbability = true; //use ouput or use probability
 	private:
-		AucEvaluator _evaluator;
-		Float _auc;
+		AucEvaluator _evaluator, _evaluatorByOutput;
+		Float _auc, _aucByOutput;
 	};
 
 

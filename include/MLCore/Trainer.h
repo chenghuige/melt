@@ -42,6 +42,7 @@ namespace gezi {
 		//默认流程特别为类似线性分类需要normalize的流程准备 如果不需要比如Fastrank 可以自己override
 		virtual void Train(Instances& instances)
 		{
+			VLOG(5) << "Train in trainer base";
 			_trainingSchema = instances.schema;
 			_instances = &instances;
 
@@ -189,12 +190,16 @@ namespace gezi {
 			Scores.resize(1);
 		}
 
+		using Trainer::Train;
+
 		//尽管instances传入不使用const 但是注意trainer要SetNormalizeCopy 实际还是保证不改变所有输入
 		virtual void Train(Instances& instances, vector<Instances>& validationInstances, vector<EvaluatorPtr>& evaluators)
 		{
 			_instances = &instances;
 			Trainer::SetNormalizeCopy(false);
+			PVAL2(validationInstances.size(), _validationSets.size());
 			_validationSets = move(validationInstances);
+			PVAL2(validationInstances.size(), _validationSets.size());
 			_evaluators = move(evaluators);
 			_validating = true;
 			//_valdationSetNames = from(_validationSets) >> select([](const Instances& a) { return a.name; }) >> to_vector();
@@ -249,25 +254,65 @@ namespace gezi {
 				_evaluateResults[i].resize(_valdationSetNames.size(), 0);
 			}
 
-			Trainer::Train(instances);  //不用Trainer::会提示找不到 重载覆盖 另外也可以函数外面类里面 using Trainer::Train
+			if (_earlyStop)
+			{
+				InitEarlyStop();
+			}
+			//Trainer::Train(instances);  //不用Trainer::会提示找不到重载 注意要在外面使用using Trainer::Train 在这里用Trainer::会造成多态失效
+			Train(instances);
 		}
 
 		virtual void Train(Instances& instances, vector<Instances>&& validationInstances, vector<EvaluatorPtr>&& evaluators)
 		{
+			PVAL2(validationInstances.size(), _validationSets.size());
 			vector<Instances> _validationSets = move(validationInstances);
 			vector<EvaluatorPtr> _evaluators = move(evaluators);
+			PVAL2(validationInstances.size(), _validationSets.size());
 			return Train(instances, _validationSets, _evaluators);
 		}
 	protected:
 
-		void Evaluate(int round)
+		//继承类 每轮迭代都要调用,round从1开始, forceEvaluate比如最后一轮 强制Evaluate需要具体trainer传递这个信息
+		//返回值表示是否earlyStop检测为true
+		bool Evaluate(int round, bool forceEvaluate = false)
+		{
+			if (_validating)
+			{
+				bool earlyStopCheck = _earlyStop && round % _earlyStopCheckFrequency == 0;
+				bool evaluateCheck = round % _evaluateFrequency == 0 || forceEvaluate;
+				if (earlyStopCheck)
+				{
+					EvaluateOnce();
+					if (CheckEarlyStop())
+					{
+						PrintEvaluateResult(round);
+						VLOG(0) << "Early stop at check round: " << _checkCounts
+							<< " stop iteration: " << round
+							<< " best iteration: " << _bestCheckIteration * _earlyStopCheckFrequency
+							<< " best score: " << _bestScore;
+						return true;
+					}
+					if (evaluateCheck)
+					{
+						PrintEvaluateResult(round);
+					}
+				}
+				else if (evaluateCheck)
+				{
+					EvaluateOnce();
+					PrintEvaluateResult(round);
+				}
+				return false;
+			}
+			return false;
+		}
+
+		void EvaluateOnce()
 		{
 			GenPredicts();
 			GenProabilites();
 			EvaluatePredicts();
-			PrintEvaluateResult(round);
 		}
-
 		//FastRank是在ScoreTracker中处理,没棵树建立完ScoreTracker会对所有TrackedScore更新Scores 所以空即可
 		//Or UpdateScores
 		virtual void GenPredicts()
@@ -292,7 +337,31 @@ namespace gezi {
 				}
 			}
 		}
-	
+
+		template<typename Func>
+		void DoAddPredicts(Func func)
+		{
+			for (size_t i = 0; i < Scores.size(); i++)
+			{
+				for (size_t j = 0; j < Scores[i].size(); j++)
+				{
+					Scores[i][j] += func(_validationSets[i][j]);
+				}
+			}
+		}
+
+		template<typename Func>
+		void DoPredicts(Func func)
+		{
+			for (size_t i = 0; i < Scores.size(); i++)
+			{
+				for (size_t j = 0; j < Scores[i].size(); j++)
+				{
+					func(ref(Scores[i][j]), _validationSets[i][j]);
+				}
+			}
+		}
+
 		virtual void GenProabilites()
 		{
 			if (!Probabilities.empty())
@@ -357,7 +426,10 @@ namespace gezi {
 				}
 			}
 		}
-
+		int BestIteration()
+		{
+			return _bestCheckIteration * _earlyStopCheckFrequency;
+		}
 	private:
 		void PrintEvaluateResult(int round)
 		{
@@ -372,10 +444,45 @@ namespace gezi {
 			evluateRound++;
 		}
 
-	public:
-		ValidatingTrainer& SetTestFrequency(int freq)
+		void InitEarlyStop()
 		{
-			_testFrequency = freq;
+			if (_evaluators[0]->LowerIsBetter())
+			{
+				_bestScore = std::numeric_limits<Float>::max();
+			}
+			else
+			{
+				_bestScore = std::numeric_limits<Float>::lowest();
+			}
+		}
+
+		bool IsBetter(Float now, Float before)
+		{
+			return _evaluators[0]->LowerIsBetter() ? now < before :
+				now > before;
+		}
+
+		bool CheckEarlyStop()
+		{
+			_checkCounts++;
+			if (IsBetter(_evaluateResults[0][0], _bestScore))
+			{
+				_bestScore = _evaluateResults[0][0];
+				_bestCheckIteration = _checkCounts;
+			}
+			else
+			{
+				if (_checkCounts - _bestCheckIteration >= _stopRounds)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+	public:
+		ValidatingTrainer& SetEvaluateFrequency(int freq)
+		{
+			_evaluateFrequency = freq;
 			return *this;
 		}
 
@@ -400,6 +507,25 @@ namespace gezi {
 		{
 			_instances = &instances;
 		}
+
+		ValidatingTrainer& SetEarlyStop(bool earlyStop = true)
+		{
+			_earlyStop = earlyStop;
+			return *this;
+		}
+
+		ValidatingTrainer& SetEarlyStopCheckFrequency(int earlyStopCheckFrequency)
+		{
+			_earlyStopCheckFrequency = earlyStopCheckFrequency;
+			return *this;
+		}
+
+		ValidatingTrainer& SetEarlyStopRounds(int stopRounds)
+		{
+			_stopRounds = stopRounds;
+			return *this;
+		}
+
 	public:
 		vector<Fvec> Scores;    //在gbdt这种类型的迭代中Scores还起着保留现有结果后续累加的作用 引用传递给ScoreTracker处理
 		vector<Fvec> Probabilities;
@@ -407,24 +533,31 @@ namespace gezi {
 		Fvec TrainScores;        //真实的内部训练数据实际score
 		Fvec TrainProbabilities;
 	protected:
+		//-----validating args
 		bool _validating = false;
-
-		vector<Fvec> _evaluateResults; //每个evaluator对应一个vec  长度是 _numValidations
-
-		vector<Instances> _validationSets;
-		vector<EvaluatorPtr> _evaluators;
-
-		vector<string> _valdationSetNames;
-
 		bool _selfEvaluate = false; //the same as loading the training file again but only need loading once
 		bool _selfEvaluate2 = false; //truly internal self invaluate
-		int _testFrequency = 1;
-		double _scale = 1.0; //目前主要是gbdt中bagging的时候 为了过程的output尽可能真实
+		int _evaluateFrequency = 1; //每_testFrequency轮 做一次eval,并展示结果
+
+		vector<Fvec> _evaluateResults; //每个evaluator对应一个vec  长度是 _numValidations
+		vector<Instances> _validationSets;
+		vector<EvaluatorPtr> _evaluators;
+		vector<string> _valdationSetNames;
+
+		Float _scale = 1.0; //目前主要是gbdt中bagging的时候 为了过程的output尽可能真实
 
 		//-----------------------early stop
-		bool _earlyStop;
-		int _bestInteration; //最佳的迭代轮数
-		int _stopIterations; //如果_stopIterations轮表现没有提升 那么stop
+		//----early stop args
+		bool _earlyStop = false;
+		int _earlyStopCheckFrequency = 1; //gbdt应该每轮都check,但是对应比如linearSVM没有必要 可以100轮测试一次
+		//如果_stopRounds轮表现没有提升 那么stop 这个轮数是指的earlyStop的check轮数,实际算法迭代次数是* _earlyStopCheckFrequency
+		//比如 如果当前轮和上一轮相比没有基本 而stopRound设置为1 那么就立即停止了
+		int _stopRounds = 100;
+
+		int _bestCheckIteration = 0;
+		int _roundsAfterBestIteration = 0;
+		int _checkCounts = 0;
+		Float _bestScore = 0;
 	};
 
 }  //----end of namespace gezi
