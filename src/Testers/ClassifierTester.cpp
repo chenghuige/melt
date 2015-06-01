@@ -17,7 +17,7 @@
 #include "common_util.h"
 #include "Testers/ClassifierTester.h"
 
-DEFINE_bool(useProb, true, "useProbForClassfierTester: ");
+//DEFINE_bool(useProb, true, "useProbForClassfierTester: ");
 DEFINE_bool(useLn, true, "For Classifier Tester useLn = false means use log2");
 
 namespace gezi {
@@ -27,10 +27,10 @@ namespace gezi {
 		useLn = FLAGS_useLn;
 	}
 
-	void ClassificationAUC::ParseArgs()
-	{
-		useProbability = FLAGS_useProb;
-	}
+	//void ClassificationAUC::ParseArgs()
+	//{
+	//	//useProbability = FLAGS_useProb;
+	//}
 
 }
 

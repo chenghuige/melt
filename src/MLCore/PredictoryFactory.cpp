@@ -10,7 +10,7 @@
  *  \Description:
  *  ==============================================================================
  */
-
+#include "MLCore/PredictorFactory.h"
 #include "Predictors/LinearPredictor.h"
 #include "Predictors/FastRankPredictor.h"
 #ifndef MELT_NO_THIRD_PREDICTOR
@@ -18,52 +18,52 @@
 #include "Predictors/VWPredictor.h"
 #endif
 #include "Predictors/EnsemblePredictor.h"
-namespace gezi {
+namespace gezi{
+	namespace {
+		enum class PredictorType
+		{
+			//-------------- BinaryClassification
+			Unknown,
+			Linear,
+			FastRankBinaryClassification,
+			RandomForest,
+			DecisionTree,
+			KernalSVM,
+			BinaryNeuralNetwork,
+			VW,
+			LibSVM,
+			Ensemble,
+			//------------- Regression
+			FastRankRegression,
+		};
 
-	enum class PredictorType
-	{
-		//-------------- BinaryClassification
-		Unknown,
-		Linear,
-		FastRankBinaryClassification,
-		RandomForest,
-		DecisionTree,
-		KernalSVM,
-		BinaryNeuralNetwork,
-		VW,
-		LibSVM,
-		Ensemble,
-		//------------- Regression
-		FastRankRegression,
-	};
-
-	const static map<string, PredictorType> _predictorTypes = {
-		{ "unknown", PredictorType::Unknown },
-		{ "linear", PredictorType::Linear },
-		{ "linearsvm", PredictorType::Linear },
-		{ "sofia", PredictorType::Linear },
-		{ "liblinear", PredictorType::Linear },
-		{ "fastrank", PredictorType::FastRankBinaryClassification },
-		{ "fr", PredictorType::FastRankBinaryClassification },
-		{ "gbdt", PredictorType::FastRankBinaryClassification },
-		{ "randomforest", PredictorType::RandomForest },
-		{ "rf", PredictorType::RandomForest },
-		{ "decisiontree", PredictorType::DecisionTree },
-		{ "dt", PredictorType::DecisionTree },
-		{ "kernalsvm", PredictorType::KernalSVM },
-		{ "ksvm", PredictorType::KernalSVM },
-		{ "binaryneuralnetwork", PredictorType::BinaryNeuralNetwork },
-		{ "neural", PredictorType::BinaryNeuralNetwork },
-		{ "vw", PredictorType::VW },
-		{ "ensemble", PredictorType::Ensemble },
-		{ "libsvm", PredictorType::LibSVM },
-		{ "fastrankregression", PredictorType::FastRankRegression },
-		{ "gbdtregression", PredictorType::FastRankRegression },
-		{ "frr", PredictorType::FastRankRegression },
-		{ "gbrt", PredictorType::FastRankRegression },
-	};
-
-	static PredictorPtr PredictorFactory::CreatePredictor(string name)
+		const  map<string, PredictorType> _predictorTypes = {
+			{ "unknown", PredictorType::Unknown },
+			{ "linear", PredictorType::Linear },
+			{ "linearsvm", PredictorType::Linear },
+			{ "sofia", PredictorType::Linear },
+			{ "liblinear", PredictorType::Linear },
+			{ "fastrank", PredictorType::FastRankBinaryClassification },
+			{ "fr", PredictorType::FastRankBinaryClassification },
+			{ "gbdt", PredictorType::FastRankBinaryClassification },
+			{ "randomforest", PredictorType::RandomForest },
+			{ "rf", PredictorType::RandomForest },
+			{ "decisiontree", PredictorType::DecisionTree },
+			{ "dt", PredictorType::DecisionTree },
+			{ "kernalsvm", PredictorType::KernalSVM },
+			{ "ksvm", PredictorType::KernalSVM },
+			{ "binaryneuralnetwork", PredictorType::BinaryNeuralNetwork },
+			{ "neural", PredictorType::BinaryNeuralNetwork },
+			{ "vw", PredictorType::VW },
+			{ "ensemble", PredictorType::Ensemble },
+			{ "libsvm", PredictorType::LibSVM },
+			{ "fastrankregression", PredictorType::FastRankRegression },
+			{ "gbdtregression", PredictorType::FastRankRegression },
+			{ "frr", PredictorType::FastRankRegression },
+			{ "gbrt", PredictorType::FastRankRegression },
+		};
+	} //------------- anoymous namespace
+	PredictorPtr PredictorFactory::CreatePredictor(string name)
 	{
 		name = arg(name);
 
@@ -94,7 +94,7 @@ namespace gezi {
 		return nullptr;
 	}
 
-	static PredictorPtr PredictorFactory::CreatePredictor(string name, string path)
+	PredictorPtr PredictorFactory::CreatePredictor(string name, string path)
 	{
 		PredictorPtr predictor = CreatePredictor(name);
 		if (predictor != nullptr)
@@ -109,7 +109,7 @@ namespace gezi {
 	}
 
 	//Mostly used
-	static PredictorPtr PredictorFactory::LoadPredictor(string path)
+	PredictorPtr PredictorFactory::LoadPredictor(string path)
 	{
 		string name = read_file(path + "/model.name.txt");
 		PredictorPtr predictor = CreatePredictor(name);
@@ -125,7 +125,7 @@ namespace gezi {
 	}
 
 	//主要用于线性分类器 用于接受其他外部分类器的结果转换为melt接受的文本格式后载入
-	static PredictorPtr PredictorFactory::CreatePredictorFromTextFormat(string name, string path)
+	PredictorPtr PredictorFactory::CreatePredictorFromTextFormat(string name, string path)
 	{
 		PredictorPtr predictor = CreatePredictor(name);
 		if (predictor != nullptr)
@@ -139,7 +139,7 @@ namespace gezi {
 		return predictor;
 	}
 
-	static PredictorPtr PredictorFactory::LoadTextPredictor(string path)
+	PredictorPtr PredictorFactory::LoadTextPredictor(string path)
 	{
 		string name = read_file(path + "/model.name.txt");
 		PredictorPtr predictor = CreatePredictor(name);
@@ -154,7 +154,7 @@ namespace gezi {
 		return predictor;
 	}
 
-	static Predictors PredictorFactory::LoadPredictors(const svec& paths)
+	Predictors PredictorFactory::LoadPredictors(const svec& paths)
 	{
 		Predictors predictors;
 		for (string path : paths)
@@ -163,5 +163,4 @@ namespace gezi {
 		}
 		return predictors;
 	}
-
 }  //----end of namespace gezi

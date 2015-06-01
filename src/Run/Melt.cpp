@@ -25,14 +25,19 @@ DEFINE_string(o, "", "outfile: specified output file(not modelfile)");
 DEFINE_bool(sof, true, "saveOutputFile: wehter save the outputfile");
 
 DEFINE_string(test, "", "testDatafile: Data file used for test");
+//-------------validating
 DEFINE_string(valid, "", "Data file used for training validation (with IValidatingPredictor classifiers where validation is done with training)");
 DEFINE_bool(se, false, "selfEvaluate: when trainer is ValidatingTrainer will do self evaluate during training process");
 DEFINE_bool(se2, false, "selfEvaluate2: like se but using trainer internal structure like in gbdt use DatSet also this might not the same as input training instance if you train some partions then some other partions");
-DEFINE_int32(efreq, 1, "evaluateFrequencey: when trainer is ValidatingTrainer will do evaluate every ef round");
+DEFINE_int32(efreq, 100, "evaluateFrequencey: when trainer is ValidatingTrainer will do evaluate every ef round");
 DEFINE_double(efrac, 0, "evaluateFraction: when trainer is ValidatingTrainer will split evaluateFraction instances to use as evaluation set");
+//--------ealy stop with validating
+DEFINE_bool(early, false, "earlyStop| wether use early stop for iterative validating trainers");
+DEFINE_int32(checkFreq, 1, "earlyStopCheckFrequency| do early stop check every checkFreq iterations");
+DEFINE_int32(stopRounds, 10, "earlyStopRounds| will stop after no performance gain in stopRounds, for 1 will stop once performance will decrease");
 
 DEFINE_string(m, "model", "modelFolder");
-DEFINE_bool(mf, false, " modelfile: Gen model file£¿ (for TrainTest)");
+DEFINE_bool(mf, true, " modelfile: Gen model file? (for TrainTest)");
 DEFINE_bool(mc, false, " modelfileCode: Gen model file to save in C++ code £¿ (for Train or TrainTest)");
 DEFINE_string(codeType, "cpp", "Which language for modelfileCode ? default is cpp->model.cpp, or c->model.c or py for python -> model.py, php -> mode.php");
 DEFINE_bool(mt, false, "modelfileText:  Gen model file to save in text format ? (for Train or TrainTest");
@@ -103,6 +108,10 @@ namespace gezi {
 		_cmd.selfEvaluate2 = FLAGS_se2;
 		_cmd.evaluateFrequency = FLAGS_efreq;
 		_cmd.evaluateFraction = FLAGS_efrac;
+
+		_cmd.earlyStop = FLAGS_early;
+		_cmd.earlyStopCheckFrequency = FLAGS_checkFreq;
+		_cmd.earlyStopRounds = FLAGS_stopRounds;
 
 		if (FLAGS_rs == 0)
 		{
