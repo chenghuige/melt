@@ -183,7 +183,6 @@ namespace gezi {
 			{ //@TODO check «∑Ò∫ÕPredictoionKindœ‡∆•≈‰
 				evaluators = CreateOrGetEvaluators();
 			}
-			string trainerParam;
 			TesterPtr tester = nullptr;
 			for (int runIdx = 0; runIdx < _cmd.numRuns; runIdx++)
 			{
@@ -251,11 +250,6 @@ namespace gezi {
 							Evaluate(testData, predictor, evaluatePredictions, evaluateProbabilities, evaluateInstances);
 						}
 					}
-
-					if (foldIdx == 0)
-					{
-						trainerParam = trainer->GetParam();
-					}
 				}
 			}
 
@@ -281,8 +275,8 @@ namespace gezi {
 					{
 						results[i] = evaluators[i]->Evaluate(evaluatePredictions, evaluateProbabilities, evaluateInstances);
 					}
-					cout << results[0] << "\t" << "trainerParam: " << trainerParam << endl;
 					gezi::print(EvaluatorUtils::GetEvaluatorsNames(evaluators), results);
+					cout << results[0]; //for hadoop like system might used for output with "\t...\n"
 				}
 			}
 		}
@@ -424,7 +418,7 @@ namespace gezi {
 #pragma omp parallel for schedule(static)
 			for (size_t i = 0; i < instances.size(); i++)
 			{
-				probabilities[begin + i] = predictor->Predict(instances[i], predictions[i]);
+				probabilities[begin + i] = predictor->Predict(instances[i], predictions[begin + i]);
 				evaluateInstances[begin + i] = instances[i];
 			}
 		}
@@ -491,8 +485,13 @@ namespace gezi {
 					SetSelfEvaluate2(_cmd.selfEvaluate2).
 					SetEarlyStop(_cmd.earlyStop).
 					SetEarlyStopCheckFrequency(_cmd.earlyStopCheckFrequency).
-					SetEarlyStopRounds(_cmd.earlyStopRounds);
+					SetEarlyStopRounds(_cmd.earlyStopRounds).
+					SetUseBestStage(_cmd.earlyStopUseBestStage);
 					validatingTrainer->Train(*pTrainInstances, validatingSet, evaluators);
+					if (_cmd.earlyStop)
+					{
+						write_file(validatingTrainer->BestIteration(), _cmd.resultDir + "/bestIter.txt");
+					}
 			}
 			else
 			{//--------------------------Simple Train

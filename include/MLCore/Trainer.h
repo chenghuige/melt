@@ -270,6 +270,12 @@ namespace gezi {
 			PVAL2(validationInstances.size(), _validationSets.size());
 			return Train(instances, _validationSets, _evaluators);
 		}
+
+		int BestIteration()
+		{
+			return _bestCheckIteration * _earlyStopCheckFrequency;
+		}
+
 	protected:
 
 		//继承类 每轮迭代都要调用,round从1开始, forceEvaluate比如最后一轮 强制Evaluate需要具体trainer传递这个信息
@@ -426,10 +432,17 @@ namespace gezi {
 				}
 			}
 		}
-		int BestIteration()
+
+		virtual void StoreBestStage()
 		{
-			return _bestCheckIteration * _earlyStopCheckFrequency;
+
 		}
+
+		virtual void RestoreBestStage()
+		{
+
+		}
+
 	private:
 		void PrintEvaluateResult(int round)
 		{
@@ -455,7 +468,7 @@ namespace gezi {
 				_bestScore = std::numeric_limits<Float>::lowest();
 			}
 		}
-
+	
 		bool IsBetter(Float now, Float before)
 		{
 			return _evaluators[0]->LowerIsBetter() ? now < before :
@@ -467,6 +480,10 @@ namespace gezi {
 			_checkCounts++;
 			if (IsBetter(_evaluateResults[0][0], _bestScore))
 			{
+				if (_useBestStage)
+				{
+					StoreBestStage();
+				}
 				_bestScore = _evaluateResults[0][0];
 				_bestCheckIteration = _checkCounts;
 			}
@@ -474,6 +491,10 @@ namespace gezi {
 			{
 				if (_checkCounts - _bestCheckIteration >= _stopRounds)
 				{
+					if (_useBestStage)
+					{
+						RestoreBestStage();
+					}
 					return true;
 				}
 			}
@@ -526,6 +547,12 @@ namespace gezi {
 			return *this;
 		}
 
+		ValidatingTrainer& SetUseBestStage(bool useBestStage = true)
+		{
+			_useBestStage = useBestStage;
+			return *this;
+		}
+
 	public:
 		vector<Fvec> Scores;    //在gbdt这种类型的迭代中Scores还起着保留现有结果后续累加的作用 引用传递给ScoreTracker处理
 		vector<Fvec> Probabilities;
@@ -553,6 +580,7 @@ namespace gezi {
 		//如果_stopRounds轮表现没有提升 那么stop 这个轮数是指的earlyStop的check轮数,实际算法迭代次数是* _earlyStopCheckFrequency
 		//比如 如果当前轮和上一轮相比没有基本 而stopRound设置为1 那么就立即停止了
 		int _stopRounds = 100;
+		bool _useBestStage = false;
 
 		int _bestCheckIteration = 0;
 		int _roundsAfterBestIteration = 0;

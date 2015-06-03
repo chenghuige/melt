@@ -49,7 +49,7 @@ namespace gezi {
 		bool stratify = false;
 		bool foldsSequential = false;
 		double trainProportion = 1.0;
-		
+
 		bool selfTest = false; //st| when -c train will test the train data its self after training
 
 		bool selfEvaluate = false; //se|when trainer is validatingTrainer, will self evaluate during training
@@ -60,6 +60,7 @@ namespace gezi {
 		bool earlyStop = false;
 		int earlyStopCheckFrequency = 1;
 		int earlyStopRounds = 10;
+		bool earlyStopUseBestStage = false;
 
 		string modelDir = "";
 		string outDir = "";
