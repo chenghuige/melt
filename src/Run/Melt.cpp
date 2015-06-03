@@ -35,6 +35,7 @@ DEFINE_double(efrac, 0, "evaluateFraction: when trainer is ValidatingTrainer wil
 DEFINE_bool(early, false, "earlyStop| wether use early stop for iterative validating trainers");
 DEFINE_int32(checkFreq, 1, "earlyStopCheckFrequency| do early stop check every checkFreq iterations");
 DEFINE_int32(stopRounds, 10, "earlyStopRounds| will stop after no performance gain in stopRounds, for 1 will stop once performance will decrease");
+DEFINE_bool(useBestStage, false, "If setting useBestStage will return to best stage state for model");
 
 DEFINE_string(m, "model", "modelFolder");
 DEFINE_bool(mf, true, " modelfile: Gen model file? (for TrainTest)");
@@ -112,6 +113,7 @@ namespace gezi {
 		_cmd.earlyStop = FLAGS_early;
 		_cmd.earlyStopCheckFrequency = FLAGS_checkFreq;
 		_cmd.earlyStopRounds = FLAGS_stopRounds;
+		_cmd.earlyStopUseBestStage = FLAGS_useBestStage;
 
 		if (FLAGS_rs == 0)
 		{
