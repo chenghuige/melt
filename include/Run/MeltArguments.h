@@ -18,6 +18,7 @@ namespace gezi {
 
 	struct MeltArguments
 	{
+		string fullArguments;
 		//c|Options are: Train, Test, CV (cross validation), TrainTest, FeatureSelection, CreateInstances
 		string command = "cv"; //c|
 		string commandInput = ""; //ci|

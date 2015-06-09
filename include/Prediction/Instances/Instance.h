@@ -131,6 +131,7 @@ public:
 	string name;
 	svec names;
 	svec attributes;
+	string groupKey; //for ranking instances or used in cv folder creationg as stratify key
 	string metaData;
 	bool sparse = false;
 	bool normalized = false;

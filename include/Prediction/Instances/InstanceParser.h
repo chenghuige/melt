@@ -85,6 +85,7 @@ namespace gezi {
 			string namesIdx = "";
 			//|the same as nameIdx, attrIdx will be filed to be ignored
 			string attrsIdx = "";
+			string groupsIdx = "";
 			bool hasHeader = false; //|header: no header by default
 			string sep = "tab"; //|or space or something like , ; etc. 
 			string ncsep = "|"; //|contact names filed like pid|title|content 4003|good title|good content
@@ -96,7 +97,7 @@ namespace gezi {
 			bool keepDense = false; //dense|
 			string inputFormat = "normal";//format|support melt/tlc format as normal, also support libSVM, may support weka/arff, malloc format later
 			int libsvmStartIndex = 1;
-
+			double sparsifyThre = 0.5;
 			string resultDir = "";//rd|
 		};
 
@@ -173,6 +174,12 @@ namespace gezi {
 			{
 				_namesIdx = GetIndexesFromInput(_args.namesIdx);
 				PVEC(_namesIdx);
+			}
+
+			if (!_args.groupsIdx.empty())
+			{
+				_groupsIdx = GetIndexesFromInput(_args.groupsIdx);
+				PVEC(_groupsIdx);
 			}
 		}
 
@@ -327,6 +334,11 @@ namespace gezi {
 				_columnTypes[idx] = ColumnType::Name;
 			}
 
+			for (int idx : _groupsIdx)
+			{
+				_groupKeysMark[idx] = true;
+			}
+
 			if (_args.weightIdx >= 0)
 			{
 				_columnTypes[_args.weightIdx] = ColumnType::Weight;
@@ -406,6 +418,10 @@ namespace gezi {
 					default:
 						break;
 					}
+					if (_groupKeysMark[i])
+					{
+						_instances.schema.groupKeys.push_back(_headerColums[i]);
+					}
 				}
 				_featureNum = _instances.FeatureNum();
 			}
@@ -436,6 +452,8 @@ namespace gezi {
 				}
 				_instances.schema.featureNames.SetNumFeatures(_featureNum); //@NOTICE
 			}
+			PVEC(_instances.schema.tagNames);
+			PVEC(_instances.schema.groupKeys);
 		}
 
 		void SetTextFeatureNames()
@@ -460,7 +478,9 @@ namespace gezi {
 				features.PrepareDense();
 
 				int featureIndex = 0;
-				int count = split_enumerate(line, _sep[0], [&, this](int index, int start, int len) {
+				svec groupKeys;
+				int count = _groupsIdx.empty() ?
+					split_enumerate(line, _sep[0], [&, this](int index, int start, int len) {
 					switch (_columnTypes[index])
 					{
 					case ColumnType::Feature:
@@ -482,7 +502,39 @@ namespace gezi {
 						break;
 					default:
 						break;
+					} }) :
+				split_enumerate(line, _sep[0], [&, this](int index, int start, int len) {
+					switch (_columnTypes[index])
+					{
+					case ColumnType::Feature:
+						double value; //必须单独一行。。 否则crosses initialization
+						value = _selectedArray[featureIndex++] ? atof(line.c_str() + start) : 0;
+						features.Add(value);
+						break;
+					case ColumnType::Name:
+						instance.names.push_back(line.substr(start, len));
+						if (_groupKeysMark[index])
+						{
+							groupKeys.push_back(instance.names.back());
+						}
+						break;
+					case ColumnType::Label:
+						instance.label = atof(line.c_str() + start);
+						break;
+					case ColumnType::Weight:
+						instance.weight = atof(line.c_str() + start);
+						break;
+					case ColumnType::Attribute:
+						instance.attributes.push_back(line.substr(start, len));
+						if (_groupKeysMark[index])
+						{
+							groupKeys.push_back(instance.attributes.back());
+						}
+						break;
+					default:
+						break;
 					} });
+				instance.groupKey = gezi::join(groupKeys, _args.ncsep);
 
 				if (count != _columnNum)
 				{
@@ -578,19 +630,38 @@ namespace gezi {
 				_instances[i - start] = make_shared<Instance>(_featureNum);
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
-
-				splits_int_double(line, _sep[0], ':',
-					[&, this](int index, Float value)
+				if (_groupsIdx.empty())
 				{
-					if (_selectedArray[index])
+					splits_int_double(line, _sep[0], ':',
+						[&, this](int index, Float value)
 					{
-						features.Add(index, value);
-					}
-				},
-					[&, this](int index, string item)
+						if (_selectedArray[index])
+						{
+							features.Add(index, value);
+						}
+					},
+						[&, this](int index, string item)
+					{
+						ParseSparseAttributes(instance, index, item);
+					});
+				}
+				else
 				{
-					ParseSparseAttributes(instance, index, item);
-				});
+					svec groupKeys;
+					splits_int_double(line, _sep[0], ':',
+						[&, this](int index, Float value)
+					{
+						if (_selectedArray[index])
+						{
+							features.Add(index, value);
+						}
+					},
+						[&, this](int index, string item)
+					{
+						ParseSparseAttributes(instance, index, item, groupKeys);
+					});
+					instance.groupKey = gezi::join(groupKeys, _args.ncsep);
+				}
 				//svec l = split(line, _sep);
 				//for (size_t j = 0; j < l.size(); j++)
 				//{
@@ -653,21 +724,44 @@ namespace gezi {
 				_instances[i - start] = make_shared<Instance>();
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
-				splits_int_double(line, _sep[0], ':', [&, this](int index, Float value) {
-					if (_selectedArray[index])
-					{
-						features.Add(index, value);
-					}
+				if (_groupsIdx.empty())
+				{
+					splits_int_double(line, _sep[0], ':', [&, this](int index, Float value) {
+						if (_selectedArray[index])
+						{
+							features.Add(index, value);
+						}
 
-					if (index > maxIndex)
-					{
-						//#pragma omp critical //锁的代价 是否值得并行@TODO
-						maxIndex = index;
-					}
-				},
-					[&, this](int index, string item) {
-					ParseSparseAttributes(instance, index, item);
-				});
+						if (index > maxIndex)
+						{
+							//#pragma omp critical //锁的代价 是否值得并行@TODO
+							maxIndex = index;
+						}
+					},
+						[&, this](int index, string item) {
+						ParseSparseAttributes(instance, index, item);
+					});
+				}
+				else
+				{
+					svec groupKeys;
+					splits_int_double(line, _sep[0], ':', [&, this](int index, Float value) {
+						if (_selectedArray[index])
+						{
+							features.Add(index, value);
+						}
+
+						if (index > maxIndex)
+						{
+							//#pragma omp critical //锁的代价 是否值得并行@TODO
+							maxIndex = index;
+						}
+					},
+						[&, this](int index, string item) {
+						ParseSparseAttributes(instance, index, item, groupKeys);
+					});
+					instance.groupKey = gezi::join(groupKeys, _args.ncsep);
+				}
 				//				svec l = split(line, _sep);
 				//
 				//				for (size_t j = 0; j < l.size(); j++)
@@ -793,6 +887,7 @@ namespace gezi {
 				LOG(FATAL) << "The header must at least has label and one feature";
 			}
 			_columnTypes.resize(_columnNum, ColumnType::Feature);
+			_groupKeysMark.resize(_columnNum, false);
 			InitColumnTypes(lines);
 
 			//VLOG(2) << format("InitColumnTypes time: {}", timer.elapsed_ms());
@@ -853,6 +948,35 @@ namespace gezi {
 		}
 
 		//处理广义的属性数据
+		void ParseSparseAttributes(Instance& instance, int index, string item, svec& groupKeys)
+		{
+			switch (_columnTypes[index])
+			{
+			case ColumnType::Name:
+				instance.names.push_back(item);
+				break;
+			case ColumnType::Label:
+				instance.label = DOUBLE(item);
+				if (instance.label == -1)
+				{
+					instance.label = 0;
+				}
+				break;
+			case ColumnType::Weight:
+				instance.weight = DOUBLE(item);
+				break;
+			case ColumnType::Attribute:
+				instance.attributes.push_back(item);
+				break;
+			default:
+				break;
+			}
+			if (_groupKeysMark[index])
+			{
+				groupKeys.push_back(item);
+			}
+		}
+
 		void ParseSparseAttributes(Instance& instance, int index, string item)
 		{
 			switch (_columnTypes[index])
@@ -893,21 +1017,42 @@ namespace gezi {
 				_instances[i - start] = make_shared<Instance>(_featureNum);
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;;
+				if (_groupsIdx.empty())
+				{
+					splits_int_double(line, sep, ':', [&, this](int index, Float value) {
+						if (_selectedArray[index - _args.libsvmStartIndex])
+						{
+							features.Add(index - _args.libsvmStartIndex, value);
+						}
 
-				splits_int_double(line, sep, ':', [&, this](int index, Float value) {
-					if (_selectedArray[index - _args.libsvmStartIndex])
-					{
-						features.Add(index - _args.libsvmStartIndex, value);
-					}
+						if (index > maxIndex)
+						{
+							maxIndex = index;
+						}
+					},
+						[&, this](int index, string item) {
+						ParseSparseAttributes(instance, index, item);
+					});
+				}
+				else
+				{
+					svec groupKeys;
+					splits_int_double(line, sep, ':', [&, this](int index, Float value) {
+						if (_selectedArray[index - _args.libsvmStartIndex])
+						{
+							features.Add(index - _args.libsvmStartIndex, value);
+						}
 
-					if (index > maxIndex)
-					{
-						maxIndex = index;
-					}
-				},
-					[&, this](int index, string item) {
-					ParseSparseAttributes(instance, index, item);
-				});
+						if (index > maxIndex)
+						{
+							maxIndex = index;
+						}
+					},
+						[&, this](int index, string item) {
+						ParseSparseAttributes(instance, index, item, groupKeys);
+					});
+					instance.groupKey = gezi::join(groupKeys, _args.ncsep);
+				}
 				//				svec l = split(line, "\t "); //libsvm 是用空格或者tab都有可能
 				//				for (size_t j = 0; j < l.size(); j++)
 				//				{
@@ -963,22 +1108,43 @@ namespace gezi {
 				_instances[i - start] = make_shared<Instance>();
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
-
-				splits_string_double(line, _sep[0], ':', [&, this](string key, Float value) {
-					int index;
+				if (_groupsIdx.empty())
+				{
+					splits_string_double(line, _sep[0], ':', [&, this](string key, Float value) {
+						int index;
 #pragma  omp critical
-					{ //输入需要保证没有重复的key
-						index = GetIdentifer().add(key);
-					}
-					if (_selectedArray[index])
-					{
-						features.Add(index, value);
-					}
-				},
-					[&, this](int index, string item) {
-					ParseSparseAttributes(instance, index, item);
-				});
-
+						{ //输入需要保证没有重复的key
+							index = GetIdentifer().add(key);
+						}
+						if (_selectedArray[index])
+						{
+							features.Add(index, value);
+						}
+					},
+						[&, this](int index, string item) {
+						ParseSparseAttributes(instance, index, item);
+					});
+				} 
+				else
+				{
+					svec groupKeys;
+					splits_string_double(line, _sep[0], ':', [&, this](string key, Float value) {
+						int index;
+#pragma  omp critical
+						{ //输入需要保证没有重复的key
+							index = GetIdentifer().add(key);
+						}
+						if (_selectedArray[index])
+						{
+							features.Add(index, value);
+						}
+					},
+						[&, this](int index, string item) {
+						ParseSparseAttributes(instance, index, item, groupKeys);
+					});
+					instance.groupKey = gezi::join(groupKeys, _args.ncsep);
+				}
+			
 				//				svec l = split(line, _sep);
 				//
 				//				for (size_t j = 0; j < l.size(); j++)
@@ -1048,18 +1214,35 @@ namespace gezi {
 				_instances[i - start] = make_shared<Instance>(_featureNum);
 				Instance& instance = *_instances[i - start];
 				Vector& features = instance.features;
-
-				splits_string_double(line, _sep[0], ':', [&, this](string key, Float value) {
-					int index = GetIdentifer().id(key);
-					if (index != Identifer::null_id() && _selectedArray[index])
-					{
-						features.Add(index, value);
-					}
-				},
-					[&, this](int index, string item) {
-					ParseSparseAttributes(instance, index, item);
-				});
-
+				if (_groupsIdx.empty())
+				{
+					splits_string_double(line, _sep[0], ':', [&, this](string key, Float value) {
+						int index = GetIdentifer().id(key);
+						if (index != Identifer::null_id() && _selectedArray[index])
+						{
+							features.Add(index, value);
+						}
+					},
+						[&, this](int index, string item) {
+						ParseSparseAttributes(instance, index, item);
+					});
+				} 
+				else
+				{
+					svec groupKeys;
+					splits_string_double(line, _sep[0], ':', [&, this](string key, Float value) {
+						int index = GetIdentifer().id(key);
+						if (index != Identifer::null_id() && _selectedArray[index])
+						{
+							features.Add(index, value);
+						}
+					},
+						[&, this](int index, string item) {
+						ParseSparseAttributes(instance, index, item, groupKeys);
+					});
+					instance.groupKey = gezi::join(groupKeys, _args.ncsep);
+				}
+			
 				//svec l = split(line, _sep);
 				//for (size_t j = 0; j < l.size(); j++)
 				//{
@@ -1240,7 +1423,7 @@ namespace gezi {
 					}
 					else
 					{
-						features.Sparsify(0.5);
+						features.Sparsify(_args.sparsifyThre);
 					}
 				}
 				else
@@ -1251,7 +1434,7 @@ namespace gezi {
 					}
 					else
 					{
-						features.Densify(0.5);
+						features.Densify(_args.sparsifyThre);
 					}
 				}
 			}
@@ -1270,6 +1453,7 @@ namespace gezi {
 
 		BitArray _selectedArray;
 		vector<ColumnType> _columnTypes;
+		vector<bool> _groupKeysMark;
 		int _columnNum = 0;
 		int _labelIdx = -1;
 
@@ -1278,6 +1462,7 @@ namespace gezi {
 		string _sep;
 		ivec _namesIdx;
 		ivec _attributesIdx;
+		ivec _groupsIdx;
 		string _format;
 	};
 

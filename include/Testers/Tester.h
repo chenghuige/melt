@@ -126,12 +126,23 @@ namespace gezi {
 		void ProcessInstances(Instances instances, PredictorPtr predictor)
 		{
 			int64 idx = 0;
-			for (InstancePtr instance : instances)
+			//这个地方用omp反而更慢了,如果predictor内部用了openmp的话
+			vector<Float> predictions(instances.size(), 0);
+			vector<Float> probabilities(instances.size(), std::numeric_limits<double>::quiet_NaN());
+#pragma omp parallel for
+			for (size_t i = 0; i < instances.size(); i++)
 			{
+				probabilities[i] = predictor->Predict(instances[i], predictions[i]);
+			}
+			for (size_t i = 0; i < instances.size(); i++)
+			{
+				auto instance = instances[i];
 				Float label = instance->label;
 				Float weight = instance->weight;
-				Float prediction = 0, probability = std::numeric_limits<double>::quiet_NaN();
-				probability = predictor->Predict(instance, prediction);
+				//Float prediction = 0, probability = std::numeric_limits<double>::quiet_NaN();
+				//probability = predictor->Predict(instance, prediction);
+				Float prediction = predictions[i];
+				Float probability = probabilities[i];
 				dvec perInstanceOutputs = gezi::join_vec<double>(datasetMetrics, [&](const DatasetMetricsPtr& datasetMetric) { return datasetMetric->ProcessInstance(label, prediction, probability, weight); });
 				if (ofs.is_open())
 				{

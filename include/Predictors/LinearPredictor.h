@@ -134,5 +134,5 @@ namespace gezi {
 	};
 
 }  //----end of namespace gezi
-
+CEREAL_REGISTER_TYPE(gezi::LinearPredictor);
 #endif  //----end of PREDICTORS__LINEAR_PREDICTOR_H_

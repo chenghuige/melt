@@ -20,19 +20,19 @@ namespace gezi {
 	class CVFoldCreator
 	{
 	public:
-		static ivec CreateFoldIndices(const ListInstances& data, const MeltArguments& cmd,
+		static ivec CreateFoldIndices(const Instances& data, const MeltArguments& cmd,
 			const RandomEngine& rng)
 		{
 			if (cmd.foldsSequential)
 				return CreateFoldIndicesSequential(data, cmd.numFolds, rng);
 			if (cmd.stratify)
-				return CreateFoldIndicesStratified(data, cmd.numFolds);
+				return CreateFoldIndicesStratified(data, cmd.numFolds, rng);
 			return CreateFoldIndicesBalanced(data, cmd.numFolds);
 		}
 
 		//对每一个instance给一个分组编号，确保每一组的正反比例一致 most commonly used
 		//和TLC保持一致
-		static ivec CreateFoldIndicesBalanced(const ListInstances& data, int numFolds)
+		static ivec CreateFoldIndicesBalanced(const Instances& data, int numFolds)
 		{
 			ivec foldIndices(data.size(), -1);
 			int numPos = 0, numNeg = 0, numUnlabeled = 0;
@@ -97,9 +97,9 @@ namespace gezi {
 		//@TODO why  //not test
 		/// assign each instance to a fold sequentially.
 		/// To "even out" the remaninder, randomly assign an extra instance to every fold
-		static ivec CreateFoldIndicesSequential(ListInstances data, int numFolds, const RandomEngine& rng)
+		static ivec CreateFoldIndicesSequential(const Instances& data, int numFolds, const RandomEngine& rng)
 		{
-			LOG(INFO) << "Create " << numFolds << " folds by sequential assignment";
+			VLOG(1) << "Create " << numFolds << " folds by sequential assignment";
 
 			ivec foldIndices(data.size(), -1);
 			ivec foldCnts(numFolds, 0);
@@ -141,10 +141,45 @@ namespace gezi {
 		//this is *EXTREMELY* important if your data has multiple examples for same “item” – e.g., 
 		//multiple keywords for the same query.  It is then critical that all items for the query 
 		//are in the same fold (otherwise the learner “cheats” by seeing examples for same query).  
-		static ivec CreateFoldIndicesStratified(const ListInstances& data, int numFolds)
+		static ivec CreateFoldIndicesStratified(const Instances& data, int numFolds, const RandomEngine& rng)
 		{
-			ivec result;
-			return result;
+			VLOG(1) << "Creating " << numFolds << " folds using stratified sampling by " << gezi::join(data.schema.groupKeys, "|");
+			ivec foldIndices(data.size(), -1);
+			ivec cnt(numFolds, 0);
+
+			RandomInt rand(numFolds);
+			unordered_map<string, int> nameFoldDict;
+			int idx = 0;
+			for(const auto& instance : data)
+			{
+				string key = instance->groupKey;
+				int foldIdx;
+				auto iter = nameFoldDict.find(key);
+				if (iter == nameFoldDict.end())
+				{
+					foldIdx = rand.Next();
+					nameFoldDict[key] = foldIdx;
+				}
+				else
+				{
+					foldIdx = iter->second;
+				}
+				foldIndices[idx++] = foldIdx;
+				cnt[foldIdx]++;
+			}
+
+			Float avgInstancesPerFold = (Float)data.size() / numFolds;
+			for (int i = 0; i < numFolds; i++)
+			{
+				VLOG(0) << "\tFold " << i << " has " << cnt[i] << "  instances";
+				if (std::abs(cnt[i] - avgInstancesPerFold) > 0.1 * avgInstancesPerFold)
+				{
+					LOG(WARNING) << "stratified sampling results in unabalanced folds";
+				}
+				CHECK_GT(cnt[i], 0);
+			}
+
+			return foldIndices;
 		}
 
 		static void CreateFolds(const Instances& data, Float trainProportion,

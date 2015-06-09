@@ -132,6 +132,16 @@ namespace gezi {
 			_isStreaming = true;
 		}
 
+		virtual unsigned GetRandSeed() const
+		{
+			return _randSeed;
+		}
+
+		void SetRandSeed(unsigned randSeed)
+		{
+			_randSeed = randSeed;
+		}
+
 	protected:
 		virtual void Init()
 		{
@@ -156,6 +166,7 @@ namespace gezi {
 		HeaderSchema _trainingSchema;
 
 		bool _isStreaming = false;
+		unsigned _randSeed = 0;
 		RandomPtr _rand = nullptr;
 		RandomRangePtr _randRange = nullptr;
 		NormalizerPtr _normalizer = nullptr;
@@ -271,9 +282,14 @@ namespace gezi {
 			return Train(instances, _validationSets, _evaluators);
 		}
 
-		int BestIteration()
+		int BestIteration() const
 		{
 			return _bestCheckIteration * _earlyStopCheckFrequency;
+		}
+
+		bool Validating() const
+		{
+			return _validating;
 		}
 
 	protected:
@@ -284,6 +300,7 @@ namespace gezi {
 		{
 			if (_validating)
 			{
+				_round = round;
 				bool earlyStopCheck = _earlyStop && round % _earlyStopCheckFrequency == 0;
 				bool evaluateCheck = round % _evaluateFrequency == 0 || forceEvaluate;
 				if (earlyStopCheck)
@@ -586,6 +603,8 @@ namespace gezi {
 		int _roundsAfterBestIteration = 0;
 		int _checkCounts = 0;
 		Float _bestScore = 0;
+
+		int _round;
 	};
 
 }  //----end of namespace gezi

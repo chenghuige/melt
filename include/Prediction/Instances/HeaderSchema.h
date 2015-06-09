@@ -112,7 +112,7 @@ namespace gezi
 		vector<ColumnType> cloumnTypes; //for writting instances
 		bool hasHeader = false;
 		bool hasWeights = false;
-		string groupKey;
+		svec groupKeys; //for ranking instances or used in cv folder creationg as stratify key
 		FileFormat fileFormat = FileFormat::Unknown;
 		string instanceNameHeaderString = "Instance";
 		bool normalized = false;

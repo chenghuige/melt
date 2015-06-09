@@ -500,5 +500,5 @@ namespace gezi {
 		}
 	};
 }  //----end of namespace gezi
-
+CEREAL_REGISTER_TYPE(gezi::FastRankPredictor);
 #endif  //----end of PREDICTORS__FAST_RANK_PREDICTOR_H_

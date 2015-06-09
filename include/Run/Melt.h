@@ -415,7 +415,7 @@ namespace gezi {
 			predictions.resize(begin + instances.size());
 			probabilities.resize(begin + instances.size());
 			evaluateInstances.resize(begin + instances.size());
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for 
 			for (size_t i = 0; i < instances.size(); i++)
 			{
 				probabilities[begin + i] = predictor->Predict(instances[i], predictions[begin + i]);
@@ -426,7 +426,7 @@ namespace gezi {
 		vector<Float> Evaluate(const Instances& instances, PredictorPtr predictor, vector<EvaluatorPtr>& evaluators)
 		{
 			vector<Float> predictions(instances.size(), 0), probabilities(instances.size(), 0);
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for 
 			for (size_t i = 0; i < instances.size(); i++)
 			{
 				probabilities[i] = predictor->Predict(instances[i], predictions[i]);
@@ -499,7 +499,8 @@ namespace gezi {
 			}
 
 			auto predictor = trainer->CreatePredictor();
-			predictor->SetParam(trainer->GetParam());
+			//predictor->SetParam(trainer->GetParam());
+			predictor->SetParam(_cmd.fullArguments);
 			return predictor;
 		}
 
