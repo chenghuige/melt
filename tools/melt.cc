@@ -47,9 +47,11 @@ int main(int argc, char *argv[])
 	google::InstallFailureSignalHandler();
 	google::SetVersionString(get_version());
 
+	vector<string> args;
 	for (int i = 0; i < argc; i++)
 	{
 		string arg = argv[i];
+		args.push_back(arg);
 		if (arg == "-help" || arg == "--help" || arg == "-h" || arg == "--h")
 		{
 			ShowMeltHelp();
@@ -65,8 +67,6 @@ int main(int argc, char *argv[])
 		FLAGS_vl = -1;
 	if (FLAGS_v == 0)
 		FLAGS_v = FLAGS_vl;
-
-
 
 	Melt melt;
 	set<string> ignores = { "help", "helptrainers", "help_trainers", "helptrainer", "help_trainer", "hts", "ht" };
@@ -85,6 +85,10 @@ int main(int argc, char *argv[])
 		}
 		melt.Cmd().datafile = argv[s];
 	}
+	//如果非空说明FLAGS_rs初始输入是0，否则非0 不需要记录-rs    hack！
+	melt.Cmd().fullArguments = melt.Cmd().fullArguments.empty() ? 
+		format("{} -rs {}", gezi::join(args), melt.Cmd().randSeed) :
+		gezi::join(args);
 	melt.RunExperiments();
 	return 0;
 }
