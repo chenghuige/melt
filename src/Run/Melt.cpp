@@ -118,6 +118,7 @@ namespace gezi {
 		if (FLAGS_rs == 0)
 		{
 			FLAGS_rs = random_seed();
+			_cmd.fullArguments = " ";
 		}
 		_cmd.randSeed = FLAGS_rs;
 
