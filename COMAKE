@@ -7,14 +7,12 @@ TOOLCHAIN_ROOT='../../../../../ps/se/toolchain'
 RELATIVE_PATH='./'
 
 LEVEL=3
-GCC_LOCAL=2
+GCC_LOCAL=1
 print 'GCC_LOCAL: %d'%GCC_LOCAL 
 #是否使用高版本gcc 可以直接使用生成的bin文件 如./main 
 GCC_HIGH=1
 print 'GCC_HIGH: %d'%GCC_HIGH
-GCC_DYNAMIC=0
-if GCC_LOCAL==1:
-	GCC_DYNAMIC=1
+GCC_DYNAMIC=1
 print 'GCC_DYNAMIC: %d'%GCC_DYNAMIC
 GCC_VERSION='3.4.5'
 if  GCC_HIGH == 1: 
@@ -78,17 +76,13 @@ UBRPCFLAGS('--compack')
 GCC_LDFLAGS=''
 if GCC_HIGH  == 1: 
 	if GCC_DYNAMIC  == 1:
-		GCC_LDFLAGS += ' -lgomp -rdynamic -Wl,-rpath=../../../../../../ps/se/toolchain/x86_64-unknown-linux-gnu-4.8.1-2.9-2.20-2.6.32/x86_64-unknown-linux-gnu/lib/'
-		GCC_LDFLAGS += ' -lgomp'
-		if GCC_LOCAL == 0:
-			GCC_LDFLAGS += ' -Wl,--dynamic-linker=./ld-linux-x86-64.so.2 -L%s'%(LIBS_DIR)
-		TARGET('.copy-so', ShellCommands('ln -s %s/ld-linux-x86-64.so.2 ld-linux-x86-64.so.2'%(LIBS_DIR)), 
-					CleanCommands('rm -rf ld-linux-x86-64.so.2')) 
+                GCC_LDFLAGS += ' -lgomp'
 	else: 
 		GCC_LDFLAGS  += ' -static-libgcc -static-libstdc++'
 
 #链接参数.
-LDFLAGS('-lpthread -lcrypto -lrt -lssl -lldap -lcurl -ldl -rdynamic', GCC_LDFLAGS)
+#LDFLAGS('-lpthread -lcrypto -lrt -lssl -lldap -lcurl -ldl -rdynamic', GCC_LDFLAGS)
+LDFLAGS('-lpthread', GCC_LDFLAGS)
 
 #头文件路径.
 INCPATHS('./ ./include/ ./include/vowpalwabbit/ ./include/sofia/ ./include/blas/ ./include/liblinear/ ./include/libsvm/'.replace('./', RELATIVE_PATH))
@@ -132,8 +126,8 @@ srcs = GLOB('./src/libsvm/*.cpp')
 StaticLibrary('svm',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 
 #LIBS('')
-srcs = GLOB('./src/Wrapper/*.cpp ./src/Prediction/Instances/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/Predictors/*.cpp')
+srcs = GLOB('./src/Wrapper/*.cpp ./src/Prediction/Instances/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/Predictors/*.cpp ./src/MLCore/*.cpp')
 StaticLibrary('melt',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 
 srcs = GLOB('./src/Simple/*.cpp')
-StaticLibrary('melt_predict',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
+#StaticLibrary('melt_predict',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
