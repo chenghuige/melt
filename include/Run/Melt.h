@@ -571,6 +571,10 @@ namespace gezi {
 			if (_cmd.selfTest)
 			{
 				VLOG(0) << "Test train file itself";
+				if (instances.empty())
+				{//gbdt train会转instances到dataset并且清空instances减少内存占用
+					instances = create_instances(_cmd.datafile);
+				}
 				RunTest(predictor, instances);
 			}
 			//如果是训练模式肯定save模型,如果是TrainTest模式为了速度默认是不save模型的可以通过--mf=1开启

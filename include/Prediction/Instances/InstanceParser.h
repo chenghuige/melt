@@ -266,10 +266,10 @@ namespace gezi {
 						count++;
 						if (count > 100)
 						{
-							LOG(INFO) << "Total incls features is " << incls.size() << " only print top 100";
+							VLOG(0) << "Total incls features is " << incls.size() << " only print top 100";
 							break;
 						}
-						LOG(INFO) << "Including feature: " << _instances.schema.featureNames[idx];
+						VLOG(0) << "Including feature: " << _instances.schema.featureNames[idx];
 						filterArray[idx] = true;
 					}
 				}
@@ -295,10 +295,10 @@ namespace gezi {
 						count++;
 						if (count > 100)
 						{
-							LOG(INFO) << "Total excls features is " << excls.size() << " only print top 100";
+							VLOG(0) << "Total excls features is " << excls.size() << " only print top 100";
 							break;
 						}
-						LOG(INFO) << "Excluding feature: " << _instances.schema.featureNames[idx];
+						VLOG(0) << "Excluding feature: " << _instances.schema.featureNames[idx];
 						filterArray[idx] = false;
 					}
 				}

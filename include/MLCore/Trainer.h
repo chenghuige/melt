@@ -161,7 +161,6 @@ namespace gezi {
 		{
 
 		}
-
 	protected:
 		HeaderSchema _trainingSchema;
 
