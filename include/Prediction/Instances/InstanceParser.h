@@ -30,6 +30,8 @@
 #include "Identifer.h"
 #include "Prediction/Instances/Instances.h"
 
+#include "rabit_util.h"
+
 namespace gezi {
 
 	//@TODO 修改名字或者增加namespace 易冲突
@@ -806,6 +808,7 @@ namespace gezi {
 				//				}
 			}
 			_featureNum = maxIndex + 1;
+			Rabit::Allreduce<op::Max>(_featureNum);
 			_instances.schema.featureNames.SetNumFeatures(_featureNum);
 		}
 
@@ -1080,6 +1083,7 @@ namespace gezi {
 				//				}
 			}
 			_featureNum = _args.libsvmStartIndex == 1 ? maxIndex : maxIndex + 1;
+			Rabit::Allreduce<op::Max>(_featureNum);
 			_instances.schema.featureNames.SetNumFeatures(_featureNum);
 		}
 

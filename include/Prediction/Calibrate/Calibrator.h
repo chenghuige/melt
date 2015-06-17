@@ -165,7 +165,7 @@ namespace gezi {
 		void Train(const vector<Float>& predictions, const Instances& instances)
 		{
 			ProgressBar pb(instances.Count(), Name() + " calibrating");
-                        int i = 0;
+			int i = 0;
 			for (InstancePtr instance : instances)
 			{
 				++pb;
@@ -179,7 +179,7 @@ namespace gezi {
 		{
 			size_t dealCount = std::min((size_t)maxCount, instances.Count());
 			ProgressBar pb(dealCount, Name() + " calibrating");
-			for (InstancePtr instance : instances) 
+			for (InstancePtr instance : instances)
 			{
 				++pb;
 				if (pb.counter() >= dealCount)

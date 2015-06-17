@@ -1069,7 +1069,7 @@ namespace gezi {
 			string outfile = _cmd.outfile.empty() ? GetOutputFileName(_cmd.datafile, suffix) : _cmd.outfile;
 			Pval(outfile);
 
-			if (_cmd.num > 0 && _cmd.num < (int64)instances.Count())
+			if (_cmd.num > 0 && _cmd.num < instances.Count())
 			{
 				if (!_cmd.foldsSequential)
 				{
@@ -1112,7 +1112,7 @@ namespace gezi {
 				}
 				else
 				{ //ÍêÈ«ÒÀ¿¿Ëæ»ú
-					for (int i = 0; i < _cmd.num; i++)
+					for (size_t i = 0; i < _cmd.num; i++)
 					{
 						newInstances.push_back(instances[i]);
 					}
