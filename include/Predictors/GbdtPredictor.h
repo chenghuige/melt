@@ -1,25 +1,25 @@
 /**
- *  ==============================================================================
- *
- *          \file   Predictors/FastRankPredictor.h
- *
- *        \author   chenghuige
- *
- *          \date   2014-04-13 18:24:51.525674
- *
- *  \Description:
- *
- *  ==============================================================================
- */
+*  ==============================================================================
+*
+*          \file   Predictors/GbdtPredictor.h
+*
+*        \author   chenghuige
+*
+*          \date   2014-04-13 18:24:51.525674
+*
+*  \Description:
+*
+*  ==============================================================================
+*/
 
-#ifndef PREDICTORS__FAST_RANK_PREDICTOR_H_
-#define PREDICTORS__FAST_RANK_PREDICTOR_H_
+#ifndef PREDICTORS__GBDT_PREDICTOR_H_
+#define PREDICTORS__GBDT_PREDICTOR_H_
 #include "Identifer.h"
 #include "MLCore/Predictor.h"
-#include "Trainers/FastRank/OnlineRegressionTree.h"
+#include "Trainers/Gbdt/OnlineRegressionTree.h"
 namespace gezi {
 
-	class FastRankPredictor : public Predictor
+	class GbdtPredictor : public Predictor
 	{
 	public:
 		virtual string Name()
@@ -27,40 +27,40 @@ namespace gezi {
 			return "gbdt";
 		}
 
-		FastRankPredictor() = default;
+		GbdtPredictor() = default;
 
-		FastRankPredictor(vector<OnlineRegressionTree>& trees, CalibratorPtr calibrator,
+		GbdtPredictor(vector<OnlineRegressionTree>& trees, CalibratorPtr calibrator,
 			svec&& featureNames)
 			:Predictor(calibrator, featureNames)
 		{
 			_trees.swap(trees);
 		}
 
-		FastRankPredictor(vector<OnlineRegressionTree>& trees, svec&& featureNames)
+		GbdtPredictor(vector<OnlineRegressionTree>& trees, svec&& featureNames)
 			:Predictor(featureNames)
 		{
 			_trees.swap(trees);
 		}
 
-		FastRankPredictor(vector<OnlineRegressionTree>& trees, CalibratorPtr calibrator,
+		GbdtPredictor(vector<OnlineRegressionTree>& trees, CalibratorPtr calibrator,
 			const FeatureNamesVector& featureNames)
 			:Predictor(calibrator, featureNames)
 		{
 			_trees.swap(trees);
 		}
 
-		FastRankPredictor(vector<OnlineRegressionTree>& trees, const FeatureNamesVector& featureNames)
+		GbdtPredictor(vector<OnlineRegressionTree>& trees, const FeatureNamesVector& featureNames)
 			:Predictor(featureNames)
 		{
 			_trees.swap(trees);
 		}
 
-		FastRankPredictor(vector<OnlineRegressionTree>& trees)
+		GbdtPredictor(vector<OnlineRegressionTree>& trees)
 		{
 			_trees.swap(trees);
 		}
 
-		FastRankPredictor(string modelPath)
+		GbdtPredictor(string modelPath)
 		{
 			Load(modelPath);
 		}
@@ -337,7 +337,7 @@ namespace gezi {
 		void serialize(Archive &ar, const unsigned int version)
 		{
 			/*	ar & boost::serialization::base_object<Predictor>(*this);
-				ar & _trees;*/
+			ar & _trees;*/
 			ar & CEREAL_BASE_OBJECT_NVP(Predictor);
 			ar & CEREAL_NVP(_trees);
 		}
@@ -484,10 +484,10 @@ namespace gezi {
 		string _textModelPath;
 	};
 
-	class FastRankRegressionPredictor : public FastRankPredictor
+	class GbdtRegressionPredictor : public GbdtPredictor
 	{
 	public:
-		using FastRankPredictor::FastRankPredictor;
+		using GbdtPredictor::GbdtPredictor;
 
 		virtual string Name() override
 		{
@@ -500,5 +500,5 @@ namespace gezi {
 		}
 	};
 }  //----end of namespace gezi
-CEREAL_REGISTER_TYPE(gezi::FastRankPredictor);
-#endif  //----end of PREDICTORS__FAST_RANK_PREDICTOR_H_
+CEREAL_REGISTER_TYPE(gezi::GbdtPredictor);
+#endif  //----end of PREDICTORS__GBDT_PREDICTOR_H_
