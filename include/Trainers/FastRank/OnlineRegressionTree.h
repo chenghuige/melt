@@ -192,6 +192,16 @@ namespace gezi {
 			ar & GEZI_SERIALIZATION_NVP(_weight);
 		}
 #ifdef _DEBUG
+		struct DebugNode
+		{
+			int id;
+			svec paths;
+			double score;
+			bool operator < (const DebugNode& other) const
+			{
+				return score > other.score;
+			}
+		};
 		DebugNode _debugNode;
 #endif // _DEBUG
 	public:
