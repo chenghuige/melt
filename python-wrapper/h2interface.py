@@ -123,8 +123,9 @@ def count_pair_reverse(line, pl, pr, nl, nr):
 
 
 
-#转化核心函数,当前比较乱,代码重复,一个循环中代码太长了 TODO 
+
 #基本实现就是按照栈处理名称,区分是否class域的函数,忽略.h中已经实现函数{}内部的内容
+#@TODO 类构造函数特殊处理 结果按照函数处理 去掉所有实现和赋值
 def h2interface(input_file, output_file = ''):
     """
         kernal function given a .h file
@@ -136,7 +137,7 @@ def h2interface(input_file, output_file = ''):
     global abstract_class_out
     global abstract_classes
 
-    #----核心的函数匹配模式
+    #----核心的函数匹配模式，不包括类构造函数
     pattern = re.compile(r"""(^[\s]*)             #leading withe space,we will find and delete after
     		                 ([a-zA-Z~_]            # void int likely the first caracter v or i...
     						.* 
