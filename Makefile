@@ -154,7 +154,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=5afb2a0761c7f002a328f3849bb76973  COMAKE
+COMAKE_MD5=0e6ac152161909c4e5e9578b331b89b4  COMAKE
 
 
 .PHONY:all
@@ -256,8 +256,6 @@ clean:ccpclean
 	rm -rf src/liblinear/linear_tron.o
 	rm -rf src/libsvm/svm_svm.o
 	rm -rf src/Wrapper/melt_PredictorFactory.o
-	rm -rf src/Prediction/Instances/melt_InstanceParser.o
-	rm -rf src/Run/melt_Melt.o
 	rm -rf src/Testers/melt_ClassifierTester.o
 	rm -rf src/Prediction/Normalization/melt_BinNormalizer.o
 	rm -rf src/Predictors/melt_LibSVMPredictor.o
@@ -432,8 +430,6 @@ libsvm.a:src/libsvm/svm_svm.o
 	cp -f --link libsvm.a ./output/lib
 
 libmelt.a:src/Wrapper/melt_PredictorFactory.o \
-  src/Prediction/Instances/melt_InstanceParser.o \
-  src/Run/melt_Melt.o \
   src/Testers/melt_ClassifierTester.o \
   src/Prediction/Normalization/melt_BinNormalizer.o \
   src/Predictors/melt_LibSVMPredictor.o \
@@ -441,8 +437,6 @@ libmelt.a:src/Wrapper/melt_PredictorFactory.o \
   src/MLCore/melt_PredictoryFactory.o
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibmelt.a[0m']"
 	ar crs libmelt.a src/Wrapper/melt_PredictorFactory.o \
-  src/Prediction/Instances/melt_InstanceParser.o \
-  src/Run/melt_Melt.o \
   src/Testers/melt_ClassifierTester.o \
   src/Prediction/Normalization/melt_BinNormalizer.o \
   src/Predictors/melt_LibSVMPredictor.o \
@@ -978,22 +972,6 @@ src/Wrapper/melt_PredictorFactory.o:src/Wrapper/PredictorFactory.cpp
   -DVERSION=\"1.9.8.7\" \
   -O3 \
   -DNDEBUG $(CXXFLAGS)  -o src/Wrapper/melt_PredictorFactory.o src/Wrapper/PredictorFactory.cpp
-
-src/Prediction/Instances/melt_InstanceParser.o:src/Prediction/Instances/InstanceParser.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Prediction/Instances/melt_InstanceParser.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/Prediction/Instances/melt_InstanceParser.o src/Prediction/Instances/InstanceParser.cpp
-
-src/Run/melt_Melt.o:src/Run/Melt.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Run/melt_Melt.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/Run/melt_Melt.o src/Run/Melt.cpp
 
 src/Testers/melt_ClassifierTester.o:src/Testers/ClassifierTester.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Testers/melt_ClassifierTester.o[0m']"
