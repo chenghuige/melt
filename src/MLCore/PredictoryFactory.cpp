@@ -12,7 +12,7 @@
  */
 #include "MLCore/PredictorFactory.h"
 #include "Predictors/LinearPredictor.h"
-#include "Predictors/FastRankPredictor.h"
+#include "Predictors/GbdtPredictor.h"
 #ifndef MELT_NO_THIRD_PREDICTOR
 #include "Predictors/LibSVMPredictor.h"
 #include "Predictors/VWPredictor.h"
@@ -25,7 +25,7 @@ namespace gezi{
 			//-------------- BinaryClassification
 			Unknown,
 			Linear,
-			FastRankBinaryClassification,
+			GbdtBinaryClassification,
 			RandomForest,
 			DecisionTree,
 			KernalSVM,
@@ -34,7 +34,7 @@ namespace gezi{
 			LibSVM,
 			Ensemble,
 			//------------- Regression
-			FastRankRegression,
+			GbdtRegression,
 		};
 
 		const  map<string, PredictorType> _predictorTypes = {
@@ -43,9 +43,9 @@ namespace gezi{
 			{ "linearsvm", PredictorType::Linear },
 			{ "sofia", PredictorType::Linear },
 			{ "liblinear", PredictorType::Linear },
-			{ "fastrank", PredictorType::FastRankBinaryClassification },
-			{ "fr", PredictorType::FastRankBinaryClassification },
-			{ "gbdt", PredictorType::FastRankBinaryClassification },
+			{ "fastrank", PredictorType::GbdtBinaryClassification },
+			{ "fr", PredictorType::GbdtBinaryClassification },
+			{ "gbdt", PredictorType::GbdtBinaryClassification },
 			{ "randomforest", PredictorType::RandomForest },
 			{ "rf", PredictorType::RandomForest },
 			{ "decisiontree", PredictorType::DecisionTree },
@@ -57,10 +57,10 @@ namespace gezi{
 			{ "vw", PredictorType::VW },
 			{ "ensemble", PredictorType::Ensemble },
 			{ "libsvm", PredictorType::LibSVM },
-			{ "fastrankregression", PredictorType::FastRankRegression },
-			{ "gbdtregression", PredictorType::FastRankRegression },
-			{ "frr", PredictorType::FastRankRegression },
-			{ "gbrt", PredictorType::FastRankRegression },
+			{ "fastrankregression", PredictorType::GbdtRegression },
+			{ "gbdtregression", PredictorType::GbdtRegression },
+			{ "frr", PredictorType::GbdtRegression },
+			{ "gbrt", PredictorType::GbdtRegression },
 		};
 	} //------------- anoymous namespace
 	PredictorPtr PredictorFactory::CreatePredictor(string name)
@@ -73,8 +73,8 @@ namespace gezi{
 			//------ Binary Classification
 		case PredictorType::Linear:
 			return make_shared<LinearPredictor>();
-		case  PredictorType::FastRankBinaryClassification:
-			return make_shared<FastRankPredictor>();
+		case  PredictorType::GbdtBinaryClassification:
+			return make_shared<GbdtPredictor>();
 #ifndef MELT_NO_THIRD_PREDICTOR
 		case  PredictorType::LibSVM:
 			return make_shared<LibSVMPredictor>();
@@ -84,8 +84,8 @@ namespace gezi{
 		case PredictorType::Ensemble:
 			return make_shared<EnsemblePredictor>();
 			//---- Regression
-		case PredictorType::FastRankRegression:
-			return make_shared<FastRankRegressionPredictor>();
+		case PredictorType::GbdtRegression:
+			return make_shared<GbdtRegressionPredictor>();
 		default:
 			break;
 		}
