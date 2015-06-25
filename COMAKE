@@ -129,5 +129,3 @@ StaticLibrary('svm',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 srcs = GLOB('./src/Wrapper/*.cpp ./src/Prediction/Instances/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/Predictors/*.cpp ./src/MLCore/*.cpp')
 StaticLibrary('melt',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 
-srcs = GLOB('./src/Simple/*.cpp')
-#StaticLibrary('melt_predict',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
