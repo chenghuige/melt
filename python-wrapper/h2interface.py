@@ -52,17 +52,24 @@ def pyplusplus_hack(line, content):
         lines[i] = lines[i].replace('override', '')
         line = lines[i].strip().replace('inline', '').strip()
         l = line.split()
+        #non const static ref
         if len(l) > 1 and l[0] == 'static' and (l[1].endswith('&') or l[1].endswith('*')):
             need_comment = True
             break
+        #rvalue
         if line.find('&&') >= 0:
             need_comment = True 
             break 
+        #real virtual
         if line.replace(' ','').endswith(')=0'):
             full_class_name = '::'.join(stack_namespace) + '::' + '::'.join(stack_class) 
             if not full_class_name in abstract_classes:
                 abstract_class_out.write("%s\t%s\n"%(full_class_name, input_file))
                 abstract_classes.add(full_class_name)
+            need_comment = True
+            break 
+        #return iterator
+        if len(l) > 1 and (l[1] == 'begin()' or l[1] == 'end()' or l[1] == 'cbegin()' or l[1] == 'cend()'):
             need_comment = True
             break 
         if len(l) > 1 and (l[0].endswith('&') or l[0].endswith('*')):
