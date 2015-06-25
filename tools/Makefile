@@ -161,11 +161,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=1d82ea362a2dc227029c7798ab0fc05e  COMAKE
+COMAKE_MD5=13b8d115b3622914214f8f8ecda9bad6  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check calibrate predict fastrank_text2bin fastrank_predict fastrank2gcc3 bin_sampling melt melt.debug vw vw.debug 
+all:comake2_makefile_check calibrate predict fastrank_text2bin fastrank_predict fastrank2gcc3 gbdt_predict bin_sampling melt melt.debug vw vw.debug 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -195,6 +195,8 @@ clean:ccpclean
 	rm -rf ./output/bin/fastrank_predict
 	rm -rf fastrank2gcc3
 	rm -rf ./output/bin/fastrank2gcc3
+	rm -rf gbdt_predict
+	rm -rf ./output/bin/gbdt_predict
 	rm -rf bin_sampling
 	rm -rf ./output/bin/bin_sampling
 	rm -rf melt
@@ -210,12 +212,16 @@ clean:ccpclean
 	rm -rf fastrank_text2bin_fastrank_text2bin.o
 	rm -rf fastrank_predict_fastrank_predict.o
 	rm -rf fastrank2gcc3_fastrank2gcc3.o
+	rm -rf gbdt_predict_gbdt_predict.o
 	rm -rf bin_sampling_bin_sampling.o
 	rm -rf melt_melt.o
+	rm -rf ../src/Wrapper/melt_PredictorFactory.o
+	rm -rf ../src/Testers/melt_ClassifierTester.o
+	rm -rf ../src/Prediction/Normalization/melt_BinNormalizer.o
+	rm -rf ../src/Predictors/melt_LibSVMPredictor.o
+	rm -rf ../src/Predictors/melt_VWPredictor.o
 	rm -rf melt.debug_melt.o
 	rm -rf ../src/Wrapper/melt.debug_PredictorFactory.o
-	rm -rf ../src/Prediction/Instances/melt.debug_InstanceParser.o
-	rm -rf ../src/Run/melt.debug_Melt.o
 	rm -rf ../src/Testers/melt.debug_ClassifierTester.o
 	rm -rf ../src/Prediction/Normalization/melt.debug_BinNormalizer.o
 	rm -rf ../src/Predictors/melt.debug_LibSVMPredictor.o
@@ -274,8 +280,6 @@ clean:ccpclean
 	rm -rf ../src/vowpalwabbit/melt.debug_unique_sort.o
 	rm -rf vw_vw.o
 	rm -rf ../src/Wrapper/vw_PredictorFactory.o
-	rm -rf ../src/Prediction/Instances/vw_InstanceParser.o
-	rm -rf ../src/Run/vw_Melt.o
 	rm -rf ../src/Testers/vw_ClassifierTester.o
 	rm -rf ../src/Prediction/Normalization/vw_BinNormalizer.o
 	rm -rf ../src/Predictors/vw_LibSVMPredictor.o
@@ -460,7 +464,6 @@ calibrate:calibrate_calibrate.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -578,7 +581,6 @@ predict:predict_predict.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -696,7 +698,6 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -814,7 +815,6 @@ fastrank_predict:fastrank_predict_fastrank_predict.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -932,7 +932,6 @@ fastrank2gcc3:fastrank2gcc3_fastrank2gcc3.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -993,6 +992,123 @@ fastrank2gcc3:fastrank2gcc3_fastrank2gcc3.o \
 	mkdir -p ./output/bin
 	cp -f --link fastrank2gcc3 ./output/bin
 
+gbdt_predict:gbdt_predict_gbdt_predict.o \
+  ../libmelt.a \
+  ../libsofia.a \
+  ../libvw.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mgbdt_predict[0m']"
+	$(CXX) gbdt_predict_gbdt_predict.o -Xlinker "-(" ../libmelt.a \
+  ../libsofia.a \
+  ../libvw.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../com/btest/gtest/output/lib/libgtest.a \
+  ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_archive.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_buffer.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_check_cast.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_exception.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_pool.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_utils.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var_implement.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var_utils.a \
+  ../../../../../../lib2-64/ccode/lib/libulccode.a \
+  ../../../../../../lib2-64/dict/lib/libuldict.a \
+  ../../../../../../lib2-64/libcrf/lib/libcrf.a \
+  ../../../../../../lib2-64/others-ex/lib/libullib_ex.a \
+  ../../../../../../lib2-64/postag/lib/libpostag.a \
+  ../../../../../../lib2-64/ullib/lib/libullib.a \
+  ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
+  ../../../../../../public/comlog-plugin/libcomlog.a \
+  ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
+  ../../../../../../public/configure/libconfig.a \
+  ../../../../../../public/connectpool/libconnectpool.a \
+  ../../../../../../public/odict/libodict.a \
+  ../../../../../../public/spreg/libspreg.a \
+  ../../../../../../public/uconv/libuconv.a \
+  ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
+  ../../../../../../third-64/boost/lib/libboost_atomic.a \
+  ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_date_time.a \
+  ../../../../../../third-64/boost/lib/libboost_exception.a \
+  ../../../../../../third-64/boost/lib/libboost_filesystem.a \
+  ../../../../../../third-64/boost/lib/libboost_graph.a \
+  ../../../../../../third-64/boost/lib/libboost_locale.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99f.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99l.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
+  ../../../../../../third-64/boost/lib/libboost_program_options.a \
+  ../../../../../../third-64/boost/lib/libboost_python.a \
+  ../../../../../../third-64/boost/lib/libboost_random.a \
+  ../../../../../../third-64/boost/lib/libboost_regex.a \
+  ../../../../../../third-64/boost/lib/libboost_serialization.a \
+  ../../../../../../third-64/boost/lib/libboost_signals.a \
+  ../../../../../../third-64/boost/lib/libboost_system.a \
+  ../../../../../../third-64/boost/lib/libboost_test_exec_monitor.a \
+  ../../../../../../third-64/boost/lib/libboost_thread.a \
+  ../../../../../../third-64/boost/lib/libboost_timer.a \
+  ../../../../../../third-64/boost/lib/libboost_unit_test_framework.a \
+  ../../../../../../third-64/boost/lib/libboost_wave.a \
+  ../../../../../../third-64/boost/lib/libboost_wserialization.a \
+  ../../../../../../third-64/gflags/lib/libgflags.a \
+  ../../../../../../third-64/gflags/lib/libgflags_nothreads.a \
+  ../../../../../../third-64/glog/lib/libglog.a \
+  ../../../../../../third-64/gtest/lib/libgtest.a \
+  ../../../../../../third-64/gtest/lib/libgtest_main.a \
+  ../../../../../../third-64/libcurl/lib/libcurl.a \
+  ../../../../../../third-64/pcre/lib/libpcre.a \
+  ../../../../../../third-64/pcre/lib/libpcrecpp.a \
+  ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_debug.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal_debug.a \
+  ../../../../../../third-64/zlib/lib/libz.a -lpthread \
+  -lrt \
+  -ldl \
+  -rdynamic \
+  -lgomp -Xlinker "-)" -o gbdt_predict
+	mkdir -p ./output/bin
+	cp -f --link gbdt_predict ./output/bin
+
 bin_sampling:bin_sampling_bin_sampling.o \
   ../libmelt.a \
   ../libsofia.a \
@@ -1050,7 +1166,6 @@ bin_sampling:bin_sampling_bin_sampling.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -1112,6 +1227,11 @@ bin_sampling:bin_sampling_bin_sampling.o \
 	cp -f --link bin_sampling ./output/bin
 
 melt:melt_melt.o \
+  ../src/Wrapper/melt_PredictorFactory.o \
+  ../src/Testers/melt_ClassifierTester.o \
+  ../src/Prediction/Normalization/melt_BinNormalizer.o \
+  ../src/Predictors/melt_LibSVMPredictor.o \
+  ../src/Predictors/melt_VWPredictor.o \
   ../libmelt.a \
   ../libsofia.a \
   ../libvw.a \
@@ -1129,7 +1249,12 @@ melt:melt_melt.o \
   ../libsvm.a \
   ../libvw.a
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt[0m']"
-	$(CXX) melt_melt.o -Xlinker "-(" ../libmelt.a \
+	$(CXX) melt_melt.o \
+  ../src/Wrapper/melt_PredictorFactory.o \
+  ../src/Testers/melt_ClassifierTester.o \
+  ../src/Prediction/Normalization/melt_BinNormalizer.o \
+  ../src/Predictors/melt_LibSVMPredictor.o \
+  ../src/Predictors/melt_VWPredictor.o -Xlinker "-(" ../libmelt.a \
   ../libsofia.a \
   ../libvw.a \
   ../libblas.a \
@@ -1168,7 +1293,6 @@ melt:melt_melt.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -1231,8 +1355,6 @@ melt:melt_melt.o \
 
 melt.debug:melt.debug_melt.o \
   ../src/Wrapper/melt.debug_PredictorFactory.o \
-  ../src/Prediction/Instances/melt.debug_InstanceParser.o \
-  ../src/Run/melt.debug_Melt.o \
   ../src/Testers/melt.debug_ClassifierTester.o \
   ../src/Prediction/Normalization/melt.debug_BinNormalizer.o \
   ../src/Predictors/melt.debug_LibSVMPredictor.o \
@@ -1308,8 +1430,6 @@ melt.debug:melt.debug_melt.o \
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt.debug[0m']"
 	$(CXX) melt.debug_melt.o \
   ../src/Wrapper/melt.debug_PredictorFactory.o \
-  ../src/Prediction/Instances/melt.debug_InstanceParser.o \
-  ../src/Run/melt.debug_Melt.o \
   ../src/Testers/melt.debug_ClassifierTester.o \
   ../src/Prediction/Normalization/melt.debug_BinNormalizer.o \
   ../src/Predictors/melt.debug_LibSVMPredictor.o \
@@ -1404,7 +1524,6 @@ melt.debug:melt.debug_melt.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -1467,8 +1586,6 @@ melt.debug:melt.debug_melt.o \
 
 vw:vw_vw.o \
   ../src/Wrapper/vw_PredictorFactory.o \
-  ../src/Prediction/Instances/vw_InstanceParser.o \
-  ../src/Run/vw_Melt.o \
   ../src/Testers/vw_ClassifierTester.o \
   ../src/Prediction/Normalization/vw_BinNormalizer.o \
   ../src/Predictors/vw_LibSVMPredictor.o \
@@ -1544,8 +1661,6 @@ vw:vw_vw.o \
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mvw[0m']"
 	$(CXX) vw_vw.o \
   ../src/Wrapper/vw_PredictorFactory.o \
-  ../src/Prediction/Instances/vw_InstanceParser.o \
-  ../src/Run/vw_Melt.o \
   ../src/Testers/vw_ClassifierTester.o \
   ../src/Prediction/Normalization/vw_BinNormalizer.o \
   ../src/Predictors/vw_LibSVMPredictor.o \
@@ -1640,7 +1755,6 @@ vw:vw_vw.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -1862,7 +1976,6 @@ vw.debug:vw.debug_vw.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -1943,6 +2056,10 @@ fastrank2gcc3_fastrank2gcc3.o:fastrank2gcc3.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank2gcc3_fastrank2gcc3.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o fastrank2gcc3_fastrank2gcc3.o fastrank2gcc3.cc
 
+gbdt_predict_gbdt_predict.o:gbdt_predict.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mgbdt_predict_gbdt_predict.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o gbdt_predict_gbdt_predict.o gbdt_predict.cc
+
 bin_sampling_bin_sampling.o:bin_sampling.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mbin_sampling_bin_sampling.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o bin_sampling_bin_sampling.o bin_sampling.cc
@@ -1950,6 +2067,26 @@ bin_sampling_bin_sampling.o:bin_sampling.cc
 melt_melt.o:melt.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt_melt.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o melt_melt.o melt.cc
+
+../src/Wrapper/melt_PredictorFactory.o:../src/Wrapper/PredictorFactory.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Wrapper/melt_PredictorFactory.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Wrapper/melt_PredictorFactory.o ../src/Wrapper/PredictorFactory.cpp
+
+../src/Testers/melt_ClassifierTester.o:../src/Testers/ClassifierTester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/melt_ClassifierTester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Testers/melt_ClassifierTester.o ../src/Testers/ClassifierTester.cpp
+
+../src/Prediction/Normalization/melt_BinNormalizer.o:../src/Prediction/Normalization/BinNormalizer.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Prediction/Normalization/melt_BinNormalizer.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Prediction/Normalization/melt_BinNormalizer.o ../src/Prediction/Normalization/BinNormalizer.cpp
+
+../src/Predictors/melt_LibSVMPredictor.o:../src/Predictors/LibSVMPredictor.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Predictors/melt_LibSVMPredictor.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Predictors/melt_LibSVMPredictor.o ../src/Predictors/LibSVMPredictor.cpp
+
+../src/Predictors/melt_VWPredictor.o:../src/Predictors/VWPredictor.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Predictors/melt_VWPredictor.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Predictors/melt_VWPredictor.o ../src/Predictors/VWPredictor.cpp
 
 melt.debug_melt.o:melt.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt.debug_melt.o[0m']"
@@ -1964,20 +2101,6 @@ melt.debug_melt.o:melt.cc
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/Wrapper/melt.debug_PredictorFactory.o ../src/Wrapper/PredictorFactory.cpp
-
-../src/Prediction/Instances/melt.debug_InstanceParser.o:../src/Prediction/Instances/InstanceParser.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Prediction/Instances/melt.debug_InstanceParser.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O0 $(CXXFLAGS)  -o ../src/Prediction/Instances/melt.debug_InstanceParser.o ../src/Prediction/Instances/InstanceParser.cpp
-
-../src/Run/melt.debug_Melt.o:../src/Run/Melt.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Run/melt.debug_Melt.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O0 $(CXXFLAGS)  -o ../src/Run/melt.debug_Melt.o ../src/Run/Melt.cpp
 
 ../src/Testers/melt.debug_ClassifierTester.o:../src/Testers/ClassifierTester.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/melt.debug_ClassifierTester.o[0m']"
@@ -2378,14 +2501,6 @@ vw_vw.o:vw.cc
 ../src/Wrapper/vw_PredictorFactory.o:../src/Wrapper/PredictorFactory.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Wrapper/vw_PredictorFactory.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Wrapper/vw_PredictorFactory.o ../src/Wrapper/PredictorFactory.cpp
-
-../src/Prediction/Instances/vw_InstanceParser.o:../src/Prediction/Instances/InstanceParser.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Prediction/Instances/vw_InstanceParser.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Prediction/Instances/vw_InstanceParser.o ../src/Prediction/Instances/InstanceParser.cpp
-
-../src/Run/vw_Melt.o:../src/Run/Melt.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Run/vw_Melt.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Run/vw_Melt.o ../src/Run/Melt.cpp
 
 ../src/Testers/vw_ClassifierTester.o:../src/Testers/ClassifierTester.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/vw_ClassifierTester.o[0m']"
