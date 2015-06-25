@@ -17,7 +17,7 @@ for line in input:
 	print line,
 	if line.startswith('#include') and line.find('include.python') >= 0:
 		file_ = line.split()[1].strip('"')
-                for def_ in os.popen('fix-static.py %s'%file_).read():
+                for def_ in os.popen('./fix-static.py %s'%file_).readlines():
 			if def_.find('global') >= 0:
 				pass
 				def_=def_[:def_.find(';')]

@@ -11,8 +11,9 @@ import sys,os
 
 pre_is_constructor = False
 constructor = ''
-input = sys.stdin 
-if len(sys.argv) > 1:
+
+input = sys.stdin
+if len(sys.argv) >  1:
     input = open(sys.argv[1])
 for line in input:
 	line = line.strip()

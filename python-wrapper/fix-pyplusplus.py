@@ -24,7 +24,11 @@ for line in input:
 
         #if line.find('::std::ostream &') >=0 and line.endswith(';'):
         #    print '//' + line
-        #    continue
+        #    continue 
+
+        if line.find('PyHack_') >= 0:
+            print '//' + line 
+            continue
 
 	if(line.find('undefined call policies') < 0):
 		if (find_warning):
