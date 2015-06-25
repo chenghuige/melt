@@ -125,6 +125,10 @@ DEP_INCPATH=-I../../../../../../app/search/ksarch/store/proxy-lib/redis \
   -I../../../../../../op/oped/noah/webfoot/naming-lib/include \
   -I../../../../../../op/oped/noah/webfoot/naming-lib/output \
   -I../../../../../../op/oped/noah/webfoot/naming-lib/output/include \
+  -I../../../../../../other/rabit \
+  -I../../../../../../other/rabit/include \
+  -I../../../../../../other/rabit/output \
+  -I../../../../../../other/rabit/output/include \
   -I../../../../../../ps/se/dict-set \
   -I../../../../../../ps/se/dict-set/include \
   -I../../../../../../ps/se/dict-set/output \
@@ -248,7 +252,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=8eaf505e305e51eb232f54508c7ea8d3  COMAKE
+COMAKE_MD5=4a917e96fa5482241a415d9032ca1334  COMAKE
 
 
 .PHONY:all
@@ -341,6 +345,9 @@ libmelt.so:melt_melt_py.o \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
   ../../../../../../op/oped/noah/webfoot/naming-lib/output/lib/libwebfoot_naming.a \
+  ../../../../../../other/rabit/lib/librabit.a \
+  ../../../../../../other/rabit/lib/librabit_base.a \
+  ../../../../../../other/rabit/lib/librabit_mock.a \
   ../../../../../../ps/se/dict-set/libdictset.a \
   ../../../../../../public/bslext/output/lib/libbsl_bml.a \
   ../../../../../../public/bslext/output/lib/libbsl_containers_utils.a \

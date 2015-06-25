@@ -136,7 +136,7 @@ for line in input:
  
 				#using Vector::Vector;
 				l = [s for s in line.replace(',', ' ').replace(':', ' ').split(' ') if s != '']
-				if len(l) >=  4 and (l[0] == 'class' or l[0] == 'struct') and l[2] == 'public':
+				if len(l) >=  4 and (l[0] == 'class' or l[0] == 'struct' or l[0] == 'interface') and l[2] == 'public':
 						base_classes = set()
 						for item in l[3:]:
 								base_classes.add(item)

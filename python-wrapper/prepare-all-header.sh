@@ -7,7 +7,7 @@ cp -rf ../include/* ./include.python/
 ./gen-header4dir.py ./include.python/
 
 mkdir -p ./gezi.include.python/ 
-rm -rf ./gezi/include.python/*
+rm -rf ./gezi.include.python/*
 cp -rf ../../gezi/include/* ./gezi.include.python/ 
 ./gen-header4dir.py ./gezi.include.python/
 cp -rf ../../gezi/include/cppformat/* ./gezi.include.python/ 
