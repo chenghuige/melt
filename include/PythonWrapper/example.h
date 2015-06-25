@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include "common_util.h"
 using namespace std;
 
 //enum color
@@ -8,28 +9,76 @@ using namespace std;
 //    green,
 //    black
 //};
-
+namespace abc {
 enum class color
 {
     red,
     green,
     black
 };
+}
 
+class Base
+{
+public:
+    virtual int age() = 0;
+    //virtual int age()
+    //{
+    //    return 0;
+    //}
+};
+
+typedef shared_ptr<Base> BasePtr;
+
+class Old : public Base
+{
+public:
+    virtual int age() override
+    {
+        return 100;
+    }
+};
+class Young : public Base
+{
+public:
+    virtual int age() override
+    {
+        return 10;
+    }
+};
+
+namespace gezi {
+
+        class Example {
+            public:
+                void haha()
+                {
+                    cout << "haha";
+                }
+            };
+}
 //enum class face { good, bad };
 class Example{
 public:
-color GetColor()
+abc::color GetColor()
 {
-    return color::green;
+    return abc::color::green;
 }
 
-void setcoror(color color_ = color::black)
+BasePtr CreateBase(string name)
+{
+    if (name == "old")
+        return make_shared<Old>();
+    else 
+        return make_shared<Young>();
+}
+
+void setcoror(abc::color color_ = abc::color::black)
 {
 }
 
 void setcoror2(int x, 
-    color color_ = color::black)
+    abc::color color_ = abc::color::black)
 {
 }
     //color GetColor()
@@ -69,13 +118,13 @@ void setcoror2(int x,
         y = temp;
     }
 
-#ifndef GCCXML
     static bool& ok()
     {
         static bool _ok = true;
         return _ok;
     }
 
+#ifndef GCCXML
     int& value(int index)
     {
         return _vec[index];    

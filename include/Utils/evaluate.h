@@ -34,8 +34,7 @@ namespace gezi {
 	看公式有点抽象，用上面的例子解释一下
 	模型1：首先对预测的score进行排序，排序后的样本为：负（6），正（5），正（4），负（3），负（2），正（1）
 	AUC的值为：(（5 + 4 + 1） - 3 * （3 + 1） / 2) / (3 * 3) = 4 / 9。可以看到跟方法二的计算结果一致，我们看一下这个计算公式，首先分子上后面的部分M*（M + 1） / 2。是不是很熟悉，小学就知道，上底加下底括号起来除以2，既是求梯形的面积公式，也是求连续值的公式，例如1 + 2 + 3 + 4。在这里指的就是所有的正样本的得分都小于所有的负样本的得分的情况下，计算出来的值。前半部分指的是实际的情况下正样本的排序。应该比较好理解了吧*/
-	namespace evaluate
-	{
+	namespace evaluate {
 		template<typename Vec>
 		inline Float auc(const vector<Float>& predictions, const Vec& instances, bool needSort = true)
 		{

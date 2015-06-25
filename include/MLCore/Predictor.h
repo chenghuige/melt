@@ -113,14 +113,6 @@ namespace gezi {
 			return Output(instance->features);
 		}
 
-		void Print(const Vector& features, std::ostream& ofs = std::cout)
-		{
-			features.ForEachNonZero([this, &ofs](int index, Float value)
-			{
-				ofs << index << "\t" << _featureNames[index] << "\t" << value << std::endl;
-			});
-		}
-
 		map<string, Float> ToNamedFeatures(const Vector& features)
 		{
 			map<string, Float> namedFeatures;
@@ -303,6 +295,7 @@ namespace gezi {
 			LOG(WARNING) << Name() << " currently not support saving model";
 		}
 
+
 		void LoadNormalizerAndCalibrator(string path)
 		{
 			if (loadNormalizerAndCalibrator())
@@ -484,11 +477,18 @@ namespace gezi {
 			return boost::replace_last_copy(file, ".bin", ".extra");
 		}
 
+
 		static bool& loadNormalizerAndCalibrator()
 		{
 			static bool _loadNormalizerAndCalibrator = true;
 			return _loadNormalizerAndCalibrator;
 		}
+	
+		static void SetLoadNormalizerAndCalibrator(bool loadNormalizerAndCalibrator_ = true)
+		{
+			loadNormalizerAndCalibrator() = loadNormalizerAndCalibrator_;
+		}
+
 
 		//-Utils
 		//----------特征重要度 
@@ -553,7 +553,7 @@ namespace gezi {
 		}
 
 	protected:
-		friend EnsemblePredictor;
+		friend class EnsemblePredictor;
 		virtual Float Margin(Vector& features)
 		{
 			return 0;

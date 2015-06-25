@@ -15,10 +15,12 @@
 #define M_L_CORE__TEXT_PREDICTOR_H_
 #include "common_util.h"
 #include "Segmentor.h"
+#include "Identifer.h"
 #include "tools/content_process.h"
 #ifdef _DEBUG
 #include "feature/Features.h"
 #endif
+#include "Predictor.h"
 
 namespace gezi {
 
@@ -64,6 +66,7 @@ namespace gezi {
 			}
 		}
 
+#ifndef NO_BAIDU_DEP
 
 		static double Predict(string title, string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
 			int segType = SEG_BASIC, bool useMedia = false, int ngram = 3, int skip = 2, string sep = "$#$")
@@ -159,7 +162,9 @@ namespace gezi {
 
 			return score;
 		}
+#endif // !NO_BAIDU_DEP
 	};
+
 
 }  //----end of namespace gezi
 

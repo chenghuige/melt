@@ -26,9 +26,11 @@
 
 namespace gezi {
 
-	class Trainer : public WithArgs, public WithHelp
+	interface Trainer : public WithArgs, public WithHelp
 	{
 	public:
+		virtual PredictorPtr CreatePredictor() = 0; //@TODO 也许应该在这强制加入Predictor::SetParam
+
 		virtual PredictionKind GetPredictionKind()
 		{
 			return PredictionKind::BinaryClassification;
@@ -88,8 +90,6 @@ namespace gezi {
 		{
 			return _trainingSchema;
 		}
-
-		virtual PredictorPtr CreatePredictor() = 0; //@TODO 也许应该在这强制加入Predictor::SetParam
 
 		virtual string GetParam()
 		{
@@ -191,7 +191,7 @@ namespace gezi {
 
 	typedef shared_ptr<Trainer> TrainerPtr;
 
-	class ValidatingTrainer : public Trainer
+	interface ValidatingTrainer : public Trainer
 	{
 	public:
 		using Trainer::Trainer;
@@ -484,7 +484,7 @@ namespace gezi {
 				_bestScore = std::numeric_limits<Float>::lowest();
 			}
 		}
-	
+
 		bool IsBetter(Float now, Float before)
 		{
 			return _evaluators[0]->LowerIsBetter() ? now < before :

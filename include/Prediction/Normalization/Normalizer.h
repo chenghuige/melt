@@ -95,7 +95,8 @@ namespace gezi {
 			return temp;
 		}
 
-		Instances NormalizeCopy(Instances& instances)  //@TODO can not be const Instances&
+		//@TODO can not be const Instances&
+		Instances NormalizeCopy(Instances& instances)  
 		{
 			Instances newInstances = instances;
 #pragma omp parallel for 
