@@ -28,7 +28,7 @@ m = [f.strip() for f in input.readlines()]
 i = 0
 
 while i < len(m):
-	line = m[i]
+	line = m[i] 
 	#------cereal shared ptr
 	if line.startswith('CEREAL_REGISTER_TYPE'):
 		print '//' + line
@@ -58,6 +58,15 @@ while i < len(m):
 		print line
 		i += 1
 		continue	
+
+	#vector<int> vec = {1,2, 3};
+	if line.endswith('='):
+		if i + 1 < len(m) and m[i + 1].startswith('{'):
+			print line[:line.rfind('=')].rstrip() + ';'
+			while not (m[i].startswith('};')):
+				i += 1
+			i += 1
+			continue
 
 	#using Vector::Vector;
 	l = [s for s in line.replace(',', ' ').replace(':', ' ').split(' ') if s != '']
@@ -95,14 +104,13 @@ while i < len(m):
 			print line.replace('class', '')
 			print '{'
 			i += 2
-			while not (line.endswith('};')):
+			while not (m[i].endswith('};')):
 				if line.endswith(','):
 					print (class_name + '__enum__' + line[:line.find('=')]).strip() + ','
 				else:
 					print (class_name + '__enum__' + (line + ' ')[:line.find('=')]).strip() + ','
 				i += 1
-				line = m[i]
-			print line 
+			print m[i]
 			i += 1
 			continue
 
