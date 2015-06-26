@@ -3,6 +3,7 @@ define_symbols = ['GCCXML','PYTHON_WRAPPER']
 
 files = [
                                 './gezi.include.python/common_util.h',
+                                './include.python/Prediction/Instances/InstanceParser.h',
                                 #'./gezi.include.python/Numeric/Vector/Vector.h',
                                 #'./gezi.include.python/Numeric/Vector/WeightVector.h',
                                 #'./gezi.include.python/Numeric/Vector/vector_util.h',
