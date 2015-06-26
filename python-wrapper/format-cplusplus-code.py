@@ -26,7 +26,7 @@ while i < len(m):
         i += 1
         continue 
 
-    if line != '{' and line != '}' and line.replace(' ', '') != '};' and not line.startswith('namespace') and not line.startswith('#define') and not(i > 1 and m[i -1].strip().endswith('\\')):
+    if line != '{' and line != '}' and line.replace(' ', '') != '};' and not line.startswith('namespace')and not line.startswith('#define') and not(i > 1 and m[i -1].strip().endswith('\\')) and not line.startswith('enum class '):
         l = []
         for item in line:
             if item == '{' or item == '}':
