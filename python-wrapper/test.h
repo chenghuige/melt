@@ -42,13 +42,27 @@ const static map<string, string> =
 {
 {"abc", "def"}
 };
-const static vector<int> y =
-{1, 2, 3};
+
+const static vector<int> y = {1, 2, 3};
+
 Abc(int x,
 int z, int u = (30),
 int && y)
 :x(3)
 {
+}
+
+Abc(int x,
+int z, int u = (30),
+int && y)
+:x(3), u(4),
+v(45)
+{
+}
+Abc(int x,
+int z, int u = (30),
+int && y) : x(3) {
+
 }
 
 Abc() 

@@ -127,6 +127,8 @@ def count_pair_reverse(line, pl, pr, nl, nr):
 #基本实现就是按照栈处理名称,区分是否class域的函数,忽略.h中已经实现函数{}内部的内容
 #@TODO 类构造函数特殊处理 结果按照函数处理 去掉所有实现和赋值
 #另外有些复杂写法的第三方库会运行脚本失败 @FIXME   不过对于python封装目前整体是work的
+#构造函数 当前如果没有: 也会正确按照函数处理, 注意如果 Abc(int x ): x(3)这种会处理失败 要求:必须换行写
+#特殊处理构造函数吧
 def h2interface(input_file, output_file = ''):
     """
         kernal function given a .h file
@@ -153,9 +155,6 @@ def h2interface(input_file, output_file = ''):
     
     #----处理virtual,explicit,friend,static 
     pattern2 = re.compile(r'(virtual\s+|explicit\s+|friend\s+|static\s+)')   
-    
-    #----开头的空白
-    leading_space_pattern = re.compile('(^[\s]*)[a-zA-Z~_]')   
     
     #我们默认函数都会有 如 abc(  abc ( 这样的模式存在
     #但是operator 是个例外,类名要加在operaotr前面，而且不存在上面的模式
@@ -349,47 +348,50 @@ def h2interface(input_file, output_file = ''):
                 i += 1
                 continue
             #---------------------------------------------------------下面我们该处理需要生成实体框架的函数了,
-            #------------目前看基本ok，特别复杂代码可能有问题 @TODO 比如 (int a, int b = (3))多出来的()
-            #------------另外当前对于类的构造函数是默认输出的，能否也按照函数处理
             #deal with
             #int abc(int a,
             # 		 int b)    #能够处理这种(与)不在同一行的情况
-            find1 = re.search('[(]',line)
+            find1 = line.find('(') >= 0
             if not find1:
                 f2.write(m[i])
                 i += 1
                 continue
-            find2 = re.search('[)]',line)
             start_i = i
-            space_match = leading_space_pattern.search(line)
-            if (find1 and (not find2)):
+ 
+            find1, find2, pos = count_bracket(line, 0, 0)
+            while (pos == -1):
                 i += 1
-                line2 = m[i]
-                if space_match:
-                    line2 = re.sub('^'+space_match.group(1),'',line2)     
-                    #注意sub会替换所有的匹配，这里我们只让它替换第一个,count=1，或者对于space 前面加^
+                line2 = m[i].lstrip()
                 line += line2
-                while (i < len(m) and (not re.search('[)]',line2))):
-                    i += 1
-                    line2 = m[i]
-                    line2 = re.sub('^'+space_match.group(1),'',line2)
-                    line += line2
-            #print '%%%%%%', m[i], i
+                find1, find2, pos = count_bracket(m[i], find1, find2)
+
+            is_constructor = False
+            if len(stack_class) > 0 and len(stack) > 0 and stack[-1] == 'class_now':
+                class_name = stack_class[-1]
+                if line.lstrip().startswith(class_name + '('):
+                    is_constructor = True
+
+            print '#$#$', line, is_constructor
             match_start = pattern_start.search(m[i])
             match_end = pattern_end.search(m[i])
+            construct_pattern = r'[)](.*?:.*?){'
             if (match_start):     # like  ) {  or ) {}    int the last line
+              if is_constructor:
+                    cmatch = construct_pattern.search(m[i])
+                    if cmatch:
+                        m[i] = m[i].replace(cmatch.group(1),'')
               if not match_end:
                 stack.append('normal_now')
               j = start_i                #fixed 09.11.17
               while (j <= i):
-                #print m[j], j
                 f2.write(m[j])
                 j += 1
               i += 1
               continue
-            
+
+            print '-$-$', line
             #here we do the kernel sub  #--------------------------------如果找到,先进行了替换abc();->abc(){}
-            #@TODO @? this is important without these will -> #if __GNUC__ > 3 || defined(WIN32)  -> #if __GNUC__ > 3 || defined(WIN32); as function..
+            #this is important without these will -> #if __GNUC__ > 3 || defined(WIN32)  -> #if __GNUC__ > 3 || defined(WIN32); as function..
             #(line,match) = pattern.subn(r'\2 \n{\n\n}\n\n',line)  
             no_mark = 0
             func_line_temp = line  
@@ -399,13 +401,27 @@ def h2interface(input_file, output_file = ''):
                 line += ';\n'
                 no_mark = 1
                 func_line_temp = line
-            if (no_mark) and (not re.search(r'^\s*{\s*$', m[i+1])): 
-                j = start_i   #Temp modified is it ok?
-                while (j <= i):
-                  f2.write(m[j])
-                  j += 1
-                i += 1
-                continue
+            if no_mark:
+                if not is_constructor:
+                    if not re.search(r'^\s*{\s*$', m[i+1]):
+                        j = start_i   
+                        while (j <= i):
+                            f2.write(m[j])
+                            j += 1
+                    i += 1
+                    continue
+                else:
+                    while (not re.search(r'^\s*{\s*$', m[i + 1])):
+                        i += 1
+
+            # if (no_mark) and (not re.search(r'^\s*{\s*$', m[i+1])) and not is_constructor: 
+            #     j = start_i   
+            #     while (j <= i):
+            #       f2.write(m[j])
+            #       j += 1
+            #     i += 1
+            #     continue
+
             (line,match) = pattern.subn(r'\2\n',line)  #key sub!!! 比如最后的; 去掉void play(); -> void play()
 
             #print '^^^', line
@@ -447,7 +463,7 @@ def h2interface(input_file, output_file = ''):
             content = ''
             lmatch = 0
             #特殊的写法对于{单独一行的情况把其上函数在头文件定义的代码也拷贝过去
-            #@NOTICE 注意 }}; 会有问题 , 预处理format-cplusplus.py会处理去掉这种可能
+            #@NOTICE 注意 }}; 会有问题 , 预处理format-cplusplus.py会处理去掉这种可能,多个{}都加回车转移到单独的行
             if i + 1 < len(m) and re.search(r'^\s*{\s*$', m[i+1]):               
                 i = i + 2
                 lmatch = 1
@@ -456,15 +472,14 @@ def h2interface(input_file, output_file = ''):
                         lmatch += 1
                     if (not pattern_comment.search(m[i])) and re.search(r'}',m[i]):
                         lmatch -= 1
-                    if space_match:
-                        content += re.sub('^'+space_match.group(1),'',m[i])
+                    content += m[i].lstrip()
                     i += 1
                 i -= 1
 						#-------------------------------------------------------------------------加上上面的注释也拷贝过去                       
             #----------------------------------------------如果函数已经在实现文件中存在,不输出
             #@NOTICE 查看结果debug重要的打印
-            #print '----', line, i #完整的函数 带有上面template
-            #print '####',func_line_temp, i #只有函数 不带template,
+            print '----', line, i #完整的函数 带有上面template
+            print '####',func_line_temp, i #只有函数 不带template,
             line = pyplusplus_hack(line, content).strip() + ';\n'
             f2.write(line)
             i += 1  #-----------------------------------------------------------------------next line处理下一行

@@ -31,8 +31,12 @@ while i < len(m):
         for item in line:
             if item == '{' or item == '}':
                 l.append('\n')
-            l.append(item)
-        print ''.join(l).strip()
+                l.append(item)
+                l.append('\n')
+            else:
+                l.append(item)
+        l = [f.strip() for f in ''.join(l).strip().split('\n') if f.strip() != '']
+        print '\n'.join(l).strip()
         i += 1
         continue
 

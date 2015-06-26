@@ -44,22 +44,24 @@ while i < len(m):
 	#-------cereal to boost
 	line = line.replace('cereal::', 'boost::serialization::')
 
-		#---- hack boost, serialization
-		if (line.find("boost/math/distributions/students_t.hpp") >= 0 or line.find("boost/date_time/posix_time/posix_time.hpp") >= 0):
-			print_('//' + line)
-			continue
+	#---- hack boost, serialization
+	if (line.find("boost/math/distributions/students_t.hpp") >= 0 or line.find("boost/date_time/posix_time/posix_time.hpp") >= 0):
+		print_('//' + line)
+		continue
 
-		if (line.find('serialization/') >= 0 or line.find('serialization::') >= 0 or line.find('boost/archive/') >= 0):
-			print_('//' + line)
-			continue
+	if (line.find('serialization/') >= 0 or line.find('serialization::') >= 0 or line.find('boost/archive/') >= 0):
+		print_('//' + line)
+		continue
 
-		# hack define
-		if line.replace(' ', '').startswith('#define'):
-			while not line.endswith('\\'):
-				print line
-				i += 1
-				line = m[i]
-			continue	
+	# hack define
+	if line.replace(' ', '').startswith('#define'):
+		while not line.endswith('\\'):
+			print line
+			i += 1
+			line = m[i]
+		continue	
+
+
 	print line
 	i += 1
 
