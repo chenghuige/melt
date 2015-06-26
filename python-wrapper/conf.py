@@ -48,6 +48,7 @@ include_paths=[
                 'public/odict/output',
                 'public/uconv/output',
                 'public/configure/output',
+                'other/rabit',
 	      ]
 
 include_paths_python = [
