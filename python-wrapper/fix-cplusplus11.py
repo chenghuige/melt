@@ -92,7 +92,9 @@ while i < len(m):
 			i += 1
 			continue
 		else:
-			i += 1
+			print line.replace('class', '')
+			print '{'
+			i += 2
 			while not (line.endswith('};')):
 				if line.endswith(','):
 					print (class_name + '__enum__' + line[:line.find('=')]).strip() + ','
