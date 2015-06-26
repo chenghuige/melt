@@ -210,7 +210,9 @@ def h2interface(input_file, output_file = ''):
         while i < len(m):
             #m[i] = m[i][:m[i].find('//')]
             line = m[i]
-            #print line
+            if line.strip() == '':
+                i += 1
+                continue
             #-------------------------------------------判断是注释则略过  re.search(r'^s*$',line) 空行判断
             if re.search(r'^s*$',line) or pattern_comment.search(line): #/n or comment using //
                 f2.write(m[i])
@@ -254,7 +256,6 @@ def h2interface(input_file, output_file = ''):
                     f2.write(m[i])
                     i += 1
                 continue 
-
 
             #----------------------------------------------------判断并处理类里面的typedef
             if (len(stack) > 0 and stack[-1] == 'class_now'):
@@ -373,19 +374,20 @@ def h2interface(input_file, output_file = ''):
                     line2 = m[i]
                     line2 = re.sub('^'+space_match.group(1),'',line2)
                     line += line2
-
+            #print '%%%%%%', m[i], i
             match_start = pattern_start.search(m[i])
             match_end = pattern_end.search(m[i])
             if (match_start):     # like  ) {  or ) {}    int the last line
               if not match_end:
                 stack.append('normal_now')
-              ii = start_i                #fixed 09.11.17
-              while (ii <= i):
-                f2.write(m[ii])
-                ii += 1
+              j = start_i                #fixed 09.11.17
+              while (j <= i):
+                #print m[j], j
+                f2.write(m[j])
+                j += 1
               i += 1
               continue
- 
+            
             #here we do the kernel sub  #--------------------------------如果找到,先进行了替换abc();->abc(){}
             #@TODO @? this is important without these will -> #if __GNUC__ > 3 || defined(WIN32)  -> #if __GNUC__ > 3 || defined(WIN32); as function..
             #(line,match) = pattern.subn(r'\2 \n{\n\n}\n\n',line)  
@@ -398,13 +400,14 @@ def h2interface(input_file, output_file = ''):
                 no_mark = 1
                 func_line_temp = line
             if (no_mark) and (not re.search(r'^\s*{\s*$', m[i+1])): 
-                ii = start_i   #Temp modified is it ok?
-                while (ii <= i):
-                  f2.write(m[ii])
-                  ii += 1
+                j = start_i   #Temp modified is it ok?
+                while (j <= i):
+                  f2.write(m[j])
+                  j += 1
                 i += 1
                 continue
             (line,match) = pattern.subn(r'\2\n',line)  #key sub!!! 比如最后的; 去掉void play(); -> void play()
+
             #print '^^^', line
             #print '[' + line + ']' + '(' +  str(match) + ')'
             #temp add 尝试兼容返回值在单独一行的情况
@@ -416,6 +419,7 @@ def h2interface(input_file, output_file = ''):
                 f2.write(m[i])   
                 i += 1
                 continue
+
             #print "###", line
             #-------------------------------------------------------------OK,找到了函数,下面进行处理后输出
             friend_match = re.search('friend ',line)
@@ -438,11 +442,13 @@ def h2interface(input_file, output_file = ''):
                 #line = template_line + line2
                 stack_template.pop()
                 func_name = re.search('^.*\)',line,re.MULTILINE|re.DOTALL).group()
+
             #--------------------------------------------------------把已经在头文件定义的代码也拷贝过去
             content = ''
             lmatch = 0
             #特殊的写法对于{单独一行的情况把其上函数在头文件定义的代码也拷贝过去
-            if i < len(m) - 1 and re.search(r'^\s*{\s*$', m[i+1]):               
+            #@TODO 注意 }}; 会有问题
+            if i + 1 < len(m) and re.search(r'^\s*{\s*$', m[i+1]):               
                 i = i + 2
                 lmatch = 1
                 while (lmatch != 0):
@@ -457,8 +463,8 @@ def h2interface(input_file, output_file = ''):
 						#-------------------------------------------------------------------------加上上面的注释也拷贝过去                       
             #----------------------------------------------如果函数已经在实现文件中存在,不输出
             #@NOTICE 查看结果debug重要的打印
-            #print '----', line #完整的函数 带有上面template
-            #print '####',func_line_temp #只有函数 不带template,
+            #print '----', line, i #完整的函数 带有上面template
+            #print '####',func_line_temp, i #只有函数 不带template,
             line = pyplusplus_hack(line, content).strip() + ';\n'
             f2.write(line)
             i += 1  #-----------------------------------------------------------------------next line处理下一行
