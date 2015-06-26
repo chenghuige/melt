@@ -10,18 +10,12 @@
 import sys,os
 import re 
 
-#@NOTICE assume input has been deal with remove-comment and format-c++ script
-pre_nogccxml = 0
-pre_rvalue = False
-pre_construct = False
+
 construct_count = 0
-pre_define = False
-pre_comment = 0
 base_classes = set()
 
 #---for enum clas
 out = open('enum_class.txt', 'a')
-pre_enum_class = False
 class_name = ''
 
 
@@ -47,20 +41,70 @@ while i < len(m):
 	#---- hack boost, serialization
 	if (line.find("boost/math/distributions/students_t.hpp") >= 0 or line.find("boost/date_time/posix_time/posix_time.hpp") >= 0):
 		print_('//' + line)
+		i += 1
 		continue
 
 	if (line.find('serialization/') >= 0 or line.find('serialization::') >= 0 or line.find('boost/archive/') >= 0):
 		print_('//' + line)
+		i += 1
 		continue
 
 	# hack define
 	if line.replace(' ', '').startswith('#define'):
-		while not line.endswith('\\'):
+		while line.endswith('\\'):
 			print line
 			i += 1
 			line = m[i]
+		print line
+		i += 1
 		continue	
 
+	#using Vector::Vector;
+	l = [s for s in line.replace(',', ' ').replace(':', ' ').split(' ') if s != '']
+	if len(l) >=  4 and (l[0] == 'class' or l[0] == 'struct' or l[0] == 'interface') and l[2] == 'public':
+		base_classes = set()
+		for item in l[3:]:
+			base_classes.add(item)
+
+	if line.startswith('using') and len(base_classes) > 0:
+		find = False 
+		for item in base_classes:
+			if line.endswith('%s::%s;'%(item, item)):
+				find = True
+				break
+			if find:
+				print_('//' + line)
+				i += 1
+				continue
+
+		if line.startswith('enum class'):
+			l = line.split()
+			class_name = l[2]
+			out.write(class_name + '\n');
+			if line.endswith('};'):
+				line = line[line.find('{') + 1 : line.find('};')]
+					member_names = [class_name + '__enum__' + (item + ' ')[:item.find('=')].strip() for item in line.split(',') if item != '']
+					print  'enum ' + class_name 
+					print '{'
+					for member in member_names:
+						print member + ','
+						print '};'
+					i += 1
+					continue
+			else:
+				print line.replace('class', '')
+				i += 1
+				while not (line.endswith('};')):
+					if line.endswith(','):
+						print class_name + '__enum__' + line[:line.find('=')]).strip() + ','
+					else：
+						print class_name + '__enum__' + (line + ' ')[:line.find('=')]).strip() + ','
+					i += 1
+
+	if (line.startswith('/') or line.startswith('#') or line.startswith('*') or line.startswith('namespace')):
+		print line
+		i += 1
+		continue 
 
 	print line
 	i += 1

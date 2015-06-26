@@ -371,15 +371,10 @@ def h2interface(input_file, output_file = ''):
                 if line.lstrip().startswith(class_name + '('):
                     is_constructor = True
 
-            print '#$#$', line, is_constructor
+            print '#$#$', line, is_constructor, i
             match_start = pattern_start.search(m[i])
             match_end = pattern_end.search(m[i])
-            construct_pattern = r'[)](.*?:.*?){'
             if (match_start):     # like  ) {  or ) {}    int the last line
-              if is_constructor:
-                    cmatch = construct_pattern.search(m[i])
-                    if cmatch:
-                        m[i] = m[i].replace(cmatch.group(1),'')
               if not match_end:
                 stack.append('normal_now')
               j = start_i                #fixed 09.11.17
@@ -395,32 +390,32 @@ def h2interface(input_file, output_file = ''):
             #(line,match) = pattern.subn(r'\2 \n{\n\n}\n\n',line)  
             no_mark = 0
             func_line_temp = line  
-            #line2 = line  
             if not re.search(';\s*$', line):    #默认情况下将加上;使得它可以被转移到实现文件中
+                print 'no ; end', line
                 line = line.rstrip()
                 line += ';\n'
                 no_mark = 1
                 func_line_temp = line
+
+            if is_constructor:
+                if line.find('):') > 0 or line.find(') :') > 0:
+                    line = line[:line.rfind(':')] + ';\n'
+                    m[i] = m[i][:m[i].rfind(':')]
+
             if no_mark:
-                if not is_constructor:
-                    if not re.search(r'^\s*{\s*$', m[i+1]):
+                if not re.search(r'^\s*{\s*$', m[i+1]):
+                    if not is_constructor:
                         j = start_i   
                         while (j <= i):
                             f2.write(m[j])
                             j += 1
-                    i += 1
-                    continue
-                else:
-                    while (not re.search(r'^\s*{\s*$', m[i + 1])):
                         i += 1
-
-            # if (no_mark) and (not re.search(r'^\s*{\s*$', m[i+1])) and not is_constructor: 
-            #     j = start_i   
-            #     while (j <= i):
-            #       f2.write(m[j])
-            #       j += 1
-            #     i += 1
-            #     continue
+                        continue
+                    else:
+                        while (not re.search(r'^\s*{\s*$', m[i+1])):
+                            print '...', m[i + 1]
+                            m[i + 1] = ''
+                            i += 1
 
             (line,match) = pattern.subn(r'\2\n',line)  #key sub!!! 比如最后的; 去掉void play(); -> void play()
 
@@ -435,8 +430,6 @@ def h2interface(input_file, output_file = ''):
                 f2.write(m[i])   
                 i += 1
                 continue
-
-            #print "###", line
             #-------------------------------------------------------------OK,找到了函数,下面进行处理后输出
             friend_match = re.search('friend ',line)
             #line = pattern2.sub('',line)            #--------------------delete virtural explict friend! 由于现在只是输出interface 所以不去掉！
