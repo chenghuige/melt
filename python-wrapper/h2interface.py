@@ -126,6 +126,7 @@ def count_pair_reverse(line, pl, pr, nl, nr):
 
 #基本实现就是按照栈处理名称,区分是否class域的函数,忽略.h中已经实现函数{}内部的内容
 #@TODO 类构造函数特殊处理 结果按照函数处理 去掉所有实现和赋值
+#另外有些复杂写法的第三方库会运行脚本失败 @FIXME   不过对于python封装目前整体是work的
 def h2interface(input_file, output_file = ''):
     """
         kernal function given a .h file
