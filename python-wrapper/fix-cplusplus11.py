@@ -72,37 +72,37 @@ while i < len(m):
 			if line.endswith('%s::%s;'%(item, item)):
 				find = True
 				break
-			if find:
-				print '//' + line
+		if find:
+			print '//' + line
+			i += 1
+			continue 
+		
+	if line.startswith('enum class'):
+		l = line.split()
+		class_name = l[2]
+		out.write(class_name + '\n');
+		if line.endswith('};'):
+			line = line[line.find('{') + 1 : line.find('};')]
+			member_names = [class_name + '__enum__' + (item + ' ')[:item.find('=')].strip() for item in line.split(',') if item != '']
+			print  'enum ' + class_name 
+			print '{'
+			for member in member_names:
+				print member + ','
+				print '};'
+			i += 1
+			continue
+		else:
+			i += 1
+			while not (line.endswith('};')):
+				if line.endswith(','):
+					print (class_name + '__enum__' + line[:line.find('=')]).strip() + ','
+				else:
+					print (class_name + '__enum__' + (line + ' ')[:line.find('=')]).strip() + ','
 				i += 1
-				continue
-
-		if line.startswith('enum class'):
-			l = line.split()
-			class_name = l[2]
-			out.write(class_name + '\n');
-			if line.endswith('};'):
-				line = line[line.find('{') + 1 : line.find('};')]
-				member_names = [class_name + '__enum__' + (item + ' ')[:item.find('=')].strip() for item in line.split(',') if item != '']
-				print  'enum ' + class_name 
-				print '{'
-				for member in member_names:
-					print member + ','
-					print '};'
-				i += 1
-				continue
-			else:
-				print line.replace('class', '')
-				i += 1
-				while not (line.endswith('};')):
-					if line.endswith(','):
-						print (class_name + '__enum__' + line[:line.find('=')]).strip() + ','
-					else:
-						print (class_name + '__enum__' + (line + ' ')[:line.find('=')]).strip() + ','
-					i += 1
-				print line 
-				i += 1
-				continue
+				line = m[i]
+			print line 
+			i += 1
+			continue
 
 	if (line.startswith('/') or line.startswith('#') or line.startswith('*') or line.startswith('namespace')):
 		print line
