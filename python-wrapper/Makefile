@@ -252,7 +252,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=4a917e96fa5482241a415d9032ca1334  COMAKE
+COMAKE_MD5=7aecb8e6d5848df13ac61a0718bc4d1c  COMAKE
 
 
 .PHONY:all
@@ -311,6 +311,7 @@ libmelt.so:melt_melt_py.o \
   ../../../../../../app/search/sep/anti-spam/melt/libblas.a \
   ../../../../../../app/search/sep/anti-spam/melt/liblinear.a \
   ../../../../../../app/search/sep/anti-spam/melt/libmelt.a \
+  ../../../../../../app/search/sep/anti-spam/melt/libmelt_predict.a \
   ../../../../../../app/search/sep/anti-spam/melt/libsofia.a \
   ../../../../../../app/search/sep/anti-spam/melt/libsvm.a \
   ../../../../../../app/search/sep/anti-spam/melt/libvw.a \
@@ -415,7 +416,9 @@ libmelt.so:melt_melt_py.o \
   ../../../../../../third-64/boost.1.53/lib/libboost_wserialization.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -427,6 +430,8 @@ libmelt.so:melt_melt_py.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
