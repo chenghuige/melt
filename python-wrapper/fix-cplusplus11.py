@@ -97,7 +97,7 @@ while i < len(m):
 			print '{'
 			for member in member_names:
 				print member + ','
-				print '};'
+			print '};'
 			i += 1
 			continue
 		else:
