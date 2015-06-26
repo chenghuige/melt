@@ -50,6 +50,7 @@ def pyplusplus_hack(line, content):
     return_nonconst_ref = False
     for i in range(len(lines)):
         lines[i] = lines[i].replace('override', '')
+        lines[i] = lines[i].replace('= default', '').replace('=default', '')
         line = lines[i].strip().replace('inline', '').strip()
         l = line.split()
         #non const static ref
@@ -371,7 +372,6 @@ def h2interface(input_file, output_file = ''):
                 if line.lstrip().startswith(class_name + '('):
                     is_constructor = True
 
-            print '#$#$', line, is_constructor, i
             match_start = pattern_start.search(m[i])
             match_end = pattern_end.search(m[i])
             if (match_start):     # like  ) {  or ) {}    int the last line
@@ -384,14 +384,12 @@ def h2interface(input_file, output_file = ''):
               i += 1
               continue
 
-            print '-$-$', line
             #here we do the kernel sub  #--------------------------------如果找到,先进行了替换abc();->abc(){}
             #this is important without these will -> #if __GNUC__ > 3 || defined(WIN32)  -> #if __GNUC__ > 3 || defined(WIN32); as function..
             #(line,match) = pattern.subn(r'\2 \n{\n\n}\n\n',line)  
             no_mark = 0
             func_line_temp = line  
             if not re.search(';\s*$', line):    #默认情况下将加上;使得它可以被转移到实现文件中
-                print 'no ; end', line
                 line = line.rstrip()
                 line += ';\n'
                 no_mark = 1
@@ -413,7 +411,6 @@ def h2interface(input_file, output_file = ''):
                         continue
                     else:
                         while (not re.search(r'^\s*{\s*$', m[i+1])):
-                            print '...', m[i + 1]
                             m[i + 1] = ''
                             i += 1
 
@@ -471,8 +468,8 @@ def h2interface(input_file, output_file = ''):
 						#-------------------------------------------------------------------------加上上面的注释也拷贝过去                       
             #----------------------------------------------如果函数已经在实现文件中存在,不输出
             #@NOTICE 查看结果debug重要的打印
-            print '----', line, i #完整的函数 带有上面template
-            print '####',func_line_temp, i #只有函数 不带template,
+            #print '----', line, i #完整的函数 带有上面template
+            #print '####',func_line_temp, i #只有函数 不带template,
             line = pyplusplus_hack(line, content).strip() + ';\n'
             f2.write(line)
             i += 1  #-----------------------------------------------------------------------next line处理下一行

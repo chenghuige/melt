@@ -100,11 +100,57 @@ while i < len(m):
 					else：
 						print class_name + '__enum__' + (line + ' ')[:line.find('=')]).strip() + ','
 					i += 1
+				print line 
+				i += 1
+				continue
 
 	if (line.startswith('/') or line.startswith('#') or line.startswith('*') or line.startswith('namespace')):
 		print line
 		i += 1
 		continue 
+
+
+	end_idx = line.rfind(';')
+	if (end_idx == -1):
+		print line
+		i += 1
+		continue
+	if (line.startswith('const static') or line.startswith('static')):
+		print line
+		i += 1
+		continue
+
+	idx1 = line.rfind(')')
+	idx2 = line.rfind('=')
+	idx3 = line.find('(')
+	idx4 = line.find('=')
+				
+	line2 = line.replace(' ', '')
+	if idx3 >= 0 and idx4 >= 0 and idx3 > idx4 and line2.find('operator=') < 0 and line2.find('operator>=') < 0 and line2.find('operator<=') < 0 and line2.find('operator+=') < 0 and line2.find('operator*=') < 0 and line2.find('operator-=') < 0 and line2.find('operator/=') < 0:
+		line = line[:idx4] + ';'
+		if line.startswith('const'):
+			line = line[len('const') + 1:]
+			print line
+			i += 1 
+			continue
+
+	if (idx1 > idx2):
+		print line
+		i += 1
+		continue
+
+	if idx2 == -1:
+		print line
+		i += 1
+		continue 
+
+	line = line[:idx2]
+	line = line.strip() + ';'
+	if line.startswith('const'):
+		line = line[len('const') + 1:]
+		print line
+		i += 1
+		continue
 
 	print line
 	i += 1
