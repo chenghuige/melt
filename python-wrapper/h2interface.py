@@ -447,7 +447,7 @@ def h2interface(input_file, output_file = ''):
             content = ''
             lmatch = 0
             #特殊的写法对于{单独一行的情况把其上函数在头文件定义的代码也拷贝过去
-            #@TODO 注意 }}; 会有问题
+            #@NOTICE 注意 }}; 会有问题 , 预处理format-cplusplus.py会处理去掉这种可能
             if i + 1 < len(m) and re.search(r'^\s*{\s*$', m[i+1]):               
                 i = i + 2
                 lmatch = 1

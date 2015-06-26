@@ -25,19 +25,16 @@ while i < len(m):
     if line == '':
         i += 1
         continue 
-    if line != '{' and line.find('{') >= 0:
-        l = [f.strip() for f in line.strip().split('{')]
-        if not line.startswith('namespace') and not line.startswith('#define') and len(l) > 1 and not(i > 1 and m[i - 1].rstrip().endswith('\\')):
-            print '\n{'.join(l).strip()
-            i += 1
-            continue
 
-    if line.find('}') >= 0:
-        if (line != '}' and line != '};') and len(l) > 1:
-            l = [f.strip() for f in line.strip().split('}')]
-            print '\n}'.join(l).strip()
-            i += 1
-            continue
+    if line != '{' and line != '}' and line.replace(' ', '') != '};' and not line.startswith('namespace') and not line.startswith('#define'):
+        l = []
+        for item in line:
+            if item == '{' or item == '}':
+                l.append('\n')
+            l.append(item)
+        print ''.join(l).strip()
+        i += 1
+        continue
 
     print line 
     i += 1
