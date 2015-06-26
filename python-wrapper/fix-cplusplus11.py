@@ -105,10 +105,10 @@ while i < len(m):
 			print '{'
 			i += 2
 			while not (m[i].endswith('};')):
-				if line.endswith(','):
-					print (class_name + '__enum__' + line[:line.find('=')]).strip() + ','
+				if m[i].endswith(','):
+					print (class_name + '__enum__' + m[i][:m[i].find('=')]).strip() + ','
 				else:
-					print (class_name + '__enum__' + (line + ' ')[:line.find('=')]).strip() + ','
+					print (class_name + '__enum__' + (m[i] + ' ')[:m[i].find('=')]).strip() + ','
 				i += 1
 			print m[i]
 			i += 1
