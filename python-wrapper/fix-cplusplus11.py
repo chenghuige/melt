@@ -23,7 +23,7 @@ input = sys.stdin
 if len(sys.argv) > 1:
 	input = open(sys.argv[1])
 
-m = input.readlines()
+m = [f.strip() for f in input.readlines()]
 
 i = 0
 
@@ -31,7 +31,7 @@ while i < len(m):
 	line = m[i]
 	#------cereal shared ptr
 	if line.startswith('CEREAL_REGISTER_TYPE'):
-		print_('//' + line)
+		print '//' + line
 		i += 1
 		continue
 				
@@ -40,12 +40,12 @@ while i < len(m):
 
 	#---- hack boost, serialization
 	if (line.find("boost/math/distributions/students_t.hpp") >= 0 or line.find("boost/date_time/posix_time/posix_time.hpp") >= 0):
-		print_('//' + line)
+		print '//' + line
 		i += 1
 		continue
 
 	if (line.find('serialization/') >= 0 or line.find('serialization::') >= 0 or line.find('boost/archive/') >= 0):
-		print_('//' + line)
+		print '//' + line
 		i += 1
 		continue
 
@@ -73,7 +73,7 @@ while i < len(m):
 				find = True
 				break
 			if find:
-				print_('//' + line)
+				print '//' + line
 				i += 1
 				continue
 
@@ -83,22 +83,22 @@ while i < len(m):
 			out.write(class_name + '\n');
 			if line.endswith('};'):
 				line = line[line.find('{') + 1 : line.find('};')]
-					member_names = [class_name + '__enum__' + (item + ' ')[:item.find('=')].strip() for item in line.split(',') if item != '']
-					print  'enum ' + class_name 
-					print '{'
-					for member in member_names:
-						print member + ','
-						print '};'
-					i += 1
-					continue
+				member_names = [class_name + '__enum__' + (item + ' ')[:item.find('=')].strip() for item in line.split(',') if item != '']
+				print  'enum ' + class_name 
+				print '{'
+				for member in member_names:
+					print member + ','
+					print '};'
+				i += 1
+				continue
 			else:
 				print line.replace('class', '')
 				i += 1
 				while not (line.endswith('};')):
 					if line.endswith(','):
-						print class_name + '__enum__' + line[:line.find('=')]).strip() + ','
-					else：
-						print class_name + '__enum__' + (line + ' ')[:line.find('=')]).strip() + ','
+						print (class_name + '__enum__' + line[:line.find('=')]).strip() + ','
+					else:
+						print (class_name + '__enum__' + (line + ' ')[:line.find('=')]).strip() + ','
 					i += 1
 				print line 
 				i += 1
