@@ -105,7 +105,7 @@ CONFIGS('other/rabit')
 
 #头文件路径.
 #INCPATHS('~/.jumbo/include/python2.7 '.replace('./',RELATIVE_PATH) + ' ./')
-INCPATHS(JUMBO_PATH + '/include/python2.7 ')
+INCPATHS(JUMBO_PATH + '/include/python2.7 ./')
 headers=''
 
 #静态库

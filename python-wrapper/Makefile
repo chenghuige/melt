@@ -40,7 +40,8 @@ CFLAGS=-g \
 CPPFLAGS=-D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\"
-INCPATH=-I/home/users/chenghuige/.jumbo//include/python2.7
+INCPATH=-I/home/users/chenghuige/.jumbo//include/python2.7 \
+  -I./
 DEP_INCPATH=-I../../../../../../app/search/ksarch/store/proxy-lib/redis \
   -I../../../../../../app/search/ksarch/store/proxy-lib/redis/include \
   -I../../../../../../app/search/ksarch/store/proxy-lib/redis/output \
@@ -252,7 +253,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=7aecb8e6d5848df13ac61a0718bc4d1c  COMAKE
+COMAKE_MD5=91e1cbd37c86fc0608f76a732b3643c2  COMAKE
 
 
 .PHONY:all
