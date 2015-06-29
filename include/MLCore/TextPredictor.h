@@ -28,7 +28,7 @@ namespace gezi {
 	{
 	public:
 		static void Prase(svec& words_, map<int, double>& m, const DoubleIdentifer& identifer, int startIndex = 0,
-			int ngram = 3, int skip = 2, string sep = "$#$", bool hasPic = false, bool hasUrl = false, bool hasAt = false)
+			int ngram = 3, int skip = 2, string sep = "\x01", bool hasPic = false, bool hasUrl = false, bool hasAt = false)
 		{
 			svec words = get_words(words_, ngram, sep);
 			get_skip_bigram(words_, words, skip, sep);
@@ -69,7 +69,7 @@ namespace gezi {
 #ifndef NO_BAIDU_DEP
 
 		static double Predict(string title, string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
-			int segType = SEG_BASIC, bool useMedia = false, int ngram = 3, int skip = 2, string sep = "$#$")
+			int segType = SEG_BASIC, bool useMedia = false, int ngram = 3, int skip = 2, string sep = "\x01")
 		{
 			int wordNum = identifer.size();
 			map<int, double> m; //确保按key排序
@@ -122,7 +122,7 @@ namespace gezi {
 		}
 
 		static double Predict(string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
-			int segType = SEG_BASIC, int ngram = 3, int skip = 2, string sep = "$#$")
+			int segType = SEG_BASIC, int ngram = 3, int skip = 2, string sep = "\x01")
 		{
 			int wordNum = identifer.size();
 			map<int, double> m; //确保按key排序

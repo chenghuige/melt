@@ -46,22 +46,19 @@ namespace gezi {
 
 		virtual void Save_(string file) override
 		{
-			Pval2(_weights.IsDense(), _weights.keepDense);
-			Pval(_weights.values.size());
-			_weights.Sparsify();
-			Pval(_weights.values.size());
+			_weights.MakeSparse();
 			serialize_util::save(*this, file);
 		}
 
 		virtual void SaveXml_(string file) override
 		{
-			_weights.Sparsify();
+			_weights.MakeSparse();
 			serialize_util::save_xml(*this, file);
 		}
 
 		virtual void SaveJson_(string file) override
 		{
-			_weights.Sparsify();
+			_weights.MakeSparse();
 			serialize_util::save_json(*this, file);
 		}
 
@@ -118,10 +115,7 @@ namespace gezi {
 		{
 			gezi::Noticer noticer("SaveFeaturesGain", 0);
 			ofstream ofs(_path + "/model.featureGain");
-			Pval2(_weights.IsDense(), _weights.keepDense);
-			Pval(_weights.values.size());
-			_weights.Sparsify();
-			Pval(_weights.values.size());
+			_weights.MakeSparse();
 			int maxLen = (topNum == 0 || topNum > _weights.values.size()) ? _weights.values.size() : topNum;
 			Pval(maxLen);
 			ivec indexVec = _weights.indices;
