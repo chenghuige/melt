@@ -46,7 +46,10 @@ namespace gezi {
 
 		virtual void Save_(string file) override
 		{
+			Pval2(_weights.IsDense(), _weights.keepDense);
+			Pval(_weights.values.size());
 			_weights.Sparsify();
+			Pval(_weights.values.size());
 			serialize_util::save(*this, file);
 		}
 
@@ -114,16 +117,19 @@ namespace gezi {
 		virtual void SaveFeaturesGain(int topNum = 0) override
 		{
 			gezi::Noticer noticer("SaveFeaturesGain", 0);
-			
+			ofstream ofs(_path + "/model.featureGain");
+			Pval2(_weights.IsDense(), _weights.keepDense);
+			Pval(_weights.values.size());
 			_weights.Sparsify();
+			Pval(_weights.values.size());
 			int maxLen = (topNum == 0 || topNum > _weights.values.size()) ? _weights.values.size() : topNum;
+			Pval(maxLen);
 			ivec indexVec = _weights.indices;
-			gezi::index_sort(_weights.values, indexVec, [](value_type l, value_type r) { return abs(l) > abs(r); }, maxLen);
-			stringstream ss;
+			gezi::index_sort(_weights.values, indexVec, [](Vector::value_type l, Vector::value_type r) { return abs(l) > abs(r); }, maxLen);
 			for (int i = 0; i < maxLen; i++)
 			{
 				int idx = indexVec[i];
-				ss << setiosflags(ios::left) << setfill(' ') << setw(100)
+				ofs << setiosflags(ios::left) << setfill(' ') << setw(100)
 					<< STR(i) + STR(":") + _featureNames[idx]
 					<< _weights.values[idx] << endl;
 			}
