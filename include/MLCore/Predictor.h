@@ -564,10 +564,12 @@ namespace gezi {
 		{
 			if (saveNormalizer)
 			{
+				gezi::Noticer noticer("SaveNormalizer", 1);
 				SAVE_SHARED_PTR_ASTEXT(_normalizer, _path);
 			}
 			if (saveCalibrator)
 			{
+				gezi::Noticer noticer("SaveCalibrator", 1);
 				SAVE_SHARED_PTR_ASTEXT(_calibrator, _path);
 			}
 		}
