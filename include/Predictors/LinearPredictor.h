@@ -108,8 +108,25 @@ namespace gezi {
 
 		virtual string ToFeaturesGainSummary(int topNum = 0) override
 		{
-			_weights.Sparsify();
 			return ToFeaturesGainSummary_(_weights, topNum);
+		}
+
+		virtual void SaveFeaturesGain(int topNum = 0) override
+		{
+			gezi::Noticer noticer("SaveFeaturesGain", 0);
+			
+			_weights.Sparsify();
+			int maxLen = (topNum == 0 || topNum > _weights.values.size()) ? _weights.values.size() : topNum;
+			ivec indexVec = _weights.indices;
+			gezi::index_sort(_weights.values, indexVec, [](value_type l, value_type r) { return abs(l) > abs(r); }, maxLen);
+			stringstream ss;
+			for (int i = 0; i < maxLen; i++)
+			{
+				int idx = indexVec[i];
+				ss << setiosflags(ios::left) << setfill(' ') << setw(100)
+					<< STR(i) + STR(":") + _featureNames[idx]
+					<< _weights.values[idx] << endl;
+			}
 		}
 
 		friend class cereal::access;

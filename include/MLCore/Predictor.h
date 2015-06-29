@@ -420,7 +420,7 @@ namespace gezi {
 			SaveText(_path + "/model.txt");
 		}
 
-		void SaveFeaturesGain(int topNum = 0)
+		virtual void SaveFeaturesGain(int topNum = 0)
 		{
 			gezi::Noticer noticer("SaveFeaturesGain", 0);
 			write_file(ToFeaturesGainSummary(topNum), _path + "/model.featureGain");
