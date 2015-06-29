@@ -422,6 +422,7 @@ namespace gezi {
 
 		void SaveFeaturesGain(int topNum = 0)
 		{
+			gezi::Noticer noticer("SaveFeaturesGain", 0);
 			write_file(ToFeaturesGainSummary(topNum), _path + "/model.featureGain");
 		}
 
@@ -498,6 +499,8 @@ namespace gezi {
 			return "";
 		}
 
+		//7863772 @FIXME大规模特征比如786w的时候index_sort类似hang住还是非常慢未知。。 
+		//应该是index_sort有bug。。。
 		template<typename Vec>
 		string ToFeaturesGainSummary_(const Vec& gains, int topNum = 0)
 		{
@@ -564,12 +567,10 @@ namespace gezi {
 		{
 			if (saveNormalizer)
 			{
-				gezi::Noticer noticer("SaveNormalizer", 1);
 				SAVE_SHARED_PTR_ASTEXT(_normalizer, _path);
 			}
 			if (saveCalibrator)
 			{
-				gezi::Noticer noticer("SaveCalibrator", 1);
 				SAVE_SHARED_PTR_ASTEXT(_calibrator, _path);
 			}
 		}

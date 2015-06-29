@@ -71,7 +71,6 @@ namespace gezi {
 		//SaveText是可选的 如果要使用 务必先调用Save 因为加载至使用Load
 		virtual void SaveText_(string file) override
 		{
-			gezi::Noticer noticer("SaveModelText", 1);
 			ofstream ofs(file);
 			ofs << "ModelName=" << Name() << endl;
 			ofs << "FeatureNum=" << _weights.size() << endl;
@@ -109,6 +108,7 @@ namespace gezi {
 
 		virtual string ToFeaturesGainSummary(int topNum = 0) override
 		{
+			_weights.Sparsify();
 			return ToFeaturesGainSummary_(_weights, topNum);
 		}
 
