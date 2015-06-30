@@ -29,6 +29,13 @@ i = 0
 
 while i < len(m):
 	line = m[i] 
+
+	is_func = False
+	func_idx = line.find('//func')
+	if func_idx >= 0:
+		is_func = True
+		line = line[:func_idx] 
+
 	#------cereal shared ptr
 	if line.startswith('CEREAL_REGISTER_TYPE'):
 		print '//' + line
@@ -161,13 +168,14 @@ while i < len(m):
 	# 	print line
 	# 	i += 1
 	# 	continue 
-	
-	if not line.endswith('//func'):
+
+	#const int x = 3;	
+	if not is_func:
 		idx = line.find('=')
 		line = line[:idx].strip() + ';'
 		if line.startswith('const') and not line.find('*') > 0:
 			line = line[len('const') + 1:]
-	
+
 	print line
 	i += 1
 
