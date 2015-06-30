@@ -54,7 +54,7 @@ for line in input:
                         print line 
                     continue
 
-								line = line.replace('boost::unordered::', 'std::')
+                line = line.replace('boost::unordered::', 'std::')
                 line = line.replace('boost::unordered', 'std::unordered')
                 line = line.replace('boost::shared_ptr', 'std::shared_ptr')
                 line = line.replace('boost::make_shared', 'std::make_shared')
