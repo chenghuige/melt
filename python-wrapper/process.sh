@@ -1,4 +1,4 @@
-i=melt.py
+i=$1
 o=${i/.py/_py.cc} 
 rm $o
 

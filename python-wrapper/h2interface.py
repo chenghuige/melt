@@ -89,7 +89,9 @@ def pyplusplus_hack(line, content):
             need_comment = True
     if need_comment:
         lines = ['//' + line for line in lines if line != '']
-    return '\n'.join(lines) + '\n'
+    for i in range(len(lines) - 2):
+        lines[i] = lines[i] + '//func'
+    return '\n'.join(lines).strip() + ';//func\n'
 
 
 def count_pair(line, pl, pr, nl, nr):
@@ -130,6 +132,7 @@ def count_pair_reverse(line, pl, pr, nl, nr):
 #另外有些复杂写法的第三方库会运行脚本失败 @FIXME   不过对于python封装目前整体是work的
 #构造函数 当前如果没有: 也会正确按照函数处理, 注意如果 Abc(int x ): x(3)这种会处理失败 要求:必须换行写
 #特殊处理构造函数吧
+#不处理{与函数名同行的情况，可以预处理脚本先处理
 def h2interface(input_file, output_file = ''):
     """
         kernal function given a .h file
@@ -470,7 +473,7 @@ def h2interface(input_file, output_file = ''):
             #@NOTICE 查看结果debug重要的打印
             #print '----', line, i #完整的函数 带有上面template
             #print '####',func_line_temp, i #只有函数 不带template,
-            line = pyplusplus_hack(line, content).strip() + ';\n'
+            line = pyplusplus_hack(line, content)
             f2.write(line)
             i += 1  #-----------------------------------------------------------------------next line处理下一行
     #------------------------------loop done 处理结束 
