@@ -136,7 +136,7 @@ while i < len(m):
 	idx4 = line.find('=')
 				
 	line2 = line.replace(' ', '')
-	if idx3 >= 0 and idx4 >= 0 and idx3 > idx4 and line2.find('operator=') < 0 and line2.find('operator>=') < 0 and line2.find('operator<=') < 0 and line2.find('operator+=') < 0 and line2.find('operator*=') < 0 and line2.find('operator-=') < 0 and line2.find('operator/=') < 0:
+	if idx3 >= 0 and idx4 >= 0 and idx3 > idx4 and line2.find('operator=') < 0 and line2.find('operator>') < 0 and line2.find('operator<') < 0 and line2.find('operator!') < 0 and line2.find('operator+') < 0 and line2.find('operator-') < 0 and line2.find('operator*') and line2.find('operator/') < 0:
 		line = line[:idx4] + ';'
 		if line.startswith('const'):
 			line = line[len('const') + 1:]
