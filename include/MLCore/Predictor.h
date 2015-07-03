@@ -122,6 +122,14 @@ namespace gezi {
 			});
 			return namedFeatures;
 		}
+		
+		void Print(const Vector& features, std::ostream& ofs = std::cout)
+		{
+				features.ForEachNonZero([this, &ofs](int index, Float value)
+				{
+						ofs << index << "\t" << _featureNames[index] << "\t" << value << std::endl;
+				});
+		}
 
 		//@TODO 考虑尽可能 输入 const 否则容易引起混淆错误
 		Float Output(Vector& features)
@@ -144,7 +152,6 @@ namespace gezi {
 				return Margin(features);
 			}
 		}
-
 
 		Float Output(Fvec& values)
 		{
