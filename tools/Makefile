@@ -1,8 +1,8 @@
 #COMAKE2 edit-mode: -*- Makefile -*-
 ####################64Bit Mode####################
 ifeq ($(shell uname -m),x86_64)
-CC=/opt/compiler/gcc-4.8.2/bin/g++
-CXX=/opt/compiler/gcc-4.8.2/bin/g++
+CC=g++
+CXX=g++
 CXXFLAGS=-g \
   -O3 \
   -msse2 \
@@ -161,7 +161,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=13b8d115b3622914214f8f8ecda9bad6  COMAKE
+COMAKE_MD5=dbf251775b740ab7c9331db053cdd992  COMAKE
 
 
 .PHONY:all
@@ -464,6 +464,7 @@ calibrate:calibrate_calibrate.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -475,7 +476,9 @@ calibrate:calibrate_calibrate.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -487,6 +490,8 @@ calibrate:calibrate_calibrate.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
@@ -581,6 +586,7 @@ predict:predict_predict.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -592,7 +598,9 @@ predict:predict_predict.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -604,6 +612,8 @@ predict:predict_predict.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
@@ -698,6 +708,7 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -709,7 +720,9 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -721,6 +734,8 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
@@ -815,6 +830,7 @@ fastrank_predict:fastrank_predict_fastrank_predict.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -826,7 +842,9 @@ fastrank_predict:fastrank_predict_fastrank_predict.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -838,6 +856,8 @@ fastrank_predict:fastrank_predict_fastrank_predict.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
@@ -932,6 +952,7 @@ fastrank2gcc3:fastrank2gcc3_fastrank2gcc3.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -943,7 +964,9 @@ fastrank2gcc3:fastrank2gcc3_fastrank2gcc3.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -955,6 +978,8 @@ fastrank2gcc3:fastrank2gcc3_fastrank2gcc3.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
@@ -1049,6 +1074,7 @@ gbdt_predict:gbdt_predict_gbdt_predict.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -1060,7 +1086,9 @@ gbdt_predict:gbdt_predict_gbdt_predict.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -1072,6 +1100,8 @@ gbdt_predict:gbdt_predict_gbdt_predict.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
@@ -1166,6 +1196,7 @@ bin_sampling:bin_sampling_bin_sampling.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -1177,7 +1208,9 @@ bin_sampling:bin_sampling_bin_sampling.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -1189,6 +1222,8 @@ bin_sampling:bin_sampling_bin_sampling.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
@@ -1293,6 +1328,7 @@ melt:melt_melt.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -1304,7 +1340,9 @@ melt:melt_melt.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -1316,6 +1354,8 @@ melt:melt_melt.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
@@ -1524,6 +1564,7 @@ melt.debug:melt.debug_melt.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -1535,7 +1576,9 @@ melt.debug:melt.debug_melt.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -1547,6 +1590,8 @@ melt.debug:melt.debug_melt.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
@@ -1755,6 +1800,7 @@ vw:vw_vw.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -1766,7 +1812,9 @@ vw:vw_vw.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -1778,6 +1826,8 @@ vw:vw_vw.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \
@@ -1976,6 +2026,7 @@ vw.debug:vw.debug_vw.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
   ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
@@ -1987,7 +2038,9 @@ vw.debug:vw.debug_vw.o \
   ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
   ../../../../../../third-64/boost/lib/libboost_atomic.a \
   ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
   ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
   ../../../../../../third-64/boost/lib/libboost_date_time.a \
   ../../../../../../third-64/boost/lib/libboost_exception.a \
   ../../../../../../third-64/boost/lib/libboost_filesystem.a \
@@ -1999,6 +2052,8 @@ vw.debug:vw.debug_vw.o \
   ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
   ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
   ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
   ../../../../../../third-64/boost/lib/libboost_program_options.a \
   ../../../../../../third-64/boost/lib/libboost_python.a \

@@ -23,7 +23,9 @@ DEFINE_int32(vl, 0, "vlog level");
 DEFINE_bool(r, false, "reverse: show trees from -.. to + .. if reverse == true");
 DEFINE_int32(t, -1, "tree index to print");
 DEFINE_int32(start_index, 0, "start from 0 default or start from 1 like libsvm");
+
 DEFINE_string(m, "model", "modelPath");
+DEFINE_string(f, "", "featureStr");
 
 void run(string feature, string modelPath)
 {
@@ -53,15 +55,7 @@ int main(int argc, char *argv[])
 	if (FLAGS_v == 0)
 		FLAGS_v = FLAGS_vl;
 
-	if (s >= argc)
-	{
-		LOG(WARNING) << "./gbdt_predict modelPath featureStr";
-		return -1;
-	}
-
-	string feature = argv[s];
-	string modelPath = s + 1 < argc ? argv[s + 1] : FLAGS_m;
-	run(feature, modelPath);
+	run(FLAGS_f, FLAGS_m);
 
 	return 0;
 }

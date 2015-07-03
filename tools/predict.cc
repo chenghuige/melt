@@ -18,26 +18,21 @@
 
 #include "MLCore/PredictorFactory.h"
 
+DEFINE_string(m, "model", "modelPath");
+DEFINE_string(f, "", "featureStr");
+
 using namespace std;
 using namespace gezi;
 
 DEFINE_int32(vl, 0, "vlog level");
 
-void run(string modelPath, string feature)
+void run(string feature, string modelPath)
 {
 	auto predictor = PredictorFactory::LoadPredictor(modelPath);
 	Vector fe(feature);
 	double out;
 	double probablity = predictor->Predict(fe, out);
 	Pval2(out, probablity);
-	//fe.MakeSparse();
-	//LOG(INFO) << "After make sparse";
-	//probablity = predictor->Predict(fe, out);
-	//Pval2(out, probablity);
-	//fe.MakeDense();
-	//LOG(INFO) << "After make dense, notice for sparse will make length at most 1024000";
-	//probablity = predictor->Predict(fe, out);
-	//Pval2(out, probablity);
 	if (FLAGS_v > 0)
 	{
 		predictor->Print(fe);
@@ -56,11 +51,7 @@ int main(int argc, char *argv[])
 	if (FLAGS_v == 0)
 		FLAGS_v = FLAGS_vl;
 
-	string modelPath = argv[s];
-	string feature;
-	if (s + 1 < argc)
-		feature = argv[s + 1];
-	run(modelPath, feature);
+	run(FLAGS_f, FLAGS_m);
 
 	return 0;
 }
