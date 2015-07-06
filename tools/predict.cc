@@ -20,6 +20,7 @@
 
 DEFINE_string(m, "model", "modelPath");
 DEFINE_string(f, "", "featureStr");
+DEFINE_bool(nonZeroOnly, false, "wether only print non zero features when -vl >= 1");
 
 using namespace std;
 using namespace gezi;
@@ -35,7 +36,7 @@ void run(string feature, string modelPath)
 	Pval2(out, probablity);
 	if (FLAGS_v > 0)
 	{
-		predictor->Print(fe);
+		predictor->Print(fe, FLAGS_nonZeroOnly);
 	}
 	
 }
@@ -44,7 +45,7 @@ int main(int argc, char *argv[])
 {
 	google::InitGoogleLogging(argv[0]);
 	google::InstallFailureSignalHandler();
-        google::SetVersionString(get_version());
+				google::SetVersionString(get_version());
 	int s = google::ParseCommandLineFlags(&argc, &argv, false);
 	if (FLAGS_log_dir.empty())
 		FLAGS_logtostderr = true;
