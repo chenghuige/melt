@@ -123,12 +123,27 @@ namespace gezi {
 			return namedFeatures;
 		}
 		
-		void Print(const Vector& features, std::ostream& ofs = std::cout)
+		void Print(const Vector& features, bool nonZeroOnly = false, std::ostream& ofs = std::cout)
 		{
+			if (nonZeroOnly)
+			{
 				features.ForEachNonZero([this, &ofs](int index, Float value)
 				{
-						ofs << index << "\t" << _featureNames[index] << "\t" << value << std::endl;
+					ofs << index << "\t" << _featureNames[index] << "\t" << value << std::endl;
 				});
+			}
+			else
+			{
+				features.ForEachAllIf([this, &ofs](int index, Float value)
+				{
+					ofs << index << "\t" << _featureNames[index] << "\t" << value << std::endl;
+					if (index == _featureNames.size() - 1)
+					{
+						return false;
+					}
+					return true;
+				});
+			}
 		}
 
 		//@TODO 考虑尽可能 输入 const 否则容易引起混淆错误
