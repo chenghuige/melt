@@ -7,7 +7,7 @@ TOOLCHAIN_ROOT='../../../../../ps/se/toolchain'
 RELATIVE_PATH='./'
 
 LEVEL=3
-GCC_LOCAL=1
+GCC_LOCAL=2
 print 'GCC_LOCAL: %d'%GCC_LOCAL 
 #是否使用高版本gcc 可以直接使用生成的bin文件 如./main 
 GCC_HIGH=1
