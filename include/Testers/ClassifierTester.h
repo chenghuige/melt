@@ -203,7 +203,7 @@ namespace gezi {
 				(numTrueNeg + numTruePos),
 				(numTruePos + numTrueNeg + numFalseNeg + numFalsePos));
 			fmt::print_line("POS.PRECISION:		{:.4f}", precisionPos);
-			fmt::print_line("POS.RECALL:	{:.4f}", recallPos);
+			fmt::print_line("POS.RECALL:		{:.4f}", recallPos);
 			fmt::print_line("NEG.PRECISION:		{:.4f}", precisionNeg);
 			fmt::print_line("NEG.RECALL:		{:.4f}", recallNeg);
 			double f1Score = 2.0 * precisionPos * recallPos / (precisionPos + recallPos);
