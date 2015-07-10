@@ -9,11 +9,11 @@ RELATIVE_PATH='./'
 LEVEL=3
 GCC_LOCAL=2
 print 'GCC_LOCAL: %d'%GCC_LOCAL 
-#是否使用高版本gcc 可以直接使用生成的bin文件 如./main 
-GCC_HIGH=1
-print 'GCC_HIGH: %d'%GCC_HIGH
 GCC_DYNAMIC=1
 print 'GCC_DYNAMIC: %d'%GCC_DYNAMIC
+
+GCC_HIGH=1
+print 'GCC_HIGH: %d'%GCC_HIGH
 GCC_VERSION='3.4.5'
 if  GCC_HIGH == 1: 
 	if GCC_DYNAMIC == 1:
