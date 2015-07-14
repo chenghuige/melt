@@ -21,6 +21,7 @@ using namespace gezi;
 
 DEFINE_int32(vl, 0, "vlog level");
 DEFINE_bool(r, false, "reverse: show trees from -.. to + .. if reverse == true");
+DEFINE_bool(pfg, true, "print (per feature gain)");
 DEFINE_int32(t, -1, "tree index to print");
 DEFINE_int32(start_index, 0, "start from 0 default or start from 1 like libsvm");
 
@@ -30,17 +31,24 @@ DEFINE_string(f, "", "featureStr");
 void run(string feature, string modelPath)
 {
 	GbdtPredictor predictor(modelPath);
+	
 	predictor.SetReverse(FLAGS_r);
+	
 	Vector fe(feature, FLAGS_start_index);
 	double out;
 	double probablity = predictor.Predict(fe, out);
 	Pval2(out, probablity);
+	
 	if (FLAGS_t >= 0)
 	{
 		predictor.Trees()[FLAGS_t].Print(fe);
 	}
-	predictor.FeatureGainPrint(fe);
-	Pval2(out, probablity);
+
+	if (FLAGS_pfg)
+	{
+		predictor.FeatureGainPrint(fe);
+		Pval2(out, probablity);
+	}
 }
 
 

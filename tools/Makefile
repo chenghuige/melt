@@ -46,6 +46,10 @@ DEP_INCPATH=-I../../../../../../app/search/sep/anti-spam/gezi \
   -I../../../../../../app/search/sep/anti-spam/gezi/include \
   -I../../../../../../app/search/sep/anti-spam/gezi/output \
   -I../../../../../../app/search/sep/anti-spam/gezi/output/include \
+  -I../../../../../../app/search/sep/anti-spam/melt-train \
+  -I../../../../../../app/search/sep/anti-spam/melt-train/include \
+  -I../../../../../../app/search/sep/anti-spam/melt-train/output \
+  -I../../../../../../app/search/sep/anti-spam/melt-train/output/include \
   -I../../../../../../com/btest/gtest \
   -I../../../../../../com/btest/gtest/include \
   -I../../../../../../com/btest/gtest/output \
@@ -82,10 +86,6 @@ DEP_INCPATH=-I../../../../../../app/search/sep/anti-spam/gezi \
   -I../../../../../../lib2-64/wordseg/include \
   -I../../../../../../lib2-64/wordseg/output \
   -I../../../../../../lib2-64/wordseg/output/include \
-  -I../../../../../../myspace/sep/chenghuige/melt-train \
-  -I../../../../../../myspace/sep/chenghuige/melt-train/include \
-  -I../../../../../../myspace/sep/chenghuige/melt-train/output \
-  -I../../../../../../myspace/sep/chenghuige/melt-train/output/include \
   -I../../../../../../ps/se/toolchain \
   -I../../../../../../ps/se/toolchain/include \
   -I../../../../../../ps/se/toolchain/output \
@@ -161,7 +161,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=dbf251775b740ab7c9331db053cdd992  COMAKE
+COMAKE_MD5=38568a8114ed2bb6ca66e7a93c95d225  COMAKE
 
 
 .PHONY:all
@@ -444,6 +444,7 @@ calibrate:calibrate_calibrate.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -464,8 +465,6 @@ calibrate:calibrate_calibrate.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
   ../../../../../../public/configure/libconfig.a \
@@ -566,6 +565,7 @@ predict:predict_predict.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -586,8 +586,6 @@ predict:predict_predict.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
   ../../../../../../public/configure/libconfig.a \
@@ -688,6 +686,7 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -708,8 +707,6 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
   ../../../../../../public/configure/libconfig.a \
@@ -810,6 +807,7 @@ fastrank_predict:fastrank_predict_fastrank_predict.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -830,8 +828,6 @@ fastrank_predict:fastrank_predict_fastrank_predict.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
   ../../../../../../public/configure/libconfig.a \
@@ -932,6 +928,7 @@ fastrank2gcc3:fastrank2gcc3_fastrank2gcc3.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -952,8 +949,6 @@ fastrank2gcc3:fastrank2gcc3_fastrank2gcc3.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
   ../../../../../../public/configure/libconfig.a \
@@ -1054,6 +1049,7 @@ gbdt_predict:gbdt_predict_gbdt_predict.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -1074,8 +1070,6 @@ gbdt_predict:gbdt_predict_gbdt_predict.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
   ../../../../../../public/configure/libconfig.a \
@@ -1176,6 +1170,7 @@ bin_sampling:bin_sampling_bin_sampling.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -1196,8 +1191,6 @@ bin_sampling:bin_sampling_bin_sampling.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
   ../../../../../../public/configure/libconfig.a \
@@ -1308,6 +1301,7 @@ melt:melt_melt.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -1328,8 +1322,6 @@ melt:melt_melt.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
   ../../../../../../public/configure/libconfig.a \
@@ -1544,6 +1536,7 @@ melt.debug:melt.debug_melt.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -1564,8 +1557,6 @@ melt.debug:melt.debug_melt.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
   ../../../../../../public/configure/libconfig.a \
@@ -1780,6 +1771,7 @@ vw:vw_vw.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -1800,8 +1792,6 @@ vw:vw_vw.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
   ../../../../../../public/configure/libconfig.a \
@@ -2006,6 +1996,7 @@ vw.debug:vw.debug_vw.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -2026,8 +2017,6 @@ vw.debug:vw.debug_vw.o \
   ../../../../../../lib2-64/postag/lib/libpostag.a \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_predict.a \
-  ../../../../../../myspace/sep/chenghuige/melt-train/libmelt_trainers.a \
   ../../../../../../public/comlog-plugin/libcomlog.a \
   ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
   ../../../../../../public/configure/libconfig.a \
