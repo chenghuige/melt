@@ -14,6 +14,12 @@
 #ifndef V_W_PREDICTOR_CPP_
 #define V_W_PREDICTOR_CPP_
 
+
+#ifdef USE_FOLLY_VECTOR
+#undef USE_FOLLY_VECTOR
+#include "common_util.h"
+#endif // USE_FOLLY_VECTOR
+
 #include "vowpalwabbit/parser.h"
 #include "vowpalwabbit/simple_label.h"
 #include "vowpalwabbit/parse_args.h"
@@ -21,7 +27,7 @@
 #include "vowpalwabbit/example.h"
 #include "vowpalwabbit/parse_regressor.h"
 
-#include "common_util.h"
+
 #include "Predictors/VWPredictor.h"
 
 namespace gezi {

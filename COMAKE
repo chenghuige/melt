@@ -107,6 +107,8 @@ CONFIGS('public/configure@base')
 #CONFIGS('public/uconv@base')
 CONFIGS('app/search/sep/anti-spam/gezi@base')
 CONFIGS('third-64/zlib@base') #used in vowpalwabbit
+CONFIGS('app/search/sep/anti-spam/gezi/third/folly')
+
 #srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp'.replace('./',RELATIVE_PATH))
 #Application('melt',Sources('melt.cc', srcs))
 srcs = GLOB('./src/vowpalwabbit/*.cc')
@@ -127,5 +129,8 @@ StaticLibrary('svm',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 
 #LIBS('')
 srcs = GLOB('./src/Wrapper/*.cpp ./src/Prediction/Instances/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/Predictors/*.cpp ./src/MLCore/*.cpp')
-StaticLibrary('melt',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
+
+#CppFlags = ENV.CppFlags() + CppFlags('-DFOLLY_NO_CONFIG -DFOLLY_HAVE_CLOCK_GETTIME -DFOLLY_VERSION=\\\"1\\\" -DUSE_FOLLY_VECTOR')
+CppFlags = ENV.CppFlags() + CppFlags('-DMELT_USE_THIRD_PARTY')
+StaticLibrary('melt',Sources(srcs, CppFlags))
 

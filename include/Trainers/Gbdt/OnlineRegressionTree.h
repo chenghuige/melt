@@ -33,7 +33,11 @@ namespace gezi {
 		//输入特征 遍历树 输出叶子节点的数值
 		Float Output(Vector& features)
 		{
-			return _leafValue[GetLeaf(features)];
+			int index = GetLeaf(features);
+#ifdef _DEBUG
+			_debugNode.score = _leafValue[index];
+#endif // _DEBUG
+			return _leafValue[index];
 		}
 
 		void GainMap(Vector& features, map<int, double>& m)
@@ -147,6 +151,9 @@ namespace gezi {
 			int node = 0;
 			while (node >= 0)
 			{
+#ifdef _DEBUG
+				_debugNode.paths.push_back((*_featureNames)[_splitFeature[node]]);
+#endif // _DEBU
 				if (features[_splitFeature[node]] <= threshold[node])
 				{
 					node = _lteChild[node];

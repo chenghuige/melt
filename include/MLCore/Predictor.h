@@ -445,7 +445,7 @@ namespace gezi {
 		virtual void SaveFeaturesGain(int topNum = 0)
 		{
 			gezi::Noticer noticer("SaveFeaturesGain", 0);
-			write_file(ToFeaturesGainSummary(topNum), _path + "/model.featureGain");
+			write_file(ToFeaturesGainSummary(topNum), _path + "/model.featureGain.txt");
 		}
 
 		virtual void LoadText_(string file)

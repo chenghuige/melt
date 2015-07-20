@@ -47,6 +47,10 @@ DEP_INCPATH=-I../../../../../app/search/sep/anti-spam/gezi \
   -I../../../../../app/search/sep/anti-spam/gezi/include \
   -I../../../../../app/search/sep/anti-spam/gezi/output \
   -I../../../../../app/search/sep/anti-spam/gezi/output/include \
+  -I../../../../../app/search/sep/anti-spam/gezi/third/folly \
+  -I../../../../../app/search/sep/anti-spam/gezi/third/folly/include \
+  -I../../../../../app/search/sep/anti-spam/gezi/third/folly/output \
+  -I../../../../../app/search/sep/anti-spam/gezi/third/folly/output/include \
   -I../../../../../com/btest/gtest \
   -I../../../../../com/btest/gtest/include \
   -I../../../../../com/btest/gtest/output \
@@ -154,7 +158,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=73a5ff0c4a31387f1461576a5dc97ad7  COMAKE
+COMAKE_MD5=aad28a945762689e9d05cb84b098b460  COMAKE
 
 
 .PHONY:all
@@ -970,48 +974,42 @@ src/Wrapper/melt_PredictorFactory.o:src/Wrapper/PredictorFactory.cpp
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/Wrapper/melt_PredictorFactory.o src/Wrapper/PredictorFactory.cpp
+  -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/Wrapper/melt_PredictorFactory.o src/Wrapper/PredictorFactory.cpp
 
 src/Testers/melt_ClassifierTester.o:src/Testers/ClassifierTester.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Testers/melt_ClassifierTester.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/Testers/melt_ClassifierTester.o src/Testers/ClassifierTester.cpp
+  -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/Testers/melt_ClassifierTester.o src/Testers/ClassifierTester.cpp
 
 src/Prediction/Normalization/melt_BinNormalizer.o:src/Prediction/Normalization/BinNormalizer.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Prediction/Normalization/melt_BinNormalizer.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/Prediction/Normalization/melt_BinNormalizer.o src/Prediction/Normalization/BinNormalizer.cpp
+  -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/Prediction/Normalization/melt_BinNormalizer.o src/Prediction/Normalization/BinNormalizer.cpp
 
 src/Predictors/melt_LibSVMPredictor.o:src/Predictors/LibSVMPredictor.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Predictors/melt_LibSVMPredictor.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/Predictors/melt_LibSVMPredictor.o src/Predictors/LibSVMPredictor.cpp
+  -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/Predictors/melt_LibSVMPredictor.o src/Predictors/LibSVMPredictor.cpp
 
 src/Predictors/melt_VWPredictor.o:src/Predictors/VWPredictor.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Predictors/melt_VWPredictor.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/Predictors/melt_VWPredictor.o src/Predictors/VWPredictor.cpp
+  -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/Predictors/melt_VWPredictor.o src/Predictors/VWPredictor.cpp
 
 src/MLCore/melt_PredictoryFactory.o:src/MLCore/PredictoryFactory.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/MLCore/melt_PredictoryFactory.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o src/MLCore/melt_PredictoryFactory.o src/MLCore/PredictoryFactory.cpp
+  -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/MLCore/melt_PredictoryFactory.o src/MLCore/PredictoryFactory.cpp
 
 endif #ifeq ($(shell uname -m),x86_64)
 

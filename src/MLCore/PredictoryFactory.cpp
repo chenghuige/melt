@@ -13,10 +13,10 @@
 #include "MLCore/PredictorFactory.h"
 #include "Predictors/LinearPredictor.h"
 #include "Predictors/GbdtPredictor.h"
-#ifndef MELT_NO_THIRD_PREDICTOR
+#ifdef MELT_USE_THIRD_PARTY
 #include "Predictors/LibSVMPredictor.h"
 #include "Predictors/VWPredictor.h"
-#endif
+#endif //MELT_USE_THIRD_PARTY
 #include "Predictors/EnsemblePredictor.h"
 namespace gezi{
 	namespace {
@@ -75,12 +75,12 @@ namespace gezi{
 			return make_shared<LinearPredictor>();
 		case  PredictorType::GbdtBinaryClassification:
 			return make_shared<GbdtPredictor>();
-#ifndef MELT_NO_THIRD_PREDICTOR
+#ifndef MELT_USE_THIRD_PARTY
 		case  PredictorType::LibSVM:
 			return make_shared<LibSVMPredictor>();
 		case PredictorType::VW:
 			return make_shared<VWPredictor>();
-#endif
+#endif //MELT_USE_THIRD_PARTY
 		case PredictorType::Ensemble:
 			return make_shared<EnsemblePredictor>();
 			//---- Regression

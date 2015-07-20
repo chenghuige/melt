@@ -13,7 +13,7 @@
 
 #ifndef PREDICTOR_FACTORY_CPP_
 #define PREDICTOR_FACTORY_CPP_
-#include "common_util.h"
+//#include "common_util.h"
 #include "Wrapper/PredictorFactory.h"
 DEFINE_string(model_dir, "", "首个模型dir 如果不为空则覆盖conf中配置");
 namespace gezi {

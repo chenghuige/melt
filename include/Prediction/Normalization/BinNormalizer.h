@@ -133,7 +133,7 @@ namespace gezi {
 #pragma omp master
 			{
 				if (omp_get_num_threads() > 1)
-					sort(_shiftIndices.begin(), _shiftIndices.end());
+					std::sort(_shiftIndices.begin(), _shiftIndices.end());
 			}
 		}
 		friend class boost::serialization::access;
