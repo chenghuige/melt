@@ -32,12 +32,14 @@ static int* resut2(const char* s, T value, Args... args)
 }
 class Abc
 {
+
 virtual void abc() = 0;
 bool operator +=(const x)
 {
 
 }
 int x = 3;
+int y = std::numeric_limits<Float>::max(); 
 const static map<string, string> =
 {
 {"abc", "def"}

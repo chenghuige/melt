@@ -89,6 +89,7 @@ if GCC_HIGH  == 1:
 LDFLAGS('-lpthread -lcurl -lrt -lcrypto -lldap -lssl -ldl -rdynamic -L./ -L./lib -lpython2.7 -lboost_python -Wl,-rpath=./', GCC_LDFLAGS)
 
 #ÒÀÀµÄ£¿é
+CONFIGS('third-64/gflags.bak')
 ImportConfigsFrom('..')
 CONFIGS('third-64/boost.1.53')
 #add these----
@@ -112,5 +113,6 @@ headers=''
 LIBS('./lib/libpython2.7.so ./lib/libboost_python.so')
 #LIBS('./libpython2.7.so ./libboost_python.so')
 srcs = ''
-SharedLibrary('melt',Sources('melt_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
+#SharedLibrary('melt',Sources('melt_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
+SharedLibrary('melt_predict',Sources('melt_predict_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('segment',Sources('segment_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))

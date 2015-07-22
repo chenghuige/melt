@@ -50,6 +50,10 @@ DEP_INCPATH=-I../../../../../../app/search/ksarch/store/proxy-lib/redis \
   -I../../../../../../app/search/sep/anti-spam/gezi/include \
   -I../../../../../../app/search/sep/anti-spam/gezi/output \
   -I../../../../../../app/search/sep/anti-spam/gezi/output/include \
+  -I../../../../../../app/search/sep/anti-spam/gezi/third \
+  -I../../../../../../app/search/sep/anti-spam/gezi/third/include \
+  -I../../../../../../app/search/sep/anti-spam/gezi/third/output \
+  -I../../../../../../app/search/sep/anti-spam/gezi/third/output/include \
   -I../../../../../../app/search/sep/anti-spam/melt \
   -I../../../../../../app/search/sep/anti-spam/melt-train \
   -I../../../../../../app/search/sep/anti-spam/melt-train/include \
@@ -211,6 +215,10 @@ DEP_INCPATH=-I../../../../../../app/search/ksarch/store/proxy-lib/redis \
   -I../../../../../../third-64/boost/output \
   -I../../../../../../third-64/boost/output/include \
   -I../../../../../../third-64/gflags \
+  -I../../../../../../third-64/gflags.bak \
+  -I../../../../../../third-64/gflags.bak/include \
+  -I../../../../../../third-64/gflags.bak/output \
+  -I../../../../../../third-64/gflags.bak/output/include \
   -I../../../../../../third-64/gflags/include \
   -I../../../../../../third-64/gflags/output \
   -I../../../../../../third-64/gflags/output/include \
@@ -253,11 +261,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=91e1cbd37c86fc0608f76a732b3643c2  COMAKE
+COMAKE_MD5=a080a7125e33b0e930bf84bf2b21119d  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check libmelt.so 
+all:comake2_makefile_check libmelt_predict.so 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -277,9 +285,9 @@ ccpclean:
 .PHONY:clean
 clean:ccpclean
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mclean[0m']"
-	rm -rf libmelt.so
-	rm -rf ./output/so/libmelt.so
-	rm -rf melt_melt_py.o
+	rm -rf libmelt_predict.so
+	rm -rf ./output/so/libmelt_predict.so
+	rm -rf melt_predict_melt_predict_py.o
 
 .PHONY:dist
 dist:
@@ -298,11 +306,11 @@ love:
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlove[0m']"
 	@echo "make love done"
 
-libmelt.so:melt_melt_py.o \
+libmelt_predict.so:melt_predict_melt_predict_py.o \
   ./lib/libpython2.7.so \
   ./lib/libboost_python.so
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibmelt.so[0m']"
-	$(CC) -shared melt_melt_py.o -Xlinker "-(" ./lib/libpython2.7.so \
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibmelt_predict.so[0m']"
+	$(CC) -shared melt_predict_melt_predict_py.o -Xlinker "-(" ./lib/libpython2.7.so \
   ./lib/libboost_python.so ../../../../../../app/search/ksarch/store/proxy-lib/redis/libredisclient.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
@@ -312,7 +320,6 @@ libmelt.so:melt_melt_py.o \
   ../../../../../../app/search/sep/anti-spam/melt/libblas.a \
   ../../../../../../app/search/sep/anti-spam/melt/liblinear.a \
   ../../../../../../app/search/sep/anti-spam/melt/libmelt.a \
-  ../../../../../../app/search/sep/anti-spam/melt/libmelt_predict.a \
   ../../../../../../app/search/sep/anti-spam/melt/libsofia.a \
   ../../../../../../app/search/sep/anti-spam/melt/libsvm.a \
   ../../../../../../app/search/sep/anti-spam/melt/libvw.a \
@@ -447,6 +454,8 @@ libmelt.so:melt_melt_py.o \
   ../../../../../../third-64/boost/lib/libboost_unit_test_framework.a \
   ../../../../../../third-64/boost/lib/libboost_wave.a \
   ../../../../../../third-64/boost/lib/libboost_wserialization.a \
+  ../../../../../../third-64/gflags.bak/lib/libgflags.a \
+  ../../../../../../third-64/gflags.bak/lib/libgflags_nothreads.a \
   ../../../../../../third-64/gflags/lib/libgflags.a \
   ../../../../../../third-64/gflags/lib/libgflags_nothreads.a \
   ../../../../../../third-64/glog/lib/libglog.a \
@@ -478,19 +487,19 @@ libmelt.so:melt_melt_py.o \
   -Wl,-rpath=./ \
   -lgomp \
   -rdynamic \
-  -Wl,-rpath=./lib/ -Xlinker "-)" -o libmelt.so
+  -Wl,-rpath=./lib/ -Xlinker "-)" -o libmelt_predict.so
 	mkdir -p ./output/so
-	cp -f --link libmelt.so ./output/so
+	cp -f --link libmelt_predict.so ./output/so
 
-melt_melt_py.o:melt_py.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt_melt_py.o[0m']"
+melt_predict_melt_predict_py.o:melt_predict_py.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt_predict_melt_predict_py.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
   -DPYTHON_WRAPPER \
   -DNDEBUG \
-  -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED $(CXXFLAGS)  -o melt_melt_py.o melt_py.cc
+  -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED $(CXXFLAGS)  -o melt_predict_melt_predict_py.o melt_predict_py.cc
 
 endif #ifeq ($(shell uname -m),x86_64)
 
