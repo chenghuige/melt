@@ -157,8 +157,13 @@ private:
 
 	int numBins = 200;
 	Float binSize = 0;
-	Float _min = std::numeric_limits<Float>::max();
+#if __GNUC__ > 3 || defined(WIN32)
+	Float _min = std::numeric_limits<Float>::max();  //python wrapper bug @FIXME 带有()的情况
 	Float _max = std::numeric_limits<Float>::min();
+#else 
+	Float _min;
+	Float _max;
+#endif
 	Fvec binProbs;
 };
 }  //----end of namespace gezi

@@ -333,6 +333,9 @@
     <ClCompile Include="tools\fastrank2gcc3.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\MLCore\PredictoryFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MLCore\IPredictor.h">
@@ -771,6 +774,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gcc3\GbdtPredictor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MLCore\PredictionKind.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MLCore\LossKind.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

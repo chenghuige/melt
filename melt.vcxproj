@@ -83,6 +83,7 @@
     <ClCompile Include="src\liblinear\linear.cpp" />
     <ClCompile Include="src\liblinear\tron.cpp" />
     <ClCompile Include="src\libsvm\svm.cpp" />
+    <ClCompile Include="src\MLCore\PredictoryFactory.cpp" />
     <ClCompile Include="src\Prediction\Instances\InstanceParser.cpp" />
     <ClCompile Include="src\Prediction\Normalization\BinNormalizer.cpp" />
     <ClCompile Include="src\Prediction\Trainers\LinearSVM.cpp" />
@@ -187,6 +188,8 @@
     <ClInclude Include="include\MLCore\IterativeTrainer.h" />
     <ClInclude Include="include\MLCore\ITrainer.h" />
     <ClInclude Include="include\MLCore\ITrainerFactory.h" />
+    <ClInclude Include="include\MLCore\LossKind.h" />
+    <ClInclude Include="include\MLCore\PredictionKind.h" />
     <ClInclude Include="include\MLCore\Predictor.h" />
     <ClInclude Include="include\MLCore\PredictorFactory.h" />
     <ClInclude Include="include\MLCore\TextPredictor.h" />

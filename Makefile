@@ -47,10 +47,10 @@ DEP_INCPATH=-I../../../../../app/search/sep/anti-spam/gezi \
   -I../../../../../app/search/sep/anti-spam/gezi/include \
   -I../../../../../app/search/sep/anti-spam/gezi/output \
   -I../../../../../app/search/sep/anti-spam/gezi/output/include \
-  -I../../../../../app/search/sep/anti-spam/gezi/third/folly \
-  -I../../../../../app/search/sep/anti-spam/gezi/third/folly/include \
-  -I../../../../../app/search/sep/anti-spam/gezi/third/folly/output \
-  -I../../../../../app/search/sep/anti-spam/gezi/third/folly/output/include \
+  -I../../../../../app/search/sep/anti-spam/gezi/third \
+  -I../../../../../app/search/sep/anti-spam/gezi/third/include \
+  -I../../../../../app/search/sep/anti-spam/gezi/third/output \
+  -I../../../../../app/search/sep/anti-spam/gezi/third/output/include \
   -I../../../../../com/btest/gtest \
   -I../../../../../com/btest/gtest/include \
   -I../../../../../com/btest/gtest/output \
@@ -158,7 +158,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=aad28a945762689e9d05cb84b098b460  COMAKE
+COMAKE_MD5=4633e3654e5e70823e7c51fd655c28a4  COMAKE
 
 
 .PHONY:all

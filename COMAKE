@@ -106,8 +106,8 @@ CONFIGS('third-64/glog@base')
 CONFIGS('public/configure@base')
 #CONFIGS('public/uconv@base')
 CONFIGS('app/search/sep/anti-spam/gezi@base')
+CONFIGS('app/search/sep/anti-spam/gezi/third')
 CONFIGS('third-64/zlib@base') #used in vowpalwabbit
-CONFIGS('app/search/sep/anti-spam/gezi/third/folly')
 
 #srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp'.replace('./',RELATIVE_PATH))
 #Application('melt',Sources('melt.cc', srcs))

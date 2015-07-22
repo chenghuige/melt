@@ -56,8 +56,8 @@ while i < len(m):
 		i += 1
 		continue
 	
-	if (line.find('ostream&') >= 0 or line.find('fstream&') >= 0) and line.find(cout) >= 0 and line.endswith(';'):
-		print_('//' + line) 
+	if (line.find('ostream') >= 0 or line.find('fstream') >= 0 or line.find('ofstream') >= 0) and line.endswith(';'):
+		print '//' + line
 		i += 1
 		continue
 
@@ -75,7 +75,7 @@ while i < len(m):
 	if line.endswith('='):
 		if i + 1 < len(m) and m[i + 1].startswith('{'):
 			print line[:line.rfind('=')].rstrip() + ';'
-			while not (m[i].startswith('};')):
+			while not (m[i].startswith('};')) and not (m[i].strip() == ';' and i - 1 >= 0 and m[i - 1].strip() == '}'):
 				i += 1
 			i += 1
 			continue
