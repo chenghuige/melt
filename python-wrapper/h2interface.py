@@ -44,11 +44,13 @@ def pyplusplus_hack(line, content):
     global abstract_classes
     global stack_class
     global input_file
+
     #@FIXME hack Float _min = std::numeric_limits<Float>::max(); 
     if line.find('=') > 0 and line.rstrip().endswith('()') and line.find('operator') == -1 and not line.startswith('virtual'):
         l = line.split()
         if len(l) > 2 and l[2] == '=':
             return line.rstrip() + ';\n'
+
     vec_ref_pattern = re.compile(r'return.+?\[.+?\];')   
     lines = line.split('\n')
     need_comment = False
@@ -66,6 +68,11 @@ def pyplusplus_hack(line, content):
         if line.find('&&') >= 0:
             need_comment = True 
             break 
+
+        if line.find('ostream') >= 0 or line.find('fstream') >= 0 or line.find('ofstream') >= 0:
+            need_comment = True
+            break
+
         #real virtual
         if line.replace(' ','').endswith(')=0'):
             full_class_name = '::'.join(stack_namespace) + '::' + '::'.join(stack_class) 

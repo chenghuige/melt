@@ -55,11 +55,6 @@ while i < len(m):
 		print '//' + line
 		i += 1
 		continue
-	
-	if (line.find('ostream') >= 0 or line.find('fstream') >= 0 or line.find('ofstream') >= 0) and line.endswith(';'):
-		print '//' + line
-		i += 1
-		continue
 
 	# hack define
 	if line.replace(' ', '').startswith('#define'):

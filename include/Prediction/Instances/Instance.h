@@ -122,11 +122,7 @@ public:
 
 	//TODO size_t counter; 计数 第几个instance
 	//------Evaluate相关的信息在基础的IsEvaluateAble中
-#if __GNUC__ > 3 || defined(WIN32)
 	Float label = std::numeric_limits<double>::quiet_NaN(); 
-#else
-	Float label;
-#endif
 	Float weight = 1.0;
 
 	Vector features;
