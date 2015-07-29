@@ -18,8 +18,9 @@ def fix_vec(line):
 		pos += len(pattern) 
 		pos2 = line.rfind('>')
 		line2 = line[pos : pos2]
-		pos3 = line2.rfind(',')
-		line2 = line2[0 : pos3]
+		if line2.find('true') > 0:
+			pos3 = line2.rfind(',')
+			line2 = line2[0 : pos3]
 		name = line2.strip() 
 		return line.strip()[:-1] + '\n' + 'VEC_METHOD(%s)'%name + ";\n"
 	else:
