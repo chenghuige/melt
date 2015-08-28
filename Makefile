@@ -158,7 +158,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=4633e3654e5e70823e7c51fd655c28a4  COMAKE
+COMAKE_MD5=2efd256cde6c4d9016a7264f041adb7c  COMAKE
 
 
 .PHONY:all
@@ -259,7 +259,6 @@ clean:ccpclean
 	rm -rf src/liblinear/linear_linear.o
 	rm -rf src/liblinear/linear_tron.o
 	rm -rf src/libsvm/svm_svm.o
-	rm -rf src/Wrapper/melt_PredictorFactory.o
 	rm -rf src/Testers/melt_ClassifierTester.o
 	rm -rf src/Prediction/Normalization/melt_BinNormalizer.o
 	rm -rf src/Predictors/melt_LibSVMPredictor.o
@@ -433,15 +432,13 @@ libsvm.a:src/libsvm/svm_svm.o
 	mkdir -p ./output/lib
 	cp -f --link libsvm.a ./output/lib
 
-libmelt.a:src/Wrapper/melt_PredictorFactory.o \
-  src/Testers/melt_ClassifierTester.o \
+libmelt.a:src/Testers/melt_ClassifierTester.o \
   src/Prediction/Normalization/melt_BinNormalizer.o \
   src/Predictors/melt_LibSVMPredictor.o \
   src/Predictors/melt_VWPredictor.o \
   src/MLCore/melt_PredictoryFactory.o
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibmelt.a[0m']"
-	ar crs libmelt.a src/Wrapper/melt_PredictorFactory.o \
-  src/Testers/melt_ClassifierTester.o \
+	ar crs libmelt.a src/Testers/melt_ClassifierTester.o \
   src/Prediction/Normalization/melt_BinNormalizer.o \
   src/Predictors/melt_LibSVMPredictor.o \
   src/Predictors/melt_VWPredictor.o \
@@ -968,13 +965,6 @@ src/libsvm/svm_svm.o:src/libsvm/svm.cpp
   -DVERSION=\"1.9.8.7\" \
   -O3 \
   -DNDEBUG $(CXXFLAGS)  -o src/libsvm/svm_svm.o src/libsvm/svm.cpp
-
-src/Wrapper/melt_PredictorFactory.o:src/Wrapper/PredictorFactory.cpp
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Wrapper/melt_PredictorFactory.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/Wrapper/melt_PredictorFactory.o src/Wrapper/PredictorFactory.cpp
 
 src/Testers/melt_ClassifierTester.o:src/Testers/ClassifierTester.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Testers/melt_ClassifierTester.o[0m']"

@@ -237,10 +237,19 @@ namespace gezi {
 			return Predict(instance->features, output);
 		}
 
+		//@TODO maybe use RegressionPredictor is better ? but this is easiest way
 		Float Predict(Vector& features, Float& output)
 		{
 			output = Output(features);
-			return Predict(output);
+			if (GetPredictionKind() == PredictionKind::Regression
+				|| GetPredictionKind() == PredictionKind::MultiOutputRegression)
+			{
+				return output;
+			}
+			else
+			{
+				return Predict(output);
+			}
 		}
 
 		Float Predict(Fvec& values, Float& output)
@@ -259,6 +268,12 @@ namespace gezi {
 		{
 			Vector features(m);
 			return Predict(features);
+		}
+
+		Float Output(const map<int, double>& m)
+		{
+			Vector features(m);
+			return Output(features);
 		}
 
 		Float Predict(const map<int, double>& m, Float& output)
@@ -534,7 +549,7 @@ namespace gezi {
 			{
 				int idx = indexVec[i];
 				ss << setiosflags(ios::left) << setfill(' ') << setw(100)
-					<< STR(i) + STR(":") + _featureNames[idx]
+					<< STR(i) + ":" + _featureNames[idx]
 					<< gains[idx] << endl;
 			}
 			return ss.str();

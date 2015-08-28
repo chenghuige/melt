@@ -18,6 +18,7 @@
 #include "Identifer.h"
 #include "tools/content_process.h"
 #ifdef _DEBUG
+#include "Predictors/LinearPredictor.h"
 #include "feature/Features.h"
 #endif
 #include "Predictor.h"
@@ -157,9 +158,8 @@ namespace gezi {
 				LOG(INFO) << item.first << "\t" << item.second;
 			}
 			total += dynamic_pointer_cast<LinearPredictor>(predictor)->_bias;
-			Pval(total);
+			Pval3(total, predictor->Output(m), predictor->Predict(m));
 #endif
-
 			return score;
 		}
 #endif // !NO_BAIDU_DEP

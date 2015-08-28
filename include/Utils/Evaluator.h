@@ -218,7 +218,7 @@ namespace gezi {
 	public:
 		virtual string Name() const
 		{
-			return "RMSE";
+			return "RMS";
 		}
 		virtual Float Evaluate(vector<EvaluateNode>& results) override
 		{

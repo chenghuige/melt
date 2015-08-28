@@ -114,18 +114,18 @@ namespace gezi {
 		virtual void SaveFeaturesGain(int topNum = 0) override
 		{
 			gezi::Noticer noticer("SaveFeaturesGain", 0);
-			ofstream ofs(_path + "/model.featureGain");
+			ofstream ofs(_path + "/model.featureGain.txt");
 			_weights.MakeSparse();
 			int maxLen = (topNum == 0 || topNum > _weights.values.size()) ? _weights.values.size() : topNum;
-			Pval(maxLen);
-			ivec indexVec = _weights.indices;
-			gezi::index_sort(_weights.values, indexVec, [](Vector::value_type l, Vector::value_type r) { return abs(l) > abs(r); }, maxLen);
+			PVAL(maxLen);
+			ivec indexVec = gezi::index_sort(_weights.values, [](Vector::value_type l, Vector::value_type r) { return abs(l) > abs(r); }, maxLen);
+			PVEC(indexVec);
 			for (int i = 0; i < maxLen; i++)
 			{
-				int idx = indexVec[i];
+				int idx = _weights.IsSparse() ? _weights.indices[indexVec[i]] : indexVec[i];
 				ofs << setiosflags(ios::left) << setfill(' ') << setw(100)
-					<< STR(i) + STR(":") + _featureNames[idx]
-					<< _weights.values[idx] << endl;
+					<< STR(i) + ":" + _featureNames[idx]
+					<< _weights.values[indexVec[i]] << endl;
 			}
 		}
 

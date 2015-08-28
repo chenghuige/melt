@@ -66,8 +66,8 @@ namespace gezi {
 		{
 			itemsSeen++;
 			float target = (IsPositiveTarget ? 1 : 0);
-			if (itemsSeen < maxNumSamples)
-			{
+			//if (itemsSeen < maxNumSamples)
+			//{
 				nodes.push_back(Node(target, weight, score));
 				storedWeight += weight;
 
@@ -75,34 +75,34 @@ namespace gezi {
 				{
 					sorted = !(nodes.back() < nodes[nodes.size() - 2]);
 				}
-			}
-			else
-			{
-				int draw = rand->Next(itemsSeen); // 0 to items_seen - 1
+			//}
+			//else
+			//{  //@FIXME 这部分分支代码有问题
+			//	int draw = rand->Next(itemsSeen); // 0 to items_seen - 1
 
-				if (draw < maxNumSamples) // keep it 
-				{
-					Sort();
-					//@TODO _nodes[draw] = Node(target,weight,score)会慢吗
-					nodes[draw].Set(target, weight, score);
+			//	if (draw < maxNumSamples) // keep it 
+			//	{
+			//		Sort();
+			//		//@TODO _nodes[draw] = Node(target,weight,score)会慢吗
+			//		nodes[draw].Set(target, weight, score);
 
-					if (sorted)
-					{
-						if (draw == 0)
-						{
-							sorted = !(nodes[1] < nodes[0]);
-						}
-						else if (draw == nodes.size() - 1)
-						{
-							sorted = !(nodes.back() < nodes[nodes.size() - 2]);
-						}
-						else
-						{
-							sorted = !(nodes[draw] < nodes[draw - 1] || nodes[draw + 1] < nodes[draw]);
-						}
-					}
-				}
-			}
+			//		if (sorted)
+			//		{
+			//			if (draw == 0)
+			//			{
+			//				sorted = !(nodes[1] < nodes[0]);
+			//			}
+			//			else if (draw == nodes.size() - 1)
+			//			{
+			//				sorted = !(nodes.back() < nodes[nodes.size() - 2]);
+			//			}
+			//			else
+			//			{
+			//				sorted = !(nodes[draw] < nodes[draw - 1] || nodes[draw + 1] < nodes[draw]);
+			//			}
+			//		}
+			//	}
+			//}
 		}
 
 		void Sort()

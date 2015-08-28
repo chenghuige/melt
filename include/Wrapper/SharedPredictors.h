@@ -34,6 +34,7 @@ public:
 			return _predictors[modelPath] = PredictorFactory::LoadPredictor(modelPath);
 		}
 	}
+	
 	static PredictorPtr& Instance(int index = 0)
 	{
 		return  GetPredictors()[index];

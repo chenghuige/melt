@@ -41,6 +41,11 @@ while i < len(m):
 		print '//' + line
 		i += 1
 		continue
+	
+	if line.startswith('extern '):
+		print '//' + line
+		i += 1
+		continue
 				
 	#-------cereal to boost
 	line = line.replace('cereal::', 'boost::serialization::')

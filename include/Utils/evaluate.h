@@ -7,7 +7,7 @@
  *
  *          \date   2015-05-26 12:54:24.419936
  *
- *  \Description:
+ *  \Description:  
  *  ==============================================================================
  */
 
@@ -94,12 +94,13 @@ namespace gezi {
 			{
 				return 0;
 			}
-			Float error = 0;
+			Float error = 0, sumWeights = 0;
 			for (size_t i = 0; i < predictions.size(); i++)
 			{
 				error += std::abs(predictions[i] - instances[i]->label) * instances[i]->weight;
+				sumWeights += instances[i]->weight;
 			}
-			return error / predictions.size();
+			return error / sumWeights;
 		}
 
 		template<typename Vec>
@@ -109,13 +110,14 @@ namespace gezi {
 			{
 				return 0;
 			}
-			Float error = 0;
+			Float error = 0, sumWeights = 0;
 			for (size_t i = 0; i < predictions.size(); i++)
 			{
 				Float diff = predictions[i] - instances[i]->label;
 				error += diff * diff * instances[i]->weight;
+				sumWeights += instances[i]->weight;
 			}
-			return error / predictions.size();
+			return error / sumWeights;
 		}
 
 		template<typename Vec>
@@ -131,13 +133,14 @@ namespace gezi {
 			{
 				return 0;
 			}
-			Float error = 0;
+			Float error = 0, sumWeights = 0;
 			for (size_t i = 0; i < predictions.size(); i++)
 			{
 				Float trueProb = (instances[i]->label > 0 ? 1 : 0);
 				error += gezi::cross_entropy_toleranced(trueProb, predictions[i], logTolerence) * instances[i]->weight; //使用ln 不使用log2
+				sumWeights += instances[i]->weight;
 			}
-			return error / predictions.size();
+			return error / sumWeights;
 		}
 
 		//理论上通过output计算的LogLoss output 和通过probability计算的LogLoss Prob应该一样 但是考虑到浮点误差 比较大的ouput 很容易prob计算为1 带来log计算为inf 
@@ -151,13 +154,14 @@ namespace gezi {
 			{
 				return 0;
 			}
-			Float error = 0;
+			Float error = 0, sumWeights = 0;
 			for (size_t i = 0; i < predictions.size(); i++)
 			{
 				Float trueOutput = (instances[i]->label > 0 ? 1 : -1);
 				error += loss::logistic(trueOutput, predictions[i], beta) * instances[i]->weight;
+				sumWeights += instances[i]->weight;
 			}
-			return error / predictions.size();
+			return error / sumWeights;
 		}
 
 		//输入是ouput 和 logloss_output实际差不多
@@ -168,13 +172,14 @@ namespace gezi {
 			{
 				return 0;
 			}
-			Float error = 0;
+			Float error = 0, sumWeights = 0;
 			for (size_t i = 0; i < predictions.size(); i++)
 			{
 				Float trueOutput = (instances[i]->label > 0 ? 1 : -1);
 				error += std::exp(-beta * trueOutput * predictions[i]) * instances[i]->weight;
+				sumWeights += instances[i]->weight;
 			}
-			return error / predictions.size();
+			return error / sumWeights;
 		}
 
 		//thre = 0.5表示按照概率, 0 表示按照margin output
@@ -185,13 +190,14 @@ namespace gezi {
 			{
 				return 0;
 			}
-			Float error = 0;
+			Float error = 0, sumWeights = 0;
 			for (size_t i = 0; i < predictions.size(); i++)
 			{
 				Float trueProb = (instances[i]->label > 0 ? 1 : 0);
 				error += (predictions[i] > thre ? 1 - trueProb : trueProb) * instances[i]->weight;
+				sumWeights += instances[i]->weight;
 			}
-			return error / predictions.size();
+			return error / sumWeights;
 		}
 
 		//只支持margin output作为输入
@@ -202,7 +208,7 @@ namespace gezi {
 			{
 				return 0;
 			}
-			Float error = 0;
+			Float error = 0, sumWeights = 0;
 			for (size_t i = 0; i < predictions.size(); i++)
 			{
 				Float trueOutput = (instances[i]->label > 0 ? 1 : -1);
@@ -211,8 +217,9 @@ namespace gezi {
 				{
 					error += (margin - distance) * instances[i]->weight;
 				}
+				sumWeights += instances[i]->weight;
 			}
-			return error / predictions.size();
+			return error / sumWeights;
 		}
 
 		//----------------------------- below is depreciated 不再维护 不要再使用EvaluateNode只是展示另外一种可能的接口设计 
@@ -270,12 +277,13 @@ namespace gezi {
 			{
 				return 0;
 			}
-			Float error = 0;
+			Float error = 0, sumWeights = 0;
 			for (size_t i = 0; i < results.size(); i++)
 			{
 				error += std::abs(results[i].prediction - results[i].label) * results[i].weight;
+				sumWeights += results[i].weight;
 			}
-			return error / results.size();
+			return error / sumWeights;
 		}
 
 		inline Float l2(vector<Node>& results)
@@ -284,13 +292,14 @@ namespace gezi {
 			{
 				return 0;
 			}
-			Float error = 0;
+			Float error = 0, sumWeights = 0;
 			for (size_t i = 0; i < results.size(); i++)
 			{
 				Float diff = results[i].prediction - results[i].label;
 				error += diff * diff * results[i].weight;
+				sumWeights += results[i].weight;
 			}
-			return error / results.size();
+			return error / sumWeights;
 		}
 
 		inline Float rmse(vector<Node>& results)

@@ -128,7 +128,8 @@ srcs = GLOB('./src/libsvm/*.cpp')
 StaticLibrary('svm',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 
 #LIBS('')
-srcs = GLOB('./src/Wrapper/*.cpp ./src/Prediction/Instances/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/Predictors/*.cpp ./src/MLCore/*.cpp')
+#srcs = GLOB('./src/Wrapper/*.cpp ./src/Prediction/Instances/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/Predictors/*.cpp ./src/MLCore/*.cpp')
+srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/Predictors/*.cpp ./src/MLCore/*.cpp')
 
 #CppFlags = ENV.CppFlags() + CppFlags('-DFOLLY_NO_CONFIG -DFOLLY_HAVE_CLOCK_GETTIME -DFOLLY_VERSION=\\\"1\\\" -DUSE_FOLLY_VECTOR')
 CppFlags = ENV.CppFlags() + CppFlags('-DMELT_USE_THIRD_PARTY')

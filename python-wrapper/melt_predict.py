@@ -11,6 +11,8 @@ define_symbols = ['GCCXML','PYTHON_WRAPPER']
 files = [
                                 './gezi.include.python/common_util.h',
                                 './include.python/MLCore/Predictor.h',
+                                './include.python/MLCore/TextPredictor.h',
+                                './gezi.include.python/Identifer.h',
                                 './include.python/MLCore/PredictorFactory.h',
                                 './gezi.include.python/Numeric/Vector/Vector.h',
                                 './gezi.include.python/Numeric/Vector/WeightVector.h',

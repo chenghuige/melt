@@ -222,6 +222,7 @@
     <ClInclude Include="include\Predictors\FastRank\FastRankClassification.h" />
     <ClInclude Include="include\Predictors\FastRank\FastRankRanking.h" />
     <ClInclude Include="include\Predictors\FastRank\FastRankRegression.h" />
+    <ClInclude Include="include\Predictors\GbdtPredictor.h" />
     <ClInclude Include="include\Predictors\LibLinearPredictor.h" />
     <ClInclude Include="include\Predictors\LibSVMPredictor.h" />
     <ClInclude Include="include\Predictors\LinearPredictor.h" />
@@ -259,7 +260,12 @@
     <ClInclude Include="include\Trainers\FastRank\OnlineRegressionTree.h" />
     <ClInclude Include="include\Trainers\FastRank\RegressionTree.h" />
     <ClInclude Include="include\Trainers\SVM\LinearSVM.h" />
+    <ClInclude Include="include\Utils\evaluate.h" />
+    <ClInclude Include="include\Utils\evaluate_def.h" />
+    <ClInclude Include="include\Utils\Evaluator.h" />
+    <ClInclude Include="include\Utils\EvaluatorUtils.h" />
     <ClInclude Include="include\Utils\FeatureStatus.h" />
+    <ClInclude Include="include\Utils\loss.h" />
     <ClInclude Include="include\Utils\performance_evaluate.h" />
     <ClInclude Include="include\Utils\PredictorUtils.h" />
     <ClInclude Include="include\vowpalwabbit\accumulate.h" />
