@@ -14,7 +14,8 @@
 #ifndef WRAPPER__PREDICTOR_FACTORY_H_
 #define WRAPPER__PREDICTOR_FACTORY_H_
 
-#include "conf_util.h"
+//#include "conf_util.h"  //@TODO  如果不用common_util.h 而是conf_util.h会造成Max冲突 当然本质是ullog sb 但是why..
+#include "common_util.h" 
 #include "MLCore/PredictorFactory.h"
 
 DECLARE_string(model_dir);

@@ -158,7 +158,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=2efd256cde6c4d9016a7264f041adb7c  COMAKE
+COMAKE_MD5=69896cd859ffb3e8dfb999289a3c1cb9  COMAKE
 
 
 .PHONY:all
@@ -264,6 +264,7 @@ clean:ccpclean
 	rm -rf src/Predictors/melt_LibSVMPredictor.o
 	rm -rf src/Predictors/melt_VWPredictor.o
 	rm -rf src/MLCore/melt_PredictoryFactory.o
+	rm -rf src/Wrapper/melt_PredictorFactory.o
 
 .PHONY:dist
 dist:
@@ -436,13 +437,15 @@ libmelt.a:src/Testers/melt_ClassifierTester.o \
   src/Prediction/Normalization/melt_BinNormalizer.o \
   src/Predictors/melt_LibSVMPredictor.o \
   src/Predictors/melt_VWPredictor.o \
-  src/MLCore/melt_PredictoryFactory.o
+  src/MLCore/melt_PredictoryFactory.o \
+  src/Wrapper/melt_PredictorFactory.o
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibmelt.a[0m']"
 	ar crs libmelt.a src/Testers/melt_ClassifierTester.o \
   src/Prediction/Normalization/melt_BinNormalizer.o \
   src/Predictors/melt_LibSVMPredictor.o \
   src/Predictors/melt_VWPredictor.o \
-  src/MLCore/melt_PredictoryFactory.o
+  src/MLCore/melt_PredictoryFactory.o \
+  src/Wrapper/melt_PredictorFactory.o
 	mkdir -p ./output/lib
 	cp -f --link libmelt.a ./output/lib
 
@@ -1000,6 +1003,13 @@ src/MLCore/melt_PredictoryFactory.o:src/MLCore/PredictoryFactory.cpp
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/MLCore/melt_PredictoryFactory.o src/MLCore/PredictoryFactory.cpp
+
+src/Wrapper/melt_PredictorFactory.o:src/Wrapper/PredictorFactory.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Wrapper/melt_PredictorFactory.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/Wrapper/melt_PredictorFactory.o src/Wrapper/PredictorFactory.cpp
 
 endif #ifeq ($(shell uname -m),x86_64)
 
