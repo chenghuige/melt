@@ -62,6 +62,7 @@ namespace gezi {
 			serialize_util::save_json(*this, file);
 		}
 
+		//@FIXME shoulde return bool, in case of loading error
 		virtual void Load_(string file) override
 		{
 			serialize_util::load(*this, file);

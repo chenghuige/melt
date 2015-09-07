@@ -153,7 +153,7 @@ namespace gezi {
 			{
 #ifdef _DEBUG
 				_debugNode.paths.push_back((*_featureNames)[_splitFeature[node]]);
-#endif // _DEBU
+#endif // _DEBUG
 				if (features[_splitFeature[node]] <= threshold[node])
 				{
 					node = _lteChild[node];
