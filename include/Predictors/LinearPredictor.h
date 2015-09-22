@@ -63,10 +63,13 @@ namespace gezi {
 		}
 
 		//@FIXME shoulde return bool, in case of loading error
-		virtual void Load_(string file) override
+		virtual bool Load_(string file) override
 		{
-			serialize_util::load(*this, file);
+			bool ret = serialize_util::load(*this, file);
+			if (!ret)
+				return false;
 			_weights.MakeDense();
+			return ret;
 		}
 
 		//SaveText是可选的 如果要使用 务必先调用Save 因为加载至使用Load
@@ -82,9 +85,11 @@ namespace gezi {
 			});
 		}
 
-		virtual void LoadText_(string file) override
+		virtual bool LoadText_(string file) override
 		{
 			ifstream ifs(file);
+			if (!ifs.is_open())
+				return false;
 			string line;
 			{
 				getline(ifs, line);
@@ -105,6 +110,7 @@ namespace gezi {
 				auto parts = split(line, '\t');
 				_weights[INT(parts[0])] = DOUBLE(parts.back());
 			}
+			return true;
 		}
 
 		virtual string ToFeaturesGainSummary(int topNum = 0) override

@@ -78,11 +78,14 @@ namespace gezi {
 		return probs[1];
 	}
 
-	void LibSVMPredictor::Load_(string file)
+	bool LibSVMPredictor::Load_(string file)
 	{
-		serialize_util::load(*this, file);
+		bool ret = serialize_util::load(*this, file);
+		if (!ret)
+			return false;
 		_model = svm_load_model(ThirdModelName(file).c_str());
 		CHECK_NOTNULL(_model);
+		return true;
 	}
 	
 	void LibSVMPredictor::Save_(string file)

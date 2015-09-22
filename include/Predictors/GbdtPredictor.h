@@ -66,7 +66,7 @@ namespace gezi {
 		}
 
 		//Load Tlc format的文本模型文件
-		virtual void LoadText(string file) override
+		virtual bool LoadText(string file) override
 		{
 			Identifer identifer;
 
@@ -74,6 +74,8 @@ namespace gezi {
 			LoadSave::Load(file);
 
 			svec lines = read_lines(file);
+			if (lines.empty())
+				return false;
 
 			size_t i = 0;
 			for (; i < lines.size(); i++)
@@ -192,6 +194,8 @@ namespace gezi {
 			double paramA = -parse_double_param("Weights=", lines[i + 3]);
 			Pval2(paramA, paramB);
 			_calibrator = make_shared<SigmoidCalibrator>(paramA, paramB);
+
+			return true;
 		}
 
 		virtual void Save_(string file) override
@@ -234,13 +238,16 @@ namespace gezi {
 			}
 		}
 
-		virtual void Load_(string file) override
+		virtual bool Load_(string file) override
 		{
-			serialize_util::load(*this, file);
+			bool ret = serialize_util::load(*this, file);
+			if (!ret)
+				return false;
 			for (auto& tree : _trees)
 			{
 				tree.SetFeatureNames(_featureNames);
 			}
+			return true;
 		}
 
 		void FeatureGainPrint(Vector& features, int level = 0)

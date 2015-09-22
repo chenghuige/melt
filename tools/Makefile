@@ -46,6 +46,10 @@ DEP_INCPATH=-I../../../../../../app/search/sep/anti-spam/gezi \
   -I../../../../../../app/search/sep/anti-spam/gezi/include \
   -I../../../../../../app/search/sep/anti-spam/gezi/output \
   -I../../../../../../app/search/sep/anti-spam/gezi/output/include \
+  -I../../../../../../app/search/sep/anti-spam/gezi/third \
+  -I../../../../../../app/search/sep/anti-spam/gezi/third/include \
+  -I../../../../../../app/search/sep/anti-spam/gezi/third/output \
+  -I../../../../../../app/search/sep/anti-spam/gezi/third/output/include \
   -I../../../../../../app/search/sep/anti-spam/melt-train \
   -I../../../../../../app/search/sep/anti-spam/melt-train/include \
   -I../../../../../../app/search/sep/anti-spam/melt-train/output \
@@ -161,11 +165,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=38568a8114ed2bb6ca66e7a93c95d225  COMAKE
+COMAKE_MD5=3dc18f5fef6a1a867a66635016b38ee7  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check calibrate predict fastrank_text2bin fastrank_predict fastrank2gcc3 gbdt_predict bin_sampling melt melt.debug vw vw.debug 
+all:comake2_makefile_check calibrate predict gbdt4gcc3 gbdt_predict bin_sampling melt melt.debug vw vw.debug 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -189,12 +193,8 @@ clean:ccpclean
 	rm -rf ./output/bin/calibrate
 	rm -rf predict
 	rm -rf ./output/bin/predict
-	rm -rf fastrank_text2bin
-	rm -rf ./output/bin/fastrank_text2bin
-	rm -rf fastrank_predict
-	rm -rf ./output/bin/fastrank_predict
-	rm -rf fastrank2gcc3
-	rm -rf ./output/bin/fastrank2gcc3
+	rm -rf gbdt4gcc3
+	rm -rf ./output/bin/gbdt4gcc3
 	rm -rf gbdt_predict
 	rm -rf ./output/bin/gbdt_predict
 	rm -rf bin_sampling
@@ -209,9 +209,7 @@ clean:ccpclean
 	rm -rf ./output/bin/vw.debug
 	rm -rf calibrate_calibrate.o
 	rm -rf predict_predict.o
-	rm -rf fastrank_text2bin_fastrank_text2bin.o
-	rm -rf fastrank_predict_fastrank_predict.o
-	rm -rf fastrank2gcc3_fastrank2gcc3.o
+	rm -rf gbdt4gcc3_gbdt4gcc3.o
 	rm -rf gbdt_predict_gbdt_predict.o
 	rm -rf bin_sampling_bin_sampling.o
 	rm -rf melt_melt.o
@@ -649,7 +647,7 @@ predict:predict_predict.o \
 	mkdir -p ./output/bin
 	cp -f --link predict ./output/bin
 
-fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
+gbdt4gcc3:gbdt4gcc3_gbdt4gcc3.o \
   ../libmelt.a \
   ../libsofia.a \
   ../libvw.a \
@@ -666,8 +664,8 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
   ../liblinear.a \
   ../libsvm.a \
   ../libvw.a
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_text2bin[0m']"
-	$(CXX) fastrank_text2bin_fastrank_text2bin.o -Xlinker "-(" ../libmelt.a \
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mgbdt4gcc3[0m']"
+	$(CXX) gbdt4gcc3_gbdt4gcc3.o -Xlinker "-(" ../libmelt.a \
   ../libsofia.a \
   ../libvw.a \
   ../libblas.a \
@@ -766,251 +764,9 @@ fastrank_text2bin:fastrank_text2bin_fastrank_text2bin.o \
   -lrt \
   -ldl \
   -rdynamic \
-  -lgomp -Xlinker "-)" -o fastrank_text2bin
+  -lgomp -Xlinker "-)" -o gbdt4gcc3
 	mkdir -p ./output/bin
-	cp -f --link fastrank_text2bin ./output/bin
-
-fastrank_predict:fastrank_predict_fastrank_predict.o \
-  ../libmelt.a \
-  ../libsofia.a \
-  ../libvw.a \
-  ../libblas.a \
-  ../liblinear.a \
-  ../libsvm.a \
-  ../libvw.a \
-  ../libsofia.a \
-  ../libblas.a \
-  ../liblinear.a \
-  ../libsvm.a \
-  ../libsofia.a \
-  ../libblas.a \
-  ../liblinear.a \
-  ../libsvm.a \
-  ../libvw.a
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_predict[0m']"
-	$(CXX) fastrank_predict_fastrank_predict.o -Xlinker "-(" ../libmelt.a \
-  ../libsofia.a \
-  ../libvw.a \
-  ../libblas.a \
-  ../liblinear.a \
-  ../libsvm.a \
-  ../libvw.a \
-  ../libsofia.a \
-  ../libblas.a \
-  ../liblinear.a \
-  ../libsvm.a \
-  ../libsofia.a \
-  ../libblas.a \
-  ../liblinear.a \
-  ../libsvm.a \
-  ../libvw.a ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
-  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
-  ../../../../../../com/btest/gtest/output/lib/libgtest.a \
-  ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_archive.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_buffer.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_check_cast.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_exception.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_pool.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_utils.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_var.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_var_implement.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_var_utils.a \
-  ../../../../../../lib2-64/ccode/lib/libulccode.a \
-  ../../../../../../lib2-64/dict/lib/libuldict.a \
-  ../../../../../../lib2-64/libcrf/lib/libcrf.a \
-  ../../../../../../lib2-64/others-ex/lib/libullib_ex.a \
-  ../../../../../../lib2-64/postag/lib/libpostag.a \
-  ../../../../../../lib2-64/ullib/lib/libullib.a \
-  ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../public/comlog-plugin/libcomlog.a \
-  ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
-  ../../../../../../public/configure/libconfig.a \
-  ../../../../../../public/connectpool/libconnectpool.a \
-  ../../../../../../public/odict/libodict.a \
-  ../../../../../../public/spreg/libspreg.a \
-  ../../../../../../public/uconv/libuconv.a \
-  ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
-  ../../../../../../third-64/boost/lib/libboost_atomic.a \
-  ../../../../../../third-64/boost/lib/libboost_chrono.a \
-  ../../../../../../third-64/boost/lib/libboost_container.a \
-  ../../../../../../third-64/boost/lib/libboost_context.a \
-  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
-  ../../../../../../third-64/boost/lib/libboost_date_time.a \
-  ../../../../../../third-64/boost/lib/libboost_exception.a \
-  ../../../../../../third-64/boost/lib/libboost_filesystem.a \
-  ../../../../../../third-64/boost/lib/libboost_graph.a \
-  ../../../../../../third-64/boost/lib/libboost_locale.a \
-  ../../../../../../third-64/boost/lib/libboost_math_c99.a \
-  ../../../../../../third-64/boost/lib/libboost_math_c99f.a \
-  ../../../../../../third-64/boost/lib/libboost_math_c99l.a \
-  ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
-  ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
-  ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
-  ../../../../../../third-64/boost/lib/libboost_mpi.a \
-  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
-  ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
-  ../../../../../../third-64/boost/lib/libboost_program_options.a \
-  ../../../../../../third-64/boost/lib/libboost_python.a \
-  ../../../../../../third-64/boost/lib/libboost_random.a \
-  ../../../../../../third-64/boost/lib/libboost_regex.a \
-  ../../../../../../third-64/boost/lib/libboost_serialization.a \
-  ../../../../../../third-64/boost/lib/libboost_signals.a \
-  ../../../../../../third-64/boost/lib/libboost_system.a \
-  ../../../../../../third-64/boost/lib/libboost_test_exec_monitor.a \
-  ../../../../../../third-64/boost/lib/libboost_thread.a \
-  ../../../../../../third-64/boost/lib/libboost_timer.a \
-  ../../../../../../third-64/boost/lib/libboost_unit_test_framework.a \
-  ../../../../../../third-64/boost/lib/libboost_wave.a \
-  ../../../../../../third-64/boost/lib/libboost_wserialization.a \
-  ../../../../../../third-64/gflags/lib/libgflags.a \
-  ../../../../../../third-64/gflags/lib/libgflags_nothreads.a \
-  ../../../../../../third-64/glog/lib/libglog.a \
-  ../../../../../../third-64/gtest/lib/libgtest.a \
-  ../../../../../../third-64/gtest/lib/libgtest_main.a \
-  ../../../../../../third-64/libcurl/lib/libcurl.a \
-  ../../../../../../third-64/pcre/lib/libpcre.a \
-  ../../../../../../third-64/pcre/lib/libpcrecpp.a \
-  ../../../../../../third-64/pcre/lib/libpcreposix.a \
-  ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_debug.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal_debug.a \
-  ../../../../../../third-64/zlib/lib/libz.a -lpthread \
-  -lrt \
-  -ldl \
-  -rdynamic \
-  -lgomp -Xlinker "-)" -o fastrank_predict
-	mkdir -p ./output/bin
-	cp -f --link fastrank_predict ./output/bin
-
-fastrank2gcc3:fastrank2gcc3_fastrank2gcc3.o \
-  ../libmelt.a \
-  ../libsofia.a \
-  ../libvw.a \
-  ../libblas.a \
-  ../liblinear.a \
-  ../libsvm.a \
-  ../libvw.a \
-  ../libsofia.a \
-  ../libblas.a \
-  ../liblinear.a \
-  ../libsvm.a \
-  ../libsofia.a \
-  ../libblas.a \
-  ../liblinear.a \
-  ../libsvm.a \
-  ../libvw.a
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank2gcc3[0m']"
-	$(CXX) fastrank2gcc3_fastrank2gcc3.o -Xlinker "-(" ../libmelt.a \
-  ../libsofia.a \
-  ../libvw.a \
-  ../libblas.a \
-  ../liblinear.a \
-  ../libsvm.a \
-  ../libvw.a \
-  ../libsofia.a \
-  ../libblas.a \
-  ../liblinear.a \
-  ../libsvm.a \
-  ../libsofia.a \
-  ../libblas.a \
-  ../liblinear.a \
-  ../libsvm.a \
-  ../libvw.a ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
-  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
-  ../../../../../../com/btest/gtest/output/lib/libgtest.a \
-  ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_archive.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_buffer.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_check_cast.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_exception.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_pool.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_utils.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_var.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_var_implement.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_var_utils.a \
-  ../../../../../../lib2-64/ccode/lib/libulccode.a \
-  ../../../../../../lib2-64/dict/lib/libuldict.a \
-  ../../../../../../lib2-64/libcrf/lib/libcrf.a \
-  ../../../../../../lib2-64/others-ex/lib/libullib_ex.a \
-  ../../../../../../lib2-64/postag/lib/libpostag.a \
-  ../../../../../../lib2-64/ullib/lib/libullib.a \
-  ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../public/comlog-plugin/libcomlog.a \
-  ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
-  ../../../../../../public/configure/libconfig.a \
-  ../../../../../../public/connectpool/libconnectpool.a \
-  ../../../../../../public/odict/libodict.a \
-  ../../../../../../public/spreg/libspreg.a \
-  ../../../../../../public/uconv/libuconv.a \
-  ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
-  ../../../../../../third-64/boost/lib/libboost_atomic.a \
-  ../../../../../../third-64/boost/lib/libboost_chrono.a \
-  ../../../../../../third-64/boost/lib/libboost_container.a \
-  ../../../../../../third-64/boost/lib/libboost_context.a \
-  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
-  ../../../../../../third-64/boost/lib/libboost_date_time.a \
-  ../../../../../../third-64/boost/lib/libboost_exception.a \
-  ../../../../../../third-64/boost/lib/libboost_filesystem.a \
-  ../../../../../../third-64/boost/lib/libboost_graph.a \
-  ../../../../../../third-64/boost/lib/libboost_locale.a \
-  ../../../../../../third-64/boost/lib/libboost_math_c99.a \
-  ../../../../../../third-64/boost/lib/libboost_math_c99f.a \
-  ../../../../../../third-64/boost/lib/libboost_math_c99l.a \
-  ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
-  ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
-  ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
-  ../../../../../../third-64/boost/lib/libboost_mpi.a \
-  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
-  ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
-  ../../../../../../third-64/boost/lib/libboost_program_options.a \
-  ../../../../../../third-64/boost/lib/libboost_python.a \
-  ../../../../../../third-64/boost/lib/libboost_random.a \
-  ../../../../../../third-64/boost/lib/libboost_regex.a \
-  ../../../../../../third-64/boost/lib/libboost_serialization.a \
-  ../../../../../../third-64/boost/lib/libboost_signals.a \
-  ../../../../../../third-64/boost/lib/libboost_system.a \
-  ../../../../../../third-64/boost/lib/libboost_test_exec_monitor.a \
-  ../../../../../../third-64/boost/lib/libboost_thread.a \
-  ../../../../../../third-64/boost/lib/libboost_timer.a \
-  ../../../../../../third-64/boost/lib/libboost_unit_test_framework.a \
-  ../../../../../../third-64/boost/lib/libboost_wave.a \
-  ../../../../../../third-64/boost/lib/libboost_wserialization.a \
-  ../../../../../../third-64/gflags/lib/libgflags.a \
-  ../../../../../../third-64/gflags/lib/libgflags_nothreads.a \
-  ../../../../../../third-64/glog/lib/libglog.a \
-  ../../../../../../third-64/gtest/lib/libgtest.a \
-  ../../../../../../third-64/gtest/lib/libgtest_main.a \
-  ../../../../../../third-64/libcurl/lib/libcurl.a \
-  ../../../../../../third-64/pcre/lib/libpcre.a \
-  ../../../../../../third-64/pcre/lib/libpcrecpp.a \
-  ../../../../../../third-64/pcre/lib/libpcreposix.a \
-  ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_debug.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal_debug.a \
-  ../../../../../../third-64/zlib/lib/libz.a -lpthread \
-  -lrt \
-  -ldl \
-  -rdynamic \
-  -lgomp -Xlinker "-)" -o fastrank2gcc3
-	mkdir -p ./output/bin
-	cp -f --link fastrank2gcc3 ./output/bin
+	cp -f --link gbdt4gcc3 ./output/bin
 
 gbdt_predict:gbdt_predict_gbdt_predict.o \
   ../libmelt.a \
@@ -2088,17 +1844,9 @@ predict_predict.o:predict.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mpredict_predict.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o predict_predict.o predict.cc
 
-fastrank_text2bin_fastrank_text2bin.o:fastrank_text2bin.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_text2bin_fastrank_text2bin.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o fastrank_text2bin_fastrank_text2bin.o fastrank_text2bin.cc
-
-fastrank_predict_fastrank_predict.o:fastrank_predict.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank_predict_fastrank_predict.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o fastrank_predict_fastrank_predict.o fastrank_predict.cc
-
-fastrank2gcc3_fastrank2gcc3.o:fastrank2gcc3.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank2gcc3_fastrank2gcc3.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o fastrank2gcc3_fastrank2gcc3.o fastrank2gcc3.cc
+gbdt4gcc3_gbdt4gcc3.o:gbdt4gcc3.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mgbdt4gcc3_gbdt4gcc3.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o gbdt4gcc3_gbdt4gcc3.o gbdt4gcc3.cc
 
 gbdt_predict_gbdt_predict.o:gbdt_predict.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mgbdt_predict_gbdt_predict.o[0m']"

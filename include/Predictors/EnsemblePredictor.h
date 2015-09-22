@@ -79,17 +79,20 @@ namespace gezi {
 			}
 		}
 
-		virtual void LoadBin(string path)
+		virtual bool LoadBin(string path)
 		{
 			string numPredictorsFile = path + "/numPredictors.txt";
 			int numPredictors;
-			read_file(numPredictorsFile, numPredictors);
+			bool ret = read_file(numPredictorsFile, numPredictors);
+			if (!ret)
+				return false;
 			_predictors.resize(numPredictors);
 			for (size_t i = 0; i < _predictors.size(); i++)
 			{
 				string mpath = format("{}/model{}", path, i);
 				_predictors[i] = PredictorFactory::LoadPredictor(mpath);
 			}
+			return true;
 		}
 
 	protected:

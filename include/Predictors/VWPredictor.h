@@ -56,7 +56,7 @@ namespace gezi {
 
 		bool InitFeatureSapce(Vector& features);
 
-		virtual void Load_(string file) override;
+		virtual bool Load_(string file) override;
 		virtual void Save_(string file) override;
 
 		friend class cereal::access;

@@ -72,10 +72,11 @@ namespace gezi {
 			};
 		}
 
-		virtual void LoadText(string infile) override
+		virtual bool LoadText(string infile) override
 		{
 			svec lines = read_lines(infile);
-			CHECK_GT(lines.size(), 0) << infile;
+			if (lines.empty())
+				return false;
 			int idx = 0;
 			CHECK_EQ(parse_string_param("NormalizerType=", lines[idx++]), Name());
 			_trunct = parse_bool_param("Trunct=", lines[idx++]);
@@ -90,6 +91,7 @@ namespace gezi {
 				_scales[i] = DOUBLE(scale);
 			}
 			AffineInit();
+			return true;
 		}
 
 		virtual void SaveText(string outfile) override
@@ -111,10 +113,14 @@ namespace gezi {
 			serialize_util::save(*this, path);
 		}
 
-		virtual void Load(string path) override
+		virtual bool Load(string path) override
 		{
-			Normalizer::Load(path);
-			serialize_util::load(*this, path);
+			bool ret = true;
+			ret = Normalizer::Load(path);
+			if (!ret)
+				return false;
+			ret = serialize_util::load(*this, path);
+			return ret;
 		}
 
 		virtual void Begin() override

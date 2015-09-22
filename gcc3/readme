@@ -1,5 +1,6 @@
 ./melt feature.txt -cl fr -c train -st 1 
-./fastrank2gcc3 -m model 
+./gbdt4gcc3 -m model 
 ./predict 
 
+#gbdt4gcc3 is gnerated at tools dir
 #you can check predict.txt and ./result/0.inst.txt to veryify if predict ok as norml melt test

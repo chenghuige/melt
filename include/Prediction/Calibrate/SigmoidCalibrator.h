@@ -42,11 +42,14 @@ public:
 		return "Sigmoid/PlattCalibrator";
 	}
 
-	virtual void Load(string path) override
+	virtual bool Load(string path) override
 	{
-		LoadSave::Load(path);
-		serialize_util::load(*this, path);
+		bool ret = LoadSave::Load(path);
+		if (!ret)
+			return false;
+		ret = serialize_util::load(*this, path);
 		PVAL2(paramA, paramB);
+		return ret;
 	}
 
 	virtual void Save(string path) override

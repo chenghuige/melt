@@ -55,9 +55,9 @@ namespace gezi {
 			Load(path);
 		}
 
-		virtual void Load(string path) override
+		virtual bool Load(string path) override
 		{
-			serialize_util::load(*this, path);
+			return serialize_util::load(*this, path);
 		}
 
 		virtual void Save(string path) override

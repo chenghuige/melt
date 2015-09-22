@@ -31,10 +31,13 @@ public:
 		Initialize();
 	}
 
-	virtual void Load(string path) override
+	virtual bool Load(string path) override
 	{
-		LoadSave::Load(path);
-		serialize_util::load(*this, path);
+		bool ret = LoadSave::Load(path);
+		if (!ret)
+			return false;
+		ret = serialize_util::load(*this, path);
+		return ret;
 	}
 
 	virtual void Save(string path) override

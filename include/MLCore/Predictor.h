@@ -333,8 +333,9 @@ namespace gezi {
 		}
 
 
-		void LoadNormalizerAndCalibrator(string path)
+		bool LoadNormalizerAndCalibrator(string path)
 		{
+			bool ret = true;
 			if (loadNormalizerAndCalibrator())
 			{
 #ifdef NO_CEREAL
@@ -342,37 +343,51 @@ namespace gezi {
 				if (!normalizerName.empty())
 				{ //理论上有了cereal序列化多态shared ptr机制 不再需要单独的通过路径载入这个函数 走下面的默认路径
 					_normalizer = NormalizerFactory::CreateNormalizer(normalizerName, OBJ_PATH(_normalizer, path));
+					if (!_normalizer)
+						return false;
 				}
 				string calibratorName = read_file(OBJ_NAME_PATH(_calibrator, path));
 				if (!calibratorName.empty())
 				{
 					_calibrator = CalibratorFactory::CreateCalibrator(calibratorName, OBJ_PATH(_calibrator, path));
+					if (!_calibrator)
+						return false;
 				}
 #else 
-				serialize_util::load(_normalizer, OBJ_PATH(_normalizer, path));
-				serialize_util::load(_calibrator, OBJ_PATH(_calibrator, path));
+				ret = serialize_util::load(_normalizer, OBJ_PATH(_normalizer, path));
+				if (!ret)
+					return ret;
+				ret = serialize_util::load(_calibrator, OBJ_PATH(_calibrator, path));
+				if (!ret)
+					return ret;
 #endif
 			}
+			return ret;
 		}
 
-		virtual void LoadBin(string path)
+		virtual bool LoadBin(string path)
 		{
 			string modelFile = path + "/model.bin";
-			Load_(modelFile);
+			return Load_(modelFile);
 		}
 
-		virtual void Load(string path) override
+		virtual bool Load(string path) override
 		{
 			_path = path;
 			_param = read_file(OBJ_NAME_PATH(_param, path));
 			LoadSave::Load(path);
-			LoadBin(path);
-			LoadNormalizerAndCalibrator(path);
+			bool ret = true;
+			ret = LoadBin(path);
+			if (!ret)
+				return ret;
+			ret = LoadNormalizerAndCalibrator(path);
+			return ret;
 		}
 
-		virtual void Load_(string file)
+		virtual bool Load_(string file)
 		{
 			LOG(FATAL) << Name() << " currently not support loading model";
+			return true;
 		}
 
 		//注意不管是save xml还是save text 都不要单独使用 并且 都在Save 也就是存储二进制之后使用
@@ -463,19 +478,24 @@ namespace gezi {
 			write_file(ToFeaturesGainSummary(topNum), _path + "/model.featureGain.txt");
 		}
 
-		virtual void LoadText_(string file)
+		virtual bool LoadText_(string file)
 		{
 			LOG(FATAL) << Name() << " currently not support loading text format!";
+			return true;
 		}
 
-		virtual void LoadText(string path) override
+		virtual bool LoadText(string path) override
 		{
 			_path = path;
 			_param = read_file(OBJ_NAME_PATH(_param, _path));
 			LoadSave::LoadText(path);
 			string modelFile = path + "/model.txt";
-			LoadText_(modelFile);
-			LoadNormalizerAndCalibrator(path);
+			bool ret = true;
+			ret = LoadText_(modelFile);
+			if (!ret)
+				return ret;
+			ret = LoadNormalizerAndCalibrator(path);
+			return ret;
 		}
 
 		NormalizerPtr& GetNormalizer()

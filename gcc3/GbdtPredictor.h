@@ -125,9 +125,11 @@ namespace melt
 			return sigmoid(output, _paramA, _paramB);
 		}
 
-		void Load(std::string path)
+		bool Load(std::string path)
 		{
 			std::ifstream ifs((path + "/model.bin.gcc3").c_str(), std::ios::binary);
+			if (!ifs.is_open())
+				return false;
 			int ntrees;
 			read_elem(ifs, ntrees);
 			std::cout << "ntrees: " << ntrees << std::endl;
@@ -139,6 +141,7 @@ namespace melt
 			}
 			read_elem(ifs, _paramA);
 			read_elem(ifs, _paramB);
+			return true;
 		}
 	private:
 		void LoadTree(std::ifstream& ifs, RegressionTree& tree)

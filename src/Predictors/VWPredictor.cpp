@@ -123,15 +123,18 @@ namespace gezi {
 		return output;
 	}
 
-	void VWPredictor::Load_(string file)
+	bool VWPredictor::Load_(string file)
 	{
-		serialize_util::load(*this, file);
+		bool ret = serialize_util::load(*this, file);
+		if (!ret)
+			return false;
 		_vw = NULL;
 		_pFeatureSpace = NULL;
 		_vw = VW::initialize(format("-i {}", ThirdModelName(file)));
 		CHECK_NOTNULL(_vw);
 		_vw->training = false;
 		CHECK_NOTNULL(_vw->l);
+		return true;
 	}
 
 	void VWPredictor::Save_(string file)
