@@ -1,4 +1,4 @@
-./melt feature.txt -cl fr -c train -st 1 
+./melt feature.txt -cl gbdt -c train -st 1 
 ./gbdt4gcc3 -m model 
 ./predict 
 

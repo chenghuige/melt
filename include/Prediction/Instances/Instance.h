@@ -120,6 +120,25 @@ namespace gezi {
 			return features[index];
 		}
 
+
+		friend class cereal::access;
+		template<class Archive>
+		void serialize(Archive &ar, const unsigned int version)
+		{
+			ar & CEREAL_NVP(label);
+			ar & CEREAL_NVP(weight);
+			ar & CEREAL_NVP(features);
+			ar & CEREAL_NVP(hasMissingFeatures);
+			ar & CEREAL_NVP(name);
+			ar & CEREAL_NVP(names);
+			ar & CEREAL_NVP(attributes);
+			ar & CEREAL_NVP(groupKey);
+			ar & CEREAL_NVP(metaData);
+			ar & CEREAL_NVP(sparse);
+			ar & CEREAL_NVP(normalized);
+			ar & CEREAL_NVP(line);
+		}
+	public:
 		//TODO size_t counter; 计数 第几个instance
 		//------Evaluate相关的信息在基础的IsEvaluateAble中
 		Float label = std::numeric_limits<double>::quiet_NaN();

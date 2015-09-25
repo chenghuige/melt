@@ -104,6 +104,26 @@ namespace gezi
 		{
 			return fileFormat;
 		}
+
+	protected:
+		friend class cereal::access;
+		template<class Archive>
+		void serialize(Archive &ar, const unsigned int version)
+		{
+			ar & CEREAL_NVP(featureNames);
+			ar & CEREAL_NVP(attributeNames);
+			ar & CEREAL_NVP(tagNames);
+			ar & CEREAL_NVP(headerStr);
+			ar & CEREAL_NVP(cloumnTypes);
+			ar & CEREAL_NVP(hasHeader);
+			ar & CEREAL_NVP(hasWeights);
+			ar & CEREAL_NVP(groupKeys);
+			ar & CEREAL_NVP(fileFormat);
+			ar & CEREAL_NVP(instanceNameHeaderString);
+			ar & CEREAL_NVP(normalized);
+			ar & CEREAL_NVP(numClasses);
+		}
+
 	public:
 		FeatureNamesVector featureNames;
 		svec attributeNames;

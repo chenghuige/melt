@@ -67,14 +67,11 @@ namespace gezi {
 			}
 		}
 
-#ifndef NO_BAIDU_DEP
-
-		static double Predict(string title, string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
+		static double Predict(const svec& titleWords, const svec& contentWords, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
 			int segType = SEG_BASIC, bool useMedia = false, int ngram = 3, int skip = 2, string sep = "\x01")
 		{
 			int wordNum = identifer.size();
 			map<int, double> m; //确保按key排序
-			Segmentor::Init(); //最好还是外部Init好 这里为了安全仍然保有
 
 			bool hasPic = false, hasUrl = false, hasAt = false;
 			if (useMedia)
@@ -83,11 +80,9 @@ namespace gezi {
 				hasUrl = gezi::contains_url(content);
 				hasAt = gezi::contains_at(content);
 			}
-			svec twords = Segmentor::Segment(title, segType);
-			Prase(twords, m, identifer, 0, ngram, skip, sep, hasPic, hasUrl, hasAt);
+			Prase(titleWords, m, identifer, 0, ngram, skip, sep, hasPic, hasUrl, hasAt);
 
-			svec cwords = Segmentor::Segment(content, segType);
-			Prase(cwords, m, identifer, wordNum, ngram, skip, sep, hasPic, hasUrl, hasAt);
+			Prase(contentWords, m, identifer, wordNum, ngram, skip, sep, hasPic, hasUrl, hasAt);
 
 			double score = predictor->Predict(m);
 
@@ -121,14 +116,12 @@ namespace gezi {
 #endif
 			return score;
 		}
-
-		static double Predict(string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
+		
+		static double Predict(const svec& words, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
 			int segType = SEG_BASIC, int ngram = 3, int skip = 2, string sep = "\x01")
 		{
 			int wordNum = identifer.size();
 			map<int, double> m; //确保按key排序
-			Segmentor::Init();
-			svec words = Segmentor::Segment(content, segType);
 			PVAL(gezi::join(words, "$#$"));
 			Prase(words, m, identifer, 0, ngram, skip, sep);
 
@@ -161,6 +154,27 @@ namespace gezi {
 			Pval3(total, predictor->Output(m), predictor->Predict(m));
 #endif
 			return score;
+		}
+#ifndef NO_BAIDU_DEP
+
+		static double Predict(string title, string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
+			int segType = SEG_BASIC, bool useMedia = false, int ngram = 3, int skip = 2, string sep = "\x01")
+		{
+			Segmentor::Init(); //最好还是外部Init好 这里为了安全仍然保有
+
+			svec titleWords = Segmentor::Segment(title, segType);
+			svec contentWords = Segmentor::Segment(content, segType);
+			return Predict(titleWords, contentWords, identifer, predictor, 
+				segType, useMedia, ngram, skip, sep);
+		}
+
+		static double Predict(string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
+			int segType = SEG_BASIC, int ngram = 3, int skip = 2, string sep = "\x01")
+		{
+			map<int, double> m; //确保按key排序
+			Segmentor::Init();
+			svec words = Segmentor::Segment(content, segType);
+			return Predict(words, identifer, predictor, segType, ngram, skip, sep);
 		}
 #endif // !NO_BAIDU_DEP
 	};

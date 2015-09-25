@@ -34,7 +34,7 @@ namespace gezi {
 		//@TODO C++ 没有默认的 == 。。。
 		//bool operator==(const Instance&) = default;
 
-		Instances(const HeaderSchema& schema_)
+		explicit Instances(const HeaderSchema& schema_)
 			:schema(schema_)
 		{
 
@@ -132,10 +132,10 @@ namespace gezi {
 		void PrintSummary(int level = 0)
 		{
 			uint64 pcnt = PositiveCount();
-			VLOG(level) << format( "Total instance num: {} PostiveCount: {} NegativeCount {} PostiveRatio: {}%"
-				, InstanceNum() , pcnt , (InstanceNum() - pcnt) , ((double)pcnt * 100 / InstanceNum()));
+			VLOG(level) << format("Total instance num: {} PostiveCount: {} NegativeCount {} PostiveRatio: {}%"
+				, InstanceNum(), pcnt, (InstanceNum() - pcnt), ((double)pcnt * 100 / InstanceNum()));
 			uint64 dcnt = DenseCount();
-			VLOG(level) << format("DenseCount: {} SparseCount: {} DenseRatio: {}%", dcnt , (InstanceNum() - dcnt) , ((double)dcnt * 100 / InstanceNum()));
+			VLOG(level) << format("DenseCount: {} SparseCount: {} DenseRatio: {}%", dcnt, (InstanceNum() - dcnt), ((double)dcnt * 100 / InstanceNum()));
 		}
 
 		uint64 PositiveCount()
@@ -171,11 +171,38 @@ namespace gezi {
 		{
 			return schema.normalized == true;
 		}
+
 	public:
 		HeaderSchema schema;
-		string name; 
+		string name;
 	};
 
 }  //----end of namespace gezi
+
+namespace cereal
+{
+	template <class Archive> inline
+		void CEREAL_SAVE_FUNCTION_NAME(Archive & ar, gezi::Instances const & vector)
+	{
+		ar(make_size_tag(static_cast<size_type>(vector.size()))); // number of elements
+		for (auto && v : vector)
+			ar(v);
+		ar(vector.schema);
+		ar(vector.name);
+	}
+
+	template <class Archive> inline
+		void CEREAL_LOAD_FUNCTION_NAME(Archive & ar, gezi::Instances & vector)
+	{
+		size_type size;
+		ar(make_size_tag(size));
+
+		vector.resize(static_cast<std::size_t>(size));
+		for (auto && v : vector)
+			ar(v);
+		ar(vector.schema);
+		ar(vector.name);
+	}
+}
 
 #endif  //----end of PREDICTION__INSTANCES__INSTANCES_H_
