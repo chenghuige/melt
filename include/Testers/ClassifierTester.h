@@ -17,6 +17,9 @@
 #include "Testers/Tester.h"
 #include "Utils/Evaluator.h"
 #include "statistic_util.h"
+
+DECLARE_double(posThre);
+
 namespace gezi {
 
 	class ClassificationPrecisionRecall : public DatasetMetrics
@@ -69,19 +72,19 @@ namespace gezi {
 			//results[0] = (prediction > 0 ? 1 : 0);
 			if (label > 0)
 			{
-				if (probability > 0.5)
+				if (probability > FLAGS_posThre)
 					numTruePos += weight;
 				else
 					numFalseNeg += weight;
 			}
 			else
 			{
-				if (probability <= 0.5)
+				if (probability <= FLAGS_posThre)
 					numTrueNeg += weight;
 				else
 					numFalsePos += weight;
 			}
-			results[0] = (probability > 0.5 ? 1 : 0);
+			results[0] = (probability > FLAGS_posThre ? 1 : 0);
 			results[1] = prediction;
 
 			Float currLogLoss;
