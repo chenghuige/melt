@@ -26,7 +26,7 @@ DEFINE_int32(level, 0, "min log level");
 DEFINE_string(type, "simple", "");
 DEFINE_bool(perf,false, "");
 DEFINE_int32(num, 1, "");
-DEFINE_string(i, "model", "input file");
+DEFINE_string(m, "model", "input model path");
 DEFINE_string(o, "", "output file");
 
 void save(const OnlineRegressionTree& tree, ofstream& ofs)
@@ -47,8 +47,8 @@ void save(const OnlineRegressionTree& tree, ofstream& ofs)
 
 void run()
 {
-		GbdtPredictor predictor(FLAGS_i);
-		ofstream ofs(FLAGS_i + "/model.bin.gcc3", ios::binary);
+		GbdtPredictor predictor(FLAGS_m);
+		ofstream ofs(FLAGS_m + "/model.bin.gcc3", ios::binary);
 		int ntrees = predictor._trees.size();
 		Pval(ntrees);
 		write_elem(ntrees, ofs);
