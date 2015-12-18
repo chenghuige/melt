@@ -25,7 +25,7 @@ namespace gezi {
 		static PredictorPtr CreatePredictor(string name);
 		static PredictorPtr CreatePredictor(string name, string path);
 		//Mostly used
-		static PredictorPtr LoadPredictor(string path);
+		static PredictorPtr LoadPredictor(string path, bool useCustomModel = false);
 		//主要用于线性分类器 用于接受其他外部分类器的结果转换为melt接受的文本格式后载入
 		static PredictorPtr CreatePredictorFromTextFormat(string name, string path);
 		static PredictorPtr LoadTextPredictor(string path);

@@ -15,6 +15,7 @@
 #define PREDICTION__INSTANCES__FEATURE_NAMES_VECTOR_H_
 
 #include "common_util.h"
+#include "file_util.h"
 
 namespace gezi {
 
@@ -118,6 +119,17 @@ namespace gezi {
 		{
 			ar & CEREAL_NVP(_numFeatures);
 			ar & CEREAL_NVP(_featureNames);
+		}
+
+		void Load(string file)
+		{
+			*_featureNames = gezi::read_lines_fast(file);
+			_numFeatures = _featureNames->size();
+		}
+
+		void Save(string file)
+		{
+			gezi::write_lines(*_featureNames, file);
 		}
 
 	private:

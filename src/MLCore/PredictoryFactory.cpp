@@ -109,12 +109,14 @@ namespace gezi{
 	}
 
 	//Mostly used
-	PredictorPtr PredictorFactory::LoadPredictor(string path)
+	PredictorPtr PredictorFactory::LoadPredictor(string path, bool useCustomModel = false)
 	{
 		string name = read_file(path + "/model.name.txt");
 		PredictorPtr predictor = CreatePredictor(name);
+		
 		if (predictor != nullptr)
 		{
+			predictor->SetUseCustomModel(useCustomModel);
 			predictor->Load(path);
 		}
 		else

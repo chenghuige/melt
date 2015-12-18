@@ -15,8 +15,10 @@
 #ifndef PREDICTORS__GBDT_PREDICTOR_H_
 #define PREDICTORS__GBDT_PREDICTOR_H_
 #include "Identifer.h"
+#include "file_util.h"
 #include "MLCore/Predictor.h"
 #include "Trainers/Gbdt/OnlineRegressionTree.h"
+
 namespace gezi {
 
 	class GbdtPredictor : public Predictor
@@ -208,6 +210,35 @@ namespace gezi {
 			serialize_util::save(*this, file);
 		}
 
+		virtual void CustomSave_(string path) override
+		{
+			ofstream ofs(path + "/model.bin", ios::binary);
+			int ntrees = _trees.size();
+			write_elem(ntrees, ofs);
+			for (int i = 0; i < ntrees; i++)
+			{
+				SaveTree(_trees[i], ofs);
+			}
+
+			string featureNamesFile = path + "/featureNames.txt";
+			_featureNames.Save(featureNamesFile);
+
+			//dynamic will do rtti if not SigmoidCalibrator will be null ptr
+			auto calibrator = dynamic_pointer_cast<SigmoidCalibrator>(_calibrator);
+			double paramA = -2.0, paramB = 0.0;
+			if (calibrator == nullptr)
+			{
+				VLOG(0) << "No calibrator or other type calibrator will use default param sigmoid calibrator";
+			}
+			else
+			{
+				paramA = calibrator->ParamA();
+				paramB = calibrator->ParamB();
+			}
+			write_elem(paramA, ofs);
+			write_elem(paramB, ofs);
+		}
+
 		virtual void SaveXml_(string file) override
 		{
 			serialize_util::save_xml(*this, file);
@@ -247,6 +278,35 @@ namespace gezi {
 			{
 				tree.SetFeatureNames(_featureNames);
 			}
+			return true;
+		}
+
+		virtual bool CustomLoad_(string path) override
+		{
+			std::ifstream ifs(path + "/model.bin", std::ios::binary);
+			if (!ifs.is_open())
+			{
+				LOG(WARNING) << "not find " << path << "/model.bin";
+				return false;
+			}
+			int ntrees;
+			read_elem(ifs, ntrees);
+			_trees.resize(ntrees);
+			for (int i = 0; i < ntrees; i++)
+			{
+				LoadTree(ifs, _trees[i]);
+			}
+			double paramA, paramB;
+			read_elem(ifs, paramA);
+			read_elem(ifs, paramB);
+			_calibrator = make_shared<SigmoidCalibrator>(paramA, paramB);
+
+			_featureNames.Load(path + "/featureNames.txt");
+			for (auto& tree : _trees)
+			{
+				tree.SetFeatureNames(_featureNames);
+			}
+
 			return true;
 		}
 
@@ -361,6 +421,36 @@ namespace gezi {
 #endif // _DEBUG
 
 	private:
+		void LoadTree(std::ifstream& ifs, OnlineRegressionTree& tree)
+		{
+			read_elem(ifs, tree.NumLeaves);
+			read_elem(ifs, tree._maxOutput);
+			read_elem(ifs, tree._weight);
+			read_vec(ifs, tree._gainPValue);
+			read_vec(ifs, tree._lteChild);
+			read_vec(ifs, tree._gtChild);
+			read_vec(ifs, tree._leafValue);
+			read_vec(ifs, tree._threshold);
+			read_vec(ifs, tree._splitFeature);
+			read_vec(ifs, tree._splitGain);
+			read_vec(ifs, tree._previousLeafValue);
+		}
+
+		void SaveTree(const OnlineRegressionTree& tree, ofstream& ofs)
+		{
+			write_elem(tree.NumLeaves, ofs);
+			write_elem(tree._maxOutput, ofs);
+			write_elem(tree._weight, ofs);
+			write_vec(tree._gainPValue, ofs);
+			write_vec(tree._lteChild, ofs);
+			write_vec(tree._gtChild, ofs);
+			write_vec(tree._leafValue, ofs);
+			write_vec(tree._threshold, ofs);
+			write_vec(tree._splitFeature, ofs);
+			write_vec(tree._splitGain, ofs);
+			write_vec(tree._previousLeafValue, ofs);
+		}
+
 		void SaveCCode(ofstream& ofs)
 		{
 			int i = 0;

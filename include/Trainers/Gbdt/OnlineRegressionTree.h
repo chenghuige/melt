@@ -105,7 +105,7 @@ namespace gezi {
 			}
 			else
 			{
-				std::cerr << boost::format("[%d] %s %.5f <= %.5f ?") %_splitFeature[node] % (*_featureNames)[_splitFeature[node]] %
+				std::cerr << boost::format("[%d] %s %.5f <= %.5f ?") % _splitFeature[node] % (*_featureNames)[_splitFeature[node]] %
 					features[_splitFeature[node]] % threshold[node] << endl;
 				string lsuffix = "", rsuffix = "";
 				if (!suffix.empty())

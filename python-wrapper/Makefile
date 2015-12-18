@@ -54,6 +54,10 @@ DEP_INCPATH=-I../../../../../../app/search/ksarch/store/proxy-lib/redis \
   -I../../../../../../app/search/sep/anti-spam/gezi/third/include \
   -I../../../../../../app/search/sep/anti-spam/gezi/third/output \
   -I../../../../../../app/search/sep/anti-spam/gezi/third/output/include \
+  -I../../../../../../app/search/sep/anti-spam/gezi/third/rabit \
+  -I../../../../../../app/search/sep/anti-spam/gezi/third/rabit/include \
+  -I../../../../../../app/search/sep/anti-spam/gezi/third/rabit/output \
+  -I../../../../../../app/search/sep/anti-spam/gezi/third/rabit/output/include \
   -I../../../../../../app/search/sep/anti-spam/melt \
   -I../../../../../../app/search/sep/anti-spam/melt-train \
   -I../../../../../../app/search/sep/anti-spam/melt-train/include \
@@ -130,10 +134,6 @@ DEP_INCPATH=-I../../../../../../app/search/ksarch/store/proxy-lib/redis \
   -I../../../../../../op/oped/noah/webfoot/naming-lib/include \
   -I../../../../../../op/oped/noah/webfoot/naming-lib/output \
   -I../../../../../../op/oped/noah/webfoot/naming-lib/output/include \
-  -I../../../../../../other/rabit \
-  -I../../../../../../other/rabit/include \
-  -I../../../../../../other/rabit/output \
-  -I../../../../../../other/rabit/output/include \
   -I../../../../../../ps/se/dict-set \
   -I../../../../../../ps/se/dict-set/include \
   -I../../../../../../ps/se/dict-set/output \
@@ -261,7 +261,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=67e19d971b3d38dbd09490f29382e1b9  COMAKE
+COMAKE_MD5=47d2624769b4ab0137bc2a2d9fdc15d8  COMAKE
 
 
 .PHONY:all
@@ -319,6 +319,9 @@ libmelt_predict.so:melt_predict_melt_predict_py.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/third/rabit/lib/librabit.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/third/rabit/lib/librabit_base.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/third/rabit/lib/librabit_mock.a \
   ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
   ../../../../../../app/search/sep/anti-spam/melt/libblas.a \
   ../../../../../../app/search/sep/anti-spam/melt/liblinear.a \
@@ -333,8 +336,8 @@ libmelt_predict.so:melt_predict_melt_predict_py.o \
   ../../../../../../com/idlcompiler/java/libjava_skeleton.a \
   ../../../../../../com/idlcompiler/parser/libparser.a \
   ../../../../../../com/idlcompiler/php/libphp_skeleton.a \
-  ../../../../../../inf/computing/zookeeper/output/c_client/lib/libzookeeper_mt.a \
-  ../../../../../../inf/computing/zookeeper/output/c_client/lib/libzookeeper_st.a \
+  ../../../../../../inf/computing/zookeeper/output/lib/libzookeeper_mt.a \
+  ../../../../../../inf/computing/zookeeper/output/lib/libzookeeper_st.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
   ../../../../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
   ../../../../../../lib2-64/bsl/lib/libbsl_archive.a \
@@ -357,9 +360,6 @@ libmelt_predict.so:melt_predict_melt_predict_py.o \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
   ../../../../../../op/oped/noah/webfoot/naming-lib/output/lib/libwebfoot_naming.a \
-  ../../../../../../other/rabit/lib/librabit.a \
-  ../../../../../../other/rabit/lib/librabit_base.a \
-  ../../../../../../other/rabit/lib/librabit_mock.a \
   ../../../../../../ps/se/dict-set/libdictset.a \
   ../../../../../../public/bslext/output/lib/libbsl_bml.a \
   ../../../../../../public/bslext/output/lib/libbsl_containers_utils.a \
@@ -504,6 +504,9 @@ libmelt_predict_debug.so:melt_predict_debug_melt_predict_debug_py.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/third/rabit/lib/librabit.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/third/rabit/lib/librabit_base.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/third/rabit/lib/librabit_mock.a \
   ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
   ../../../../../../app/search/sep/anti-spam/melt/libblas.a \
   ../../../../../../app/search/sep/anti-spam/melt/liblinear.a \
@@ -518,8 +521,8 @@ libmelt_predict_debug.so:melt_predict_debug_melt_predict_debug_py.o \
   ../../../../../../com/idlcompiler/java/libjava_skeleton.a \
   ../../../../../../com/idlcompiler/parser/libparser.a \
   ../../../../../../com/idlcompiler/php/libphp_skeleton.a \
-  ../../../../../../inf/computing/zookeeper/output/c_client/lib/libzookeeper_mt.a \
-  ../../../../../../inf/computing/zookeeper/output/c_client/lib/libzookeeper_st.a \
+  ../../../../../../inf/computing/zookeeper/output/lib/libzookeeper_mt.a \
+  ../../../../../../inf/computing/zookeeper/output/lib/libzookeeper_st.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
   ../../../../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
   ../../../../../../lib2-64/bsl/lib/libbsl_archive.a \
@@ -542,9 +545,6 @@ libmelt_predict_debug.so:melt_predict_debug_melt_predict_debug_py.o \
   ../../../../../../lib2-64/ullib/lib/libullib.a \
   ../../../../../../lib2-64/wordseg/libsegment.a \
   ../../../../../../op/oped/noah/webfoot/naming-lib/output/lib/libwebfoot_naming.a \
-  ../../../../../../other/rabit/lib/librabit.a \
-  ../../../../../../other/rabit/lib/librabit_base.a \
-  ../../../../../../other/rabit/lib/librabit_mock.a \
   ../../../../../../ps/se/dict-set/libdictset.a \
   ../../../../../../public/bslext/output/lib/libbsl_bml.a \
   ../../../../../../public/bslext/output/lib/libbsl_containers_utils.a \

@@ -96,6 +96,12 @@ namespace gezi {
 			return *this;
 		}
 
+		Predictor& SetUseCustomModel(bool useCustomModel)
+		{
+			_useCustomModel = useCustomModel;
+			return *this;
+		}
+
 		string GetParam()
 		{
 			return _param;
@@ -304,9 +310,17 @@ namespace gezi {
 			return *this;
 		}
 
-		virtual void Save()
+		//一般不调用 调用Save(path)
+		virtual void Save() 
 		{
-			Save(_path);
+			if (_useCustomModel)
+			{
+				CustomSave(_path);
+			}
+			else
+			{
+				Save(_path);
+			}
 		}
 
 		virtual void SaveBin(string path)
@@ -317,21 +331,47 @@ namespace gezi {
 
 		virtual void Save(string path) override
 		{
-			LoadSave::Save(path);
+			if (_useCustomModel)
+			{
+				CustomSave(_path);
+			}
+			else
+			{
+				LoadSave::Save(path);
+				_path = path;
+				try_create_dir(path);
+				SaveBin(path);
+				write_file(Name(), path + "/model.name.txt");
+				write_file(_param, path + "/model.param.txt");
+				SAVE_SHARED_PTR(_normalizer, path);
+				SAVE_SHARED_PTR(_calibrator, path);
+			}
+		}
+
+		virtual void CustomSave() 
+		{
+			CustomSave(_path);
+		}
+
+		virtual void CustomSave(string path) override
+		{
+			LoadSave::CustomSave(path);
 			_path = path;
 			try_create_dir(path);
-			SaveBin(path);
+			CustomSave_(path);
 			write_file(Name(), path + "/model.name.txt");
 			write_file(_param, path + "/model.param.txt");
-			SAVE_SHARED_PTR(_normalizer, path);
-			SAVE_SHARED_PTR(_calibrator, path);
+		}
+
+		virtual void CustomSave_(string path)
+		{
+			LOG(WARNING) << Name() << " currently not support custom save";
 		}
 
 		virtual void Save_(string file)
 		{
 			LOG(WARNING) << Name() << " currently not support saving model";
 		}
-
 
 		bool LoadNormalizerAndCalibrator(string path)
 		{
@@ -371,10 +411,26 @@ namespace gezi {
 			return Load_(modelFile);
 		}
 
-		virtual bool Load(string path) override
+		void ReadPathAndSetParam_(string path)
 		{
 			_path = path;
 			_param = read_file(OBJ_NAME_PATH(_param, path));
+		}
+
+		virtual bool CustomLoad(string path) override
+		{
+			ReadPathAndSetParam_(path);
+			LoadSave::CustomLoad(path);
+			return CustomLoad_(path);
+		}
+
+		virtual bool Load(string path) override
+		{
+			if (_useCustomModel)
+			{
+				return CustomLoad(path);
+			}
+			ReadPathAndSetParam_(path);
 			LoadSave::Load(path);
 			bool ret = true;
 			ret = LoadBin(path);
@@ -478,16 +534,21 @@ namespace gezi {
 			write_file(ToFeaturesGainSummary(topNum), _path + "/model.featureGain.txt");
 		}
 
+		virtual bool CustomLoad_(string path)
+		{
+			LOG(FATAL) << Name() << " currently has no custom load!";
+			return false;
+		}
+
 		virtual bool LoadText_(string file)
 		{
 			LOG(FATAL) << Name() << " currently not support loading text format!";
-			return true;
+			return false;
 		}
 
 		virtual bool LoadText(string path) override
 		{
-			_path = path;
-			_param = read_file(OBJ_NAME_PATH(_param, _path));
+			ReadPathAndSetParam_(path);
 			LoadSave::LoadText(path);
 			string modelFile = path + "/model.txt";
 			bool ret = true;
@@ -670,6 +731,8 @@ namespace gezi {
 	private:
 		bool _saveNormalizerText = false; //是否输出文本格式 包括xml,json统一使用
 		bool _saveCalibratorText = false;
+
+		bool _useCustomModel = false;
 	};
 
 	typedef shared_ptr<Predictor> PredictorPtr;

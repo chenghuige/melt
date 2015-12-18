@@ -79,6 +79,16 @@ public:
 		ofs << "paramB=" << paramB << endl;
 	}
 
+	double ParamA() const
+	{
+		return paramA;
+	}
+
+	double ParamB() const
+	{
+		return paramB;
+	}
+
 protected:
 
 	//@TODO understand

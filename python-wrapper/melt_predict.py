@@ -48,7 +48,7 @@ include_paths=[
                 'public/odict/output',
                 'public/uconv/output',
                 'public/configure/output',
-                'other/rabit',
+                'app/search/sep/anti-spam/gezi/third/rabit',
 	      ]
 
 include_paths_python = [

@@ -28,8 +28,8 @@ namespace gezi {
 	class TextPredictor
 	{
 	public:
-		static void Prase(svec& words_, map<int, double>& m, const DoubleIdentifer& identifer, int startIndex = 0,
-			int ngram = 3, int skip = 2, string sep = "\x01", bool hasPic = false, bool hasUrl = false, bool hasAt = false)
+		static void Prase(const svec& words_, map<int, double>& m, const DoubleIdentifer& identifer, int startIndex = 0,
+			int ngram = 3, int skip = 2, string sep = "\x01")
 		{
 			svec words = get_words(words_, ngram, sep);
 			get_skip_bigram(words_, words, skip, sep);
@@ -39,50 +39,20 @@ namespace gezi {
 				if (id != identifer.null_id())
 				{
 					m[id + startIndex] += identifer.value(id);
-					if (hasPic)
-					{
-						id = identifer.id(format("{}{}{}", word, sep, "<pic>"));
-						if (id != identifer.null_id())
-						{
-							m[id + startIndex] += identifer.value(id);
-						}
-					}
-					if (hasUrl)
-					{
-						id = identifer.id(format("{}{}{}", word, sep, "<url>"));
-						if (id != identifer.null_id())
-						{
-							m[id + startIndex] += identifer.value(id);
-						}
-					}
-					if (hasAt)
-					{
-						id = identifer.id(format("{}{}{}", word, sep, "<at>"));
-						if (id != identifer.null_id())
-						{
-							m[id + startIndex] += identifer.value(id);
-						}
-					}
 				}
 			}
 		}
 
+		//same  word will be of different id in title or in content
 		static double Predict(const svec& titleWords, const svec& contentWords, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
-			int segType = SEG_BASIC, bool useMedia = false, int ngram = 3, int skip = 2, string sep = "\x01")
+			int segType = SEG_BASIC, int ngram = 3, int skip = 2, string sep = "\x01")
 		{
 			int wordNum = identifer.size();
 			map<int, double> m; //确保按key排序
 
-			bool hasPic = false, hasUrl = false, hasAt = false;
-			if (useMedia)
-			{
-				hasPic = gezi::contains_pic(content);
-				hasUrl = gezi::contains_url(content);
-				hasAt = gezi::contains_at(content);
-			}
-			Prase(titleWords, m, identifer, 0, ngram, skip, sep, hasPic, hasUrl, hasAt);
+			Prase(titleWords, m, identifer, 0, ngram, skip, sep);
 
-			Prase(contentWords, m, identifer, wordNum, ngram, skip, sep, hasPic, hasUrl, hasAt);
+			Prase(contentWords, m, identifer, wordNum, ngram, skip, sep);
 
 			double score = predictor->Predict(m);
 
@@ -158,14 +128,14 @@ namespace gezi {
 #ifndef NO_BAIDU_DEP
 
 		static double Predict(string title, string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
-			int segType = SEG_BASIC, bool useMedia = false, int ngram = 3, int skip = 2, string sep = "\x01")
+			int segType = SEG_BASIC, int ngram = 3, int skip = 2, string sep = "\x01")
 		{
 			Segmentor::Init(); //最好还是外部Init好 这里为了安全仍然保有
 
 			svec titleWords = Segmentor::Segment(title, segType);
 			svec contentWords = Segmentor::Segment(content, segType);
 			return Predict(titleWords, contentWords, identifer, predictor, 
-				segType, useMedia, ngram, skip, sep);
+				segType, ngram, skip, sep);
 		}
 
 		static double Predict(string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
