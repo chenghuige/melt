@@ -102,6 +102,11 @@ namespace gezi {
 			return *this;
 		}
 
+		bool UseCustomModel() const
+		{
+			return _useCustomModel;
+		}
+
 		string GetParam()
 		{
 			return _param;

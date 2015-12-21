@@ -116,7 +116,11 @@ namespace gezi{
 		
 		if (predictor != nullptr)
 		{
-			predictor->SetUseCustomModel(useCustomModel);
+			if (useCustomModel)
+			{
+				predictor->SetUseCustomModel(useCustomModel);
+			}
+			VLOG(5) << "UseCustomLoad:" << predictor->UseCustomModel();
 			predictor->Load(path);
 		}
 		else

@@ -261,11 +261,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=47d2624769b4ab0137bc2a2d9fdc15d8  COMAKE
+COMAKE_MD5=ccd06ea0084d13178dba14440ac4057c  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check libmelt_predict.so libmelt_predict_debug.so 
+all:comake2_makefile_check liburate.so 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -285,12 +285,9 @@ ccpclean:
 .PHONY:clean
 clean:ccpclean
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mclean[0m']"
-	rm -rf libmelt_predict.so
-	rm -rf ./output/so/libmelt_predict.so
-	rm -rf libmelt_predict_debug.so
-	rm -rf ./output/so/libmelt_predict_debug.so
-	rm -rf melt_predict_melt_predict_py.o
-	rm -rf melt_predict_debug_melt_predict_debug_py.o
+	rm -rf liburate.so
+	rm -rf ./output/so/liburate.so
+	rm -rf urate_urate_py.o
 
 .PHONY:dist
 dist:
@@ -309,11 +306,11 @@ love:
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlove[0m']"
 	@echo "make love done"
 
-libmelt_predict.so:melt_predict_melt_predict_py.o \
+liburate.so:urate_urate_py.o \
   ./lib/libpython2.7.so \
   ./lib/libboost_python.so
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibmelt_predict.so[0m']"
-	$(CC) -shared melt_predict_melt_predict_py.o -Xlinker "-(" ./lib/libpython2.7.so \
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mliburate.so[0m']"
+	$(CXX) -shared urate_urate_py.o -Xlinker "-(" ./lib/libpython2.7.so \
   ./lib/libboost_python.so ../../../../../../app/search/ksarch/store/proxy-lib/redis/libredisclient.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
@@ -490,214 +487,19 @@ libmelt_predict.so:melt_predict_melt_predict_py.o \
   -Wl,-rpath=./ \
   -lgomp \
   -rdynamic \
-  -Wl,-rpath=./lib/ -Xlinker "-)" -o libmelt_predict.so
+  -Wl,-rpath=./lib/ -Xlinker "-)" -o liburate.so
 	mkdir -p ./output/so
-	cp -f --link libmelt_predict.so ./output/so
+	cp -f --link liburate.so ./output/so
 
-libmelt_predict_debug.so:melt_predict_debug_melt_predict_debug_py.o \
-  ./lib/libpython2.7.so \
-  ./lib/libboost_python.so
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibmelt_predict_debug.so[0m']"
-	$(CC) -shared melt_predict_debug_melt_predict_debug_py.o -Xlinker "-(" ./lib/libpython2.7.so \
-  ./lib/libboost_python.so ../../../../../../app/search/ksarch/store/proxy-lib/redis/libredisclient.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/third/rabit/lib/librabit.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/third/rabit/lib/librabit_base.a \
-  ../../../../../../app/search/sep/anti-spam/gezi/third/rabit/lib/librabit_mock.a \
-  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
-  ../../../../../../app/search/sep/anti-spam/melt/libblas.a \
-  ../../../../../../app/search/sep/anti-spam/melt/liblinear.a \
-  ../../../../../../app/search/sep/anti-spam/melt/libmelt.a \
-  ../../../../../../app/search/sep/anti-spam/melt/libsofia.a \
-  ../../../../../../app/search/sep/anti-spam/melt/libsvm.a \
-  ../../../../../../app/search/sep/anti-spam/melt/libvw.a \
-  ../../../../../../com/btest/gtest/output/lib/libgtest.a \
-  ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
-  ../../../../../../com/idlcompiler/astyle/libastyle.a \
-  ../../../../../../com/idlcompiler/cxx/libskeleton.a \
-  ../../../../../../com/idlcompiler/java/libjava_skeleton.a \
-  ../../../../../../com/idlcompiler/parser/libparser.a \
-  ../../../../../../com/idlcompiler/php/libphp_skeleton.a \
-  ../../../../../../inf/computing/zookeeper/output/lib/libzookeeper_mt.a \
-  ../../../../../../inf/computing/zookeeper/output/lib/libzookeeper_st.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_archive.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_buffer.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_check_cast.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_exception.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_pool.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_utils.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_var.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_var_implement.a \
-  ../../../../../../lib2-64/bsl/lib/libbsl_var_utils.a \
-  ../../../../../../lib2-64/ccode/lib/libulccode.a \
-  ../../../../../../lib2-64/dict/lib/libuldict.a \
-  ../../../../../../lib2-64/libcrf/lib/libcrf.a \
-  ../../../../../../lib2-64/nlp/compact-trie/lib/libctrie.a \
-  ../../../../../../lib2-64/others-ex/lib/libullib_ex.a \
-  ../../../../../../lib2-64/postag/lib/libpostag.a \
-  ../../../../../../lib2-64/string/lib/libstring.a \
-  ../../../../../../lib2-64/text-util/lib/libtextutil.a \
-  ../../../../../../lib2-64/ullib/lib/libullib.a \
-  ../../../../../../lib2-64/wordseg/libsegment.a \
-  ../../../../../../op/oped/noah/webfoot/naming-lib/output/lib/libwebfoot_naming.a \
-  ../../../../../../ps/se/dict-set/libdictset.a \
-  ../../../../../../public/bslext/output/lib/libbsl_bml.a \
-  ../../../../../../public/bslext/output/lib/libbsl_containers_utils.a \
-  ../../../../../../public/bslext/output/lib/libbsl_var_scripting.a \
-  ../../../../../../public/bslext/output/lib/libbsl_var_serializer.a \
-  ../../../../../../public/bslext/output/lib/libbsl_var_vscript.a \
-  ../../../../../../public/bslext/output/lib/libbsl_vs.a \
-  ../../../../../../public/bslext/output/lib/libbslext.a \
-  ../../../../../../public/comlog-plugin/libcomlog.a \
-  ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
-  ../../../../../../public/configure/libconfig.a \
-  ../../../../../../public/connectpool/libconnectpool.a \
-  ../../../../../../public/gm/galileo/libgalileo.a \
-  ../../../../../../public/gm/galileo/output/lib/libzookeeper_mt.a \
-  ../../../../../../public/idlcompiler/output/lib/libmcpack_idl.a \
-  ../../../../../../public/mcpack/libmcpack.a \
-  ../../../../../../public/nshead/libnshead.a \
-  ../../../../../../public/odict/libodict.a \
-  ../../../../../../public/spreg/libspreg.a \
-  ../../../../../../public/ub/output/lib/libub.a \
-  ../../../../../../public/ub/output/lib/libub_aserver.a \
-  ../../../../../../public/ub/output/lib/libub_client.a \
-  ../../../../../../public/ub/output/lib/libub_conf.a \
-  ../../../../../../public/ub/output/lib/libub_galileo.a \
-  ../../../../../../public/ub/output/lib/libub_log.a \
-  ../../../../../../public/ub/output/lib/libub_misc.a \
-  ../../../../../../public/ub/output/lib/libub_monitor.a \
-  ../../../../../../public/ub/output/lib/libub_naming.a \
-  ../../../../../../public/ub/output/lib/libub_server.a \
-  ../../../../../../public/ub/output/lib/libubex.a \
-  ../../../../../../public/ub/output/lib/libubfw.a \
-  ../../../../../../public/uconv/libuconv.a \
-  ../../../../../../public/urlparser/libnewurl.a \
-  ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
-  ../../../../../../st/nlp/lm-score/output/lib/libScoreCal.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_atomic.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_chrono.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_context.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_date_time.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_exception.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_filesystem.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_graph.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_locale.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_math_c99.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_math_c99f.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_math_c99l.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_math_tr1.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_math_tr1f.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_math_tr1l.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_mpi.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_mpi_python.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_prg_exec_monitor.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_program_options.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_python.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_random.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_regex.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_serialization.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_signals.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_system.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_test_exec_monitor.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_thread.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_timer.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_unit_test_framework.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_wave.a \
-  ../../../../../../third-64/boost.1.53/lib/libboost_wserialization.a \
-  ../../../../../../third-64/boost/lib/libboost_atomic.a \
-  ../../../../../../third-64/boost/lib/libboost_chrono.a \
-  ../../../../../../third-64/boost/lib/libboost_container.a \
-  ../../../../../../third-64/boost/lib/libboost_context.a \
-  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
-  ../../../../../../third-64/boost/lib/libboost_date_time.a \
-  ../../../../../../third-64/boost/lib/libboost_exception.a \
-  ../../../../../../third-64/boost/lib/libboost_filesystem.a \
-  ../../../../../../third-64/boost/lib/libboost_graph.a \
-  ../../../../../../third-64/boost/lib/libboost_locale.a \
-  ../../../../../../third-64/boost/lib/libboost_math_c99.a \
-  ../../../../../../third-64/boost/lib/libboost_math_c99f.a \
-  ../../../../../../third-64/boost/lib/libboost_math_c99l.a \
-  ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
-  ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
-  ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
-  ../../../../../../third-64/boost/lib/libboost_mpi.a \
-  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
-  ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
-  ../../../../../../third-64/boost/lib/libboost_program_options.a \
-  ../../../../../../third-64/boost/lib/libboost_python.a \
-  ../../../../../../third-64/boost/lib/libboost_random.a \
-  ../../../../../../third-64/boost/lib/libboost_regex.a \
-  ../../../../../../third-64/boost/lib/libboost_serialization.a \
-  ../../../../../../third-64/boost/lib/libboost_signals.a \
-  ../../../../../../third-64/boost/lib/libboost_system.a \
-  ../../../../../../third-64/boost/lib/libboost_test_exec_monitor.a \
-  ../../../../../../third-64/boost/lib/libboost_thread.a \
-  ../../../../../../third-64/boost/lib/libboost_timer.a \
-  ../../../../../../third-64/boost/lib/libboost_unit_test_framework.a \
-  ../../../../../../third-64/boost/lib/libboost_wave.a \
-  ../../../../../../third-64/boost/lib/libboost_wserialization.a \
-  ../../../../../../third-64/gflags.bak/lib/libgflags.a \
-  ../../../../../../third-64/gflags.bak/lib/libgflags_nothreads.a \
-  ../../../../../../third-64/gflags/lib/libgflags.a \
-  ../../../../../../third-64/gflags/lib/libgflags_nothreads.a \
-  ../../../../../../third-64/glog/lib/libglog.a \
-  ../../../../../../third-64/libcurl/lib/libcurl.a \
-  ../../../../../../third-64/pcre/lib/libpcre.a \
-  ../../../../../../third-64/pcre/lib/libpcrecpp.a \
-  ../../../../../../third-64/pcre/lib/libpcreposix.a \
-  ../../../../../../third-64/protobuf/lib/libprotobuf-lite.a \
-  ../../../../../../third-64/protobuf/lib/libprotobuf.a \
-  ../../../../../../third-64/protobuf/lib/libprotoc.a \
-  ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_debug.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal.a \
-  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal_debug.a \
-  ../../../../../../third-64/zlib/lib/libz.a -lpthread \
-  -lcurl \
-  -lrt \
-  -lcrypto \
-  -lldap \
-  -lssl \
-  -ldl \
-  -rdynamic \
-  -L./ \
-  -L./lib \
-  -lpython2.7 \
-  -lboost_python \
-  -Wl,-rpath=./ \
-  -lgomp \
-  -rdynamic \
-  -Wl,-rpath=./lib/ -Xlinker "-)" -o libmelt_predict_debug.so
-	mkdir -p ./output/so
-	cp -f --link libmelt_predict_debug.so ./output/so
-
-melt_predict_melt_predict_py.o:melt_predict_py.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt_predict_melt_predict_py.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DPYTHON_WRAPPER \
-  -DNDEBUG \
-  -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED $(CXXFLAGS)  -o melt_predict_melt_predict_py.o melt_predict_py.cc
-
-melt_predict_debug_melt_predict_debug_py.o:melt_predict_debug_py.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt_predict_debug_melt_predict_debug_py.o[0m']"
+urate_urate_py.o:urate_py.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40murate_urate_py.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
   -DPYTHON_WRAPPER \
   -D_DEBUG \
-  -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED $(CXXFLAGS)  -o melt_predict_debug_melt_predict_debug_py.o melt_predict_debug_py.cc
+  -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED $(CXXFLAGS)  -o urate_urate_py.o urate_py.cc
 
 endif #ifeq ($(shell uname -m),x86_64)
 

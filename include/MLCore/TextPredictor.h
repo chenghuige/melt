@@ -57,8 +57,8 @@ namespace gezi {
 			double score = predictor->Predict(m);
 
 #ifdef _DEBUG
-			Pval(gezi::join(twords, "$#$"));
-			Pval(gezi::join(cwords, "$#$"));
+			Pval(gezi::join(titleWords, "$#$"));
+			Pval(gezi::join(contentWords, "$#$"));
 			Vector fe(m);
 			PVAL(fe.str());
 			predictor->_normalizer->Normalize(fe);
