@@ -97,7 +97,12 @@ namespace gezi {
 			}
 			return (*_featureNames)[index];
 		}
-		
+
+		string at(int index) const
+		{
+			return (*this)[index];
+		}
+
 		size_t size() const
 		{
 			return std::max((size_t)_numFeatures, _featureNames->size());

@@ -10,6 +10,8 @@ define_symbols = ['GCCXML','PYTHON_WRAPPER']
 
 files = [
                                 './gezi.include.python/common_util.h',
+																'./gezi.include.python/feature/FeatureVector.h',
+																'./gezi.include.python/tieba/urate/urate_info.h',
 																'./gezi.include.python/tieba/urate/urate_features.h',
 				]
 

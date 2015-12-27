@@ -9,6 +9,7 @@
 
 import sys,os
 
+#vectors = ['Vector', 'FeatureVector', 'Instances', 'FeatureNamesVector']
 vectors = ['Vector', 'FeatureVector', 'Instances']
 
 s = set()

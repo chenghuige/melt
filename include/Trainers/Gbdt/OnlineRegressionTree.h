@@ -14,6 +14,8 @@
 #ifndef TRAINERS_GBDT__ONLINE_REGRESSION_TREE_H_
 #define TRAINERS_GBDT__ONLINE_REGRESSION_TREE_H_
 #include "common_util.h"
+#include "Numeric/Vector/Vector.h"
+#include "Prediction/Instances/FeatureNamesVector.h"
 namespace gezi {
 	//只是读入 通过TLC文本文件
 	class GbdtPredictor;
@@ -28,6 +30,11 @@ namespace gezi {
 		OnlineRegressionTree(const OnlineRegressionTree&) = default;
 		OnlineRegressionTree& operator = (const OnlineRegressionTree&) = default;
 
+		//for python wrapper
+		bool operator == (const OnlineRegressionTree& other) const
+		{
+			return this == &other;
+		}
 	public:
 
 		//输入特征 遍历树 输出叶子节点的数值
@@ -214,6 +221,9 @@ namespace gezi {
 	public:
 		int NumLeaves = 1;
 	protected:
+#ifdef PYTHON_WRAPPER
+	public:
+#endif // PYTHON_WRAPPER
 		dvec _gainPValue;
 		ivec _lteChild;
 		ivec _gtChild;

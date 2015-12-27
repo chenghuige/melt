@@ -1745,6 +1745,16 @@ Predictor_exposer.def(
 , ( bp::arg("path") ) );
 
 }
+{ //::gezi::Predictor::FeatureNames
+
+typedef ::gezi::FeatureNamesVector const & ( ::gezi::Predictor::*FeatureNames_function_type )(  ) const;
+
+Predictor_exposer.def(
+"FeatureNames"
+, FeatureNames_function_type( &::gezi::Predictor::FeatureNames )
+, bp::return_value_policy< bp::copy_const_reference >() );
+
+}
 { //::gezi::Predictor::GetCalibrator
 
 typedef ::gezi::CalibratorPtr & ( ::gezi::Predictor::*GetCalibrator_function_type )(  ) ;

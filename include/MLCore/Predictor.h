@@ -564,7 +564,12 @@ namespace gezi {
 			return ret;
 		}
 
-		NormalizerPtr& GetNormalizer()
+		//This will result 
+		//C++ signature :
+		//std::shared_ptr < gezi::Normalizer > { lvalue } GetNormalizer(gezi::Predictor{ lvalue })
+		//TypeError: No Python class registered for C++ class std::shared_ptr<gezi::Normalizer>
+		//NormalizerPtr& GetNormalizer() 
+		NormalizerPtr GetNormalizer()
 		{
 			return _normalizer;
 		}
@@ -654,6 +659,11 @@ namespace gezi {
 		void SetFeatureGainVec(const vector<Float>& featureGainVec)
 		{
 			_featureGainVec = featureGainVec;
+		}
+
+		const FeatureNamesVector& FeatureNames() const
+		{
+			return _featureNames;
 		}
 
 		//可以避免风险 不提供& 如果必须显示通过move()调用下面的&& set一般两种语义 要么copy传值 要么转移传值 与传统的引用modify有区别

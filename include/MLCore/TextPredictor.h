@@ -86,6 +86,34 @@ namespace gezi {
 #endif
 			return score;
 		}
+
+		///Predict and output idValMap for debug
+		static double Predict(const svec& titleWords, const svec& contentWords, const DoubleIdentifer& identifer, const PredictorPtr& predictor, map<int, double>& idValMap,
+			int segType = SEG_BASIC, int ngram = 3, int skip = 2, string sep = "\x01")
+		{
+			int wordNum = identifer.size();
+
+			Prase(titleWords, idValMap, identifer, 0, ngram, skip, sep);
+
+			Prase(contentWords, idValMap, identifer, wordNum, ngram, skip, sep);
+
+			double score = predictor->Predict(idValMap);
+
+			return score;
+		}
+
+		static double Predict(const svec& words, const DoubleIdentifer& identifer, const PredictorPtr& predictor, map<int, double>& idValMap,
+			int segType = SEG_BASIC, int ngram = 3, int skip = 2, string sep = "\x01")
+		{
+			int wordNum = identifer.size();
+
+			Prase(words, idValMap, identifer, 0, ngram, skip, sep);
+
+			double score = predictor->Predict(idValMap);
+
+			return score;
+		}
+
 		
 		static double Predict(const svec& words, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
 			int segType = SEG_BASIC, int ngram = 3, int skip = 2, string sep = "\x01")
@@ -138,10 +166,20 @@ namespace gezi {
 				segType, ngram, skip, sep);
 		}
 
+		static double Predict(string title, string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor, map<int, double>& idValMap,
+			int segType = SEG_BASIC, int ngram = 3, int skip = 2, string sep = "\x01")
+		{
+			Segmentor::Init(); //最好还是外部Init好 这里为了安全仍然保有
+
+			svec titleWords = Segmentor::Segment(title, segType);
+			svec contentWords = Segmentor::Segment(content, segType);
+			return Predict(titleWords, contentWords, identifer, predictor, idValMap,
+				segType, ngram, skip, sep);
+		}
+
 		static double Predict(string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,
 			int segType = SEG_BASIC, int ngram = 3, int skip = 2, string sep = "\x01")
 		{
-			map<int, double> m; //确保按key排序
 			Segmentor::Init();
 			svec words = Segmentor::Segment(content, segType);
 			return Predict(words, identifer, predictor, segType, ngram, skip, sep);

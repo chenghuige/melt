@@ -69,6 +69,13 @@ namespace gezi {
 			return temp;
 		}
 
+#ifdef PYTHON_WRAPPER
+		void Normalize(Vector& vec)
+		{
+			Normalize(vec, _func);
+		}
+#endif // PYTHON_WRAPPER
+
 		void Normalize(Instance& instance)
 		{
 			Normalize(instance.features, _func);

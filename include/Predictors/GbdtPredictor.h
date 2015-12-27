@@ -413,6 +413,12 @@ namespace gezi {
 		{
 			return _trees;
 		}
+
+		const vector<OnlineRegressionTree>& Trees() const
+		{
+			return _trees;
+		}
+
 #ifdef _DEBUG
 		void SetReverse(bool reverse = true)
 		{
@@ -575,6 +581,9 @@ namespace gezi {
 		bool _reverse = false;
 #endif // _DEBUG
 
+#ifdef PYTHON_WRAPPER
+		public:
+#endif // PYTHON_WRAPPER
 		vector<OnlineRegressionTree> _trees;
 
 		//temply used shared between load save function

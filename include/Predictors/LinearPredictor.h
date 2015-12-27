@@ -136,6 +136,16 @@ namespace gezi {
 			}
 		}
 
+		const Vector& weights() const
+		{
+			return _weights;
+		}
+
+		const Float bias() const
+		{
+			return _bias;
+		}
+
 		friend class cereal::access;
 		template<class Archive>
 		void serialize(Archive &ar, const unsigned int version)
