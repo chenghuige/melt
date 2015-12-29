@@ -62,7 +62,7 @@ namespace gezi {
 		}
 
 		template<typename _Vector>
-		_Vector NormalizeCopy(_Vector& vec)
+		_Vector NormalizeCopy(const _Vector& vec)
 		{
 			_Vector temp = vec;
 			Normalize(temp, _func);
@@ -73,6 +73,13 @@ namespace gezi {
 		void Normalize(Vector& vec)
 		{
 			Normalize(vec, _func);
+		}
+
+		Vector NormalizeCopy(const Vector& vec)
+		{
+			Vector temp = vec;
+			Normalize(temp, _func);
+			return temp;
 		}
 #endif // PYTHON_WRAPPER
 
@@ -104,7 +111,7 @@ namespace gezi {
 		}
 
 		//@TODO can not be const Instances&
-		Instances NormalizeCopy(Instances& instances)  
+		Instances NormalizeCopy(const Instances& instances)  
 		{
 			Instances newInstances = instances;
 #pragma omp parallel for 
@@ -160,7 +167,7 @@ namespace gezi {
 			Normalize(instances);
 		}
 
-		Instances RunNormalizeCopy(Instances& instances)
+		Instances RunNormalizeCopy(const Instances& instances)
 		{
 			Prepare(instances);
 			Instances newInstances = NormalizeCopy(instances);

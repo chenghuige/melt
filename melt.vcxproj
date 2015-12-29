@@ -167,6 +167,7 @@
     <ClCompile Include="src\vowpalwabbit\unique_sort.cc" />
     <ClCompile Include="src\vowpalwabbit\vwdll.cpp" />
     <ClCompile Include="src\Wrapper\PredictorFactory.cpp" />
+    <ClCompile Include="test\test_normalizer_online.cc" />
     <ClCompile Include="test_simple\test_predict.cc" />
     <ClCompile Include="tools3\fastrank_predict.cc" />
     <ClCompile Include="tools3\melt.cc" />

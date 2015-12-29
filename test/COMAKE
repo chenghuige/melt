@@ -108,3 +108,5 @@ LIBS('../libmelt.a ../libsofia.a ../libvw.a ../libblas.a ../liblinear.a ../libsv
 #srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/vowpalwabbit/*.cc ./src/sofia/*.cc'.replace('./',RELATIVE_PATH))
 srcs = ''
 Application('test_load_libsvm',Sources('test_load_libsvm.cc',srcs))
+#Application('test_normalizer_online',Sources('test_normalizer_online.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
+Application('test_normalizer_online',Sources('test_normalizer_online.cc',srcs))

@@ -1,7 +1,7 @@
 /**
  *  ==============================================================================
  *
- *          \file   Predictors/PredictorFactory.h
+ *          \file   MLCore/PredictorFactory.h
  *
  *        \author   chenghuige
  *
