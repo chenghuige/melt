@@ -57,6 +57,20 @@ public:
 		}
 		return calibrator;
 	}
+
+	static CalibratorPtr Load(string path)
+	{
+		CalibratorPtr calibrator = nullptr;
+		int ret = serialize_util::load(calibrator, path);
+		if (!ret)
+			return nullptr;
+		return calibrator;
+	}
+
+	static void Save(CalibratorPtr calibrator, string path)
+	{
+		serialize_util::save(calibrator, path);
+	}
 protected:
 private:
 

@@ -261,11 +261,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=aefa9588188ac7645d2153ee7628a2ed  COMAKE
+COMAKE_MD5=34c40f5b44692f55b0a01f5fd8a27394  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check libtrate.so 
+all:comake2_makefile_check libnormalizer.so 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -285,9 +285,9 @@ ccpclean:
 .PHONY:clean
 clean:ccpclean
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mclean[0m']"
-	rm -rf libtrate.so
-	rm -rf ./output/so/libtrate.so
-	rm -rf trate_trate_py.o
+	rm -rf libnormalizer.so
+	rm -rf ./output/so/libnormalizer.so
+	rm -rf normalizer_normalizer_py.o
 
 .PHONY:dist
 dist:
@@ -306,11 +306,11 @@ love:
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlove[0m']"
 	@echo "make love done"
 
-libtrate.so:trate_trate_py.o \
+libnormalizer.so:normalizer_normalizer_py.o \
   ./lib/libpython2.7.so \
   ./lib/libboost_python.so
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibtrate.so[0m']"
-	$(CXX) -shared trate_trate_py.o -Xlinker "-(" ./lib/libpython2.7.so \
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibnormalizer.so[0m']"
+	$(CXX) -shared normalizer_normalizer_py.o -Xlinker "-(" ./lib/libpython2.7.so \
   ./lib/libboost_python.so ../../../../../../app/search/ksarch/store/proxy-lib/redis/libredisclient.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
@@ -487,19 +487,19 @@ libtrate.so:trate_trate_py.o \
   -Wl,-rpath=./ \
   -lgomp \
   -rdynamic \
-  -Wl,-rpath=./lib/ -Xlinker "-)" -o libtrate.so
+  -Wl,-rpath=./lib/ -Xlinker "-)" -o libnormalizer.so
 	mkdir -p ./output/so
-	cp -f --link libtrate.so ./output/so
+	cp -f --link libnormalizer.so ./output/so
 
-trate_trate_py.o:trate_py.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mtrate_trate_py.o[0m']"
+normalizer_normalizer_py.o:normalizer_py.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mnormalizer_normalizer_py.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
   -DPYTHON_WRAPPER \
   -DNDEBUG \
-  -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED $(CXXFLAGS)  -o trate_trate_py.o trate_py.cc
+  -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED $(CXXFLAGS)  -o normalizer_normalizer_py.o normalizer_py.cc
 
 endif #ifeq ($(shell uname -m),x86_64)
 

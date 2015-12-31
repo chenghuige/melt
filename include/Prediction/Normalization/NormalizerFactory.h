@@ -51,6 +51,20 @@ namespace gezi {
 			return normalizer;
 		}
 
+		static NormalizerPtr Load(string path)
+		{
+			NormalizerPtr normalizer = nullptr;
+			int ret = serialize_util::load(normalizer, path);
+			if (!ret)
+				return nullptr;
+			return normalizer;
+		}
+
+		static void Save(NormalizerPtr normalizer, string path)
+		{
+			serialize_util::save(normalizer, path);
+		}
+
 	protected:
 	private:
 

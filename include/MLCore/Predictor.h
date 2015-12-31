@@ -399,6 +399,7 @@ namespace gezi {
 						return false;
 				}
 #else 
+				//现在走这个路径
 				ret = serialize_util::load(_normalizer, OBJ_PATH(_normalizer, path));
 				if (!ret)
 					return ret;

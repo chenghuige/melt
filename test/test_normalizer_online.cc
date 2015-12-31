@@ -42,7 +42,9 @@ void run()
 	//auto normalizer = NormalizerFactory::CreateNormalizer("minmax", "./normalizer.bin");
 
 	//@FIXME why wrong.... 和上面的有什么区别吗。。。？？？
-	auto normalizer = NormalizerFactory::CreateNormalizer("minmax", "./data/ltrate.thread.model/normalizer.bin");
+	//有 因为目前save是走的cereal序列化
+	//auto normalizer = NormalizerFactory::CreateNormalizer("minmax", "./data/ltrate.thread.model/normalizer.bin");
+	auto normalizer = NormalizerFactory::LoadNormalizer("./data/ltrate.thread.model/normalizer.bin");
 	auto fe2 = normalizer->NormalizeCopy(fe);
 	Pval(fe2.str());
 	//normalizer->Normalize(fe);

@@ -216,7 +216,7 @@ namespace gezi {
 			FinishTraining();
 		}
 
-		virtual void ProcessTrainingExample(Float output, bool clicked, Float weight)
+		virtual void ProcessTrainingExample(Float output, bool clicked, Float weight = 1.0)
 		{
 
 		}
@@ -265,7 +265,7 @@ namespace gezi {
 		{
 
 		}
-	private:
+	private:  
 		CalibratorStorePtr _data = nullptr;
 	};
 
