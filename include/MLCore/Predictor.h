@@ -293,7 +293,7 @@ namespace gezi {
 			return Predict(features, output);
 		}
 
-		Float Predict(Float output)
+		virtual Float Predict(Float output)
 		{
 			if (_calibrator != nullptr)
 			{
@@ -749,6 +749,24 @@ namespace gezi {
 		bool _saveCalibratorText = false;
 
 		bool _useCustomModel = false;
+	};
+
+	//表示输出的本身就是概率 可以不用calibrator
+	class ProbabilityPredictor : public Predictor
+	{
+	public:
+		using Predictor::Predict;
+		virtual Float Predict(Float output) override
+		{
+			if (_calibrator != nullptr)
+			{
+				return _calibrator->PredictProbability(output);
+			}
+			else
+			{
+				return output;
+			}
+		}
 	};
 
 	typedef shared_ptr<Predictor> PredictorPtr;

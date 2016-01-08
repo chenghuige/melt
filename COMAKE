@@ -59,12 +59,13 @@ if GCC_HIGH  == 1:
 	GCC_FLAGS += '-std=c++11 -fpermissive -Wno-write-strings -Wno-literal-suffix -Wno-unused-local-typedefs'
 	if GCC_DYNAMIC  == 1:
 		GCC_FLAGS += ' -fopenmp'
-		
+
+perf_flags = ' -mfpmath=sse -msse -msse2 -msse3'
 #C编译参数.
-CFLAGS(COMMON_FLAGS, GCC_FLAGS)
+CFLAGS(COMMON_FLAGS, GCC_FLAGS, perf_flags)
 
 #C++编译参数.
-CXXFLAGS(COMMON_FLAGS, GCC_FLAGS)
+CXXFLAGS(COMMON_FLAGS, GCC_FLAGS, perf_flags)
 
 #IDL编译参数
 IDLFLAGS('--compack')
@@ -107,7 +108,10 @@ CONFIGS('public/configure@base')
 #CONFIGS('public/uconv@base')
 CONFIGS('app/search/sep/anti-spam/gezi@base')
 CONFIGS('app/search/sep/anti-spam/gezi/third@base')
-CONFIGS('third-64/zlib@base') #used in vowpalwabbit
+CONFIGS('third-64/zlib@base') #used in vowpalwabbit 
+
+CONFIGS('baidu/nlp-dnn/liblego')
+CONFIGS('third-64/protobuf@protobuf_2-4-1-1100_PD_BL')
 
 #srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp'.replace('./',RELATIVE_PATH))
 #Application('melt',Sources('melt.cc', srcs))
@@ -132,6 +136,6 @@ StaticLibrary('svm',Sources(srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Run/*.cpp ./src/Testers/*.cpp ./src/Prediction/Normalization/*.cpp ./src/Predictors/*.cpp ./src/MLCore/*.cpp ./src/Wrapper/*.cpp')
 
 #CppFlags = ENV.CppFlags() + CppFlags('-DFOLLY_NO_CONFIG -DFOLLY_HAVE_CLOCK_GETTIME -DFOLLY_VERSION=\\\"1\\\" -DUSE_FOLLY_VECTOR')
-CppFlags = ENV.CppFlags() + CppFlags('-DMELT_USE_THIRD_PARTY')
+CppFlags = ENV.CppFlags() + CppFlags('-DMELT_USE_THIRD_PARTY -DMELT_USE_LEGO')
 StaticLibrary('melt',Sources(srcs, CppFlags))
 

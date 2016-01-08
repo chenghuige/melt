@@ -39,7 +39,8 @@ paths = [
 include_paths=[ 
 				'third-64/glog',
 				'third-64/gflags',
-                                'third-64/gtest',
+                'third-64/gtest',
+                #'third-64/protobuf', #lego add
 				'third-64/boost.1.53',
                 'lib2-64/bsl',
         	'lib2-64/postag',

@@ -350,6 +350,451 @@ return this->gezi::Predictor::Predict( instance, output );
 return gezi::Predictor::Predict( instance, output );
 }
 
+virtual ::Float Predict( ::Float output ) {
+if( bp::override func_Predict = this->get_override( "Predict" ) )
+return func_Predict( output );
+else
+return this->gezi::Predictor::Predict( output );
+}
+
+
+::Float default_Predict( ::Float output ) {
+return gezi::Predictor::Predict( output );
+}
+
+virtual void Save(  ) {
+if( bp::override func_Save = this->get_override( "Save" ) )
+func_Save(  );
+else
+this->gezi::Predictor::Save(  );
+}
+
+
+void default_Save(  ) {
+gezi::Predictor::Save( );
+}
+
+virtual void Save( ::std::string path ) {
+if( bp::override func_Save = this->get_override( "Save" ) )
+func_Save( path );
+else
+this->gezi::Predictor::Save( path );
+}
+
+
+void default_Save( ::std::string path ) {
+gezi::Predictor::Save( path );
+}
+
+virtual void SaveBin( ::std::string path ) {
+if( bp::override func_SaveBin = this->get_override( "SaveBin" ) )
+func_SaveBin( path );
+else
+this->gezi::Predictor::SaveBin( path );
+}
+
+
+void default_SaveBin( ::std::string path ) {
+gezi::Predictor::SaveBin( path );
+}
+
+virtual void SaveCode( ::std::string codeTypeStr="cpp" ) {
+if( bp::override func_SaveCode = this->get_override( "SaveCode" ) )
+func_SaveCode( codeTypeStr );
+else
+this->gezi::Predictor::SaveCode( codeTypeStr );
+}
+
+
+void default_SaveCode( ::std::string codeTypeStr="cpp" ) {
+gezi::Predictor::SaveCode( codeTypeStr );
+}
+
+virtual void SaveCode_( ::std::string file, ::gezi::CodeType codeType ) {
+if( bp::override func_SaveCode_ = this->get_override( "SaveCode_" ) )
+func_SaveCode_( file, codeType );
+else
+this->gezi::Predictor::SaveCode_( file, codeType );
+}
+
+
+void default_SaveCode_( ::std::string file, ::gezi::CodeType codeType ) {
+gezi::Predictor::SaveCode_( file, codeType );
+}
+
+virtual void SaveFeaturesGain( int topNum=0 ) {
+if( bp::override func_SaveFeaturesGain = this->get_override( "SaveFeaturesGain" ) )
+func_SaveFeaturesGain( topNum );
+else
+this->gezi::Predictor::SaveFeaturesGain( topNum );
+}
+
+
+void default_SaveFeaturesGain( int topNum=0 ) {
+gezi::Predictor::SaveFeaturesGain( topNum );
+}
+
+virtual void SaveJson( ::std::string file ) {
+if( bp::override func_SaveJson = this->get_override( "SaveJson" ) )
+func_SaveJson( file );
+else
+this->gezi::Predictor::SaveJson( file );
+}
+
+
+void default_SaveJson( ::std::string file ) {
+gezi::Predictor::SaveJson( file );
+}
+
+virtual void SaveJson_( ::std::string file ) {
+if( bp::override func_SaveJson_ = this->get_override( "SaveJson_" ) )
+func_SaveJson_( file );
+else
+this->gezi::Predictor::SaveJson_( file );
+}
+
+
+void default_SaveJson_( ::std::string file ) {
+gezi::Predictor::SaveJson_( file );
+}
+
+virtual void SaveText( ::std::string file ) {
+if( bp::override func_SaveText = this->get_override( "SaveText" ) )
+func_SaveText( file );
+else
+this->gezi::Predictor::SaveText( file );
+}
+
+
+void default_SaveText( ::std::string file ) {
+gezi::Predictor::SaveText( file );
+}
+
+virtual void SaveText_( ::std::string file ) {
+if( bp::override func_SaveText_ = this->get_override( "SaveText_" ) )
+func_SaveText_( file );
+else
+this->gezi::Predictor::SaveText_( file );
+}
+
+
+void default_SaveText_( ::std::string file ) {
+gezi::Predictor::SaveText_( file );
+}
+
+virtual void SaveXml( ::std::string file ) {
+if( bp::override func_SaveXml = this->get_override( "SaveXml" ) )
+func_SaveXml( file );
+else
+this->gezi::Predictor::SaveXml( file );
+}
+
+
+void default_SaveXml( ::std::string file ) {
+gezi::Predictor::SaveXml( file );
+}
+
+virtual void SaveXml_( ::std::string file ) {
+if( bp::override func_SaveXml_ = this->get_override( "SaveXml_" ) )
+func_SaveXml_( file );
+else
+this->gezi::Predictor::SaveXml_( file );
+}
+
+
+void default_SaveXml_( ::std::string file ) {
+gezi::Predictor::SaveXml_( file );
+}
+
+virtual void Save_( ::std::string file ) {
+if( bp::override func_Save_ = this->get_override( "Save_" ) )
+func_Save_( file );
+else
+this->gezi::Predictor::Save_( file );
+}
+
+
+void default_Save_( ::std::string file ) {
+gezi::Predictor::Save_( file );
+}
+
+virtual ::std::string ToFeaturesGainSummary( int topNum=0 ) {
+if( bp::override func_ToFeaturesGainSummary = this->get_override( "ToFeaturesGainSummary" ) )
+return func_ToFeaturesGainSummary( topNum );
+else
+return this->gezi::Predictor::ToFeaturesGainSummary( topNum );
+}
+
+
+::std::string default_ToFeaturesGainSummary( int topNum=0 ) {
+return gezi::Predictor::ToFeaturesGainSummary( topNum );
+}
+
+virtual ::std::string ToGainSummary( ::gezi::Vector & features ) {
+if( bp::override func_ToGainSummary = this->get_override( "ToGainSummary" ) )
+return func_ToGainSummary( boost::ref(features) );
+else
+return this->gezi::Predictor::ToGainSummary( boost::ref(features) );
+}
+
+
+::std::string default_ToGainSummary( ::gezi::Vector & features ) {
+return gezi::Predictor::ToGainSummary( boost::ref(features) );
+}
+
+};
+
+struct ProbabilityPredictor_wrapper : gezi::ProbabilityPredictor, bp::wrapper< gezi::ProbabilityPredictor > {
+
+ProbabilityPredictor_wrapper(gezi::ProbabilityPredictor const & arg )
+: gezi::ProbabilityPredictor( arg )
+, bp::wrapper< gezi::ProbabilityPredictor >(){
+// copy constructor
+
+}
+
+ProbabilityPredictor_wrapper()
+: gezi::ProbabilityPredictor()
+, bp::wrapper< gezi::ProbabilityPredictor >(){
+// null constructor
+
+}
+
+virtual ::Float Predict( ::Float output ) {
+if( bp::override func_Predict = this->get_override( "Predict" ) )
+return func_Predict( output );
+else
+return this->gezi::ProbabilityPredictor::Predict( output );
+}
+
+
+::Float default_Predict( ::Float output ) {
+return gezi::ProbabilityPredictor::Predict( output );
+}
+
+virtual bool CustomLoad( ::std::string path ) {
+if( bp::override func_CustomLoad = this->get_override( "CustomLoad" ) )
+return func_CustomLoad( path );
+else
+return this->gezi::Predictor::CustomLoad( path );
+}
+
+
+bool default_CustomLoad( ::std::string path ) {
+return gezi::Predictor::CustomLoad( path );
+}
+
+virtual bool CustomLoad_( ::std::string path ) {
+if( bp::override func_CustomLoad_ = this->get_override( "CustomLoad_" ) )
+return func_CustomLoad_( path );
+else
+return this->gezi::Predictor::CustomLoad_( path );
+}
+
+
+bool default_CustomLoad_( ::std::string path ) {
+return gezi::Predictor::CustomLoad_( path );
+}
+
+virtual void CustomSave(  ) {
+if( bp::override func_CustomSave = this->get_override( "CustomSave" ) )
+func_CustomSave(  );
+else
+this->gezi::Predictor::CustomSave(  );
+}
+
+
+void default_CustomSave(  ) {
+gezi::Predictor::CustomSave( );
+}
+
+virtual void CustomSave( ::std::string path ) {
+if( bp::override func_CustomSave = this->get_override( "CustomSave" ) )
+func_CustomSave( path );
+else
+this->gezi::Predictor::CustomSave( path );
+}
+
+
+void default_CustomSave( ::std::string path ) {
+gezi::Predictor::CustomSave( path );
+}
+
+virtual void CustomSave_( ::std::string path ) {
+if( bp::override func_CustomSave_ = this->get_override( "CustomSave_" ) )
+func_CustomSave_( path );
+else
+this->gezi::Predictor::CustomSave_( path );
+}
+
+
+void default_CustomSave_( ::std::string path ) {
+gezi::Predictor::CustomSave_( path );
+}
+
+virtual ::gezi::PredictionKind GetPredictionKind(  ) {
+if( bp::override func_GetPredictionKind = this->get_override( "GetPredictionKind" ) )
+return func_GetPredictionKind(  );
+else
+return this->gezi::Predictor::GetPredictionKind(  );
+}
+
+
+::gezi::PredictionKind default_GetPredictionKind(  ) {
+return gezi::Predictor::GetPredictionKind( );
+}
+
+virtual bool Load( ::std::string path ) {
+if( bp::override func_Load = this->get_override( "Load" ) )
+return func_Load( path );
+else
+return this->gezi::Predictor::Load( path );
+}
+
+
+bool default_Load( ::std::string path ) {
+return gezi::Predictor::Load( path );
+}
+
+virtual bool LoadBin( ::std::string path ) {
+if( bp::override func_LoadBin = this->get_override( "LoadBin" ) )
+return func_LoadBin( path );
+else
+return this->gezi::Predictor::LoadBin( path );
+}
+
+
+bool default_LoadBin( ::std::string path ) {
+return gezi::Predictor::LoadBin( path );
+}
+
+virtual bool LoadText( ::std::string path ) {
+if( bp::override func_LoadText = this->get_override( "LoadText" ) )
+return func_LoadText( path );
+else
+return this->gezi::Predictor::LoadText( path );
+}
+
+
+bool default_LoadText( ::std::string path ) {
+return gezi::Predictor::LoadText( path );
+}
+
+virtual bool LoadText_( ::std::string file ) {
+if( bp::override func_LoadText_ = this->get_override( "LoadText_" ) )
+return func_LoadText_( file );
+else
+return this->gezi::Predictor::LoadText_( file );
+}
+
+
+bool default_LoadText_( ::std::string file ) {
+return gezi::Predictor::LoadText_( file );
+}
+
+virtual bool Load_( ::std::string file ) {
+if( bp::override func_Load_ = this->get_override( "Load_" ) )
+return func_Load_( file );
+else
+return this->gezi::Predictor::Load_( file );
+}
+
+
+bool default_Load_( ::std::string file ) {
+return gezi::Predictor::Load_( file );
+}
+
+virtual ::Float Margin( ::gezi::Vector & features ){
+if( bp::override func_Margin = this->get_override( "Margin" ) )
+return func_Margin( boost::ref(features) );
+else
+return this->gezi::Predictor::Margin( boost::ref(features) );
+}
+
+virtual ::std::string Name(  ) {
+if( bp::override func_Name = this->get_override( "Name" ) )
+return func_Name(  );
+else
+return this->gezi::Predictor::Name(  );
+}
+
+
+::std::string default_Name(  ) {
+return gezi::Predictor::Name( );
+}
+
+virtual ::Float Output( ::gezi::InstancePtr instance ) {
+if( bp::override func_Output = this->get_override( "Output" ) )
+return func_Output( instance );
+else
+return this->gezi::Predictor::Output( instance );
+}
+
+
+::Float default_Output( ::gezi::InstancePtr instance ) {
+return gezi::Predictor::Output( instance );
+}
+
+virtual ::Float Output( ::std::string line ) {
+if( bp::override func_Output = this->get_override( "Output" ) )
+return func_Output( line );
+else
+return this->gezi::Predictor::Output( line );
+}
+
+
+::Float default_Output( ::std::string line ) {
+return gezi::Predictor::Output( line );
+}
+
+virtual ::Float Predict( ::std::string line, ::Float & output ) {
+if( bp::override func_Predict = this->get_override( "Predict" ) )
+return func_Predict( line, output );
+else
+return this->gezi::Predictor::Predict( line, output );
+}
+
+
+::Float default_Predict( ::std::string line, ::Float & output ) {
+return gezi::Predictor::Predict( line, output );
+}
+
+virtual ::Float Predict( ::gezi::InstancePtr instance ) {
+if( bp::override func_Predict = this->get_override( "Predict" ) )
+return func_Predict( instance );
+else
+return this->gezi::Predictor::Predict( instance );
+}
+
+
+::Float default_Predict( ::gezi::InstancePtr instance ) {
+return gezi::Predictor::Predict( instance );
+}
+
+virtual ::Float Predict( ::gezi::Vector & features ) {
+if( bp::override func_Predict = this->get_override( "Predict" ) )
+return func_Predict( boost::ref(features) );
+else
+return this->gezi::Predictor::Predict( boost::ref(features) );
+}
+
+
+::Float default_Predict( ::gezi::Vector & features ) {
+return gezi::Predictor::Predict( boost::ref(features) );
+}
+
+virtual ::Float Predict( ::gezi::InstancePtr instance, ::Float & output ) {
+if( bp::override func_Predict = this->get_override( "Predict" ) )
+return func_Predict( instance, output );
+else
+return this->gezi::Predictor::Predict( instance, output );
+}
+
+
+::Float default_Predict( ::gezi::InstancePtr instance, ::Float & output ) {
+return gezi::Predictor::Predict( instance, output );
+}
+
 virtual void Save(  ) {
 if( bp::override func_Save = this->get_override( "Save" ) )
 func_Save(  );
@@ -1767,12 +2212,11 @@ Predictor_exposer.def(
 }
 { //::gezi::Predictor::GetNormalizer
 
-typedef ::gezi::NormalizerPtr & ( ::gezi::Predictor::*GetNormalizer_function_type )(  ) ;
+typedef ::gezi::NormalizerPtr ( ::gezi::Predictor::*GetNormalizer_function_type )(  ) ;
 
 Predictor_exposer.def(
 "GetNormalizer"
-, GetNormalizer_function_type( &::gezi::Predictor::GetNormalizer )
-, bp::return_internal_reference<>());
+, GetNormalizer_function_type( &::gezi::Predictor::GetNormalizer ) );
 
 }
 { //::gezi::Predictor::GetParam
@@ -2110,10 +2554,12 @@ Predictor_exposer.def(
 { //::gezi::Predictor::Predict
 
 typedef ::Float ( ::gezi::Predictor::*Predict_function_type )( ::Float ) ;
+typedef ::Float ( Predictor_wrapper::*default_Predict_function_type )( ::Float ) ;
 
 Predictor_exposer.def(
 "Predict"
-, Predict_function_type( &::gezi::Predictor::Predict )
+, Predict_function_type(&::gezi::Predictor::Predict)
+, default_Predict_function_type(&Predictor_wrapper::default_Predict)
 , ( bp::arg("output") ) );
 
 }
@@ -2482,6 +2928,7 @@ Predictor_exposer.staticmethod( "SetLoadNormalizerAndCalibrator" );
 Predictor_exposer.staticmethod( "ThirdModelName" );
 bp::register_ptr_to_python< std::shared_ptr< gezi::Predictor > >();
 bp::implicitly_convertible< std::shared_ptr< gezi::Predictor >, std::shared_ptr< gezi::LoadSave > >();
+bp::implicitly_convertible< std::shared_ptr< gezi::ProbabilityPredictor >, std::shared_ptr< gezi::Predictor > >();
 }
 
 bp::class_< gezi::PredictorFactory >( "PredictorFactory" )
@@ -2514,6 +2961,243 @@ bp::class_< gezi::PredictorFactory >( "PredictorFactory" )
 .staticmethod( "LoadPredictor" )
 .staticmethod( "LoadPredictors" )
 .staticmethod( "LoadTextPredictor" );
+
+bp::class_< ProbabilityPredictor_wrapper, bp::bases< gezi::Predictor > >( "ProbabilityPredictor" )
+.def(
+"Predict"
+, (::Float ( ::gezi::ProbabilityPredictor::* )( ::Float ) )(&::gezi::ProbabilityPredictor::Predict)
+, (::Float ( ProbabilityPredictor_wrapper::* )( ::Float ) )(&ProbabilityPredictor_wrapper::default_Predict)
+, ( bp::arg("output") ) )
+.def(
+"CustomLoad"
+, (bool ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::CustomLoad)
+, (bool ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_CustomLoad)
+, ( bp::arg("path") ) )
+.def(
+"CustomLoad_"
+, (bool ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::CustomLoad_)
+, (bool ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_CustomLoad_)
+, ( bp::arg("path") ) )
+.def(
+"CustomSave"
+, (void ( ::gezi::Predictor::* )(  ) )(&::gezi::Predictor::CustomSave)
+, (void ( ProbabilityPredictor_wrapper::* )(  ) )(&ProbabilityPredictor_wrapper::default_CustomSave) )
+.def(
+"CustomSave"
+, (void ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::CustomSave)
+, (void ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_CustomSave)
+, ( bp::arg("path") ) )
+.def(
+"CustomSave_"
+, (void ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::CustomSave_)
+, (void ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_CustomSave_)
+, ( bp::arg("path") ) )
+.def(
+"GetPredictionKind"
+, (::gezi::PredictionKind ( ::gezi::Predictor::* )(  ) )(&::gezi::Predictor::GetPredictionKind)
+, (::gezi::PredictionKind ( ProbabilityPredictor_wrapper::* )(  ) )(&ProbabilityPredictor_wrapper::default_GetPredictionKind) )
+.def(
+"Load"
+, (bool ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::Load)
+, (bool ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_Load)
+, ( bp::arg("path") ) )
+.def(
+"LoadBin"
+, (bool ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::LoadBin)
+, (bool ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_LoadBin)
+, ( bp::arg("path") ) )
+.def(
+"LoadText"
+, (bool ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::LoadText)
+, (bool ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_LoadText)
+, ( bp::arg("path") ) )
+.def(
+"LoadText_"
+, (bool ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::LoadText_)
+, (bool ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_LoadText_)
+, ( bp::arg("file") ) )
+.def(
+"Load_"
+, (bool ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::Load_)
+, (bool ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_Load_)
+, ( bp::arg("file") ) )
+.def(
+"Margin"
+, (::Float ( ProbabilityPredictor_wrapper::* )( ::gezi::Vector & ) )(&ProbabilityPredictor_wrapper::Margin)
+, ( bp::arg("features") ) )
+.def(
+"Name"
+, (::std::string ( ::gezi::Predictor::* )(  ) )(&::gezi::Predictor::Name)
+, (::std::string ( ProbabilityPredictor_wrapper::* )(  ) )(&ProbabilityPredictor_wrapper::default_Name) )
+.def(
+"Output"
+, (::Float ( ::gezi::Predictor::* )( ::gezi::Instance & ) )( &::gezi::Predictor::Output )
+, ( bp::arg("instance") ) )
+.def(
+"Output"
+, (::Float ( ::gezi::Predictor::* )( ::gezi::InstancePtr ) )(&::gezi::Predictor::Output)
+, (::Float ( ProbabilityPredictor_wrapper::* )( ::gezi::InstancePtr ) )(&ProbabilityPredictor_wrapper::default_Output)
+, ( bp::arg("instance") ) )
+.def(
+"Output"
+, (::Float ( ::gezi::Predictor::* )( ::gezi::Vector & ) )( &::gezi::Predictor::Output )
+, ( bp::arg("features") ) )
+.def(
+"Output"
+, (::Float ( ::gezi::Predictor::* )( ::Fvec & ) )( &::gezi::Predictor::Output )
+, ( bp::arg("values") ) )
+.def(
+"Output"
+, (::Float ( ::gezi::Predictor::* )( ::ivec &,::Fvec & ) )( &::gezi::Predictor::Output )
+, ( bp::arg("indices"), bp::arg("values") ) )
+.def(
+"Output"
+, (::Float ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::Output)
+, (::Float ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_Output)
+, ( bp::arg("line") ) )
+.def(
+"Output"
+, (::Float ( ::gezi::Predictor::* )( ::std::map< int, double > const & ) )( &::gezi::Predictor::Output )
+, ( bp::arg("m") ) )
+.def(
+"Predict"
+, (::Float ( ::gezi::Predictor::* )( ::gezi::Instance & ) )( &::gezi::Predictor::Predict )
+, ( bp::arg("instance") ) )
+.def(
+"Predict"
+, (::Float ( ::gezi::Predictor::* )( ::Fvec & ) )( &::gezi::Predictor::Predict )
+, ( bp::arg("values") ) )
+.def(
+"Predict"
+, (::Float ( ::gezi::Predictor::* )( ::ivec &,::Fvec & ) )( &::gezi::Predictor::Predict )
+, ( bp::arg("indices"), bp::arg("values") ) )
+.def(
+"Predict"
+, (::Float ( ::gezi::Predictor::* )( ::std::string,::Float & ) )(&::gezi::Predictor::Predict)
+, (::Float ( ProbabilityPredictor_wrapper::* )( ::std::string,::Float & ) )(&ProbabilityPredictor_wrapper::default_Predict)
+, ( bp::arg("line"), bp::arg("output") ) )
+.def(
+"Predict"
+, (::Float ( ::gezi::Predictor::* )( ::gezi::InstancePtr ) )(&::gezi::Predictor::Predict)
+, (::Float ( ProbabilityPredictor_wrapper::* )( ::gezi::InstancePtr ) )(&ProbabilityPredictor_wrapper::default_Predict)
+, ( bp::arg("instance") ) )
+.def(
+"Predict"
+, (::Float ( ::gezi::Predictor::* )( ::gezi::Vector & ) )(&::gezi::Predictor::Predict)
+, (::Float ( ProbabilityPredictor_wrapper::* )( ::gezi::Vector & ) )(&ProbabilityPredictor_wrapper::default_Predict)
+, ( bp::arg("features") ) )
+.def(
+"Predict"
+, (::Float ( ::gezi::Predictor::* )( ::gezi::Instance &,::Float & ) )( &::gezi::Predictor::Predict )
+, ( bp::arg("instance"), bp::arg("output") ) )
+.def(
+"Predict"
+, (::Float ( ::gezi::Predictor::* )( ::gezi::InstancePtr,::Float & ) )(&::gezi::Predictor::Predict)
+, (::Float ( ProbabilityPredictor_wrapper::* )( ::gezi::InstancePtr,::Float & ) )(&ProbabilityPredictor_wrapper::default_Predict)
+, ( bp::arg("instance"), bp::arg("output") ) )
+.def(
+"Predict"
+, (::Float ( ::gezi::Predictor::* )( ::gezi::Vector &,::Float & ) )( &::gezi::Predictor::Predict )
+, ( bp::arg("features"), bp::arg("output") ) )
+.def(
+"Predict"
+, (::Float ( ::gezi::Predictor::* )( ::Fvec &,::Float & ) )( &::gezi::Predictor::Predict )
+, ( bp::arg("values"), bp::arg("output") ) )
+.def(
+"Predict"
+, (::Float ( ::gezi::Predictor::* )( ::ivec &,::Fvec &,::Float & ) )( &::gezi::Predictor::Predict )
+, ( bp::arg("indices"), bp::arg("values"), bp::arg("output") ) )
+.def(
+"Predict"
+, (::Float ( ::gezi::Predictor::* )( ::std::map< int, double > const & ) )( &::gezi::Predictor::Predict )
+, ( bp::arg("m") ) )
+.def(
+"Predict"
+, (::Float ( ::gezi::Predictor::* )( ::std::map< int, double > const &,::Float & ) )( &::gezi::Predictor::Predict )
+, ( bp::arg("m"), bp::arg("output") ) )
+.def(
+"Save"
+, (void ( ::gezi::Predictor::* )(  ) )(&::gezi::Predictor::Save)
+, (void ( ProbabilityPredictor_wrapper::* )(  ) )(&ProbabilityPredictor_wrapper::default_Save) )
+.def(
+"Save"
+, (void ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::Save)
+, (void ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_Save)
+, ( bp::arg("path") ) )
+.def(
+"SaveBin"
+, (void ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::SaveBin)
+, (void ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_SaveBin)
+, ( bp::arg("path") ) )
+.def(
+"SaveCode"
+, (void ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::SaveCode)
+, (void ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_SaveCode)
+, ( bp::arg("codeTypeStr")="cpp" ) )
+.def(
+"SaveCode_"
+, (void ( ::gezi::Predictor::* )( ::std::string,::gezi::CodeType ) )(&::gezi::Predictor::SaveCode_)
+, (void ( ProbabilityPredictor_wrapper::* )( ::std::string,::gezi::CodeType ) )(&ProbabilityPredictor_wrapper::default_SaveCode_)
+, ( bp::arg("file"), bp::arg("codeType") ) )
+.def(
+"SaveFeaturesGain"
+, (void ( ::gezi::Predictor::* )( int ) )(&::gezi::Predictor::SaveFeaturesGain)
+, (void ( ProbabilityPredictor_wrapper::* )( int ) )(&ProbabilityPredictor_wrapper::default_SaveFeaturesGain)
+, ( bp::arg("topNum")=(int)(0) ) )
+.def(
+"SaveJson"
+, (void ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::SaveJson)
+, (void ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_SaveJson)
+, ( bp::arg("file") ) )
+.def(
+"SaveJson"
+, (void ( ::gezi::Predictor::* )(  ) )( &::gezi::Predictor::SaveJson ) )
+.def(
+"SaveJson_"
+, (void ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::SaveJson_)
+, (void ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_SaveJson_)
+, ( bp::arg("file") ) )
+.def(
+"SaveText"
+, (void ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::SaveText)
+, (void ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_SaveText)
+, ( bp::arg("file") ) )
+.def(
+"SaveText"
+, (void ( ::gezi::Predictor::* )(  ) )( &::gezi::Predictor::SaveText ) )
+.def(
+"SaveText_"
+, (void ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::SaveText_)
+, (void ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_SaveText_)
+, ( bp::arg("file") ) )
+.def(
+"SaveXml"
+, (void ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::SaveXml)
+, (void ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_SaveXml)
+, ( bp::arg("file") ) )
+.def(
+"SaveXml"
+, (void ( ::gezi::Predictor::* )(  ) )( &::gezi::Predictor::SaveXml ) )
+.def(
+"SaveXml_"
+, (void ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::SaveXml_)
+, (void ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_SaveXml_)
+, ( bp::arg("file") ) )
+.def(
+"Save_"
+, (void ( ::gezi::Predictor::* )( ::std::string ) )(&::gezi::Predictor::Save_)
+, (void ( ProbabilityPredictor_wrapper::* )( ::std::string ) )(&ProbabilityPredictor_wrapper::default_Save_)
+, ( bp::arg("file") ) )
+.def(
+"ToFeaturesGainSummary"
+, (::std::string ( ::gezi::Predictor::* )( int ) )(&::gezi::Predictor::ToFeaturesGainSummary)
+, (::std::string ( ProbabilityPredictor_wrapper::* )( int ) )(&ProbabilityPredictor_wrapper::default_ToFeaturesGainSummary)
+, ( bp::arg("topNum")=(int)(0) ) )
+.def(
+"ToGainSummary"
+, (::std::string ( ::gezi::Predictor::* )( ::gezi::Vector & ) )(&::gezi::Predictor::ToGainSummary)
+, (::std::string ( ProbabilityPredictor_wrapper::* )( ::gezi::Vector & ) )(&ProbabilityPredictor_wrapper::default_ToGainSummary)
+, ( bp::arg("features") ) );
 
 bp::class_< gezi::PyFeatures, bp::bases< gezi::FeatureVector > >( "PyFeatures" );
 
@@ -2779,12 +3463,24 @@ bp::class_< gezi::TextPredictor >( "TextPredictor" )
 , ( bp::arg("titleWords"), bp::arg("contentWords"), bp::arg("identifer"), bp::arg("predictor"), bp::arg("segType")=(int)(gezi::SEG_BASIC), bp::arg("ngram")=(int)(3), bp::arg("skip")=(int)(2), bp::arg("sep")="\001" ) )
 .def(
 "Predict"
+, (double (*)( ::svec const &,::svec const &,::gezi::DoubleIdentifer const &,::gezi::PredictorPtr const &,::std::map< int, double > &,int,int,int,::std::string ))( &::gezi::TextPredictor::Predict )
+, ( bp::arg("titleWords"), bp::arg("contentWords"), bp::arg("identifer"), bp::arg("predictor"), bp::arg("idValMap"), bp::arg("segType")=(int)(gezi::SEG_BASIC), bp::arg("ngram")=(int)(3), bp::arg("skip")=(int)(2), bp::arg("sep")="\001" ) )
+.def(
+"Predict"
+, (double (*)( ::svec const &,::gezi::DoubleIdentifer const &,::gezi::PredictorPtr const &,::std::map< int, double > &,int,int,int,::std::string ))( &::gezi::TextPredictor::Predict )
+, ( bp::arg("words"), bp::arg("identifer"), bp::arg("predictor"), bp::arg("idValMap"), bp::arg("segType")=(int)(gezi::SEG_BASIC), bp::arg("ngram")=(int)(3), bp::arg("skip")=(int)(2), bp::arg("sep")="\001" ) )
+.def(
+"Predict"
 , (double (*)( ::svec const &,::gezi::DoubleIdentifer const &,::gezi::PredictorPtr const &,int,int,int,::std::string ))( &::gezi::TextPredictor::Predict )
 , ( bp::arg("words"), bp::arg("identifer"), bp::arg("predictor"), bp::arg("segType")=(int)(gezi::SEG_BASIC), bp::arg("ngram")=(int)(3), bp::arg("skip")=(int)(2), bp::arg("sep")="\001" ) )
 .def(
 "Predict"
 , (double (*)( ::std::string,::std::string,::gezi::DoubleIdentifer const &,::gezi::PredictorPtr const &,int,int,int,::std::string ))( &::gezi::TextPredictor::Predict )
 , ( bp::arg("title"), bp::arg("content"), bp::arg("identifer"), bp::arg("predictor"), bp::arg("segType")=(int)(gezi::SEG_BASIC), bp::arg("ngram")=(int)(3), bp::arg("skip")=(int)(2), bp::arg("sep")="\001" ) )
+.def(
+"Predict"
+, (double (*)( ::std::string,::std::string,::gezi::DoubleIdentifer const &,::gezi::PredictorPtr const &,::std::map< int, double > &,int,int,int,::std::string ))( &::gezi::TextPredictor::Predict )
+, ( bp::arg("title"), bp::arg("content"), bp::arg("identifer"), bp::arg("predictor"), bp::arg("idValMap"), bp::arg("segType")=(int)(gezi::SEG_BASIC), bp::arg("ngram")=(int)(3), bp::arg("skip")=(int)(2), bp::arg("sep")="\001" ) )
 .def(
 "Predict"
 , (double (*)( ::std::string,::gezi::DoubleIdentifer const &,::gezi::PredictorPtr const &,int,int,int,::std::string ))( &::gezi::TextPredictor::Predict )

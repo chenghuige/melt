@@ -102,6 +102,9 @@ CONFIGS('app/search/sep/anti-spam/melt@base')
 CONFIGS('app/search/sep/anti-spam/melt-train@base')
 CONFIGS('st/nlp/lm-score')
 CONFIGS('app/search/sep/anti-spam/gezi/third/rabit')
+
+CONFIGS('baidu/nlp-dnn/liblego')
+CONFIGS('third-64/protobuf@protobuf_2-4-1-1100_PD_BL')
 #CONFIGS('app/search/sep/anti-spam/melt/python-wrapper')
 
 #头文件路径.
@@ -114,11 +117,11 @@ LIBS('./lib/libpython2.7.so ./lib/libboost_python.so')
 #LIBS('./libpython2.7.so ./libboost_python.so')
 srcs = ''
 #SharedLibrary('melt',Sources('melt_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
-#SharedLibrary('melt_predict',Sources('melt_predict_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
+SharedLibrary('melt_predict',Sources('melt_predict_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED -DMELT_USE_LEGO')),LinkDeps(True))
 #SharedLibrary('melt_predict_debug',Sources('melt_predict_debug_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -D_DEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('gbdt',Sources('gbdt_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('trate',Sources('trate_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
-SharedLibrary('normalizer',Sources('normalizer_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
+#SharedLibrary('normalizer',Sources('normalizer_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('calibrator',Sources('calibrator_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('urate',Sources('urate_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('urate_debug',Sources('urate_debug_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -D_DEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))

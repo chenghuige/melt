@@ -18,6 +18,9 @@
 #include "Predictors/VWPredictor.h"
 #endif //MELT_USE_THIRD_PARTY
 #include "Predictors/EnsemblePredictor.h"
+#ifdef MELT_USE_LEGO
+#include "Predictors/LegoPredictor.h"
+#endif //MELT_USE_LEGO
 namespace gezi{
 	namespace {
 		enum class PredictorType
@@ -33,6 +36,7 @@ namespace gezi{
 			VW,
 			LibSVM,
 			Ensemble,
+			LeGo,
 			//------------- Regression
 			GbdtRegression,
 		};
@@ -57,6 +61,7 @@ namespace gezi{
 			{ "vw", PredictorType::VW },
 			{ "ensemble", PredictorType::Ensemble },
 			{ "libsvm", PredictorType::LibSVM },
+			{ "lego", PredictorType::LeGo },
 			{ "fastrankregression", PredictorType::GbdtRegression },
 			{ "gbdtregression", PredictorType::GbdtRegression },
 			{ "frr", PredictorType::GbdtRegression },
@@ -83,6 +88,10 @@ namespace gezi{
 #endif //MELT_USE_THIRD_PARTY
 		case PredictorType::Ensemble:
 			return make_shared<EnsemblePredictor>();
+#ifdef MELT_USE_LEGO
+		case  PredictorType::LeGo:
+			return make_shared<LegoPredictor>();
+#endif //MELT_USE_LEGO
 			//---- Regression
 		case PredictorType::GbdtRegression:
 			return make_shared<GbdtRegressionPredictor>();

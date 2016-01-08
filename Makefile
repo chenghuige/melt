@@ -17,7 +17,11 @@ CXXFLAGS=-g \
   -Wno-write-strings \
   -Wno-literal-suffix \
   -Wno-unused-local-typedefs \
-  -fopenmp
+  -fopenmp \
+  -mfpmath=sse \
+  -msse \
+  -msse2 \
+  -msse3
 CFLAGS=-g \
   -O3 \
   -pipe \
@@ -32,7 +36,11 @@ CFLAGS=-g \
   -Wno-write-strings \
   -Wno-literal-suffix \
   -Wno-unused-local-typedefs \
-  -fopenmp
+  -fopenmp \
+  -mfpmath=sse \
+  -msse \
+  -msse2 \
+  -msse3
 CPPFLAGS=-D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\"
@@ -51,6 +59,10 @@ DEP_INCPATH=-I../../../../../app/search/sep/anti-spam/gezi \
   -I../../../../../app/search/sep/anti-spam/gezi/third/include \
   -I../../../../../app/search/sep/anti-spam/gezi/third/output \
   -I../../../../../app/search/sep/anti-spam/gezi/third/output/include \
+  -I../../../../../baidu/nlp-dnn/liblego \
+  -I../../../../../baidu/nlp-dnn/liblego/include \
+  -I../../../../../baidu/nlp-dnn/liblego/output \
+  -I../../../../../baidu/nlp-dnn/liblego/output/include \
   -I../../../../../com/btest/gtest \
   -I../../../../../com/btest/gtest/include \
   -I../../../../../com/btest/gtest/output \
@@ -139,6 +151,10 @@ DEP_INCPATH=-I../../../../../app/search/sep/anti-spam/gezi \
   -I../../../../../third-64/pcre/include \
   -I../../../../../third-64/pcre/output \
   -I../../../../../third-64/pcre/output/include \
+  -I../../../../../third-64/protobuf \
+  -I../../../../../third-64/protobuf/include \
+  -I../../../../../third-64/protobuf/output \
+  -I../../../../../third-64/protobuf/output/include \
   -I../../../../../third-64/tcmalloc \
   -I../../../../../third-64/tcmalloc/include \
   -I../../../../../third-64/tcmalloc/output \
@@ -158,7 +174,7 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=c729198d0e917dc155aeeb0a42804e45  COMAKE
+COMAKE_MD5=19d517a21f6013ef2d99f00805b5accc  COMAKE
 
 
 .PHONY:all
@@ -974,42 +990,48 @@ src/Testers/melt_ClassifierTester.o:src/Testers/ClassifierTester.cpp
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
-  -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/Testers/melt_ClassifierTester.o src/Testers/ClassifierTester.cpp
+  -DMELT_USE_THIRD_PARTY \
+  -DMELT_USE_LEGO $(CXXFLAGS)  -o src/Testers/melt_ClassifierTester.o src/Testers/ClassifierTester.cpp
 
 src/Prediction/Normalization/melt_BinNormalizer.o:src/Prediction/Normalization/BinNormalizer.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Prediction/Normalization/melt_BinNormalizer.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
-  -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/Prediction/Normalization/melt_BinNormalizer.o src/Prediction/Normalization/BinNormalizer.cpp
+  -DMELT_USE_THIRD_PARTY \
+  -DMELT_USE_LEGO $(CXXFLAGS)  -o src/Prediction/Normalization/melt_BinNormalizer.o src/Prediction/Normalization/BinNormalizer.cpp
 
 src/Predictors/melt_LibSVMPredictor.o:src/Predictors/LibSVMPredictor.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Predictors/melt_LibSVMPredictor.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
-  -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/Predictors/melt_LibSVMPredictor.o src/Predictors/LibSVMPredictor.cpp
+  -DMELT_USE_THIRD_PARTY \
+  -DMELT_USE_LEGO $(CXXFLAGS)  -o src/Predictors/melt_LibSVMPredictor.o src/Predictors/LibSVMPredictor.cpp
 
 src/Predictors/melt_VWPredictor.o:src/Predictors/VWPredictor.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Predictors/melt_VWPredictor.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
-  -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/Predictors/melt_VWPredictor.o src/Predictors/VWPredictor.cpp
+  -DMELT_USE_THIRD_PARTY \
+  -DMELT_USE_LEGO $(CXXFLAGS)  -o src/Predictors/melt_VWPredictor.o src/Predictors/VWPredictor.cpp
 
 src/MLCore/melt_PredictoryFactory.o:src/MLCore/PredictoryFactory.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/MLCore/melt_PredictoryFactory.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
-  -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/MLCore/melt_PredictoryFactory.o src/MLCore/PredictoryFactory.cpp
+  -DMELT_USE_THIRD_PARTY \
+  -DMELT_USE_LEGO $(CXXFLAGS)  -o src/MLCore/melt_PredictoryFactory.o src/MLCore/PredictoryFactory.cpp
 
 src/Wrapper/melt_PredictorFactory.o:src/Wrapper/PredictorFactory.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40msrc/Wrapper/melt_PredictorFactory.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
-  -DMELT_USE_THIRD_PARTY $(CXXFLAGS)  -o src/Wrapper/melt_PredictorFactory.o src/Wrapper/PredictorFactory.cpp
+  -DMELT_USE_THIRD_PARTY \
+  -DMELT_USE_LEGO $(CXXFLAGS)  -o src/Wrapper/melt_PredictorFactory.o src/Wrapper/PredictorFactory.cpp
 
 endif #ifeq ($(shell uname -m),x86_64)
 
