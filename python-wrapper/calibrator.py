@@ -11,6 +11,7 @@ define_symbols = ['GCCXML','PYTHON_WRAPPER']
 files = [
                                 './gezi.include.python/common_util.h',
                                 './gezi.include.python/log_util.h',
+																'./gezi.include.python/LoadSave.h',
 																'./include.python/Prediction/Calibrate/Calibrator.h',
 																'./include.python/Prediction/Calibrate/CalibratorFactory.h',
                                 './gezi.include.python/Numeric/Vector/Vector.h',

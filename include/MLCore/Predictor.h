@@ -238,6 +238,21 @@ namespace gezi {
 			}
 		}
 
+		virtual vector<Float> BulkPredict(vector<Vector>& featuresVector)
+		{
+			vector<Float> results;
+			for (auto& feature : featuresVector)
+			{
+				results.push_back(Predict(feature));
+			}
+			return results;
+		}
+
+		virtual void InitThread()
+		{
+
+		}
+
 		Float Predict(Instance& instance, Float& output)
 		{
 			return Predict(instance.features, output);

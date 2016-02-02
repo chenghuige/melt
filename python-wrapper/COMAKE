@@ -64,11 +64,13 @@ if GCC_HIGH  == 1:
 	if GCC_DYNAMIC  == 1:
 		GCC_FLAGS += ' -fopenmp'
 		
+#for lego
+perf_flags = ' -mfpmath=sse -msse -msse2 -msse3'
 #C编译参数.
-CFLAGS(COMMON_FLAGS, GCC_FLAGS)
+CFLAGS(COMMON_FLAGS, GCC_FLAGS, perf_flags)
 
 #C++编译参数.
-CXXFLAGS(COMMON_FLAGS, GCC_FLAGS)
+CXXFLAGS(COMMON_FLAGS, GCC_FLAGS, perf_flags)
 
 #IDL编译参数
 IDLFLAGS('--compack')
@@ -117,12 +119,13 @@ LIBS('./lib/libpython2.7.so ./lib/libboost_python.so')
 #LIBS('./libpython2.7.so ./libboost_python.so')
 srcs = ''
 #SharedLibrary('melt',Sources('melt_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
-SharedLibrary('melt_predict',Sources('melt_predict_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED -DMELT_USE_LEGO')),LinkDeps(True))
+#SharedLibrary('melt_predict',Sources('melt_predict_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED -DMELT_USE_LEGO')),LinkDeps(True))
+#SharedLibrary('lego_predict',Sources('lego_predict_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED -DMELT_USE_LEGO')),LinkDeps(True))
 #SharedLibrary('melt_predict_debug',Sources('melt_predict_debug_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -D_DEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('gbdt',Sources('gbdt_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('trate',Sources('trate_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('normalizer',Sources('normalizer_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
-#SharedLibrary('calibrator',Sources('calibrator_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
+SharedLibrary('calibrator',Sources('calibrator_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('urate',Sources('urate_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('urate_debug',Sources('urate_debug_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -D_DEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('segment',Sources('segment_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))

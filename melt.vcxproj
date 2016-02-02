@@ -225,6 +225,7 @@
     <ClInclude Include="include\Predictors\FastRank\FastRankRanking.h" />
     <ClInclude Include="include\Predictors\FastRank\FastRankRegression.h" />
     <ClInclude Include="include\Predictors\GbdtPredictor.h" />
+    <ClInclude Include="include\Predictors\LegoPredictor.h" />
     <ClInclude Include="include\Predictors\LibLinearPredictor.h" />
     <ClInclude Include="include\Predictors\LibSVMPredictor.h" />
     <ClInclude Include="include\Predictors\LinearPredictor.h" />

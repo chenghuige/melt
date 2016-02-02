@@ -19,7 +19,11 @@ CXXFLAGS=-g \
   -Wno-write-strings \
   -Wno-literal-suffix \
   -Wno-unused-local-typedefs \
-  -fopenmp
+  -fopenmp \
+  -mfpmath=sse \
+  -msse \
+  -msse2 \
+  -msse3
 CFLAGS=-g \
   -O3 \
   -pipe \
@@ -36,7 +40,11 @@ CFLAGS=-g \
   -Wno-write-strings \
   -Wno-literal-suffix \
   -Wno-unused-local-typedefs \
-  -fopenmp
+  -fopenmp \
+  -mfpmath=sse \
+  -msse \
+  -msse2 \
+  -msse3
 CPPFLAGS=-D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\"
@@ -265,11 +273,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=0f22f5f19e7497d6967a6fdeeb27a2ae  COMAKE
+COMAKE_MD5=626a54295a33bb45d66554e7f36afad1  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check libmelt_predict.so 
+all:comake2_makefile_check libcalibrator.so 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -289,9 +297,9 @@ ccpclean:
 .PHONY:clean
 clean:ccpclean
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mclean[0m']"
-	rm -rf libmelt_predict.so
-	rm -rf ./output/so/libmelt_predict.so
-	rm -rf melt_predict_melt_predict_py.o
+	rm -rf libcalibrator.so
+	rm -rf ./output/so/libcalibrator.so
+	rm -rf calibrator_calibrator_py.o
 
 .PHONY:dist
 dist:
@@ -310,11 +318,11 @@ love:
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlove[0m']"
 	@echo "make love done"
 
-libmelt_predict.so:melt_predict_melt_predict_py.o \
+libcalibrator.so:calibrator_calibrator_py.o \
   ./lib/libpython2.7.so \
   ./lib/libboost_python.so
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibmelt_predict.so[0m']"
-	$(CXX) -shared melt_predict_melt_predict_py.o -Xlinker "-(" ./lib/libpython2.7.so \
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mlibcalibrator.so[0m']"
+	$(CXX) -shared calibrator_calibrator_py.o -Xlinker "-(" ./lib/libpython2.7.so \
   ./lib/libboost_python.so ../../../../../../app/search/ksarch/store/proxy-lib/redis/libredisclient.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
@@ -330,7 +338,7 @@ libmelt_predict.so:melt_predict_melt_predict_py.o \
   ../../../../../../app/search/sep/anti-spam/melt/libsofia.a \
   ../../../../../../app/search/sep/anti-spam/melt/libsvm.a \
   ../../../../../../app/search/sep/anti-spam/melt/libvw.a \
-  ../../../../../../baidu/nlp-dnn/liblego/liblego.a \
+  ../../../../../../baidu/nlp-dnn/liblego/libliblego.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../com/idlcompiler/astyle/libastyle.a \
@@ -492,20 +500,19 @@ libmelt_predict.so:melt_predict_melt_predict_py.o \
   -Wl,-rpath=./ \
   -lgomp \
   -rdynamic \
-  -Wl,-rpath=./lib/ -Xlinker "-)" -o libmelt_predict.so
+  -Wl,-rpath=./lib/ -Xlinker "-)" -o libcalibrator.so
 	mkdir -p ./output/so
-	cp -f --link libmelt_predict.so ./output/so
+	cp -f --link libcalibrator.so ./output/so
 
-melt_predict_melt_predict_py.o:melt_predict_py.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mmelt_predict_melt_predict_py.o[0m']"
+calibrator_calibrator_py.o:calibrator_py.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mcalibrator_calibrator_py.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
   -DPYTHON_WRAPPER \
   -DNDEBUG \
-  -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED \
-  -DMELT_USE_LEGO $(CXXFLAGS)  -o melt_predict_melt_predict_py.o melt_predict_py.cc
+  -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED $(CXXFLAGS)  -o calibrator_calibrator_py.o calibrator_py.cc
 
 endif #ifeq ($(shell uname -m),x86_64)
 
