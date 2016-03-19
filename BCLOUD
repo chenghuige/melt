@@ -1,0 +1,1 @@
+BUILD_SUBMITTER -u ./ -c "export MAC=64 && cd app/search/sep/anti-spam/melt && comake2 -UB && make clean && make" -o "output/*" -e CENTOS6U3 -m app/search/sep/anti-spam/melt -x
