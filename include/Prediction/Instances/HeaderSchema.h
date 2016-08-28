@@ -28,9 +28,9 @@ namespace gezi
 		SparseNoLength, // 1:3
 		Text,
 		LibSVM,
-		LibSVM2, //同LibSVM但是不会将label 0 转为 -1
 		Arff,
 		VW, 
+		MallocRank, //主要是支持malloc ranking数据格式  label, group:groupIndex features, 只支持读入 不支持输入,读入后按照Dense处理
 	};
 
 	enum class ColumnType
@@ -42,7 +42,7 @@ namespace gezi
 		Weight,
 		Attribute,
 		Category,  //暂不支持
-		Text       //暂不支持
+		Text,       //暂不支持
 	};
 
 	//所有header 以及其它非 instance内部数据的 整体信息 都在这里 Instances里面只要schema和data
@@ -114,7 +114,7 @@ namespace gezi
 			ar & CEREAL_NVP(attributeNames);
 			ar & CEREAL_NVP(tagNames);
 			ar & CEREAL_NVP(headerStr);
-			ar & CEREAL_NVP(cloumnTypes);
+			ar & CEREAL_NVP(columnTypes);
 			ar & CEREAL_NVP(hasHeader);
 			ar & CEREAL_NVP(hasWeights);
 			ar & CEREAL_NVP(groupKeys);
@@ -129,9 +129,10 @@ namespace gezi
 		svec attributeNames;
 		svec tagNames;
 		string headerStr;
-		vector<ColumnType> cloumnTypes; //for writting instances
+		vector<ColumnType> columnTypes; //for writting instances
 		bool hasHeader = false;
 		bool hasWeights = false;
+		//在tlc中是 n0,a1类似这样 这里 直接按照index user自己来保证必须是name或者attribute对应的index
 		svec groupKeys; //for ranking instances or used in cv folder creationg as stratify key
 		FileFormat fileFormat = FileFormat::Unknown;
 		string instanceNameHeaderString = "Instance";

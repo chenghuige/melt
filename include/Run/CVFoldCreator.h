@@ -20,14 +20,28 @@ namespace gezi {
 	class CVFoldCreator
 	{
 	public:
-		static ivec CreateFoldIndices(const Instances& data, const MeltArguments& cmd,
-			const RandomEngine& rng)
+		static ivec CreateFoldIndices(const Instances& data, const MeltArguments& cmd, const RandomEngine& rng)
 		{
+			//没有任何随机性 顺序划分
 			if (cmd.foldsSequential)
 				return CreateFoldIndicesSequential(data, cmd.numFolds, rng);
-			if (cmd.stratify)
+
+			if (data.IsRankingInstances())
+			{ //rank需要考虑 相同key在一组,内部 randIdx 所以不需要 整体先随机
 				return CreateFoldIndicesStratified(data, cmd.numFolds, rng);
-			return CreateFoldIndicesBalanced(data, cmd.numFolds);
+			}
+
+			data.Randomize(rng);
+
+			//默认最常用的二分类 确保正负比例一致
+			if (data.IsBinaryClassificationInstances())
+			{
+				return CreateFoldIndicesBalanced(data, cmd.numFolds);
+			}
+			else
+			{ //regresssion,多分类 @TODO 多分类也保持比例 类似二分类？
+				return CreateFoldIndicesOneByOne(data, cmd.numFolds);
+			}
 		}
 
 		//对每一个instance给一个分组编号，确保每一组的正反比例一致 most commonly used
@@ -94,7 +108,7 @@ namespace gezi {
 			return foldIndices;
 		}
 
-		//@TODO why  //not test
+		//@TODO 如果先做随机化 然后 0,1,2,3,0,1,2,3 这样均匀分就好了。。,或者直接 每个位置随机一个index也ok
 		/// assign each instance to a fold sequentially.
 		/// To "even out" the remaninder, randomly assign an extra instance to every fold
 		static ivec CreateFoldIndicesSequential(const Instances& data, int numFolds, const RandomEngine& rng)
@@ -135,6 +149,19 @@ namespace gezi {
 
 			return foldIndices;
 		}
+
+		static ivec CreateFoldIndicesOneByOne(const Instances& data, int numFolds)
+		{
+			ivec foldIndices(data.size(), -1);
+			int foldIdx = 0;
+			for (size_t i = 0; i < data.size(); i++)
+			{
+				foldIndices[i] = foldIdx;
+				foldIdx = (foldIdx + 1) % numFolds;
+			}
+			return foldIndices;
+		}
+
 		//@TODO 指定特定的 name,attibute 比如 username 那么相同userid的instance 会分到相同group
 		//对于比如urate样本集合 可能会避免 类似样本同时作为训练和测试样本，类似的包括比如
 		//query,url 对 可能需要对相同query 放到相同group
@@ -143,11 +170,11 @@ namespace gezi {
 		//are in the same fold (otherwise the learner “cheats” by seeing examples for same query).  
 		static ivec CreateFoldIndicesStratified(const Instances& data, int numFolds, const RandomEngine& rng)
 		{
-			VLOG(1) << "Creating " << numFolds << " folds using stratified sampling by " << gezi::join(data.schema.groupKeys, "|");
+			VLOG(0) << "Creating " << numFolds << " folds using stratified sampling by " << gezi::join(data.schema.groupKeys, "|");
 			ivec foldIndices(data.size(), -1);
 			ivec cnt(numFolds, 0);
 
-			RandomInt rand(numFolds);
+			RandomInt rand(numFolds, rng);
 			unordered_map<string, int> nameFoldDict;
 			int idx = 0;
 			for(const auto& instance : data)

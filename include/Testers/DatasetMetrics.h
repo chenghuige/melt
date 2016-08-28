@@ -25,9 +25,15 @@ public:
 	{
 	}
 	virtual ~DatasetMetrics(){}
-	virtual string LabelColumnName() = 0;
+	virtual string LabelColumnName()
+	{
+		return "True";
+	}
+
+	//输出的0.inst.txt的每个insatnce的预测信息的header
 	virtual vector<string> PerInstanceColumnNames() = 0;
 
+	//屏幕输出的统计整体信息名字
 	virtual vector<string> Names()
 	{
 		return vector<string>();
@@ -37,18 +43,18 @@ public:
 	{
 		Float label = instance->label;
 		Float weight = instance->weight;
-		Float prediction = 0, probability = std::numeric_limits<double>::quiet_NaN();
+		Float prediction = 0, probability = std::numeric_limits<Float>::quiet_NaN();
 		probability = predictor->Predict(instance, prediction);
 
 		return ProcessInstance(label, prediction, probability, weight);
 	}
 
-	virtual Fvec ProcessInstance(Float label, Float prediction, Float probability = std::numeric_limits<double>::quiet_NaN(), Float weight = 1.0)
+	virtual Fvec ProcessInstance(Float label, Float prediction, Float probability = std::numeric_limits<Float>::quiet_NaN(), Float weight = 1.0)
 	{
 		return Fvec();
 	}
 
-	virtual Fvec ProcessInstance(Float label,const Fvec& prediction, Float probability = std::numeric_limits<double>::quiet_NaN(), Float weight = 1.0)
+	virtual Fvec ProcessInstance(Float label,const Fvec& prediction, Float probability = std::numeric_limits<Float>::quiet_NaN(), Float weight = 1.0)
 	{
 		return Fvec();
 	}

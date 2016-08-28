@@ -1,7 +1,7 @@
 /**
  *  ==============================================================================
  *
- *          \file   PredictoryFactory.cpp
+ *          \file   PredictorFactory.cpp
  *
  *        \author   chenghuige
  *
@@ -23,6 +23,8 @@
 #endif //MELT_USE_LEGO
 namespace gezi{
 	namespace {
+
+		//@TODO 其实和TrainerType重复了,每增加一个 都要注册写两次 在 PredictorFactory和 TrainerFactory
 		enum class PredictorType
 		{
 			//-------------- BinaryClassification
@@ -39,6 +41,8 @@ namespace gezi{
 			LeGo,
 			//------------- Regression
 			GbdtRegression,
+			//------------- Ranking
+			GbdtRank,
 		};
 
 		const  map<string, PredictorType> _predictorTypes = {
@@ -66,6 +70,9 @@ namespace gezi{
 			{ "gbdtregression", PredictorType::GbdtRegression },
 			{ "frr", PredictorType::GbdtRegression },
 			{ "gbrt", PredictorType::GbdtRegression },
+			{ "gbdtrank", PredictorType::GbdtRank },
+			{ "gbrank", PredictorType::GbdtRank },
+			{ "lambdamart", PredictorType::GbdtRank },
 		};
 	} //------------- anoymous namespace
 	PredictorPtr PredictorFactory::CreatePredictor(string name)
@@ -95,6 +102,9 @@ namespace gezi{
 			//---- Regression
 		case PredictorType::GbdtRegression:
 			return make_shared<GbdtRegressionPredictor>();
+			//---- Ranking
+		case PredictorType::GbdtRank:
+			return make_shared<GbdtRankingPredictor>();
 		default:
 			break;
 		}

@@ -8,7 +8,11 @@ RELATIVE_PATH='../'
 JUMBO_PATH='/home/users/chenghuige/.jumbo/'
 
 #是否使用本地的gcc 比如本地安装了gcc 4.8.2使用本地的可以直接使用生成的bin文件 如./main
-GCC_LOCAL=3
+GCC_LOCAL=2
+import os 
+#online use GCC_LOCAL=3, but on local ubuntu use GCC_LOCAL=2
+if os.path.abspath('.').startswith('/home/gezi'):
+    GCC_LOCAL = 1
 print 'GCC_LOCAL: %d'%GCC_LOCAL 
 #是否使用高版本gcc 可以直接使用生成的bin文件 如./main 
 GCC_HIGH=1
@@ -88,7 +92,8 @@ if GCC_HIGH  == 1:
 	else: 
 		GCC_LDFLAGS  += ' -static-libgcc -static-libstdc++'
 
-LDFLAGS('-lpthread -lcurl -lrt -lcrypto -lldap -lssl -ldl -rdynamic -L./ -L./lib -lpython2.7 -lboost_python -Wl,-rpath=./', GCC_LDFLAGS)
+#LDFLAGS('-lpthread -lcurl -lrt -lcrypto -lldap -lssl -ldl -rdynamic -L./ -L./lib -lpython2.7 -lboost_python -Wl,-rpath=./', GCC_LDFLAGS)
+LDFLAGS('-lpthread -lrt -lcrypto -lssl -ldl -rdynamic -L./ -L./lib -lpython2.7 -lboost_python -Wl,-rpath=./', GCC_LDFLAGS)
 
 #依赖模块
 CONFIGS('third-64/gflags.bak')
@@ -107,6 +112,31 @@ CONFIGS('app/search/sep/anti-spam/gezi/third/rabit')
 
 CONFIGS('baidu/nlp-dnn/liblego')
 CONFIGS('third-64/protobuf@protobuf_2-4-1-1100_PD_BL')
+
+#----------------------------------------------for local comake
+CONFIGS('com/btest/gtest')
+CONFIGS('ps/se/toolchain@base')
+CONFIGS('third-64/zlib@base') #used in vowpalwabbit
+CONFIGS('third-64/boost@base')
+#CONFIGS('third-gcc4/boost@base')
+#CONFIGS('third-64/gflags@base')
+CONFIGS('third-64/gflags@base')
+CONFIGS('third-64/glog@base')
+#CONFIGS('third-64/gtest@base')
+#CONFIGS('lib2-64/bsl@base')
+#CONFIGS('lib2-64/ullib@base')
+#CONFIGS('lib2-64/others-ex@base')
+CONFIGS('public/configure@base')
+#CONFIGS('public/uconv@base')
+CONFIGS('app/search/sep/anti-spam/gezi@base')
+CONFIGS('app/search/sep/anti-spam/gezi/third@base')
+CONFIGS('third-64/zlib@base') #used in vowpalwabbit 
+
+CONFIGS('baidu/nlp-dnn/liblego')
+CONFIGS('third-64/protobuf@protobuf_2-4-1-1100_PD_BL')
+
+
+
 #CONFIGS('app/search/sep/anti-spam/melt/python-wrapper')
 
 #头文件路径.
@@ -122,10 +152,10 @@ srcs = ''
 #SharedLibrary('melt_predict',Sources('melt_predict_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED -DMELT_USE_LEGO')),LinkDeps(True))
 #SharedLibrary('lego_predict',Sources('lego_predict_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED -DMELT_USE_LEGO')),LinkDeps(True))
 #SharedLibrary('melt_predict_debug',Sources('melt_predict_debug_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -D_DEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
-#SharedLibrary('gbdt',Sources('gbdt_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
+SharedLibrary('gbdt',Sources('gbdt_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED -D_DEBUG')),LinkDeps(True))
 #SharedLibrary('trate',Sources('trate_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('normalizer',Sources('normalizer_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
-SharedLibrary('calibrator',Sources('calibrator_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
+#SharedLibrary('calibrator',Sources('calibrator_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('urate',Sources('urate_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('urate_debug',Sources('urate_debug_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -D_DEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('segment',Sources('segment_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))

@@ -110,3 +110,5 @@ srcs = ''
 Application('test_load_libsvm',Sources('test_load_libsvm.cc',srcs))
 #Application('test_normalizer_online',Sources('test_normalizer_online.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
 Application('test_normalizer_online',Sources('test_normalizer_online.cc',srcs))
+#Application('test_loadtext',Sources('test_loadtext.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DNDEBUG')))
+Application('test_loadtext',Sources('test_loadtext.cc',srcs))

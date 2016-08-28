@@ -45,6 +45,7 @@ namespace gezi {
 		virtual void Train(Instances& instances)
 		{
 			VLOG(5) << "Train in trainer base";
+			VLOG(0) << "TrainParam: [" << GetParam() << " ]" << endl;
 			_trainingSchema = instances.schema;
 			_instances = &instances;
 
@@ -59,11 +60,6 @@ namespace gezi {
 			InnerTrain(*_instances);
 
 			Finalize(*_instances);
-
-			if (!GetParam().empty())
-			{
-				VLOG(0) << "Param: [" << GetParam() << " ]" << endl;
-			}
 		}
 
 		virtual void TryInitializeNormalizer(Instances& instances, bool isStreaming)
@@ -191,6 +187,7 @@ namespace gezi {
 
 	typedef shared_ptr<Trainer> TrainerPtr;
 
+	//@TODO 开始没有考虑RankingIntance的evaluate问题，Ranking的比如ndcg指标需要按照query组来validate @FIXME
 	interface ValidatingTrainer : public Trainer
 	{
 	public:

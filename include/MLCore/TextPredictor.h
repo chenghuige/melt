@@ -57,11 +57,15 @@ namespace gezi {
 			double score = predictor->Predict(m);
 
 #ifdef _DEBUG
-			Pval(gezi::join(titleWords, "$#$"));
-			Pval(gezi::join(contentWords, "$#$"));
+			Pval(gezi::join(titleWords, "/"));
+			Pval(gezi::join(contentWords, "/"));
 			Vector fe(m);
+
+			CHECK((predictor->_normalizer != nullptr));
 			PVAL(fe.str());
 			predictor->_normalizer->Normalize(fe);
+			PVAL(fe.str());
+		
 			Vector& weights = dynamic_pointer_cast<LinearPredictor>(predictor)->_weights;
 			double total = 0;
 			vector<pair<string, double> > sortedByGain;
@@ -83,6 +87,9 @@ namespace gezi {
 			}
 			total += dynamic_pointer_cast<LinearPredictor>(predictor)->_bias;
 			Pval(total);
+			double output = predictor->Output(fe);
+			Pval(output);
+			Pval(predictor->Predict(fe));
 #endif
 			return score;
 		}
@@ -120,12 +127,12 @@ namespace gezi {
 		{
 			int wordNum = identifer.size();
 			map<int, double> m; //È·±£°´keyÅÅÐò
-			PVAL(gezi::join(words, "$#$"));
+			PVAL(gezi::join(words, "/"));
 			Prase(words, m, identifer, 0, ngram, skip, sep);
 
 			double score = predictor->Predict(m);
 #ifdef _DEBUG
-			Pval(gezi::join(words, "$#$"));
+			Pval(gezi::join(words, "/"));
 			Vector fe(m);
 			PVAL(fe.str());
 			predictor->_normalizer->Normalize(fe);
@@ -153,6 +160,8 @@ namespace gezi {
 #endif
 			return score;
 		}
+
+
 #ifndef NO_BAIDU_DEP
 
 		static double Predict(string title, string content, const DoubleIdentifer& identifer, const PredictorPtr& predictor,

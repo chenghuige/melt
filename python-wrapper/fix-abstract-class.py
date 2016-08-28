@@ -11,12 +11,13 @@ import sys,os
 
 abstract_classes = set()
 nameonly_classes = set()
-for line in open('abstract_class.txt'):
-    aclass = line.split()[0]
-    if not aclass.startswith('::'):
-        aclass = '::' + aclass
-    abstract_classes.add(aclass)
-    nameonly_classes.add('%s'%aclass.split('::')[-1])
+if os.path.exists('abstract_class.txt'):
+	for line in open('abstract_class.txt'):
+			aclass = line.split()[0]
+			if not aclass.startswith('::'):
+					aclass = '::' + aclass
+			abstract_classes.add(aclass)
+			nameonly_classes.add('%s'%aclass.split('::')[-1])
 
 input = sys.stdin 
 if len(sys.argv) > 1:

@@ -1,7 +1,7 @@
 /** 
  *  ==============================================================================
  * 
- *          \file   fastrank2gcc3.cc
+ *          \file   gbdt4gcc3.cc
  *
  *        \author   chenghuige   
  *
@@ -20,7 +20,7 @@
 using namespace std;
 using namespace gezi;
 
-DEFINE_string(what, "fastrank2gcc3 will translate ./model_path/model.bin to ./model_path/model.bin.gcc3 wihch can be used by GbdtPredictor without gcc4 dependency, notice you must use sigmoid calibrator", "");
+DEFINE_string(what, "gbdt4gcc3 will translate ./model_path/model.bin to ./model_path/model.bin.gcc3 wihch can be used by GbdtPredictor without gcc4 dependency, notice you must use sigmoid calibrator", "");
 DEFINE_int32(vl, 0, "vlog level");
 DEFINE_int32(level, 0, "min log level");
 DEFINE_string(type, "simple", "");

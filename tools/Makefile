@@ -54,6 +54,10 @@ DEP_INCPATH=-I../../../../../../app/search/sep/anti-spam/gezi \
   -I../../../../../../app/search/sep/anti-spam/melt-train/include \
   -I../../../../../../app/search/sep/anti-spam/melt-train/output \
   -I../../../../../../app/search/sep/anti-spam/melt-train/output/include \
+  -I../../../../../../baidu/nlp-dnn/liblego \
+  -I../../../../../../baidu/nlp-dnn/liblego/include \
+  -I../../../../../../baidu/nlp-dnn/liblego/output \
+  -I../../../../../../baidu/nlp-dnn/liblego/output/include \
   -I../../../../../../com/btest/gtest \
   -I../../../../../../com/btest/gtest/include \
   -I../../../../../../com/btest/gtest/output \
@@ -146,6 +150,10 @@ DEP_INCPATH=-I../../../../../../app/search/sep/anti-spam/gezi \
   -I../../../../../../third-64/pcre/include \
   -I../../../../../../third-64/pcre/output \
   -I../../../../../../third-64/pcre/output/include \
+  -I../../../../../../third-64/protobuf \
+  -I../../../../../../third-64/protobuf/include \
+  -I../../../../../../third-64/protobuf/output \
+  -I../../../../../../third-64/protobuf/output/include \
   -I../../../../../../third-64/tcmalloc \
   -I../../../../../../third-64/tcmalloc/include \
   -I../../../../../../third-64/tcmalloc/output \
@@ -165,11 +173,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=3dc18f5fef6a1a867a66635016b38ee7  COMAKE
+COMAKE_MD5=adc7ca5efe486507189f7e3a90e2d7ac  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check calibrate predict gbdt4gcc3 gbdt_predict bin_sampling melt melt.debug vw vw.debug 
+all:comake2_makefile_check calibrate predict gbdt4gcc3 gbdt_predict bin_sampling melt melt.debug vw vw.debug fastrank2gcc3 gbdt_predict predicts 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -207,6 +215,12 @@ clean:ccpclean
 	rm -rf ./output/bin/vw
 	rm -rf vw.debug
 	rm -rf ./output/bin/vw.debug
+	rm -rf fastrank2gcc3
+	rm -rf ./output/bin/fastrank2gcc3
+	rm -rf gbdt_predict
+	rm -rf ./output/bin/gbdt_predict
+	rm -rf predicts
+	rm -rf ./output/bin/predicts
 	rm -rf calibrate_calibrate.o
 	rm -rf predict_predict.o
 	rm -rf gbdt4gcc3_gbdt4gcc3.o
@@ -387,6 +401,164 @@ clean:ccpclean
 	rm -rf ../src/vowpalwabbit/vw.debug_stagewise_poly.o
 	rm -rf ../src/vowpalwabbit/vw.debug_topk.o
 	rm -rf ../src/vowpalwabbit/vw.debug_unique_sort.o
+	rm -rf fastrank2gcc3_fastrank2gcc3.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_accumulate.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_active.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_allreduce.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_autolink.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_bfgs.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_binary.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_bs.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_cache.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_cb.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_cb_algs.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_cbify.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_cost_sensitive.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_csoaa.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_ect.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_example.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_gd.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_gd_mf.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_global_data.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_hash.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_io_buf.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_kernel_svm.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_lda_core.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_learner.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_log_multi.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_loss_functions.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_lrq.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_memory.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_mf.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_multiclass.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_network.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_nn.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_noop.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_oaa.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_parse_args.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_parse_example.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_parse_primitives.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_parse_regressor.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_parser.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_print.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_rand48.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_scorer.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_search.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_search_dep_parser.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_search_entityrelationtask.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_search_hooktask.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_search_multiclasstask.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_search_sequencetask.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_sender.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_simple_label.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_stagewise_poly.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_topk.o
+	rm -rf ../src/vowpalwabbit/fastrank2gcc3_unique_sort.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_accumulate.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_active.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_allreduce.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_autolink.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_bfgs.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_binary.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_bs.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_cache.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_cb.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_cb_algs.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_cbify.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_cost_sensitive.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_csoaa.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_ect.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_example.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_gd.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_gd_mf.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_global_data.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_hash.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_io_buf.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_kernel_svm.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_lda_core.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_learner.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_log_multi.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_loss_functions.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_lrq.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_memory.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_mf.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_multiclass.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_network.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_nn.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_noop.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_oaa.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_parse_args.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_parse_example.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_parse_primitives.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_parse_regressor.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_parser.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_print.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_rand48.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_scorer.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_search.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_search_dep_parser.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_search_entityrelationtask.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_search_hooktask.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_search_multiclasstask.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_search_sequencetask.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_sender.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_simple_label.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_stagewise_poly.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_topk.o
+	rm -rf ../src/vowpalwabbit/gbdt_predict_unique_sort.o
+	rm -rf predicts_predicts.o
+	rm -rf ../src/vowpalwabbit/predicts_accumulate.o
+	rm -rf ../src/vowpalwabbit/predicts_active.o
+	rm -rf ../src/vowpalwabbit/predicts_allreduce.o
+	rm -rf ../src/vowpalwabbit/predicts_autolink.o
+	rm -rf ../src/vowpalwabbit/predicts_bfgs.o
+	rm -rf ../src/vowpalwabbit/predicts_binary.o
+	rm -rf ../src/vowpalwabbit/predicts_bs.o
+	rm -rf ../src/vowpalwabbit/predicts_cache.o
+	rm -rf ../src/vowpalwabbit/predicts_cb.o
+	rm -rf ../src/vowpalwabbit/predicts_cb_algs.o
+	rm -rf ../src/vowpalwabbit/predicts_cbify.o
+	rm -rf ../src/vowpalwabbit/predicts_cost_sensitive.o
+	rm -rf ../src/vowpalwabbit/predicts_csoaa.o
+	rm -rf ../src/vowpalwabbit/predicts_ect.o
+	rm -rf ../src/vowpalwabbit/predicts_example.o
+	rm -rf ../src/vowpalwabbit/predicts_gd.o
+	rm -rf ../src/vowpalwabbit/predicts_gd_mf.o
+	rm -rf ../src/vowpalwabbit/predicts_global_data.o
+	rm -rf ../src/vowpalwabbit/predicts_hash.o
+	rm -rf ../src/vowpalwabbit/predicts_io_buf.o
+	rm -rf ../src/vowpalwabbit/predicts_kernel_svm.o
+	rm -rf ../src/vowpalwabbit/predicts_lda_core.o
+	rm -rf ../src/vowpalwabbit/predicts_learner.o
+	rm -rf ../src/vowpalwabbit/predicts_log_multi.o
+	rm -rf ../src/vowpalwabbit/predicts_loss_functions.o
+	rm -rf ../src/vowpalwabbit/predicts_lrq.o
+	rm -rf ../src/vowpalwabbit/predicts_memory.o
+	rm -rf ../src/vowpalwabbit/predicts_mf.o
+	rm -rf ../src/vowpalwabbit/predicts_multiclass.o
+	rm -rf ../src/vowpalwabbit/predicts_network.o
+	rm -rf ../src/vowpalwabbit/predicts_nn.o
+	rm -rf ../src/vowpalwabbit/predicts_noop.o
+	rm -rf ../src/vowpalwabbit/predicts_oaa.o
+	rm -rf ../src/vowpalwabbit/predicts_parse_args.o
+	rm -rf ../src/vowpalwabbit/predicts_parse_example.o
+	rm -rf ../src/vowpalwabbit/predicts_parse_primitives.o
+	rm -rf ../src/vowpalwabbit/predicts_parse_regressor.o
+	rm -rf ../src/vowpalwabbit/predicts_parser.o
+	rm -rf ../src/vowpalwabbit/predicts_print.o
+	rm -rf ../src/vowpalwabbit/predicts_rand48.o
+	rm -rf ../src/vowpalwabbit/predicts_scorer.o
+	rm -rf ../src/vowpalwabbit/predicts_search.o
+	rm -rf ../src/vowpalwabbit/predicts_search_dep_parser.o
+	rm -rf ../src/vowpalwabbit/predicts_search_entityrelationtask.o
+	rm -rf ../src/vowpalwabbit/predicts_search_hooktask.o
+	rm -rf ../src/vowpalwabbit/predicts_search_multiclasstask.o
+	rm -rf ../src/vowpalwabbit/predicts_search_sequencetask.o
+	rm -rf ../src/vowpalwabbit/predicts_sender.o
+	rm -rf ../src/vowpalwabbit/predicts_simple_label.o
+	rm -rf ../src/vowpalwabbit/predicts_stagewise_poly.o
+	rm -rf ../src/vowpalwabbit/predicts_topk.o
+	rm -rf ../src/vowpalwabbit/predicts_unique_sort.o
 
 .PHONY:dist
 dist:
@@ -443,6 +615,7 @@ calibrate:calibrate_calibrate.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
+  ../../../../../../baidu/nlp-dnn/liblego/libliblego.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -512,6 +685,9 @@ calibrate:calibrate_calibrate.o \
   ../../../../../../third-64/pcre/lib/libpcre.a \
   ../../../../../../third-64/pcre/lib/libpcrecpp.a \
   ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf-lite.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf.a \
+  ../../../../../../third-64/protobuf/lib/libprotoc.a \
   ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
@@ -564,6 +740,7 @@ predict:predict_predict.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
+  ../../../../../../baidu/nlp-dnn/liblego/libliblego.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -633,6 +810,9 @@ predict:predict_predict.o \
   ../../../../../../third-64/pcre/lib/libpcre.a \
   ../../../../../../third-64/pcre/lib/libpcrecpp.a \
   ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf-lite.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf.a \
+  ../../../../../../third-64/protobuf/lib/libprotoc.a \
   ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
@@ -685,6 +865,7 @@ gbdt4gcc3:gbdt4gcc3_gbdt4gcc3.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
+  ../../../../../../baidu/nlp-dnn/liblego/libliblego.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -754,6 +935,9 @@ gbdt4gcc3:gbdt4gcc3_gbdt4gcc3.o \
   ../../../../../../third-64/pcre/lib/libpcre.a \
   ../../../../../../third-64/pcre/lib/libpcrecpp.a \
   ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf-lite.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf.a \
+  ../../../../../../third-64/protobuf/lib/libprotoc.a \
   ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
@@ -806,6 +990,7 @@ gbdt_predict:gbdt_predict_gbdt_predict.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
+  ../../../../../../baidu/nlp-dnn/liblego/libliblego.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -875,6 +1060,9 @@ gbdt_predict:gbdt_predict_gbdt_predict.o \
   ../../../../../../third-64/pcre/lib/libpcre.a \
   ../../../../../../third-64/pcre/lib/libpcrecpp.a \
   ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf-lite.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf.a \
+  ../../../../../../third-64/protobuf/lib/libprotoc.a \
   ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
@@ -927,6 +1115,7 @@ bin_sampling:bin_sampling_bin_sampling.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
+  ../../../../../../baidu/nlp-dnn/liblego/libliblego.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -996,6 +1185,9 @@ bin_sampling:bin_sampling_bin_sampling.o \
   ../../../../../../third-64/pcre/lib/libpcre.a \
   ../../../../../../third-64/pcre/lib/libpcrecpp.a \
   ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf-lite.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf.a \
+  ../../../../../../third-64/protobuf/lib/libprotoc.a \
   ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
@@ -1058,6 +1250,7 @@ melt:melt_melt.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
+  ../../../../../../baidu/nlp-dnn/liblego/libliblego.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -1127,6 +1320,9 @@ melt:melt_melt.o \
   ../../../../../../third-64/pcre/lib/libpcre.a \
   ../../../../../../third-64/pcre/lib/libpcrecpp.a \
   ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf-lite.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf.a \
+  ../../../../../../third-64/protobuf/lib/libprotoc.a \
   ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
@@ -1293,6 +1489,7 @@ melt.debug:melt.debug_melt.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
+  ../../../../../../baidu/nlp-dnn/liblego/libliblego.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -1362,6 +1559,9 @@ melt.debug:melt.debug_melt.o \
   ../../../../../../third-64/pcre/lib/libpcre.a \
   ../../../../../../third-64/pcre/lib/libpcrecpp.a \
   ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf-lite.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf.a \
+  ../../../../../../third-64/protobuf/lib/libprotoc.a \
   ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
@@ -1528,6 +1728,7 @@ vw:vw_vw.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
+  ../../../../../../baidu/nlp-dnn/liblego/libliblego.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -1597,6 +1798,9 @@ vw:vw_vw.o \
   ../../../../../../third-64/pcre/lib/libpcre.a \
   ../../../../../../third-64/pcre/lib/libpcrecpp.a \
   ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf-lite.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf.a \
+  ../../../../../../third-64/protobuf/lib/libprotoc.a \
   ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
@@ -1753,6 +1957,7 @@ vw.debug:vw.debug_vw.o \
   ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
   ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
   ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
+  ../../../../../../baidu/nlp-dnn/liblego/libliblego.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest.a \
   ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
   ../../../../../../lib2-64/bsl/lib/libbsl.a \
@@ -1822,6 +2027,9 @@ vw.debug:vw.debug_vw.o \
   ../../../../../../third-64/pcre/lib/libpcre.a \
   ../../../../../../third-64/pcre/lib/libpcrecpp.a \
   ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf-lite.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf.a \
+  ../../../../../../third-64/protobuf/lib/libprotoc.a \
   ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
   ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
@@ -1835,6 +2043,693 @@ vw.debug:vw.debug_vw.o \
   -lgomp -Xlinker "-)" -o vw.debug
 	mkdir -p ./output/bin
 	cp -f --link vw.debug ./output/bin
+
+fastrank2gcc3:fastrank2gcc3_fastrank2gcc3.o \
+  ../src/vowpalwabbit/fastrank2gcc3_accumulate.o \
+  ../src/vowpalwabbit/fastrank2gcc3_active.o \
+  ../src/vowpalwabbit/fastrank2gcc3_allreduce.o \
+  ../src/vowpalwabbit/fastrank2gcc3_autolink.o \
+  ../src/vowpalwabbit/fastrank2gcc3_bfgs.o \
+  ../src/vowpalwabbit/fastrank2gcc3_binary.o \
+  ../src/vowpalwabbit/fastrank2gcc3_bs.o \
+  ../src/vowpalwabbit/fastrank2gcc3_cache.o \
+  ../src/vowpalwabbit/fastrank2gcc3_cb.o \
+  ../src/vowpalwabbit/fastrank2gcc3_cb_algs.o \
+  ../src/vowpalwabbit/fastrank2gcc3_cbify.o \
+  ../src/vowpalwabbit/fastrank2gcc3_cost_sensitive.o \
+  ../src/vowpalwabbit/fastrank2gcc3_csoaa.o \
+  ../src/vowpalwabbit/fastrank2gcc3_ect.o \
+  ../src/vowpalwabbit/fastrank2gcc3_example.o \
+  ../src/vowpalwabbit/fastrank2gcc3_gd.o \
+  ../src/vowpalwabbit/fastrank2gcc3_gd_mf.o \
+  ../src/vowpalwabbit/fastrank2gcc3_global_data.o \
+  ../src/vowpalwabbit/fastrank2gcc3_hash.o \
+  ../src/vowpalwabbit/fastrank2gcc3_io_buf.o \
+  ../src/vowpalwabbit/fastrank2gcc3_kernel_svm.o \
+  ../src/vowpalwabbit/fastrank2gcc3_lda_core.o \
+  ../src/vowpalwabbit/fastrank2gcc3_learner.o \
+  ../src/vowpalwabbit/fastrank2gcc3_log_multi.o \
+  ../src/vowpalwabbit/fastrank2gcc3_loss_functions.o \
+  ../src/vowpalwabbit/fastrank2gcc3_lrq.o \
+  ../src/vowpalwabbit/fastrank2gcc3_memory.o \
+  ../src/vowpalwabbit/fastrank2gcc3_mf.o \
+  ../src/vowpalwabbit/fastrank2gcc3_multiclass.o \
+  ../src/vowpalwabbit/fastrank2gcc3_network.o \
+  ../src/vowpalwabbit/fastrank2gcc3_nn.o \
+  ../src/vowpalwabbit/fastrank2gcc3_noop.o \
+  ../src/vowpalwabbit/fastrank2gcc3_oaa.o \
+  ../src/vowpalwabbit/fastrank2gcc3_parse_args.o \
+  ../src/vowpalwabbit/fastrank2gcc3_parse_example.o \
+  ../src/vowpalwabbit/fastrank2gcc3_parse_primitives.o \
+  ../src/vowpalwabbit/fastrank2gcc3_parse_regressor.o \
+  ../src/vowpalwabbit/fastrank2gcc3_parser.o \
+  ../src/vowpalwabbit/fastrank2gcc3_print.o \
+  ../src/vowpalwabbit/fastrank2gcc3_rand48.o \
+  ../src/vowpalwabbit/fastrank2gcc3_scorer.o \
+  ../src/vowpalwabbit/fastrank2gcc3_search.o \
+  ../src/vowpalwabbit/fastrank2gcc3_search_dep_parser.o \
+  ../src/vowpalwabbit/fastrank2gcc3_search_entityrelationtask.o \
+  ../src/vowpalwabbit/fastrank2gcc3_search_hooktask.o \
+  ../src/vowpalwabbit/fastrank2gcc3_search_multiclasstask.o \
+  ../src/vowpalwabbit/fastrank2gcc3_search_sequencetask.o \
+  ../src/vowpalwabbit/fastrank2gcc3_sender.o \
+  ../src/vowpalwabbit/fastrank2gcc3_simple_label.o \
+  ../src/vowpalwabbit/fastrank2gcc3_stagewise_poly.o \
+  ../src/vowpalwabbit/fastrank2gcc3_topk.o \
+  ../src/vowpalwabbit/fastrank2gcc3_unique_sort.o \
+  ../libmelt.a \
+  ../libsofia.a \
+  ../libvw.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank2gcc3[0m']"
+	$(CXX) fastrank2gcc3_fastrank2gcc3.o \
+  ../src/vowpalwabbit/fastrank2gcc3_accumulate.o \
+  ../src/vowpalwabbit/fastrank2gcc3_active.o \
+  ../src/vowpalwabbit/fastrank2gcc3_allreduce.o \
+  ../src/vowpalwabbit/fastrank2gcc3_autolink.o \
+  ../src/vowpalwabbit/fastrank2gcc3_bfgs.o \
+  ../src/vowpalwabbit/fastrank2gcc3_binary.o \
+  ../src/vowpalwabbit/fastrank2gcc3_bs.o \
+  ../src/vowpalwabbit/fastrank2gcc3_cache.o \
+  ../src/vowpalwabbit/fastrank2gcc3_cb.o \
+  ../src/vowpalwabbit/fastrank2gcc3_cb_algs.o \
+  ../src/vowpalwabbit/fastrank2gcc3_cbify.o \
+  ../src/vowpalwabbit/fastrank2gcc3_cost_sensitive.o \
+  ../src/vowpalwabbit/fastrank2gcc3_csoaa.o \
+  ../src/vowpalwabbit/fastrank2gcc3_ect.o \
+  ../src/vowpalwabbit/fastrank2gcc3_example.o \
+  ../src/vowpalwabbit/fastrank2gcc3_gd.o \
+  ../src/vowpalwabbit/fastrank2gcc3_gd_mf.o \
+  ../src/vowpalwabbit/fastrank2gcc3_global_data.o \
+  ../src/vowpalwabbit/fastrank2gcc3_hash.o \
+  ../src/vowpalwabbit/fastrank2gcc3_io_buf.o \
+  ../src/vowpalwabbit/fastrank2gcc3_kernel_svm.o \
+  ../src/vowpalwabbit/fastrank2gcc3_lda_core.o \
+  ../src/vowpalwabbit/fastrank2gcc3_learner.o \
+  ../src/vowpalwabbit/fastrank2gcc3_log_multi.o \
+  ../src/vowpalwabbit/fastrank2gcc3_loss_functions.o \
+  ../src/vowpalwabbit/fastrank2gcc3_lrq.o \
+  ../src/vowpalwabbit/fastrank2gcc3_memory.o \
+  ../src/vowpalwabbit/fastrank2gcc3_mf.o \
+  ../src/vowpalwabbit/fastrank2gcc3_multiclass.o \
+  ../src/vowpalwabbit/fastrank2gcc3_network.o \
+  ../src/vowpalwabbit/fastrank2gcc3_nn.o \
+  ../src/vowpalwabbit/fastrank2gcc3_noop.o \
+  ../src/vowpalwabbit/fastrank2gcc3_oaa.o \
+  ../src/vowpalwabbit/fastrank2gcc3_parse_args.o \
+  ../src/vowpalwabbit/fastrank2gcc3_parse_example.o \
+  ../src/vowpalwabbit/fastrank2gcc3_parse_primitives.o \
+  ../src/vowpalwabbit/fastrank2gcc3_parse_regressor.o \
+  ../src/vowpalwabbit/fastrank2gcc3_parser.o \
+  ../src/vowpalwabbit/fastrank2gcc3_print.o \
+  ../src/vowpalwabbit/fastrank2gcc3_rand48.o \
+  ../src/vowpalwabbit/fastrank2gcc3_scorer.o \
+  ../src/vowpalwabbit/fastrank2gcc3_search.o \
+  ../src/vowpalwabbit/fastrank2gcc3_search_dep_parser.o \
+  ../src/vowpalwabbit/fastrank2gcc3_search_entityrelationtask.o \
+  ../src/vowpalwabbit/fastrank2gcc3_search_hooktask.o \
+  ../src/vowpalwabbit/fastrank2gcc3_search_multiclasstask.o \
+  ../src/vowpalwabbit/fastrank2gcc3_search_sequencetask.o \
+  ../src/vowpalwabbit/fastrank2gcc3_sender.o \
+  ../src/vowpalwabbit/fastrank2gcc3_simple_label.o \
+  ../src/vowpalwabbit/fastrank2gcc3_stagewise_poly.o \
+  ../src/vowpalwabbit/fastrank2gcc3_topk.o \
+  ../src/vowpalwabbit/fastrank2gcc3_unique_sort.o -Xlinker "-(" ../libmelt.a \
+  ../libsofia.a \
+  ../libvw.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
+  ../../../../../../baidu/nlp-dnn/liblego/libliblego.a \
+  ../../../../../../com/btest/gtest/output/lib/libgtest.a \
+  ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_archive.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_buffer.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_check_cast.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_exception.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_pool.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_utils.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var_implement.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var_utils.a \
+  ../../../../../../lib2-64/ccode/lib/libulccode.a \
+  ../../../../../../lib2-64/dict/lib/libuldict.a \
+  ../../../../../../lib2-64/libcrf/lib/libcrf.a \
+  ../../../../../../lib2-64/others-ex/lib/libullib_ex.a \
+  ../../../../../../lib2-64/postag/lib/libpostag.a \
+  ../../../../../../lib2-64/ullib/lib/libullib.a \
+  ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../public/comlog-plugin/libcomlog.a \
+  ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
+  ../../../../../../public/configure/libconfig.a \
+  ../../../../../../public/connectpool/libconnectpool.a \
+  ../../../../../../public/odict/libodict.a \
+  ../../../../../../public/spreg/libspreg.a \
+  ../../../../../../public/uconv/libuconv.a \
+  ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
+  ../../../../../../third-64/boost/lib/libboost_atomic.a \
+  ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
+  ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
+  ../../../../../../third-64/boost/lib/libboost_date_time.a \
+  ../../../../../../third-64/boost/lib/libboost_exception.a \
+  ../../../../../../third-64/boost/lib/libboost_filesystem.a \
+  ../../../../../../third-64/boost/lib/libboost_graph.a \
+  ../../../../../../third-64/boost/lib/libboost_locale.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99f.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99l.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
+  ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
+  ../../../../../../third-64/boost/lib/libboost_program_options.a \
+  ../../../../../../third-64/boost/lib/libboost_python.a \
+  ../../../../../../third-64/boost/lib/libboost_random.a \
+  ../../../../../../third-64/boost/lib/libboost_regex.a \
+  ../../../../../../third-64/boost/lib/libboost_serialization.a \
+  ../../../../../../third-64/boost/lib/libboost_signals.a \
+  ../../../../../../third-64/boost/lib/libboost_system.a \
+  ../../../../../../third-64/boost/lib/libboost_test_exec_monitor.a \
+  ../../../../../../third-64/boost/lib/libboost_thread.a \
+  ../../../../../../third-64/boost/lib/libboost_timer.a \
+  ../../../../../../third-64/boost/lib/libboost_unit_test_framework.a \
+  ../../../../../../third-64/boost/lib/libboost_wave.a \
+  ../../../../../../third-64/boost/lib/libboost_wserialization.a \
+  ../../../../../../third-64/gflags/lib/libgflags.a \
+  ../../../../../../third-64/gflags/lib/libgflags_nothreads.a \
+  ../../../../../../third-64/glog/lib/libglog.a \
+  ../../../../../../third-64/gtest/lib/libgtest.a \
+  ../../../../../../third-64/gtest/lib/libgtest_main.a \
+  ../../../../../../third-64/libcurl/lib/libcurl.a \
+  ../../../../../../third-64/pcre/lib/libpcre.a \
+  ../../../../../../third-64/pcre/lib/libpcrecpp.a \
+  ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf-lite.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf.a \
+  ../../../../../../third-64/protobuf/lib/libprotoc.a \
+  ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_debug.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal_debug.a \
+  ../../../../../../third-64/zlib/lib/libz.a -lpthread \
+  -lrt \
+  -ldl \
+  -rdynamic \
+  -lgomp -Xlinker "-)" -o fastrank2gcc3
+	mkdir -p ./output/bin
+	cp -f --link fastrank2gcc3 ./output/bin
+
+gbdt_predict:gbdt_predict_gbdt_predict.o \
+  ../src/vowpalwabbit/gbdt_predict_accumulate.o \
+  ../src/vowpalwabbit/gbdt_predict_active.o \
+  ../src/vowpalwabbit/gbdt_predict_allreduce.o \
+  ../src/vowpalwabbit/gbdt_predict_autolink.o \
+  ../src/vowpalwabbit/gbdt_predict_bfgs.o \
+  ../src/vowpalwabbit/gbdt_predict_binary.o \
+  ../src/vowpalwabbit/gbdt_predict_bs.o \
+  ../src/vowpalwabbit/gbdt_predict_cache.o \
+  ../src/vowpalwabbit/gbdt_predict_cb.o \
+  ../src/vowpalwabbit/gbdt_predict_cb_algs.o \
+  ../src/vowpalwabbit/gbdt_predict_cbify.o \
+  ../src/vowpalwabbit/gbdt_predict_cost_sensitive.o \
+  ../src/vowpalwabbit/gbdt_predict_csoaa.o \
+  ../src/vowpalwabbit/gbdt_predict_ect.o \
+  ../src/vowpalwabbit/gbdt_predict_example.o \
+  ../src/vowpalwabbit/gbdt_predict_gd.o \
+  ../src/vowpalwabbit/gbdt_predict_gd_mf.o \
+  ../src/vowpalwabbit/gbdt_predict_global_data.o \
+  ../src/vowpalwabbit/gbdt_predict_hash.o \
+  ../src/vowpalwabbit/gbdt_predict_io_buf.o \
+  ../src/vowpalwabbit/gbdt_predict_kernel_svm.o \
+  ../src/vowpalwabbit/gbdt_predict_lda_core.o \
+  ../src/vowpalwabbit/gbdt_predict_learner.o \
+  ../src/vowpalwabbit/gbdt_predict_log_multi.o \
+  ../src/vowpalwabbit/gbdt_predict_loss_functions.o \
+  ../src/vowpalwabbit/gbdt_predict_lrq.o \
+  ../src/vowpalwabbit/gbdt_predict_memory.o \
+  ../src/vowpalwabbit/gbdt_predict_mf.o \
+  ../src/vowpalwabbit/gbdt_predict_multiclass.o \
+  ../src/vowpalwabbit/gbdt_predict_network.o \
+  ../src/vowpalwabbit/gbdt_predict_nn.o \
+  ../src/vowpalwabbit/gbdt_predict_noop.o \
+  ../src/vowpalwabbit/gbdt_predict_oaa.o \
+  ../src/vowpalwabbit/gbdt_predict_parse_args.o \
+  ../src/vowpalwabbit/gbdt_predict_parse_example.o \
+  ../src/vowpalwabbit/gbdt_predict_parse_primitives.o \
+  ../src/vowpalwabbit/gbdt_predict_parse_regressor.o \
+  ../src/vowpalwabbit/gbdt_predict_parser.o \
+  ../src/vowpalwabbit/gbdt_predict_print.o \
+  ../src/vowpalwabbit/gbdt_predict_rand48.o \
+  ../src/vowpalwabbit/gbdt_predict_scorer.o \
+  ../src/vowpalwabbit/gbdt_predict_search.o \
+  ../src/vowpalwabbit/gbdt_predict_search_dep_parser.o \
+  ../src/vowpalwabbit/gbdt_predict_search_entityrelationtask.o \
+  ../src/vowpalwabbit/gbdt_predict_search_hooktask.o \
+  ../src/vowpalwabbit/gbdt_predict_search_multiclasstask.o \
+  ../src/vowpalwabbit/gbdt_predict_search_sequencetask.o \
+  ../src/vowpalwabbit/gbdt_predict_sender.o \
+  ../src/vowpalwabbit/gbdt_predict_simple_label.o \
+  ../src/vowpalwabbit/gbdt_predict_stagewise_poly.o \
+  ../src/vowpalwabbit/gbdt_predict_topk.o \
+  ../src/vowpalwabbit/gbdt_predict_unique_sort.o \
+  ../libmelt.a \
+  ../libsofia.a \
+  ../libvw.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mgbdt_predict[0m']"
+	$(CXX) gbdt_predict_gbdt_predict.o \
+  ../src/vowpalwabbit/gbdt_predict_accumulate.o \
+  ../src/vowpalwabbit/gbdt_predict_active.o \
+  ../src/vowpalwabbit/gbdt_predict_allreduce.o \
+  ../src/vowpalwabbit/gbdt_predict_autolink.o \
+  ../src/vowpalwabbit/gbdt_predict_bfgs.o \
+  ../src/vowpalwabbit/gbdt_predict_binary.o \
+  ../src/vowpalwabbit/gbdt_predict_bs.o \
+  ../src/vowpalwabbit/gbdt_predict_cache.o \
+  ../src/vowpalwabbit/gbdt_predict_cb.o \
+  ../src/vowpalwabbit/gbdt_predict_cb_algs.o \
+  ../src/vowpalwabbit/gbdt_predict_cbify.o \
+  ../src/vowpalwabbit/gbdt_predict_cost_sensitive.o \
+  ../src/vowpalwabbit/gbdt_predict_csoaa.o \
+  ../src/vowpalwabbit/gbdt_predict_ect.o \
+  ../src/vowpalwabbit/gbdt_predict_example.o \
+  ../src/vowpalwabbit/gbdt_predict_gd.o \
+  ../src/vowpalwabbit/gbdt_predict_gd_mf.o \
+  ../src/vowpalwabbit/gbdt_predict_global_data.o \
+  ../src/vowpalwabbit/gbdt_predict_hash.o \
+  ../src/vowpalwabbit/gbdt_predict_io_buf.o \
+  ../src/vowpalwabbit/gbdt_predict_kernel_svm.o \
+  ../src/vowpalwabbit/gbdt_predict_lda_core.o \
+  ../src/vowpalwabbit/gbdt_predict_learner.o \
+  ../src/vowpalwabbit/gbdt_predict_log_multi.o \
+  ../src/vowpalwabbit/gbdt_predict_loss_functions.o \
+  ../src/vowpalwabbit/gbdt_predict_lrq.o \
+  ../src/vowpalwabbit/gbdt_predict_memory.o \
+  ../src/vowpalwabbit/gbdt_predict_mf.o \
+  ../src/vowpalwabbit/gbdt_predict_multiclass.o \
+  ../src/vowpalwabbit/gbdt_predict_network.o \
+  ../src/vowpalwabbit/gbdt_predict_nn.o \
+  ../src/vowpalwabbit/gbdt_predict_noop.o \
+  ../src/vowpalwabbit/gbdt_predict_oaa.o \
+  ../src/vowpalwabbit/gbdt_predict_parse_args.o \
+  ../src/vowpalwabbit/gbdt_predict_parse_example.o \
+  ../src/vowpalwabbit/gbdt_predict_parse_primitives.o \
+  ../src/vowpalwabbit/gbdt_predict_parse_regressor.o \
+  ../src/vowpalwabbit/gbdt_predict_parser.o \
+  ../src/vowpalwabbit/gbdt_predict_print.o \
+  ../src/vowpalwabbit/gbdt_predict_rand48.o \
+  ../src/vowpalwabbit/gbdt_predict_scorer.o \
+  ../src/vowpalwabbit/gbdt_predict_search.o \
+  ../src/vowpalwabbit/gbdt_predict_search_dep_parser.o \
+  ../src/vowpalwabbit/gbdt_predict_search_entityrelationtask.o \
+  ../src/vowpalwabbit/gbdt_predict_search_hooktask.o \
+  ../src/vowpalwabbit/gbdt_predict_search_multiclasstask.o \
+  ../src/vowpalwabbit/gbdt_predict_search_sequencetask.o \
+  ../src/vowpalwabbit/gbdt_predict_sender.o \
+  ../src/vowpalwabbit/gbdt_predict_simple_label.o \
+  ../src/vowpalwabbit/gbdt_predict_stagewise_poly.o \
+  ../src/vowpalwabbit/gbdt_predict_topk.o \
+  ../src/vowpalwabbit/gbdt_predict_unique_sort.o -Xlinker "-(" ../libmelt.a \
+  ../libsofia.a \
+  ../libvw.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
+  ../../../../../../baidu/nlp-dnn/liblego/libliblego.a \
+  ../../../../../../com/btest/gtest/output/lib/libgtest.a \
+  ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_archive.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_buffer.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_check_cast.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_exception.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_pool.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_utils.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var_implement.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var_utils.a \
+  ../../../../../../lib2-64/ccode/lib/libulccode.a \
+  ../../../../../../lib2-64/dict/lib/libuldict.a \
+  ../../../../../../lib2-64/libcrf/lib/libcrf.a \
+  ../../../../../../lib2-64/others-ex/lib/libullib_ex.a \
+  ../../../../../../lib2-64/postag/lib/libpostag.a \
+  ../../../../../../lib2-64/ullib/lib/libullib.a \
+  ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../public/comlog-plugin/libcomlog.a \
+  ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
+  ../../../../../../public/configure/libconfig.a \
+  ../../../../../../public/connectpool/libconnectpool.a \
+  ../../../../../../public/odict/libodict.a \
+  ../../../../../../public/spreg/libspreg.a \
+  ../../../../../../public/uconv/libuconv.a \
+  ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
+  ../../../../../../third-64/boost/lib/libboost_atomic.a \
+  ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
+  ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
+  ../../../../../../third-64/boost/lib/libboost_date_time.a \
+  ../../../../../../third-64/boost/lib/libboost_exception.a \
+  ../../../../../../third-64/boost/lib/libboost_filesystem.a \
+  ../../../../../../third-64/boost/lib/libboost_graph.a \
+  ../../../../../../third-64/boost/lib/libboost_locale.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99f.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99l.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
+  ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
+  ../../../../../../third-64/boost/lib/libboost_program_options.a \
+  ../../../../../../third-64/boost/lib/libboost_python.a \
+  ../../../../../../third-64/boost/lib/libboost_random.a \
+  ../../../../../../third-64/boost/lib/libboost_regex.a \
+  ../../../../../../third-64/boost/lib/libboost_serialization.a \
+  ../../../../../../third-64/boost/lib/libboost_signals.a \
+  ../../../../../../third-64/boost/lib/libboost_system.a \
+  ../../../../../../third-64/boost/lib/libboost_test_exec_monitor.a \
+  ../../../../../../third-64/boost/lib/libboost_thread.a \
+  ../../../../../../third-64/boost/lib/libboost_timer.a \
+  ../../../../../../third-64/boost/lib/libboost_unit_test_framework.a \
+  ../../../../../../third-64/boost/lib/libboost_wave.a \
+  ../../../../../../third-64/boost/lib/libboost_wserialization.a \
+  ../../../../../../third-64/gflags/lib/libgflags.a \
+  ../../../../../../third-64/gflags/lib/libgflags_nothreads.a \
+  ../../../../../../third-64/glog/lib/libglog.a \
+  ../../../../../../third-64/gtest/lib/libgtest.a \
+  ../../../../../../third-64/gtest/lib/libgtest_main.a \
+  ../../../../../../third-64/libcurl/lib/libcurl.a \
+  ../../../../../../third-64/pcre/lib/libpcre.a \
+  ../../../../../../third-64/pcre/lib/libpcrecpp.a \
+  ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf-lite.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf.a \
+  ../../../../../../third-64/protobuf/lib/libprotoc.a \
+  ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_debug.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal_debug.a \
+  ../../../../../../third-64/zlib/lib/libz.a -lpthread \
+  -lrt \
+  -ldl \
+  -rdynamic \
+  -lgomp -Xlinker "-)" -o gbdt_predict
+	mkdir -p ./output/bin
+	cp -f --link gbdt_predict ./output/bin
+
+predicts:predicts_predicts.o \
+  ../src/vowpalwabbit/predicts_accumulate.o \
+  ../src/vowpalwabbit/predicts_active.o \
+  ../src/vowpalwabbit/predicts_allreduce.o \
+  ../src/vowpalwabbit/predicts_autolink.o \
+  ../src/vowpalwabbit/predicts_bfgs.o \
+  ../src/vowpalwabbit/predicts_binary.o \
+  ../src/vowpalwabbit/predicts_bs.o \
+  ../src/vowpalwabbit/predicts_cache.o \
+  ../src/vowpalwabbit/predicts_cb.o \
+  ../src/vowpalwabbit/predicts_cb_algs.o \
+  ../src/vowpalwabbit/predicts_cbify.o \
+  ../src/vowpalwabbit/predicts_cost_sensitive.o \
+  ../src/vowpalwabbit/predicts_csoaa.o \
+  ../src/vowpalwabbit/predicts_ect.o \
+  ../src/vowpalwabbit/predicts_example.o \
+  ../src/vowpalwabbit/predicts_gd.o \
+  ../src/vowpalwabbit/predicts_gd_mf.o \
+  ../src/vowpalwabbit/predicts_global_data.o \
+  ../src/vowpalwabbit/predicts_hash.o \
+  ../src/vowpalwabbit/predicts_io_buf.o \
+  ../src/vowpalwabbit/predicts_kernel_svm.o \
+  ../src/vowpalwabbit/predicts_lda_core.o \
+  ../src/vowpalwabbit/predicts_learner.o \
+  ../src/vowpalwabbit/predicts_log_multi.o \
+  ../src/vowpalwabbit/predicts_loss_functions.o \
+  ../src/vowpalwabbit/predicts_lrq.o \
+  ../src/vowpalwabbit/predicts_memory.o \
+  ../src/vowpalwabbit/predicts_mf.o \
+  ../src/vowpalwabbit/predicts_multiclass.o \
+  ../src/vowpalwabbit/predicts_network.o \
+  ../src/vowpalwabbit/predicts_nn.o \
+  ../src/vowpalwabbit/predicts_noop.o \
+  ../src/vowpalwabbit/predicts_oaa.o \
+  ../src/vowpalwabbit/predicts_parse_args.o \
+  ../src/vowpalwabbit/predicts_parse_example.o \
+  ../src/vowpalwabbit/predicts_parse_primitives.o \
+  ../src/vowpalwabbit/predicts_parse_regressor.o \
+  ../src/vowpalwabbit/predicts_parser.o \
+  ../src/vowpalwabbit/predicts_print.o \
+  ../src/vowpalwabbit/predicts_rand48.o \
+  ../src/vowpalwabbit/predicts_scorer.o \
+  ../src/vowpalwabbit/predicts_search.o \
+  ../src/vowpalwabbit/predicts_search_dep_parser.o \
+  ../src/vowpalwabbit/predicts_search_entityrelationtask.o \
+  ../src/vowpalwabbit/predicts_search_hooktask.o \
+  ../src/vowpalwabbit/predicts_search_multiclasstask.o \
+  ../src/vowpalwabbit/predicts_search_sequencetask.o \
+  ../src/vowpalwabbit/predicts_sender.o \
+  ../src/vowpalwabbit/predicts_simple_label.o \
+  ../src/vowpalwabbit/predicts_stagewise_poly.o \
+  ../src/vowpalwabbit/predicts_topk.o \
+  ../src/vowpalwabbit/predicts_unique_sort.o \
+  ../libmelt.a \
+  ../libsofia.a \
+  ../libvw.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mpredicts[0m']"
+	$(CXX) predicts_predicts.o \
+  ../src/vowpalwabbit/predicts_accumulate.o \
+  ../src/vowpalwabbit/predicts_active.o \
+  ../src/vowpalwabbit/predicts_allreduce.o \
+  ../src/vowpalwabbit/predicts_autolink.o \
+  ../src/vowpalwabbit/predicts_bfgs.o \
+  ../src/vowpalwabbit/predicts_binary.o \
+  ../src/vowpalwabbit/predicts_bs.o \
+  ../src/vowpalwabbit/predicts_cache.o \
+  ../src/vowpalwabbit/predicts_cb.o \
+  ../src/vowpalwabbit/predicts_cb_algs.o \
+  ../src/vowpalwabbit/predicts_cbify.o \
+  ../src/vowpalwabbit/predicts_cost_sensitive.o \
+  ../src/vowpalwabbit/predicts_csoaa.o \
+  ../src/vowpalwabbit/predicts_ect.o \
+  ../src/vowpalwabbit/predicts_example.o \
+  ../src/vowpalwabbit/predicts_gd.o \
+  ../src/vowpalwabbit/predicts_gd_mf.o \
+  ../src/vowpalwabbit/predicts_global_data.o \
+  ../src/vowpalwabbit/predicts_hash.o \
+  ../src/vowpalwabbit/predicts_io_buf.o \
+  ../src/vowpalwabbit/predicts_kernel_svm.o \
+  ../src/vowpalwabbit/predicts_lda_core.o \
+  ../src/vowpalwabbit/predicts_learner.o \
+  ../src/vowpalwabbit/predicts_log_multi.o \
+  ../src/vowpalwabbit/predicts_loss_functions.o \
+  ../src/vowpalwabbit/predicts_lrq.o \
+  ../src/vowpalwabbit/predicts_memory.o \
+  ../src/vowpalwabbit/predicts_mf.o \
+  ../src/vowpalwabbit/predicts_multiclass.o \
+  ../src/vowpalwabbit/predicts_network.o \
+  ../src/vowpalwabbit/predicts_nn.o \
+  ../src/vowpalwabbit/predicts_noop.o \
+  ../src/vowpalwabbit/predicts_oaa.o \
+  ../src/vowpalwabbit/predicts_parse_args.o \
+  ../src/vowpalwabbit/predicts_parse_example.o \
+  ../src/vowpalwabbit/predicts_parse_primitives.o \
+  ../src/vowpalwabbit/predicts_parse_regressor.o \
+  ../src/vowpalwabbit/predicts_parser.o \
+  ../src/vowpalwabbit/predicts_print.o \
+  ../src/vowpalwabbit/predicts_rand48.o \
+  ../src/vowpalwabbit/predicts_scorer.o \
+  ../src/vowpalwabbit/predicts_search.o \
+  ../src/vowpalwabbit/predicts_search_dep_parser.o \
+  ../src/vowpalwabbit/predicts_search_entityrelationtask.o \
+  ../src/vowpalwabbit/predicts_search_hooktask.o \
+  ../src/vowpalwabbit/predicts_search_multiclasstask.o \
+  ../src/vowpalwabbit/predicts_search_sequencetask.o \
+  ../src/vowpalwabbit/predicts_sender.o \
+  ../src/vowpalwabbit/predicts_simple_label.o \
+  ../src/vowpalwabbit/predicts_stagewise_poly.o \
+  ../src/vowpalwabbit/predicts_topk.o \
+  ../src/vowpalwabbit/predicts_unique_sort.o -Xlinker "-(" ../libmelt.a \
+  ../libsofia.a \
+  ../libvw.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
+  ../../../../../../baidu/nlp-dnn/liblego/libliblego.a \
+  ../../../../../../com/btest/gtest/output/lib/libgtest.a \
+  ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_archive.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_buffer.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_check_cast.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_exception.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_pool.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_utils.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var_implement.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var_utils.a \
+  ../../../../../../lib2-64/ccode/lib/libulccode.a \
+  ../../../../../../lib2-64/dict/lib/libuldict.a \
+  ../../../../../../lib2-64/libcrf/lib/libcrf.a \
+  ../../../../../../lib2-64/others-ex/lib/libullib_ex.a \
+  ../../../../../../lib2-64/postag/lib/libpostag.a \
+  ../../../../../../lib2-64/ullib/lib/libullib.a \
+  ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../public/comlog-plugin/libcomlog.a \
+  ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
+  ../../../../../../public/configure/libconfig.a \
+  ../../../../../../public/connectpool/libconnectpool.a \
+  ../../../../../../public/odict/libodict.a \
+  ../../../../../../public/spreg/libspreg.a \
+  ../../../../../../public/uconv/libuconv.a \
+  ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
+  ../../../../../../third-64/boost/lib/libboost_atomic.a \
+  ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
+  ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
+  ../../../../../../third-64/boost/lib/libboost_date_time.a \
+  ../../../../../../third-64/boost/lib/libboost_exception.a \
+  ../../../../../../third-64/boost/lib/libboost_filesystem.a \
+  ../../../../../../third-64/boost/lib/libboost_graph.a \
+  ../../../../../../third-64/boost/lib/libboost_locale.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99f.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99l.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
+  ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
+  ../../../../../../third-64/boost/lib/libboost_program_options.a \
+  ../../../../../../third-64/boost/lib/libboost_python.a \
+  ../../../../../../third-64/boost/lib/libboost_random.a \
+  ../../../../../../third-64/boost/lib/libboost_regex.a \
+  ../../../../../../third-64/boost/lib/libboost_serialization.a \
+  ../../../../../../third-64/boost/lib/libboost_signals.a \
+  ../../../../../../third-64/boost/lib/libboost_system.a \
+  ../../../../../../third-64/boost/lib/libboost_test_exec_monitor.a \
+  ../../../../../../third-64/boost/lib/libboost_thread.a \
+  ../../../../../../third-64/boost/lib/libboost_timer.a \
+  ../../../../../../third-64/boost/lib/libboost_unit_test_framework.a \
+  ../../../../../../third-64/boost/lib/libboost_wave.a \
+  ../../../../../../third-64/boost/lib/libboost_wserialization.a \
+  ../../../../../../third-64/gflags/lib/libgflags.a \
+  ../../../../../../third-64/gflags/lib/libgflags_nothreads.a \
+  ../../../../../../third-64/glog/lib/libglog.a \
+  ../../../../../../third-64/gtest/lib/libgtest.a \
+  ../../../../../../third-64/gtest/lib/libgtest_main.a \
+  ../../../../../../third-64/libcurl/lib/libcurl.a \
+  ../../../../../../third-64/pcre/lib/libpcre.a \
+  ../../../../../../third-64/pcre/lib/libpcrecpp.a \
+  ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf-lite.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf.a \
+  ../../../../../../third-64/protobuf/lib/libprotoc.a \
+  ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_debug.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal_debug.a \
+  ../../../../../../third-64/zlib/lib/libz.a -lpthread \
+  -lrt \
+  -ldl \
+  -rdynamic \
+  -lgomp -Xlinker "-)" -o predicts
+	mkdir -p ./output/bin
+	cp -f --link predicts ./output/bin
 
 calibrate_calibrate.o:calibrate.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mcalibrate_calibrate.o[0m']"
@@ -2888,6 +3783,1058 @@ vw.debug_vw.o:vw.cc
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_unique_sort.o ../src/vowpalwabbit/unique_sort.cc
+
+fastrank2gcc3_fastrank2gcc3.o:fastrank2gcc3.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank2gcc3_fastrank2gcc3.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o fastrank2gcc3_fastrank2gcc3.o fastrank2gcc3.cc
+
+../src/vowpalwabbit/fastrank2gcc3_accumulate.o:../src/vowpalwabbit/accumulate.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_accumulate.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_accumulate.o ../src/vowpalwabbit/accumulate.cc
+
+../src/vowpalwabbit/fastrank2gcc3_active.o:../src/vowpalwabbit/active.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_active.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_active.o ../src/vowpalwabbit/active.cc
+
+../src/vowpalwabbit/fastrank2gcc3_allreduce.o:../src/vowpalwabbit/allreduce.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_allreduce.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_allreduce.o ../src/vowpalwabbit/allreduce.cc
+
+../src/vowpalwabbit/fastrank2gcc3_autolink.o:../src/vowpalwabbit/autolink.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_autolink.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_autolink.o ../src/vowpalwabbit/autolink.cc
+
+../src/vowpalwabbit/fastrank2gcc3_bfgs.o:../src/vowpalwabbit/bfgs.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_bfgs.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_bfgs.o ../src/vowpalwabbit/bfgs.cc
+
+../src/vowpalwabbit/fastrank2gcc3_binary.o:../src/vowpalwabbit/binary.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_binary.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_binary.o ../src/vowpalwabbit/binary.cc
+
+../src/vowpalwabbit/fastrank2gcc3_bs.o:../src/vowpalwabbit/bs.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_bs.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_bs.o ../src/vowpalwabbit/bs.cc
+
+../src/vowpalwabbit/fastrank2gcc3_cache.o:../src/vowpalwabbit/cache.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_cache.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_cache.o ../src/vowpalwabbit/cache.cc
+
+../src/vowpalwabbit/fastrank2gcc3_cb.o:../src/vowpalwabbit/cb.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_cb.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_cb.o ../src/vowpalwabbit/cb.cc
+
+../src/vowpalwabbit/fastrank2gcc3_cb_algs.o:../src/vowpalwabbit/cb_algs.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_cb_algs.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_cb_algs.o ../src/vowpalwabbit/cb_algs.cc
+
+../src/vowpalwabbit/fastrank2gcc3_cbify.o:../src/vowpalwabbit/cbify.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_cbify.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_cbify.o ../src/vowpalwabbit/cbify.cc
+
+../src/vowpalwabbit/fastrank2gcc3_cost_sensitive.o:../src/vowpalwabbit/cost_sensitive.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_cost_sensitive.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_cost_sensitive.o ../src/vowpalwabbit/cost_sensitive.cc
+
+../src/vowpalwabbit/fastrank2gcc3_csoaa.o:../src/vowpalwabbit/csoaa.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_csoaa.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_csoaa.o ../src/vowpalwabbit/csoaa.cc
+
+../src/vowpalwabbit/fastrank2gcc3_ect.o:../src/vowpalwabbit/ect.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_ect.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_ect.o ../src/vowpalwabbit/ect.cc
+
+../src/vowpalwabbit/fastrank2gcc3_example.o:../src/vowpalwabbit/example.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_example.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_example.o ../src/vowpalwabbit/example.cc
+
+../src/vowpalwabbit/fastrank2gcc3_gd.o:../src/vowpalwabbit/gd.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_gd.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_gd.o ../src/vowpalwabbit/gd.cc
+
+../src/vowpalwabbit/fastrank2gcc3_gd_mf.o:../src/vowpalwabbit/gd_mf.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_gd_mf.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_gd_mf.o ../src/vowpalwabbit/gd_mf.cc
+
+../src/vowpalwabbit/fastrank2gcc3_global_data.o:../src/vowpalwabbit/global_data.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_global_data.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_global_data.o ../src/vowpalwabbit/global_data.cc
+
+../src/vowpalwabbit/fastrank2gcc3_hash.o:../src/vowpalwabbit/hash.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_hash.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_hash.o ../src/vowpalwabbit/hash.cc
+
+../src/vowpalwabbit/fastrank2gcc3_io_buf.o:../src/vowpalwabbit/io_buf.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_io_buf.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_io_buf.o ../src/vowpalwabbit/io_buf.cc
+
+../src/vowpalwabbit/fastrank2gcc3_kernel_svm.o:../src/vowpalwabbit/kernel_svm.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_kernel_svm.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_kernel_svm.o ../src/vowpalwabbit/kernel_svm.cc
+
+../src/vowpalwabbit/fastrank2gcc3_lda_core.o:../src/vowpalwabbit/lda_core.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_lda_core.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_lda_core.o ../src/vowpalwabbit/lda_core.cc
+
+../src/vowpalwabbit/fastrank2gcc3_learner.o:../src/vowpalwabbit/learner.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_learner.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_learner.o ../src/vowpalwabbit/learner.cc
+
+../src/vowpalwabbit/fastrank2gcc3_log_multi.o:../src/vowpalwabbit/log_multi.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_log_multi.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_log_multi.o ../src/vowpalwabbit/log_multi.cc
+
+../src/vowpalwabbit/fastrank2gcc3_loss_functions.o:../src/vowpalwabbit/loss_functions.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_loss_functions.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_loss_functions.o ../src/vowpalwabbit/loss_functions.cc
+
+../src/vowpalwabbit/fastrank2gcc3_lrq.o:../src/vowpalwabbit/lrq.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_lrq.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_lrq.o ../src/vowpalwabbit/lrq.cc
+
+../src/vowpalwabbit/fastrank2gcc3_memory.o:../src/vowpalwabbit/memory.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_memory.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_memory.o ../src/vowpalwabbit/memory.cc
+
+../src/vowpalwabbit/fastrank2gcc3_mf.o:../src/vowpalwabbit/mf.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_mf.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_mf.o ../src/vowpalwabbit/mf.cc
+
+../src/vowpalwabbit/fastrank2gcc3_multiclass.o:../src/vowpalwabbit/multiclass.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_multiclass.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_multiclass.o ../src/vowpalwabbit/multiclass.cc
+
+../src/vowpalwabbit/fastrank2gcc3_network.o:../src/vowpalwabbit/network.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_network.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_network.o ../src/vowpalwabbit/network.cc
+
+../src/vowpalwabbit/fastrank2gcc3_nn.o:../src/vowpalwabbit/nn.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_nn.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_nn.o ../src/vowpalwabbit/nn.cc
+
+../src/vowpalwabbit/fastrank2gcc3_noop.o:../src/vowpalwabbit/noop.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_noop.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_noop.o ../src/vowpalwabbit/noop.cc
+
+../src/vowpalwabbit/fastrank2gcc3_oaa.o:../src/vowpalwabbit/oaa.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_oaa.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_oaa.o ../src/vowpalwabbit/oaa.cc
+
+../src/vowpalwabbit/fastrank2gcc3_parse_args.o:../src/vowpalwabbit/parse_args.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_parse_args.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_parse_args.o ../src/vowpalwabbit/parse_args.cc
+
+../src/vowpalwabbit/fastrank2gcc3_parse_example.o:../src/vowpalwabbit/parse_example.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_parse_example.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_parse_example.o ../src/vowpalwabbit/parse_example.cc
+
+../src/vowpalwabbit/fastrank2gcc3_parse_primitives.o:../src/vowpalwabbit/parse_primitives.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_parse_primitives.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_parse_primitives.o ../src/vowpalwabbit/parse_primitives.cc
+
+../src/vowpalwabbit/fastrank2gcc3_parse_regressor.o:../src/vowpalwabbit/parse_regressor.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_parse_regressor.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_parse_regressor.o ../src/vowpalwabbit/parse_regressor.cc
+
+../src/vowpalwabbit/fastrank2gcc3_parser.o:../src/vowpalwabbit/parser.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_parser.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_parser.o ../src/vowpalwabbit/parser.cc
+
+../src/vowpalwabbit/fastrank2gcc3_print.o:../src/vowpalwabbit/print.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_print.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_print.o ../src/vowpalwabbit/print.cc
+
+../src/vowpalwabbit/fastrank2gcc3_rand48.o:../src/vowpalwabbit/rand48.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_rand48.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_rand48.o ../src/vowpalwabbit/rand48.cc
+
+../src/vowpalwabbit/fastrank2gcc3_scorer.o:../src/vowpalwabbit/scorer.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_scorer.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_scorer.o ../src/vowpalwabbit/scorer.cc
+
+../src/vowpalwabbit/fastrank2gcc3_search.o:../src/vowpalwabbit/search.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_search.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_search.o ../src/vowpalwabbit/search.cc
+
+../src/vowpalwabbit/fastrank2gcc3_search_dep_parser.o:../src/vowpalwabbit/search_dep_parser.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_search_dep_parser.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_search_dep_parser.o ../src/vowpalwabbit/search_dep_parser.cc
+
+../src/vowpalwabbit/fastrank2gcc3_search_entityrelationtask.o:../src/vowpalwabbit/search_entityrelationtask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_search_entityrelationtask.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_search_entityrelationtask.o ../src/vowpalwabbit/search_entityrelationtask.cc
+
+../src/vowpalwabbit/fastrank2gcc3_search_hooktask.o:../src/vowpalwabbit/search_hooktask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_search_hooktask.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_search_hooktask.o ../src/vowpalwabbit/search_hooktask.cc
+
+../src/vowpalwabbit/fastrank2gcc3_search_multiclasstask.o:../src/vowpalwabbit/search_multiclasstask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_search_multiclasstask.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_search_multiclasstask.o ../src/vowpalwabbit/search_multiclasstask.cc
+
+../src/vowpalwabbit/fastrank2gcc3_search_sequencetask.o:../src/vowpalwabbit/search_sequencetask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_search_sequencetask.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_search_sequencetask.o ../src/vowpalwabbit/search_sequencetask.cc
+
+../src/vowpalwabbit/fastrank2gcc3_sender.o:../src/vowpalwabbit/sender.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_sender.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_sender.o ../src/vowpalwabbit/sender.cc
+
+../src/vowpalwabbit/fastrank2gcc3_simple_label.o:../src/vowpalwabbit/simple_label.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_simple_label.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_simple_label.o ../src/vowpalwabbit/simple_label.cc
+
+../src/vowpalwabbit/fastrank2gcc3_stagewise_poly.o:../src/vowpalwabbit/stagewise_poly.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_stagewise_poly.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_stagewise_poly.o ../src/vowpalwabbit/stagewise_poly.cc
+
+../src/vowpalwabbit/fastrank2gcc3_topk.o:../src/vowpalwabbit/topk.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_topk.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_topk.o ../src/vowpalwabbit/topk.cc
+
+../src/vowpalwabbit/fastrank2gcc3_unique_sort.o:../src/vowpalwabbit/unique_sort.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_unique_sort.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_unique_sort.o ../src/vowpalwabbit/unique_sort.cc
+
+../src/vowpalwabbit/gbdt_predict_accumulate.o:../src/vowpalwabbit/accumulate.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_accumulate.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_accumulate.o ../src/vowpalwabbit/accumulate.cc
+
+../src/vowpalwabbit/gbdt_predict_active.o:../src/vowpalwabbit/active.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_active.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_active.o ../src/vowpalwabbit/active.cc
+
+../src/vowpalwabbit/gbdt_predict_allreduce.o:../src/vowpalwabbit/allreduce.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_allreduce.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_allreduce.o ../src/vowpalwabbit/allreduce.cc
+
+../src/vowpalwabbit/gbdt_predict_autolink.o:../src/vowpalwabbit/autolink.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_autolink.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_autolink.o ../src/vowpalwabbit/autolink.cc
+
+../src/vowpalwabbit/gbdt_predict_bfgs.o:../src/vowpalwabbit/bfgs.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_bfgs.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_bfgs.o ../src/vowpalwabbit/bfgs.cc
+
+../src/vowpalwabbit/gbdt_predict_binary.o:../src/vowpalwabbit/binary.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_binary.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_binary.o ../src/vowpalwabbit/binary.cc
+
+../src/vowpalwabbit/gbdt_predict_bs.o:../src/vowpalwabbit/bs.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_bs.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_bs.o ../src/vowpalwabbit/bs.cc
+
+../src/vowpalwabbit/gbdt_predict_cache.o:../src/vowpalwabbit/cache.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_cache.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_cache.o ../src/vowpalwabbit/cache.cc
+
+../src/vowpalwabbit/gbdt_predict_cb.o:../src/vowpalwabbit/cb.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_cb.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_cb.o ../src/vowpalwabbit/cb.cc
+
+../src/vowpalwabbit/gbdt_predict_cb_algs.o:../src/vowpalwabbit/cb_algs.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_cb_algs.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_cb_algs.o ../src/vowpalwabbit/cb_algs.cc
+
+../src/vowpalwabbit/gbdt_predict_cbify.o:../src/vowpalwabbit/cbify.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_cbify.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_cbify.o ../src/vowpalwabbit/cbify.cc
+
+../src/vowpalwabbit/gbdt_predict_cost_sensitive.o:../src/vowpalwabbit/cost_sensitive.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_cost_sensitive.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_cost_sensitive.o ../src/vowpalwabbit/cost_sensitive.cc
+
+../src/vowpalwabbit/gbdt_predict_csoaa.o:../src/vowpalwabbit/csoaa.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_csoaa.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_csoaa.o ../src/vowpalwabbit/csoaa.cc
+
+../src/vowpalwabbit/gbdt_predict_ect.o:../src/vowpalwabbit/ect.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_ect.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_ect.o ../src/vowpalwabbit/ect.cc
+
+../src/vowpalwabbit/gbdt_predict_example.o:../src/vowpalwabbit/example.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_example.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_example.o ../src/vowpalwabbit/example.cc
+
+../src/vowpalwabbit/gbdt_predict_gd.o:../src/vowpalwabbit/gd.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_gd.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_gd.o ../src/vowpalwabbit/gd.cc
+
+../src/vowpalwabbit/gbdt_predict_gd_mf.o:../src/vowpalwabbit/gd_mf.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_gd_mf.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_gd_mf.o ../src/vowpalwabbit/gd_mf.cc
+
+../src/vowpalwabbit/gbdt_predict_global_data.o:../src/vowpalwabbit/global_data.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_global_data.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_global_data.o ../src/vowpalwabbit/global_data.cc
+
+../src/vowpalwabbit/gbdt_predict_hash.o:../src/vowpalwabbit/hash.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_hash.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_hash.o ../src/vowpalwabbit/hash.cc
+
+../src/vowpalwabbit/gbdt_predict_io_buf.o:../src/vowpalwabbit/io_buf.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_io_buf.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_io_buf.o ../src/vowpalwabbit/io_buf.cc
+
+../src/vowpalwabbit/gbdt_predict_kernel_svm.o:../src/vowpalwabbit/kernel_svm.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_kernel_svm.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_kernel_svm.o ../src/vowpalwabbit/kernel_svm.cc
+
+../src/vowpalwabbit/gbdt_predict_lda_core.o:../src/vowpalwabbit/lda_core.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_lda_core.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_lda_core.o ../src/vowpalwabbit/lda_core.cc
+
+../src/vowpalwabbit/gbdt_predict_learner.o:../src/vowpalwabbit/learner.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_learner.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_learner.o ../src/vowpalwabbit/learner.cc
+
+../src/vowpalwabbit/gbdt_predict_log_multi.o:../src/vowpalwabbit/log_multi.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_log_multi.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_log_multi.o ../src/vowpalwabbit/log_multi.cc
+
+../src/vowpalwabbit/gbdt_predict_loss_functions.o:../src/vowpalwabbit/loss_functions.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_loss_functions.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_loss_functions.o ../src/vowpalwabbit/loss_functions.cc
+
+../src/vowpalwabbit/gbdt_predict_lrq.o:../src/vowpalwabbit/lrq.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_lrq.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_lrq.o ../src/vowpalwabbit/lrq.cc
+
+../src/vowpalwabbit/gbdt_predict_memory.o:../src/vowpalwabbit/memory.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_memory.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_memory.o ../src/vowpalwabbit/memory.cc
+
+../src/vowpalwabbit/gbdt_predict_mf.o:../src/vowpalwabbit/mf.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_mf.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_mf.o ../src/vowpalwabbit/mf.cc
+
+../src/vowpalwabbit/gbdt_predict_multiclass.o:../src/vowpalwabbit/multiclass.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_multiclass.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_multiclass.o ../src/vowpalwabbit/multiclass.cc
+
+../src/vowpalwabbit/gbdt_predict_network.o:../src/vowpalwabbit/network.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_network.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_network.o ../src/vowpalwabbit/network.cc
+
+../src/vowpalwabbit/gbdt_predict_nn.o:../src/vowpalwabbit/nn.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_nn.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_nn.o ../src/vowpalwabbit/nn.cc
+
+../src/vowpalwabbit/gbdt_predict_noop.o:../src/vowpalwabbit/noop.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_noop.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_noop.o ../src/vowpalwabbit/noop.cc
+
+../src/vowpalwabbit/gbdt_predict_oaa.o:../src/vowpalwabbit/oaa.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_oaa.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_oaa.o ../src/vowpalwabbit/oaa.cc
+
+../src/vowpalwabbit/gbdt_predict_parse_args.o:../src/vowpalwabbit/parse_args.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_parse_args.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_parse_args.o ../src/vowpalwabbit/parse_args.cc
+
+../src/vowpalwabbit/gbdt_predict_parse_example.o:../src/vowpalwabbit/parse_example.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_parse_example.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_parse_example.o ../src/vowpalwabbit/parse_example.cc
+
+../src/vowpalwabbit/gbdt_predict_parse_primitives.o:../src/vowpalwabbit/parse_primitives.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_parse_primitives.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_parse_primitives.o ../src/vowpalwabbit/parse_primitives.cc
+
+../src/vowpalwabbit/gbdt_predict_parse_regressor.o:../src/vowpalwabbit/parse_regressor.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_parse_regressor.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_parse_regressor.o ../src/vowpalwabbit/parse_regressor.cc
+
+../src/vowpalwabbit/gbdt_predict_parser.o:../src/vowpalwabbit/parser.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_parser.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_parser.o ../src/vowpalwabbit/parser.cc
+
+../src/vowpalwabbit/gbdt_predict_print.o:../src/vowpalwabbit/print.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_print.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_print.o ../src/vowpalwabbit/print.cc
+
+../src/vowpalwabbit/gbdt_predict_rand48.o:../src/vowpalwabbit/rand48.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_rand48.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_rand48.o ../src/vowpalwabbit/rand48.cc
+
+../src/vowpalwabbit/gbdt_predict_scorer.o:../src/vowpalwabbit/scorer.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_scorer.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_scorer.o ../src/vowpalwabbit/scorer.cc
+
+../src/vowpalwabbit/gbdt_predict_search.o:../src/vowpalwabbit/search.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_search.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_search.o ../src/vowpalwabbit/search.cc
+
+../src/vowpalwabbit/gbdt_predict_search_dep_parser.o:../src/vowpalwabbit/search_dep_parser.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_search_dep_parser.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_search_dep_parser.o ../src/vowpalwabbit/search_dep_parser.cc
+
+../src/vowpalwabbit/gbdt_predict_search_entityrelationtask.o:../src/vowpalwabbit/search_entityrelationtask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_search_entityrelationtask.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_search_entityrelationtask.o ../src/vowpalwabbit/search_entityrelationtask.cc
+
+../src/vowpalwabbit/gbdt_predict_search_hooktask.o:../src/vowpalwabbit/search_hooktask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_search_hooktask.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_search_hooktask.o ../src/vowpalwabbit/search_hooktask.cc
+
+../src/vowpalwabbit/gbdt_predict_search_multiclasstask.o:../src/vowpalwabbit/search_multiclasstask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_search_multiclasstask.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_search_multiclasstask.o ../src/vowpalwabbit/search_multiclasstask.cc
+
+../src/vowpalwabbit/gbdt_predict_search_sequencetask.o:../src/vowpalwabbit/search_sequencetask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_search_sequencetask.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_search_sequencetask.o ../src/vowpalwabbit/search_sequencetask.cc
+
+../src/vowpalwabbit/gbdt_predict_sender.o:../src/vowpalwabbit/sender.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_sender.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_sender.o ../src/vowpalwabbit/sender.cc
+
+../src/vowpalwabbit/gbdt_predict_simple_label.o:../src/vowpalwabbit/simple_label.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_simple_label.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_simple_label.o ../src/vowpalwabbit/simple_label.cc
+
+../src/vowpalwabbit/gbdt_predict_stagewise_poly.o:../src/vowpalwabbit/stagewise_poly.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_stagewise_poly.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_stagewise_poly.o ../src/vowpalwabbit/stagewise_poly.cc
+
+../src/vowpalwabbit/gbdt_predict_topk.o:../src/vowpalwabbit/topk.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_topk.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_topk.o ../src/vowpalwabbit/topk.cc
+
+../src/vowpalwabbit/gbdt_predict_unique_sort.o:../src/vowpalwabbit/unique_sort.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_unique_sort.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt_predict_unique_sort.o ../src/vowpalwabbit/unique_sort.cc
+
+predicts_predicts.o:predicts.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mpredicts_predicts.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o predicts_predicts.o predicts.cc
+
+../src/vowpalwabbit/predicts_accumulate.o:../src/vowpalwabbit/accumulate.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_accumulate.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_accumulate.o ../src/vowpalwabbit/accumulate.cc
+
+../src/vowpalwabbit/predicts_active.o:../src/vowpalwabbit/active.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_active.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_active.o ../src/vowpalwabbit/active.cc
+
+../src/vowpalwabbit/predicts_allreduce.o:../src/vowpalwabbit/allreduce.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_allreduce.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_allreduce.o ../src/vowpalwabbit/allreduce.cc
+
+../src/vowpalwabbit/predicts_autolink.o:../src/vowpalwabbit/autolink.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_autolink.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_autolink.o ../src/vowpalwabbit/autolink.cc
+
+../src/vowpalwabbit/predicts_bfgs.o:../src/vowpalwabbit/bfgs.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_bfgs.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_bfgs.o ../src/vowpalwabbit/bfgs.cc
+
+../src/vowpalwabbit/predicts_binary.o:../src/vowpalwabbit/binary.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_binary.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_binary.o ../src/vowpalwabbit/binary.cc
+
+../src/vowpalwabbit/predicts_bs.o:../src/vowpalwabbit/bs.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_bs.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_bs.o ../src/vowpalwabbit/bs.cc
+
+../src/vowpalwabbit/predicts_cache.o:../src/vowpalwabbit/cache.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_cache.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_cache.o ../src/vowpalwabbit/cache.cc
+
+../src/vowpalwabbit/predicts_cb.o:../src/vowpalwabbit/cb.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_cb.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_cb.o ../src/vowpalwabbit/cb.cc
+
+../src/vowpalwabbit/predicts_cb_algs.o:../src/vowpalwabbit/cb_algs.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_cb_algs.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_cb_algs.o ../src/vowpalwabbit/cb_algs.cc
+
+../src/vowpalwabbit/predicts_cbify.o:../src/vowpalwabbit/cbify.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_cbify.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_cbify.o ../src/vowpalwabbit/cbify.cc
+
+../src/vowpalwabbit/predicts_cost_sensitive.o:../src/vowpalwabbit/cost_sensitive.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_cost_sensitive.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_cost_sensitive.o ../src/vowpalwabbit/cost_sensitive.cc
+
+../src/vowpalwabbit/predicts_csoaa.o:../src/vowpalwabbit/csoaa.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_csoaa.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_csoaa.o ../src/vowpalwabbit/csoaa.cc
+
+../src/vowpalwabbit/predicts_ect.o:../src/vowpalwabbit/ect.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_ect.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_ect.o ../src/vowpalwabbit/ect.cc
+
+../src/vowpalwabbit/predicts_example.o:../src/vowpalwabbit/example.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_example.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_example.o ../src/vowpalwabbit/example.cc
+
+../src/vowpalwabbit/predicts_gd.o:../src/vowpalwabbit/gd.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_gd.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_gd.o ../src/vowpalwabbit/gd.cc
+
+../src/vowpalwabbit/predicts_gd_mf.o:../src/vowpalwabbit/gd_mf.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_gd_mf.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_gd_mf.o ../src/vowpalwabbit/gd_mf.cc
+
+../src/vowpalwabbit/predicts_global_data.o:../src/vowpalwabbit/global_data.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_global_data.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_global_data.o ../src/vowpalwabbit/global_data.cc
+
+../src/vowpalwabbit/predicts_hash.o:../src/vowpalwabbit/hash.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_hash.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_hash.o ../src/vowpalwabbit/hash.cc
+
+../src/vowpalwabbit/predicts_io_buf.o:../src/vowpalwabbit/io_buf.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_io_buf.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_io_buf.o ../src/vowpalwabbit/io_buf.cc
+
+../src/vowpalwabbit/predicts_kernel_svm.o:../src/vowpalwabbit/kernel_svm.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_kernel_svm.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_kernel_svm.o ../src/vowpalwabbit/kernel_svm.cc
+
+../src/vowpalwabbit/predicts_lda_core.o:../src/vowpalwabbit/lda_core.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_lda_core.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_lda_core.o ../src/vowpalwabbit/lda_core.cc
+
+../src/vowpalwabbit/predicts_learner.o:../src/vowpalwabbit/learner.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_learner.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_learner.o ../src/vowpalwabbit/learner.cc
+
+../src/vowpalwabbit/predicts_log_multi.o:../src/vowpalwabbit/log_multi.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_log_multi.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_log_multi.o ../src/vowpalwabbit/log_multi.cc
+
+../src/vowpalwabbit/predicts_loss_functions.o:../src/vowpalwabbit/loss_functions.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_loss_functions.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_loss_functions.o ../src/vowpalwabbit/loss_functions.cc
+
+../src/vowpalwabbit/predicts_lrq.o:../src/vowpalwabbit/lrq.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_lrq.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_lrq.o ../src/vowpalwabbit/lrq.cc
+
+../src/vowpalwabbit/predicts_memory.o:../src/vowpalwabbit/memory.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_memory.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_memory.o ../src/vowpalwabbit/memory.cc
+
+../src/vowpalwabbit/predicts_mf.o:../src/vowpalwabbit/mf.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_mf.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_mf.o ../src/vowpalwabbit/mf.cc
+
+../src/vowpalwabbit/predicts_multiclass.o:../src/vowpalwabbit/multiclass.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_multiclass.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_multiclass.o ../src/vowpalwabbit/multiclass.cc
+
+../src/vowpalwabbit/predicts_network.o:../src/vowpalwabbit/network.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_network.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_network.o ../src/vowpalwabbit/network.cc
+
+../src/vowpalwabbit/predicts_nn.o:../src/vowpalwabbit/nn.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_nn.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_nn.o ../src/vowpalwabbit/nn.cc
+
+../src/vowpalwabbit/predicts_noop.o:../src/vowpalwabbit/noop.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_noop.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_noop.o ../src/vowpalwabbit/noop.cc
+
+../src/vowpalwabbit/predicts_oaa.o:../src/vowpalwabbit/oaa.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_oaa.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_oaa.o ../src/vowpalwabbit/oaa.cc
+
+../src/vowpalwabbit/predicts_parse_args.o:../src/vowpalwabbit/parse_args.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_parse_args.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_parse_args.o ../src/vowpalwabbit/parse_args.cc
+
+../src/vowpalwabbit/predicts_parse_example.o:../src/vowpalwabbit/parse_example.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_parse_example.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_parse_example.o ../src/vowpalwabbit/parse_example.cc
+
+../src/vowpalwabbit/predicts_parse_primitives.o:../src/vowpalwabbit/parse_primitives.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_parse_primitives.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_parse_primitives.o ../src/vowpalwabbit/parse_primitives.cc
+
+../src/vowpalwabbit/predicts_parse_regressor.o:../src/vowpalwabbit/parse_regressor.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_parse_regressor.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_parse_regressor.o ../src/vowpalwabbit/parse_regressor.cc
+
+../src/vowpalwabbit/predicts_parser.o:../src/vowpalwabbit/parser.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_parser.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_parser.o ../src/vowpalwabbit/parser.cc
+
+../src/vowpalwabbit/predicts_print.o:../src/vowpalwabbit/print.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_print.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_print.o ../src/vowpalwabbit/print.cc
+
+../src/vowpalwabbit/predicts_rand48.o:../src/vowpalwabbit/rand48.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_rand48.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_rand48.o ../src/vowpalwabbit/rand48.cc
+
+../src/vowpalwabbit/predicts_scorer.o:../src/vowpalwabbit/scorer.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_scorer.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_scorer.o ../src/vowpalwabbit/scorer.cc
+
+../src/vowpalwabbit/predicts_search.o:../src/vowpalwabbit/search.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_search.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_search.o ../src/vowpalwabbit/search.cc
+
+../src/vowpalwabbit/predicts_search_dep_parser.o:../src/vowpalwabbit/search_dep_parser.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_search_dep_parser.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_search_dep_parser.o ../src/vowpalwabbit/search_dep_parser.cc
+
+../src/vowpalwabbit/predicts_search_entityrelationtask.o:../src/vowpalwabbit/search_entityrelationtask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_search_entityrelationtask.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_search_entityrelationtask.o ../src/vowpalwabbit/search_entityrelationtask.cc
+
+../src/vowpalwabbit/predicts_search_hooktask.o:../src/vowpalwabbit/search_hooktask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_search_hooktask.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_search_hooktask.o ../src/vowpalwabbit/search_hooktask.cc
+
+../src/vowpalwabbit/predicts_search_multiclasstask.o:../src/vowpalwabbit/search_multiclasstask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_search_multiclasstask.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_search_multiclasstask.o ../src/vowpalwabbit/search_multiclasstask.cc
+
+../src/vowpalwabbit/predicts_search_sequencetask.o:../src/vowpalwabbit/search_sequencetask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_search_sequencetask.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_search_sequencetask.o ../src/vowpalwabbit/search_sequencetask.cc
+
+../src/vowpalwabbit/predicts_sender.o:../src/vowpalwabbit/sender.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_sender.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_sender.o ../src/vowpalwabbit/sender.cc
+
+../src/vowpalwabbit/predicts_simple_label.o:../src/vowpalwabbit/simple_label.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_simple_label.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_simple_label.o ../src/vowpalwabbit/simple_label.cc
+
+../src/vowpalwabbit/predicts_stagewise_poly.o:../src/vowpalwabbit/stagewise_poly.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_stagewise_poly.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_stagewise_poly.o ../src/vowpalwabbit/stagewise_poly.cc
+
+../src/vowpalwabbit/predicts_topk.o:../src/vowpalwabbit/topk.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_topk.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_topk.o ../src/vowpalwabbit/topk.cc
+
+../src/vowpalwabbit/predicts_unique_sort.o:../src/vowpalwabbit/unique_sort.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_unique_sort.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_unique_sort.o ../src/vowpalwabbit/unique_sort.cc
 
 endif #ifeq ($(shell uname -m),x86_64)
 

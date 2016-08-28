@@ -47,6 +47,16 @@ namespace gezi {
 			}
 		}
 
+		static TesterPtr GetRankerTester()
+		{
+			return make_shared<RankerTester>();
+		}
+
+		static TesterPtr GetClassifierTester()
+		{
+			return make_shared<ClassifierTester>();
+		}
+
 		static	TesterPtr GetTester(PredictorPtr predictor)
 		{
 			return GetTester(predictor->GetPredictionKind());

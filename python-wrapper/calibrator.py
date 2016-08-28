@@ -2,7 +2,7 @@ import os
 import sys
 import glob
 from pyplusplus import module_builder
-
+gccxml_path = '/home/gezi/.jumbo/bin/gccxml'
 root = '/home/users/chenghuige/rsc/'
 name = 'calibrator'
 #define_symbols = ['GCCXML','PYTHON_WRAPPER','NO_BAIDU_DEP']
@@ -57,7 +57,7 @@ include_paths_obsolute = [
         ]
 
 mb = module_builder.module_builder_t(
-        gccxml_path = '~/.jumbo/bin/gccxml',
+        gccxml_path = gccxml_path,
         define_symbols = define_symbols,
         files = files,
         include_paths = [root + f + '/include' for f in include_paths]

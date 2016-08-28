@@ -18,8 +18,6 @@
 #include "Utils/Evaluator.h"
 #include "statistic_util.h"
 
-DECLARE_double(posThre);
-
 namespace gezi {
 
 	class ClassificationPrecisionRecall : public DatasetMetrics
@@ -28,11 +26,6 @@ namespace gezi {
 		ClassificationPrecisionRecall()
 		{
 			ParseArgs();
-		}
-
-		virtual string LabelColumnName() override
-		{
-			return "True";
 		}
 
 		virtual void ParseArgs() override;
@@ -72,19 +65,19 @@ namespace gezi {
 			//results[0] = (prediction > 0 ? 1 : 0);
 			if (label > 0)
 			{
-				if (probability > FLAGS_posThre)
+				if (probability > posThre)
 					numTruePos += weight;
 				else
 					numFalseNeg += weight;
 			}
 			else
 			{
-				if (probability <= FLAGS_posThre)
+				if (probability <= posThre)
 					numTrueNeg += weight;
 				else
 					numFalsePos += weight;
 			}
-			results[0] = (probability > FLAGS_posThre ? 1 : 0);
+			results[0] = (probability > posThre ? 1 : 0);
 			results[1] = prediction;
 
 			Float currLogLoss;
@@ -226,6 +219,7 @@ namespace gezi {
 		// need to keep separate in case NaNs in probability
 		Float numLogLossPositives, numLogLossNegatives;
 		Float trainPrior = -1;
+		double posThre = 0.5;
 
 		bool useLn = true;  //change to use ln
 
@@ -244,11 +238,7 @@ namespace gezi {
 		{
 			//ParseArgs();
 		}
-		virtual string LabelColumnName() override
-		{
-			return "True";
-		}
-
+	
 		virtual vector<string> PerInstanceColumnNames() override
 		{
 			//return vector<string>({ "Test", "Haha"});
@@ -291,12 +281,12 @@ namespace gezi {
 	class ClassifierTester : public Tester
 	{
 	public:
-		virtual PredictionKind GetPredictionKind()
+		virtual PredictionKind GetPredictionKind() override
 		{
 			return PredictionKind::BinaryClassification;
 		}
 
-		virtual vector<DatasetMetricsPtr> ConstructDatasetMetrics()
+		virtual vector<DatasetMetricsPtr> ConstructDatasetMetrics() override
 		{
 			return vector<DatasetMetricsPtr>({
 				make_shared<ClassificationPrecisionRecall>(),

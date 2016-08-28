@@ -47,7 +47,7 @@ namespace gezi {
 	public:
 		Predictor() = default;
 		virtual ~Predictor() {}
-		
+
 		//fully create like LinearSVM 
 		Predictor(NormalizerPtr normalizer, CalibratorPtr calibrator, const FeatureNamesVector& featureNames)
 			:_normalizer(normalizer), _calibrator(calibrator), _featureNames(featureNames)
@@ -61,7 +61,7 @@ namespace gezi {
 		{
 
 		}
-		
+
 		//no calibrator like Gbdt regression
 		Predictor(const FeatureNamesVector& featureNames)
 			:_featureNames(featureNames)
@@ -133,7 +133,7 @@ namespace gezi {
 			});
 			return namedFeatures;
 		}
-		
+
 		void Print(const Vector& features, bool nonZeroOnly = false, std::ostream& ofs = std::cout)
 		{
 			if (nonZeroOnly)
@@ -148,7 +148,7 @@ namespace gezi {
 				features.ForEachAllIf([this, &ofs](int index, Float value)
 				{
 					ofs << index << "\t" << _featureNames[index] << "\t" << value << std::endl;
-					if (index == _featureNames.size() - 1)
+					if (index == (int)_featureNames.size() - 1)
 					{
 						return false;
 					}
@@ -209,15 +209,26 @@ namespace gezi {
 			return Predict(features);
 		}
 
-		virtual Float Output(string line)
+		//-------- wrapper for string input
+		virtual Float Output(string featureStr)
 		{
-			return 0.0;
+			Vector fe(featureStr);
+			return Output(fe);
 		}
 
-		virtual Float Predict(string line, Float& output)
+		virtual Float Predict(string featureStr)
 		{
-			return 0.0;
+			Vector fe(featureStr);
+			return Predict(fe);
 		}
+
+		virtual Float Predict(string featureStr, Float& output)
+		{
+			Vector fe(featureStr);
+			return Predict(fe, output);
+		}
+		//-------- wrapper for string input end
+
 
 		virtual Float Predict(InstancePtr instance)
 		{
@@ -227,23 +238,49 @@ namespace gezi {
 		//@TODO  提供const 版本
 		virtual Float Predict(Vector& features)
 		{
-			if (GetPredictionKind() == PredictionKind::Regression
-				|| GetPredictionKind() == PredictionKind::MultiOutputRegression)
-			{
-				return Output(features);
-			}
-			else
+			//if (GetPredictionKind() == PredictionKind::Regression
+			//	|| GetPredictionKind() == PredictionKind::MultiOutputRegression)
+			if (GetPredictionKind() == PredictionKind::BinaryClassification)
 			{
 				return Predict(Output(features));
 			}
+			else
+			{
+				return Output(features);
+			}
 		}
 
-		virtual vector<Float> BulkPredict(vector<Vector>& featuresVector)
+		//virtual vector<Float> BulkPredict(vector<Vector>& featuresVector)
+		vector<Float> BulkPredict(vector<Vector>& featuresVector)
 		{
-			vector<Float> results;
-			for (auto& feature : featuresVector)
+			vector<Float> results(featuresVector.size());
+#pragma omp parallel for
+			for (size_t i = 0; i < featuresVector.size(); i++)
 			{
-				results.push_back(Predict(feature));
+				results[i] = Predict(featuresVector[i]);
+			}
+			return results;
+		}
+
+		vector<Float> BulkPredict(vector<InstancePtr>& instances)
+		{
+			vector<Float> results(instances.size());
+#pragma omp parallel for
+			for (size_t i = 0; i < instances.size(); i++)
+			{
+				results[i] = Predict(instances[i]);
+			}
+			return results;
+		}
+
+		vector<Float> BulkPredict(vector<InstancePtr>& instances, vector<Float>& outputs)
+		{
+			vector<Float> results(instances.size());
+			outputs.resize(instances.size());
+#pragma omp parallel for
+			for (size_t i = 0; i < instances.size(); i++)
+			{
+				results[i] = Predict(instances[i], outputs[i]);
 			}
 			return results;
 		}
@@ -267,14 +304,13 @@ namespace gezi {
 		Float Predict(Vector& features, Float& output)
 		{
 			output = Output(features);
-			if (GetPredictionKind() == PredictionKind::Regression
-				|| GetPredictionKind() == PredictionKind::MultiOutputRegression)
+			if (GetPredictionKind() == PredictionKind::BinaryClassification)
 			{
-				return output;
+				return Predict(output);
 			}
 			else
 			{
-				return Predict(output);
+				return output;
 			}
 		}
 
@@ -331,7 +367,7 @@ namespace gezi {
 		}
 
 		//一般不调用 调用Save(path)
-		virtual void Save() 
+		virtual void Save()
 		{
 			if (_useCustomModel)
 			{
@@ -368,7 +404,7 @@ namespace gezi {
 			}
 		}
 
-		virtual void CustomSave() 
+		virtual void CustomSave()
 		{
 			CustomSave(_path);
 		}
@@ -628,7 +664,7 @@ namespace gezi {
 			static bool _loadNormalizerAndCalibrator = true;
 			return _loadNormalizerAndCalibrator;
 		}
-	
+
 		static void SetLoadNormalizerAndCalibrator(bool loadNormalizerAndCalibrator_ = true)
 		{
 			loadNormalizerAndCalibrator() = loadNormalizerAndCalibrator_;
@@ -637,8 +673,8 @@ namespace gezi {
 
 		//-Utils
 		//----------特征重要度 
-		//单次预测特征重要度打印
-		virtual string ToGainSummary(Vector& features)
+		//单次预测特征重要度打印, 默认是按照gain的绝对值排序，如果sortByAbsGain = false，则按照feature id顺序打印
+		virtual string ToGainSummary(Vector& features, bool sortByAbsGain = true)
 		{
 			return "";
 		}

@@ -109,7 +109,9 @@ namespace gezi {
 			{
 				ofs << groupKey << "\t";
 			}
+
 			ofs << instance->label;
+			
 			if (hasWeights)
 			{
 				ofs << "\t" << instance->weight;
@@ -123,17 +125,21 @@ namespace gezi {
 			ofs << endl;
 		}
 
-		void ProcessInstances(Instances instances, PredictorPtr predictor)
+		virtual void ProcessInstances(Instances instances, PredictorPtr predictor) 
 		{
-			int64 idx = 0;
-			//这个地方用omp反而更慢了,如果predictor内部用了openmp的话
-			vector<Float> predictions(instances.size(), 0);
-			vector<Float> probabilities(instances.size(), std::numeric_limits<double>::quiet_NaN());
-#pragma omp parallel for
-			for (size_t i = 0; i < instances.size(); i++)
-			{
-				probabilities[i] = predictor->Predict(instances[i], predictions[i]);
-			}
+			//这个地方用omp反而更慢了,如果predictor内部用了openmp的话  @TODO better handle this
+			//			vector<Float> predictions(instances.size(), 0);
+			//			vector<Float> probabilities(instances.size(), std::numeric_limits<double>::quiet_NaN());
+			//#pragma omp parallel for
+			//			for (size_t i = 0; i < instances.size(); i++)
+			//			{
+			//				probabilities[i] = predictor->Predict(instances[i], predictions[i]);
+			//			}
+
+			//@TODO test instances考虑streaming方式？
+			vector<Float> predictions;
+			auto probabilities = predictor->BulkPredict(instances, predictions);
+
 			for (size_t i = 0; i < instances.size(); i++)
 			{
 				auto instance = instances[i];
@@ -146,26 +152,16 @@ namespace gezi {
 				dvec perInstanceOutputs = gezi::join_vec<double>(datasetMetrics, [&](const DatasetMetricsPtr& datasetMetric) { return datasetMetric->ProcessInstance(label, prediction, probability, weight); });
 				if (ofs.is_open())
 				{
-					PrintInstanceOutput(idx, instance, perInstanceOutputs);
+					PrintInstanceOutput(i, instance, perInstanceOutputs);
 				}
 				//如果是交叉验证为了得到一个全局结果 这里有重复计算
 				if (isCrossValidationMode)
 				{
 					gezi::join_vec<double>(globalDatasetMetrics, [&](const DatasetMetricsPtr& datasetMetric) { return datasetMetric->ProcessInstance(label, prediction, probability, weight); });
 				}
-
-				idx++;
 			}
-			for (auto& datasetMetric : datasetMetrics)
-			{
-				datasetMetric->Print();
-			}
-			fmt::print_line(foldSeparatorString);
-		}
 
-		void ProcessInstancesForRanking(Instances instances, PredictorPtr predictor)
-		{
-
+			FinalizeProcessInstances();
 		}
 
 		void Finalize()
@@ -202,6 +198,16 @@ namespace gezi {
 			}
 
 			ProcessInstances(instances, predictor);
+		}
+
+	protected:
+		void FinalizeProcessInstances()
+		{
+			for (auto& datasetMetric : datasetMetrics)
+			{
+				datasetMetric->Print();
+			}
+			fmt::print_line(foldSeparatorString);
 		}
 
 	public:

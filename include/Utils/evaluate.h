@@ -7,7 +7,7 @@
  *
  *          \date   2015-05-26 12:54:24.419936
  *
- *  \Description:  
+ *  \Description:  or loss.h  各种形式的loss计算
  *  ==============================================================================
  */
 
@@ -103,6 +103,7 @@ namespace gezi {
 			return error / sumWeights;
 		}
 
+		//square loss, l2 loss l2 norm
 		template<typename Vec>
 		inline Float l2(const vector<Float>& predictions, const Vec& instances)
 		{
@@ -286,6 +287,7 @@ namespace gezi {
 			return error / sumWeights;
 		}
 
+		//squared loss
 		inline Float l2(vector<Node>& results)
 		{
 			if (results.empty())

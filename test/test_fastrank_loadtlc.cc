@@ -46,6 +46,13 @@ TEST(fastrank_loadtlc, func)
 
 		predictor.Trees()[0].Print();
 		predictor.Trees()[0].Print(fe);
+
+		double result = 0;
+		for (auto& tree : predictor.Trees())
+		{
+			result += tree.Output(fe);
+			Pval(result);
+		}
 		//predictor.Save("./data/fastrank");
 	}
 

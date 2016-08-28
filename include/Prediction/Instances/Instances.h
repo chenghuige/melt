@@ -106,6 +106,7 @@ namespace gezi {
 			schema.SetHeader(header_, hasHeader_);
 		}
 
+		//@TODO 考虑对于RankingInstances的randomize by query
 		void Randomize(const RandomEngine& rng)
 		{
 			shuffle(*this, rng);
@@ -129,7 +130,7 @@ namespace gezi {
 			this->push_back(instancePtr);
 		}
 
-		void PrintSummary(int level = 0)
+		void PrintSummary(int level = 0) const
 		{
 			uint64 pcnt = PositiveCount();
 			VLOG(level) << format("Total instance num: {} PostiveCount: {} NegativeCount {} PostiveRatio: {}%"
@@ -138,25 +139,25 @@ namespace gezi {
 			VLOG(level) << format("DenseCount: {} SparseCount: {} DenseRatio: {}%", dcnt, (InstanceNum() - dcnt), ((double)dcnt * 100 / InstanceNum()));
 		}
 
-		uint64 PositiveCount()
+		uint64 PositiveCount() const
 		{
 			return from(*this) >> where([](const InstancePtr& a) { return a->label > 0; })
 				>> count();
 		}
 
-		uint64 NegativeCount()
+		uint64 NegativeCount() const
 		{
 			return from(*this) >> where([](const InstancePtr& a) { return a->label <= 0; })
 				>> count();
 		}
 
-		uint64 SparseCount()
+		uint64 SparseCount() const
 		{
 			return from(*this) >> where([](const InstancePtr& a) { return a->IsSparse(); })
 				>> count();
 		}
 
-		uint64 DenseCount()
+		uint64 DenseCount() const
 		{
 			return from(*this) >> where([](const InstancePtr& a) { return a->IsDense(); })
 				>> count();
@@ -167,14 +168,71 @@ namespace gezi {
 			schema.normalized = norm;
 		}
 
-		bool IsNormalized()
+		bool IsNormalized() const
 		{
 			return schema.normalized == true;
 		}
 
+		bool IsRankingInstances() const
+		{
+			return !schema.groupKeys.empty();
+		}
+
+		bool IsBinaryClassificationInstances() const
+		{
+			return schema.groupKeys.empty() && schema.numClasses == 2;
+		}
+
+		bool IsClassificationInstances() const
+		{
+			return schema.groupKeys.empty() && schema.numClasses > 1;
+		}
+
+		bool IsMultiClassificationInstances() const
+		{
+			return schema.groupKeys.empty() && schema.numClasses > 2;
+		}
+
+		//通常意义的regression问题，拟合浮点数，但是 其实 1,2,3,4 这样的标注 除了可以rank，多分类之外  也可能用regression解决
+		bool IsRegressionInstances() const
+		{
+			return schema.numClasses == -1;
+		}
+
+		int NumClasses() const
+		{
+			return schema.numClasses;
+		}
+
+		//for RankingInstances
+		size_t NumGroups() const
+		{
+			return groups.size();
+		}
+
+#ifndef GCCXML
+		typedef unordered_map<string, ListInstances> GroupMap;
+		//对应RankingInstances 获取组信息
+		GroupMap& GetGroups() 
+		{
+			//AutoTimer timer("GetGropus");
+			if (groups.empty())
+			{
+				for (InstancePtr instance : *this)
+				{
+					string groupName = instance->groupKey;
+					groups[groupName].push_back(instance);
+				}
+			}
+			return groups;
+		}
+#endif
 	public:
 		HeaderSchema schema;
 		string name;
+#ifndef GCCXML
+		GroupMap groups;
+#endif
 	};
 
 }  //----end of namespace gezi

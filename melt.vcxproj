@@ -83,6 +83,7 @@
     <ClCompile Include="src\liblinear\linear.cpp" />
     <ClCompile Include="src\liblinear\tron.cpp" />
     <ClCompile Include="src\libsvm\svm.cpp" />
+    <ClCompile Include="src\MLCore\PredictorFactory.cpp" />
     <ClCompile Include="src\MLCore\PredictoryFactory.cpp" />
     <ClCompile Include="src\Prediction\Instances\InstanceParser.cpp" />
     <ClCompile Include="src\Prediction\Normalization\BinNormalizer.cpp" />
@@ -109,6 +110,8 @@
     <ClCompile Include="src\sofia\sofia-ml-methods_test.cc" />
     <ClCompile Include="src\sofia\sofia-ml.cc" />
     <ClCompile Include="src\Testers\ClassifierTester.cpp" />
+    <ClCompile Include="src\Testers\RankerTester.cpp" />
+    <ClCompile Include="src\Testers\Tester.cpp" />
     <ClCompile Include="src\vowpalwabbit\accumulate.cc" />
     <ClCompile Include="src\vowpalwabbit\active.cc" />
     <ClCompile Include="src\vowpalwabbit\active_interactor.cc" />
@@ -167,6 +170,7 @@
     <ClCompile Include="src\vowpalwabbit\unique_sort.cc" />
     <ClCompile Include="src\vowpalwabbit\vwdll.cpp" />
     <ClCompile Include="src\Wrapper\PredictorFactory.cpp" />
+    <ClCompile Include="test\test_loadtext.cc" />
     <ClCompile Include="test\test_normalizer_online.cc" />
     <ClCompile Include="test_simple\test_predict.cc" />
     <ClCompile Include="tools3\fastrank_predict.cc" />
@@ -177,6 +181,8 @@
     <ClCompile Include="tools\fastrank_predict.cc" />
     <ClCompile Include="tools\gbdt_predict.cc" />
     <ClCompile Include="tools\melt.cc" />
+    <ClCompile Include="tools\predict.cc" />
+    <ClCompile Include="tools\predicts.cc" />
     <ClCompile Include="tools\vw.cc" />
   </ItemGroup>
   <ItemGroup>
@@ -197,6 +203,8 @@
     <ClInclude Include="include\MLCore\TextPredictor.h" />
     <ClInclude Include="include\MLCore\Trainer.h" />
     <ClInclude Include="include\MLCore\TrainerFactory.h" />
+    <ClInclude Include="include\MLCore\TrainerKind.h" />
+    <ClInclude Include="include\MLCore\TrainerType.h" />
     <ClInclude Include="include\Numeric\Vector\Vector.h" />
     <ClInclude Include="include\Prediction\Calibrate\Calibration.h" />
     <ClInclude Include="include\Prediction\Calibrate\Calibrator.h" />

@@ -158,7 +158,6 @@ namespace gezi {
 	};
 	typedef shared_ptr<Instance> InstancePtr;
 	typedef vector<InstancePtr> ListInstances;
-
 }  //----end of namespace gezi
 
 #endif  //----end of PREDICTION__INSTANCES__INSTANCE_H_

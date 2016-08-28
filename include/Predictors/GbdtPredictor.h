@@ -64,16 +64,20 @@ namespace gezi {
 
 		GbdtPredictor(string modelPath)
 		{
-			Load(modelPath);
+			bool ret = Load(modelPath);
+			if (!ret)
+			{
+				LOG(FATAL) << "Gbdt load predictor fail";
+			}
 		}
 
 		//Load Tlc format的文本模型文件
-		virtual bool LoadText(string file) override
+		virtual bool LoadText_(string file) override
 		{
 			Identifer identifer;
 
-			_textModelPath = file;
-			LoadSave::Load(file);
+			//_textModelPath = file;
+			//LoadSave::Load(file);
 
 			svec lines = read_lines(file);
 			if (lines.empty())
@@ -106,7 +110,8 @@ namespace gezi {
 
 			int inputs = parse_int_param("Inputs=", lines[i++]);
 			Pval(inputs);
-			int treeNum = parse_int_param("Evaluators=", lines[i++]) - 2; //-sum tree -sigmoid
+			int numIgnores = GetPredictionKind() == PredictionKind::BinaryClassification ? 2 : 1;
+			int treeNum = parse_int_param("Evaluators=", lines[i++]) - numIgnores; //-sum tree -sigmoid
 			Pval(treeNum);
 
 			svec fnames(inputs);
@@ -133,10 +138,11 @@ namespace gezi {
 						break;
 					}
 				}
-				int maxLeaves = parse_int_param("NumInternalNodes=", lines[i++]);
-				PVAL(maxLeaves);
 				{
 					OnlineRegressionTree tree;
+					int numInternalNodes = parse_int_param("NumInternalNodes=", lines[i++]);
+					tree.NumLeaves = numInternalNodes + 1;
+
 					string splits = parse_string_param("SplitFeatures=", lines[i++]);
 					tree._splitFeature = from(split(splits, '\t')) >> select([&](string a)
 					{
@@ -191,22 +197,25 @@ namespace gezi {
 				tree.SetFeatureNames(_featureNames);
 			}
 
-			//-------------calibrator
-			double paramB = -parse_double_param("Bias=", lines[i]);
-			double paramA = -parse_double_param("Weights=", lines[i + 3]);
-			Pval2(paramA, paramB);
-			_calibrator = make_shared<SigmoidCalibrator>(paramA, paramB);
+			if (GetPredictionKind() == PredictionKind::BinaryClassification)
+			{
+				//-------------calibrator
+				double paramB = -parse_double_param("Bias=", lines[i]);
+				double paramA = -parse_double_param("Weights=", lines[i + 3]);
+				Pval2(paramA, paramB);
+				_calibrator = make_shared<SigmoidCalibrator>(paramA, paramB);
+			}
 
 			return true;
 		}
 
 		virtual void Save_(string file) override
 		{
-			if (!_textModelPath.empty())
-			{ //Hack 拷贝模型文本文件 便于跟踪
-				string modelTextFile = file + ".txt";
-				copy_file(_textModelPath, modelTextFile);
-			}
+			//if (!_textModelPath.empty())
+			//{ //Hack 拷贝模型文本文件 便于跟踪
+			//	string modelTextFile = file + ".txt";
+			//	copy_file(_textModelPath, modelTextFile);
+			//}
 			serialize_util::save(*this, file);
 		}
 
@@ -310,10 +319,10 @@ namespace gezi {
 			return true;
 		}
 
-		void FeatureGainPrint(Vector& features, int level = 0)
+		void PrintFeatureGain(Vector& features, bool sortByAbsGain = true, int level = 0)
 		{
 			VLOG(level) << "Per feature gain for this predict:\n" <<
-				ToGainSummary(features);
+				ToGainSummary(features, sortByAbsGain);
 		}
 
 		map<int, double> GainMap(Vector& features)
@@ -332,36 +341,98 @@ namespace gezi {
 			return m;
 		}
 
-		virtual string ToGainSummary(Vector& features) override
+		virtual string ToGainSummary(Vector& features, bool sortByAbsGain = true) override
 		{
 			map<int, double> m = GainMap(features);
-
-			vector<pair<int, double> > sortedByGain;
-			sort_map_by_absvalue_reverse(m, sortedByGain);
-
 			stringstream ss;
-			int id = 0;
-			for (auto item : sortedByGain)
+			if (sortByAbsGain)
 			{
-				ss << setiosflags(ios::left) << setfill(' ') << setw(40)
-					<< STR(id++) + ":" + _featureNames[item.first]
-					<< "\t" << m[item.first]
-					<< "\t" << item.first << ":" << features[item.first]
-					<< endl;
+				vector<pair<int, double> > sortedByGain;
+				sort_map_by_absvalue_reverse(m, sortedByGain);
+
+				int id = 0;
+				for (auto& item : sortedByGain)
+				{
+					ss << setiosflags(ios::left) << setfill(' ') << setw(40)
+						<< STR(id++) + ":" + _featureNames[item.first]
+						<< "\t" << m[item.first]
+						<< "\t" << item.first << ":" << features[item.first]
+						<< endl;
+				}
 			}
+			else
+			{
+				int id = 0;
+				for (auto& item : m)
+				{
+					ss << setiosflags(ios::left) << setfill(' ') << setw(40)
+						<< STR(id++) + ":" + _featureNames[item.first]
+						<< "\t" << item.second
+						<< "\t" << item.first << ":" << features[item.first]
+						<< endl;
+				}
+			}
+
 			return ss.str();
 		}
+
+#ifdef _DEBUG
+
+		//如果 sortByScore = false, 如果topN < 0 顺序打印所有树的信息,反之 顺序打印topN的树 score
+		//如果 sortByScore = true score
+		void PrintTreeScores(bool sortByScore = false, bool reverse = true, int maxTreeNum = -1) const
+		{
+			if (sortByScore)
+			{
+				if (!reverse)
+					sort(_debugNodes.begin(), _debugNodes.end());
+				else
+					sort(_debugNodes.begin(), _debugNodes.end(), [](const OnlineRegressionTree::DebugNode& l,
+					const OnlineRegressionTree::DebugNode& r)
+				{
+					return l.score < r.score;
+				});
+			}
+
+			int num = 0;
+			for (const OnlineRegressionTree::DebugNode& node : _debugNodes)
+			{
+				if (!sortByScore || !reverse && node.score >= 0 || reverse && node.score <= 0)
+				{
+					VLOG(0) << "tree: " << node.id
+						<< setiosflags(ios::left) << setfill(' ') << setw(7)
+						<< "\t" << "score: " << node.score
+						//<< setiosflags(ios::left) << setfill(' ') << setw(40)
+						<< "\t" << "depth: " << node.paths.size();
+					PVEC(node.paths);
+				}
+				else
+				{
+					break;
+				}
+				num++;
+				if (maxTreeNum > 0 && num >= maxTreeNum)
+				{
+					break;
+				}
+			}
+			VLOG(0) << "Total " << num << " trees show";
+		}
+#endif // _DEBUG
+
 	protected:
 		//注意都是非稀疏的输入应该 稀疏会影响速度 但是不影响结果 而且对于线上 即使稀疏快一点 也无所谓了...
 		virtual Float Margin(Vector& features) override
 		{
 			Float result = 0;
+#ifndef _DEBUG
 #pragma omp parallel for reduction(+: result)
+#endif
 			for (size_t i = 0; i < _trees.size(); i++)
 			{
 				result += _trees[i].Output(features);
 #ifdef _DEBUG
-#pragma  omp critical
+				//#pragma  omp critical
 				{
 					//if (_trees[i]._debugNode.score > 0)
 					{
@@ -371,31 +442,6 @@ namespace gezi {
 				}
 #endif // _DEBUG
 			}
-#ifdef _DEBUG
-			if (!_reverse)
-				sort(_debugNodes.begin(), _debugNodes.end());
-			else
-				sort(_debugNodes.begin(), _debugNodes.end(), [](const OnlineRegressionTree::DebugNode& l,
-				const OnlineRegressionTree::DebugNode& r)
-			{
-				return l.score < r.score;
-			});
-			int num = 0;
-			for (OnlineRegressionTree::DebugNode& node : _debugNodes)
-			{
-				if (!_reverse && node.score >= 0 || _reverse && node.score <= 0)
-				{
-					VLOG(3) << "tree: " << node.id << "\t" << "score: " << node.score << "\t" << "depth: " << node.paths.size();
-					PVEC(node.paths);
-				}
-				else
-				{
-					VLOG(1) << "Total " << num << " trees show";
-					break;
-				}
-				num++;
-			}
-#endif // _DEBUG
 			return result;
 		}
 
@@ -418,13 +464,6 @@ namespace gezi {
 		{
 			return _trees;
 		}
-
-#ifdef _DEBUG
-		void SetReverse(bool reverse = true)
-		{
-			_reverse = reverse;
-		}
-#endif // _DEBUG
 
 	private:
 		void LoadTree(std::ifstream& ifs, OnlineRegressionTree& tree)
@@ -577,17 +616,17 @@ namespace gezi {
 
 	protected:
 #ifdef _DEBUG
+	public: //如果是protected pygcxml不会暴露到python接口中
 		vector<OnlineRegressionTree::DebugNode> _debugNodes;
-		bool _reverse = false;
 #endif // _DEBUG
 
 #ifdef PYTHON_WRAPPER
-		public:
+	public:
 #endif // PYTHON_WRAPPER
 		vector<OnlineRegressionTree> _trees;
 
 		//temply used shared between load save function
-		string _textModelPath;
+		//string _textModelPath;
 	};
 
 	class GbdtRegressionPredictor : public GbdtPredictor
@@ -605,6 +644,22 @@ namespace gezi {
 			return PredictionKind::Regression;
 		}
 	};
+
+	class GbdtRankingPredictor : public GbdtPredictor
+	{
+		using GbdtPredictor::GbdtPredictor;
+
+		virtual string Name() override
+		{
+			return "gbdtRanking";
+		}
+
+		virtual PredictionKind GetPredictionKind()
+		{
+			return PredictionKind::Ranking;
+		}
+	};
+
 }  //----end of namespace gezi
 CEREAL_REGISTER_TYPE(gezi::GbdtPredictor);
 #endif  //----end of PREDICTORS__GBDT_PREDICTOR_H_

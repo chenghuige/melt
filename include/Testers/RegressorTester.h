@@ -15,14 +15,9 @@
 #define TESTERS__REGRESSOR_TESTER_H_
 #include "Tester.h"
 namespace gezi {
-	class RegressorMetrics : public DatasetMetrics
+	class RegressionMetrics : public DatasetMetrics
 	{
 	public:
-		virtual string LabelColumnName() override
-		{
-			return "True";
-		}
-
 		virtual vector<string> PerInstanceColumnNames() override
 		{
 			return vector<string>({ "Predicted", "L1-loss", "L2-loss" });
@@ -35,7 +30,7 @@ namespace gezi {
 		/// <summary>
 		/// Process an instance and aggregate metrics
 		/// </summary>
-		virtual Fvec ProcessInstance(Float label, Float prediction, Float probability = std::numeric_limits<double>::quiet_NaN(), Float weight = 1.0) override
+		virtual Fvec ProcessInstance(Float label, Float prediction, Float probability, Float weight) override
 		{
 			vector<Float> results(3, std::numeric_limits<Float>::quiet_NaN());
 			if (std::isnan(label))
@@ -54,7 +49,7 @@ namespace gezi {
 			return results;
 		}
 		
-		virtual void Finish()
+		virtual void Finish() override
 		{
 			_results = Fvec{
 				sumWeights > 0 ? totalL1Loss / sumWeights : 0,
@@ -78,7 +73,7 @@ namespace gezi {
 
 		virtual vector<DatasetMetricsPtr> ConstructDatasetMetrics()
 		{
-			return vector<DatasetMetricsPtr>({ make_shared<RegressorMetrics>() });
+			return vector<DatasetMetricsPtr>({ make_shared<RegressionMetrics>() });
 		}
 	protected:
 	private:
