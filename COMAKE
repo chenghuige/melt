@@ -106,11 +106,11 @@ CONFIGS('third-64/glog@base')
 #CONFIGS('lib2-64/others-ex@base')
 CONFIGS('public/configure@base')
 #CONFIGS('public/uconv@base')
-CONFIGS('app/search/sep/anti-spam/gezi@trunk@COMAKE')
-CONFIGS('app/search/sep/anti-spam/gezi/third@base', DisBuild())
+CONFIGS('app/search/sep/anti-spam/gezi@base')
+CONFIGS('app/search/sep/anti-spam/gezi/third@base')
 CONFIGS('third-64/zlib@base') #used in vowpalwabbit 
 
-CONFIGS('baidu/nlp-dnn/liblego@liblego_1-0-18-10_PD_BL')
+CONFIGS('baidu/nlp-dnn/liblego')
 CONFIGS('third-64/protobuf@protobuf_2-4-1-1100_PD_BL')
 
 #srcs = GLOB('./src/Prediction/Instances/*.cpp ./src/Prediction/Trainers/*.cpp ./src/Run/*.cpp'.replace('./',RELATIVE_PATH))

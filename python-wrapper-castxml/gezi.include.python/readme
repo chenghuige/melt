@@ -1,0 +1,4 @@
+ds -- data structure
+cereal -- third party seralization with modification
+cpplinq -- third party linq 
+json --- third part jsoncpp

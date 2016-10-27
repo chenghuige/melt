@@ -67,7 +67,7 @@ include_paths_obsolute = [
         ]
 
 mb = module_builder.module_builder_t(
-        gccxml_path = '~/.jumbo/bin/gccxml',
+        gccxml_path = '/home/gezi/.jumbo/bin/gccxml',
         define_symbols = define_symbols,
         files = files,
         include_paths = [root + f + '/include' for f in include_paths]

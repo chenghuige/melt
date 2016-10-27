@@ -1,0 +1,16 @@
+#ifndef M_L_CORE__PREDICTION_KIND_H_
+#define M_L_CORE__PREDICTION_KIND_H_
+namespace gezi {
+enum  PredictionKind
+{
+PredictionKind__enum__Unknown,
+PredictionKind__enum__Custom,
+PredictionKind__enum__BinaryClassification,
+PredictionKind__enum__MultiClassClassification,
+PredictionKind__enum__Regression,
+PredictionKind__enum__MultiOutputRegression,
+PredictionKind__enum__Ranking,
+PredictionKind__enum__Recommendation,
+};
+}
+#endif

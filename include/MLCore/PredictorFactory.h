@@ -19,22 +19,22 @@
 
 namespace gezi {
 
-	class PredictorFactory
-	{
-	public:
-		static PredictorPtr CreatePredictor(string name);
-		static PredictorPtr CreatePredictor(string name, string path);
-		//Mostly used
-		static PredictorPtr LoadPredictor(string path, bool useCustomModel = false);
-		//主要用于线性分类器 用于接受其他外部分类器的结果转换为melt接受的文本格式后载入
-		static PredictorPtr CreatePredictorFromTextFormat(string name, string path);
-		static PredictorPtr LoadTextPredictor(string path);
-		static Predictors LoadPredictors(const svec& paths);
+  class PredictorFactory
+  {
+  public:
+    static PredictorPtr CreatePredictor(string name);
+    static PredictorPtr CreatePredictor(string name, string path);
+    //Mostly used
+    static PredictorPtr LoadPredictor(string path, string modelName = "", bool isText = false, bool useCustomModel = false);
+    //主要用于线性分类器 用于接受其他外部分类器的结果转换为melt接受的文本格式后载入
+    static PredictorPtr CreatePredictorFromTextFormat(string name, string path);
+    static PredictorPtr LoadTextPredictor(string path, string modelName = "");
+    static Predictors LoadPredictors(const svec& paths);
 
-	protected:
-	private:
+  protected:
+  private:
 
-	};
+  };
 
 }  //----end of namespace gezi
 

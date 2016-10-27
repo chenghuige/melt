@@ -1,0 +1,17 @@
+.svn
+*.so.* 
+*.so
+*.bak
+*~
+/output
+output/ 
+*.txt
+*.bin
+*.pyc
+*.html
+*.o
+*.a
+/bin
+bin/
+*/bin 
+/python-wrapper-castxml/lib

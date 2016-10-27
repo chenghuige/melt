@@ -133,7 +133,7 @@ CONFIGS('app/search/sep/anti-spam/gezi/third@base')
 CONFIGS('third-64/zlib@base') #used in vowpalwabbit 
 
 CONFIGS('baidu/nlp-dnn/liblego')
-CONFIGS('third-64/protobuf@protobuf_2-4-1-1100_PD_BL')
+#CONFIGS('third-64/protobuf@protobuf_2-4-1-1100_PD_BL')
 
 
 
@@ -150,9 +150,10 @@ LIBS('./lib/libpython2.7.so ./lib/libboost_python.so')
 srcs = ''
 #SharedLibrary('melt',Sources('melt_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('melt_predict',Sources('melt_predict_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED -DMELT_USE_LEGO')),LinkDeps(True))
+SharedLibrary('melt_predict',Sources('melt_predict_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('lego_predict',Sources('lego_predict_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED -DMELT_USE_LEGO')),LinkDeps(True))
 #SharedLibrary('melt_predict_debug',Sources('melt_predict_debug_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -D_DEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
-SharedLibrary('gbdt',Sources('gbdt_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED -D_DEBUG')),LinkDeps(True))
+#SharedLibrary('gbdt',Sources('gbdt_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED -D_DEBUG')),LinkDeps(True))
 #SharedLibrary('trate',Sources('trate_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('normalizer',Sources('normalizer_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
 #SharedLibrary('calibrator',Sources('calibrator_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))

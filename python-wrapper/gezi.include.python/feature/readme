@@ -1,0 +1,9 @@
+2014.04.10 逐步废弃之前的Feature类,仍然保留，是为了兼容之前的libsm,randomforest model路径下面的Predictor
+可以使用下面的
+FeatureVector.h 
+FeatureSelector.h 
+features_util.h
+FeaturesExtractor.h 
+FeaturesExtractorMgr.h 
+
+可以直接使用 #include "feature/Features.h"

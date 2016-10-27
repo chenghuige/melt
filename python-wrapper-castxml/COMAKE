@@ -1,0 +1,161 @@
+#edit-mode: -*- python -*-
+#coding:gbk
+
+#工作路径. 如果高版本gcc 需要修改两个路径 设置好TOOLCHAIN_ROOT
+WORKROOT('../../../../../../')
+TOOLCHAIN_ROOT='../../../../../../ps/se/toolchain'
+RELATIVE_PATH='../'
+JUMBO_PATH='/home/users/chenghuige/.jumbo/'
+
+#是否使用本地的gcc 比如本地安装了gcc 4.8.2使用本地的可以直接使用生成的bin文件 如./main
+GCC_LOCAL=2
+import os 
+#online use GCC_LOCAL=3, but on local ubuntu use GCC_LOCAL=2
+if os.path.abspath('.').startswith('/home/gezi'):
+    GCC_LOCAL = 1
+print 'GCC_LOCAL: %d'%GCC_LOCAL 
+#是否使用高版本gcc 可以直接使用生成的bin文件 如./main 
+GCC_HIGH=1
+print 'GCC_HIGH: %d'%GCC_HIGH
+#是否使用高版本动态链接库，即是否使用高版本libc 如果启用 可以使用openmp 
+GCC_DYNAMIC=1
+print 'GCC_DYNAMIC: %d'%GCC_DYNAMIC
+GCC_VERSION='3.4.5'
+if  GCC_HIGH == 1: 
+	if GCC_DYNAMIC == 1:
+		GCC_VERSION='4.8.1'
+	else:
+		GCC_VERSION='4.8.2'
+GLIBC_VERSION='2.9'
+BINUTILS_VERSION='2.20'
+KERNAL_VERSION='2.6.32'
+
+TOOLCHAIN=TOOLCHAIN_ROOT
+
+#使用硬链接copy.
+CopyUsingHardLink(True)
+
+GCC_BIN='g++'
+GCC_FLAGS = '' 
+TOOLCHAIN=TOOLCHAIN_ROOT
+if GCC_HIGH  == 1:
+	if GCC_DYNAMIC == 1:	
+            pass
+	else:
+		TOOLCHAIN += '/gcc_only_%s'%(GCC_VERSION)
+		GCC_BIN=TOOLCHAIN + '/bin/g++'
+#对于static方式 LIBS_DIR不起任何作用
+LIBS_DIR=TOOLCHAIN + './lib/'
+
+if GCC_LOCAL == 1:
+	GCC_BIN = 'g++'
+elif GCC_LOCAL == 2:
+	GCC_BIN = '/opt/compiler/gcc-4.8.2/bin/g++'
+elif GCC_LOCAL == 3:
+	GCC_BIN = '~/.jumbo/opt/gcc48/bin/g++'
+print 'GCC_BIN: %s'%GCC_BIN
+CC(GCC_BIN)
+CXX(GCC_BIN)
+
+#C预处理器参数.
+CPPFLAGS('-D_GNU_SOURCE -D__STDC_LIMIT_MACROS -DVERSION=\\\"1.9.8.7\\\"')
+
+#编译参数设置
+COMMON_FLAGS = '-g -O3 -pipe -W -Wall -fPIC -DPYTHON_WRAPPER -DHAVE_NETINET_IN_H -Wno-unused-parameter'
+
+if GCC_HIGH  == 1:
+	GCC_FLAGS += '-fPIC -Wl,-Bsymbolic -std=c++11 -fpermissive -Wno-write-strings -Wno-literal-suffix -Wno-unused-local-typedefs'
+	if GCC_DYNAMIC  == 1:
+		GCC_FLAGS += ' -fopenmp'
+		
+#for lego
+perf_flags = ' -mfpmath=sse -msse -msse2 -msse3'
+#C编译参数.
+CFLAGS(COMMON_FLAGS, GCC_FLAGS, perf_flags)
+
+#C++编译参数.
+CXXFLAGS(COMMON_FLAGS, GCC_FLAGS, perf_flags)
+
+#IDL编译参数
+IDLFLAGS('--compack')
+
+#UBRPC编译参数
+UBRPCFLAGS('--compack')
+
+#链接参数.
+GCC_LDFLAGS=''
+#链接参数.
+
+if GCC_HIGH  == 1: 
+	if GCC_DYNAMIC  == 1:
+		GCC_LDFLAGS += ' -lgomp -rdynamic -Wl,-rpath=./lib/'
+	else: 
+		GCC_LDFLAGS  += ' -static-libgcc -static-libstdc++'
+
+#LDFLAGS('-lpthread -lcurl -lrt -lcrypto -lldap -lssl -ldl -rdynamic -L./ -L./lib -lpython2.7 -lboost_python -Wl,-rpath=./', GCC_LDFLAGS)
+LDFLAGS('-lpthread -lrt -lcrypto -lssl -ldl -rdynamic -L./ -L./lib -lpython2.7 -lboost_python -Wl,-rpath=./', GCC_LDFLAGS)
+
+#依赖模块
+CONFIGS('third-64/gflags.bak')
+ImportConfigsFrom('..')
+CONFIGS('third-64/boost.1.53')
+#add these----
+CONFIGS('third-64/libcurl@base')
+
+CONFIGS('app/search/ksarch/store/proxy-lib/redis@base')
+CONFIGS('public/ub')
+CONFIGS('app/search/sep/anti-spam/gezi@base')
+CONFIGS('app/search/sep/anti-spam/melt@base')
+CONFIGS('app/search/sep/anti-spam/melt-train@base')
+CONFIGS('st/nlp/lm-score')
+CONFIGS('app/search/sep/anti-spam/gezi/third/rabit')
+
+CONFIGS('baidu/nlp-dnn/liblego')
+CONFIGS('third-64/protobuf@protobuf_2-4-1-1100_PD_BL')
+
+#----------------------------------------------for local comake
+CONFIGS('com/btest/gtest')
+CONFIGS('ps/se/toolchain@base')
+CONFIGS('third-64/zlib@base') #used in vowpalwabbit
+CONFIGS('third-64/boost@base')
+#CONFIGS('third-gcc4/boost@base')
+#CONFIGS('third-64/gflags@base')
+CONFIGS('third-64/gflags@base')
+CONFIGS('third-64/glog@base')
+#CONFIGS('third-64/gtest@base')
+#CONFIGS('lib2-64/bsl@base')
+#CONFIGS('lib2-64/ullib@base')
+#CONFIGS('lib2-64/others-ex@base')
+CONFIGS('public/configure@base')
+#CONFIGS('public/uconv@base')
+CONFIGS('app/search/sep/anti-spam/gezi@base')
+CONFIGS('app/search/sep/anti-spam/gezi/third@base')
+CONFIGS('third-64/zlib@base') #used in vowpalwabbit 
+
+CONFIGS('baidu/nlp-dnn/liblego')
+CONFIGS('third-64/protobuf@protobuf_2-4-1-1100_PD_BL')
+
+
+
+#CONFIGS('app/search/sep/anti-spam/melt/python-wrapper')
+
+#头文件路径.
+#INCPATHS('~/.jumbo/include/python2.7 '.replace('./',RELATIVE_PATH) + ' ./')
+INCPATHS(JUMBO_PATH + '/include/python2.7 ./')
+headers=''
+
+#静态库
+LIBS('./lib/libpython2.7.so ./lib/libboost_python.so')
+#LIBS('./libpython2.7.so ./libboost_python.so')
+srcs = ''
+SharedLibrary('melt',Sources('melt_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DNO_BAIDU_DEP -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
+#SharedLibrary('melt_predict',Sources('melt_predict_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED -DMELT_USE_LEGO')),LinkDeps(True))
+#SharedLibrary('lego_predict',Sources('lego_predict_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED -DMELT_USE_LEGO')),LinkDeps(True))
+#SharedLibrary('melt_predict_debug',Sources('melt_predict_debug_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -D_DEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
+#SharedLibrary('gbdt',Sources('gbdt_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED -D_DEBUG')),LinkDeps(True))
+#SharedLibrary('trate',Sources('trate_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
+#SharedLibrary('normalizer',Sources('normalizer_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
+#SharedLibrary('calibrator',Sources('calibrator_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
+#SharedLibrary('urate',Sources('urate_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
+#SharedLibrary('urate_debug',Sources('urate_debug_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -D_DEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
+#SharedLibrary('segment',Sources('segment_py.cc',srcs, ENV.CppFlags()+CppFlags('-O3 -DPYTHON_WRAPPER -DNDEBUG -DBOOST_BIND_PLACEHOLDERS_HPP_INCLUDED')),LinkDeps(True))
