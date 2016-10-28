@@ -19,53 +19,67 @@
 
 namespace gezi {
 
-	class PredictorUtils
-	{
-	public:
-		static TesterPtr GetTester(PredictionKind kind)
-		{
-			switch (kind)
-			{
-			case PredictionKind::Unknown:
-				return nullptr;
-			case PredictionKind::Custom:
-				return nullptr;
-			case PredictionKind::BinaryClassification:
-				return make_shared<ClassifierTester>();
-			case PredictionKind::MultiClassClassification:
-				return make_shared<MulticlassTester>();
-			case PredictionKind::Regression:
-				return make_shared<RegressorTester>();
-			case PredictionKind::MultiOutputRegression:
-				return make_shared<MultioutputRegressorTester>();
-			case PredictionKind::Ranking:
-				return make_shared<RankerTester>();
-			case PredictionKind::Recommendation:
-				return nullptr;
-			default:
-				return nullptr;
-			}
-		}
+  class PredictorUtils
+  {
+  public:
+    static TesterPtr GetTester(PredictionKind kind)
+    {
+      switch (kind)
+      {
+      case PredictionKind::Unknown:
+        return nullptr;
+      case PredictionKind::Custom:
+        return nullptr;
+      case PredictionKind::BinaryClassification:
+        return make_shared<ClassifierTester>();
+      case PredictionKind::MultiClassClassification:
+        return make_shared<MulticlassTester>();
+      case PredictionKind::Regression:
+        return make_shared<RegressorTester>();
+      case PredictionKind::MultiOutputRegression:
+        return make_shared<MultioutputRegressorTester>();
+      case PredictionKind::Ranking:
+        return make_shared<RankerTester>();
+      case PredictionKind::Recommendation:
+        return nullptr;
+      default:
+        return nullptr;
+      }
+    }
 
-		static TesterPtr GetRankerTester()
-		{
-			return make_shared<RankerTester>();
-		}
+    static TesterPtr CreateTester(string metricName)
+    {
+      boost::to_lower(metricName);
+      map<string, PredictionKind> metrics = {
+        { "binary", PredictionKind::BinaryClassification },
+        { "multi", PredictionKind::MultiClassClassification },
+        { "regression", PredictionKind::Regression },
+        { "multi_regression", PredictionKind::MultiOutputRegression },
+        { "rank", PredictionKind::Ranking },
+        { "recommend", PredictionKind::Recommendation }
+      };
+      return GetTester(metrics[metricName]);
+    }
 
-		static TesterPtr GetClassifierTester()
-		{
-			return make_shared<ClassifierTester>();
-		}
+    static TesterPtr GetRankerTester()
+    {
+      return make_shared<RankerTester>();
+    }
 
-		static	TesterPtr GetTester(PredictorPtr predictor)
-		{
-			return GetTester(predictor->GetPredictionKind());
-		}
+    static TesterPtr GetClassifierTester()
+    {
+      return make_shared<ClassifierTester>();
+    }
 
-	protected:
-	private:
+    static	TesterPtr GetTester(PredictorPtr predictor)
+    {
+      return GetTester(predictor->GetPredictionKind());
+    }
 
-	};
+  protected:
+  private:
+
+  };
 
 }  //----end of namespace gezi
 

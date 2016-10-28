@@ -73,6 +73,7 @@ namespace gezi{
       { "gbdtrank", PredictorType::GbdtRank },
       { "gbrank", PredictorType::GbdtRank },
       { "lambdamart", PredictorType::GbdtRank },
+      { "lambda", PredictorType::GbdtRank },
     };
   } //------------- anoymous namespace
   PredictorPtr PredictorFactory::CreatePredictor(string name)

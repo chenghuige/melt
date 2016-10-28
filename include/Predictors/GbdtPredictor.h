@@ -14,6 +14,7 @@
 
 #ifndef PREDICTORS__GBDT_PREDICTOR_H_
 #define PREDICTORS__GBDT_PREDICTOR_H_
+#include <iostream>
 #include "Identifer.h"
 #include "file_util.h"
 #include "MLCore/Predictor.h"
@@ -78,6 +79,7 @@ namespace gezi {
       return textFilePattern;
     }
 
+    //基本不再维护，使用lightGBM训练,读取lightGBM的模型文本即可
     bool LoadTLCText(string file)
     {
       Identifer identifer;
@@ -222,8 +224,8 @@ namespace gezi {
         return false;
 
       size_t i = 0;
-      int featureNum = parse_int_param("max_feature_idx=", lines[i++]) + 1;
-      Pval(featureNum);
+      int numFeatures = parse_int_param("max_feature_idx=", lines[i++]) + 1;
+      Pval(numFeatures);
       int sigmoid = parse_int_param("sigmoid=", lines[i++]);
       if (sigmoid > 0 && GetPredictionKind() == PredictionKind::BinaryClassification)
       {
@@ -282,6 +284,11 @@ namespace gezi {
 
       Pval(_trees.size());
 
+      if (VLOG_IS_ON(1))
+      {
+        SetFeatureGainVec(ToGainVec(numFeatures));
+        std::cout << ToFeaturesGainSummary();
+      }
       return true;
     }
 
@@ -410,6 +417,59 @@ namespace gezi {
       }
 
       return true;
+    }
+
+    const size_t size() const
+    {
+      return _trees.size();
+    }
+
+    const size_t NumTrees() const
+    {
+      return _trees.size();
+    }
+
+    //TODO 重复代码GainMap and ToGainVec，gbdt训练代码的Ensemble中也有，这里主要用在读取lightGBM数据之后的处理展示，后面Ensemble复用这里代码?
+    //统计前prefix棵数目一般用所有的树
+    map<int, Float> GainMap(int prefix, bool normalize)
+    {
+      map<int, Float> m;
+      if (_trees.empty())
+      {
+        return m;
+      }
+      if ((prefix > NumTrees()) || (prefix < 0))
+      {
+        prefix = NumTrees();
+      }
+      for (int i = 0; i < prefix; i++)
+      {
+        _trees[i].GainMap(m);
+      }
+
+      if (normalize)
+      {
+        for (auto& item : m)
+        {
+          item.second /= (Float)NumTrees();
+        }
+      }
+      return m;
+    }
+
+    vector<Float> ToGainVec(size_t numFeatures, int prefix = -1, bool normalize = true)
+    {
+      map<int, Float> m = GainMap(prefix, normalize);
+      vector<Float> gains(numFeatures, 0);
+      for (const auto& item : m)
+      {
+        gains[item.first] += item.second;
+      }
+      if (normalize)
+      {
+        gezi::normalize_vec(gains);
+      }
+      return gains;
     }
 
     void PrintFeatureGain(Vector& features, bool sortByAbsGain = true, int level = 0)
