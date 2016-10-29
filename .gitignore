@@ -15,3 +15,4 @@ output/
 bin/
 */bin 
 /python-wrapper-castxml/lib
+/tools/gbdt_predict

@@ -50,7 +50,7 @@ namespace gezi {
     static TesterPtr CreateTester(string metricName)
     {
       boost::to_lower(metricName);
-      map<string, PredictionKind> metrics = {
+      static const map<string, PredictionKind> metrics = {
         { "binary", PredictionKind::BinaryClassification },
         { "multi", PredictionKind::MultiClassClassification },
         { "regression", PredictionKind::Regression },

@@ -65,7 +65,15 @@ namespace gezi {
 
     GbdtPredictor(string modelPath)
     {
-      bool ret = Load(modelPath);
+      bool ret = false;
+      if (endswith(modelPath, ".txt"))
+      {
+        ret = LoadText(modelPath);
+      }
+      else
+      {
+        ret = Load(modelPath);
+      }
       if (!ret)
       {
         LOG(FATAL) << "Gbdt load predictor fail";
@@ -175,7 +183,8 @@ namespace gezi {
 
           string outputs = parse_string_param("Output=", lines[i++]);
           tree._leafValue = from(split(outputs)) >> select([](string a) { return DOUBLE(a); }) >> to_vector();
-          _trees.emplace_back(tree);
+
+          _trees.emplace_back(move(tree));
         }
       }
 
@@ -275,15 +284,30 @@ namespace gezi {
         tree._gtChild = from(split(rights)) >> select([](string a) { return INT(a); }) >> to_vector();
 
         //pass leaf_parent=
+        //string leafParent = parse_string_param("leaf_parent=", lines[i++]);
+        //tree._parent = from(split(leafParent)) >> select([](string a) { return INT(a); }) >> to_vector();
         i++;
 
         string outputs = parse_string_param("leaf_value=", lines[i++]);
         tree._leafValue = from(split(outputs)) >> select([](string a) { return DOUBLE(a); }) >> to_vector();
-        _trees.emplace_back(tree);
+
+        
+        tree.SetNodeValues();
+
+        _trees.emplace_back(move(tree));
       }
 
       Pval(_trees.size());
-
+      
+#ifdef _DEBUG
+      //in debug mode always need feature names info
+      TryLoadFeatureNamesFromDefaultTextFile();
+#endif // _DEBUG
+      _featureNames.SetNumFeatures(numFeatures);
+      for (auto& tree : _trees)
+      {
+        tree.SetFeatureNames(_featureNames);
+      }
       if (VLOG_IS_ON(1))
       {
         SetFeatureGainVec(ToGainVec(numFeatures));
@@ -294,12 +318,15 @@ namespace gezi {
 
     virtual bool LoadText_(string file) override
     {
+      SetLoadNormalizerAndCalibrator(false);
       if (TextFilePattern() == "TLC")
       {
+        LOG(INFO) << "Loading from text file " << file << " of TLC format";
         return LoadTLCText(file);
       }
       else if (TextFilePattern() == "LightGBM")
       {
+        LOG(INFO) << "Loading from text file " << file << " of LightGBM format";
         return LoadLightGBMText(file);
       }
       else
@@ -496,6 +523,7 @@ namespace gezi {
 
     virtual string ToGainSummary(Vector& features, bool sortByAbsGain = true) override
     {
+      TryLoadFeatureNamesFromDefaultTextFile();
       map<int, double> m = GainMap(features);
       stringstream ss;
       if (sortByAbsGain)
@@ -590,7 +618,7 @@ namespace gezi {
           //if (_trees[i]._debugNode.score > 0)
           {
             _trees[i]._debugNode.id = i;
-            _debugNodes.emplace_back(_trees[i]._debugNode);
+            _debugNodes.emplace_back(move(_trees[i]._debugNode));
           }
         }
 #endif // _DEBUG
@@ -619,6 +647,8 @@ namespace gezi {
     }
 
   private:
+
+
     void LoadTree(std::ifstream& ifs, OnlineRegressionTree& tree)
     {
       read_elem(ifs, tree.NumLeaves);

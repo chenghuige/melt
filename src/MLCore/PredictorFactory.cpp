@@ -131,7 +131,7 @@ namespace gezi{
   //Mostly used
   PredictorPtr PredictorFactory::LoadPredictor(string path, string modelName = "", bool isText = false, bool useCustomModel = false)
   {
-    if (isText)
+    if (isText || endswith(path, ".txt"))
     {
       return LoadTextPredictor(path, modelName);
     }
@@ -173,6 +173,11 @@ namespace gezi{
   PredictorPtr PredictorFactory::LoadTextPredictor(string path, string modelName="")
   {
     string name = modelName.empty() ? read_file(path + "/model.name.txt") : modelName;
+    if (name.empty())
+    {
+      name = "gbdtrank";
+      LOG(WARNING) << "Can not get model info, so judge it as predictor of default type: " << name;
+    }
     PredictorPtr predictor = CreatePredictor(name);
     if (predictor != nullptr)
     {

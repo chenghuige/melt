@@ -59,7 +59,7 @@ namespace gezi {
 				svm_node node;
 				node.index = index + 1;
 				node.value = value;
-				vec.emplace_back(node);
+				vec.emplace_back(move(node));
 			});
 			svm_node node;
 			node.index = -1;

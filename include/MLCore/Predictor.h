@@ -672,7 +672,6 @@ namespace gezi {
       loadNormalizerAndCalibrator() = loadNormalizerAndCalibrator_;
     }
 
-
     //-Utils
     //----------特征重要度 
     //单次预测特征重要度打印, 默认是按照gain的绝对值排序，如果sortByAbsGain = false，则按照feature id顺序打印
@@ -702,6 +701,7 @@ namespace gezi {
     //整个模型中特征重要度的打印
     virtual string ToFeaturesGainSummary(int topNum = 0)
     {
+      TryLoadFeatureNamesFromDefaultTextFile();
       return ToFeaturesGainSummary_(_featureGainVec, topNum);
     }
 
@@ -783,6 +783,16 @@ namespace gezi {
       if (saveCalibrator)
       {
         SAVE_SHARED_PTR_ASJSON(_calibrator, _path);
+      }
+    }
+
+  protected:
+    void TryLoadFeatureNamesFromDefaultTextFile(string featureNameFile="./feature_name.txt")
+    {
+      if (_featureNames.NumFeatureNames() == 0)
+      {
+        VLOG(0) << "Try load feature names from " << featureNameFile;
+        _featureNames.Load(featureNameFile);
       }
     }
 

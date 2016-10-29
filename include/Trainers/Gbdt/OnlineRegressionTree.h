@@ -163,6 +163,28 @@ namespace gezi {
       }
     }
 
+    double SetAndGetNodeValues(int node = 0)
+    {
+      if (node < 0)
+      {//leaf
+        return _leafValue[~node];
+      }
+      else
+      {
+        _previousLeafValue[node] = SetAndGetNodeValues(_lteChild[node]) + SetAndGetNodeValues(_gtChild[node]);
+        return _previousLeafValue[node];
+      }
+    }
+
+    void SetNodeValues()
+    {
+      if (_previousLeafValue.size() == 0)
+      {
+        _previousLeafValue.resize(NumLeaves - 1);
+      }
+      SetAndGetNodeValues();
+    }
+
   protected:
     template<typename T, typename U>
     int GetLeaf_(const T& features, const U& threshold)

@@ -18,7 +18,7 @@
 DEFINE_int32(dcg, 3, "dcgTruncationLevel | Max. truncation level for computing (N)DCG");
 DEFINE_bool(msTest, true, "by default will use ms test strategy");
 DEFINE_string(gains, "", "if not set will use {0,3,7,15,31} as ms test stratgey");
-DEFINE_bool(excludeNoRelevant, false, "if set will exclude quries with all zero label docs");
+DEFINE_bool(excludeNoRelevant, true, "if set will exclude quries with all zero label docs");
 
 namespace gezi {
 
