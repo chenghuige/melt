@@ -72,6 +72,7 @@ namespace gezi{
       { "gbrt", PredictorType::GbdtRegression },
       { "gbdtrank", PredictorType::GbdtRank },
       { "gbrank", PredictorType::GbdtRank },
+      { "lambdarank", PredictorType::GbdtRank },
       { "lambdamart", PredictorType::GbdtRank },
       { "lambda", PredictorType::GbdtRank },
     };
@@ -175,7 +176,7 @@ namespace gezi{
     string name = modelName.empty() ? read_file(path + "/model.name.txt") : modelName;
     if (name.empty())
     {
-      name = "gbdtrank";
+      name = "lambdarank";
       LOG(WARNING) << "Can not get model info, so judge it as predictor of default type: " << name;
     }
     PredictorPtr predictor = CreatePredictor(name);

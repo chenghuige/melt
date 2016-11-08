@@ -793,6 +793,8 @@ namespace gezi {
       {
         VLOG(0) << "Try load feature names from " << featureNameFile;
         _featureNames.Load(featureNameFile);
+        Pval_1(_featureNames.NumFeatures());
+        Pval_1(_featureNames.NumFeatureNames());
       }
     }
 

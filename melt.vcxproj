@@ -176,13 +176,18 @@
     <ClCompile Include="tools3\fastrank_predict.cc" />
     <ClCompile Include="tools3\melt.cc" />
     <ClCompile Include="tools3\PLSA\plsa.cc" />
+    <ClCompile Include="tools\bin_sampling.cc" />
     <ClCompile Include="tools\calibrate.cc" />
     <ClCompile Include="tools\fastrank2gcc3.cc" />
     <ClCompile Include="tools\fastrank_predict.cc" />
+    <ClCompile Include="tools\fastrank_text2bin.cc" />
+    <ClCompile Include="tools\gbdt4gcc3.cc" />
     <ClCompile Include="tools\gbdt_predict.cc" />
     <ClCompile Include="tools\melt.cc" />
+    <ClCompile Include="tools\PLSA\plsa.cc" />
     <ClCompile Include="tools\predict.cc" />
     <ClCompile Include="tools\predicts.cc" />
+    <ClCompile Include="tools\rank_metric.cc" />
     <ClCompile Include="tools\vw.cc" />
   </ItemGroup>
   <ItemGroup>

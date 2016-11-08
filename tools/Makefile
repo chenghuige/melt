@@ -173,11 +173,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=adc7ca5efe486507189f7e3a90e2d7ac  COMAKE
+COMAKE_MD5=ffd5b50ef61b88a59eda2f645f685af1  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check calibrate predict gbdt4gcc3 gbdt_predict bin_sampling melt melt.debug vw vw.debug fastrank2gcc3 gbdt_predict predicts 
+all:comake2_makefile_check calibrate predict gbdt4gcc3 gbdt_predict bin_sampling melt melt.debug vw vw.debug gbdt4gcc3 gbdt_predict predicts rank_metric 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -215,12 +215,14 @@ clean:ccpclean
 	rm -rf ./output/bin/vw
 	rm -rf vw.debug
 	rm -rf ./output/bin/vw.debug
-	rm -rf fastrank2gcc3
-	rm -rf ./output/bin/fastrank2gcc3
+	rm -rf gbdt4gcc3
+	rm -rf ./output/bin/gbdt4gcc3
 	rm -rf gbdt_predict
 	rm -rf ./output/bin/gbdt_predict
 	rm -rf predicts
 	rm -rf ./output/bin/predicts
+	rm -rf rank_metric
+	rm -rf ./output/bin/rank_metric
 	rm -rf calibrate_calibrate.o
 	rm -rf predict_predict.o
 	rm -rf gbdt4gcc3_gbdt4gcc3.o
@@ -229,12 +231,16 @@ clean:ccpclean
 	rm -rf melt_melt.o
 	rm -rf ../src/Wrapper/melt_PredictorFactory.o
 	rm -rf ../src/Testers/melt_ClassifierTester.o
+	rm -rf ../src/Testers/melt_RankerTester.o
+	rm -rf ../src/Testers/melt_Tester.o
 	rm -rf ../src/Prediction/Normalization/melt_BinNormalizer.o
 	rm -rf ../src/Predictors/melt_LibSVMPredictor.o
 	rm -rf ../src/Predictors/melt_VWPredictor.o
 	rm -rf melt.debug_melt.o
 	rm -rf ../src/Wrapper/melt.debug_PredictorFactory.o
 	rm -rf ../src/Testers/melt.debug_ClassifierTester.o
+	rm -rf ../src/Testers/melt.debug_RankerTester.o
+	rm -rf ../src/Testers/melt.debug_Tester.o
 	rm -rf ../src/Prediction/Normalization/melt.debug_BinNormalizer.o
 	rm -rf ../src/Predictors/melt.debug_LibSVMPredictor.o
 	rm -rf ../src/Predictors/melt.debug_VWPredictor.o
@@ -293,6 +299,8 @@ clean:ccpclean
 	rm -rf vw_vw.o
 	rm -rf ../src/Wrapper/vw_PredictorFactory.o
 	rm -rf ../src/Testers/vw_ClassifierTester.o
+	rm -rf ../src/Testers/vw_RankerTester.o
+	rm -rf ../src/Testers/vw_Tester.o
 	rm -rf ../src/Prediction/Normalization/vw_BinNormalizer.o
 	rm -rf ../src/Predictors/vw_LibSVMPredictor.o
 	rm -rf ../src/Predictors/vw_VWPredictor.o
@@ -401,59 +409,58 @@ clean:ccpclean
 	rm -rf ../src/vowpalwabbit/vw.debug_stagewise_poly.o
 	rm -rf ../src/vowpalwabbit/vw.debug_topk.o
 	rm -rf ../src/vowpalwabbit/vw.debug_unique_sort.o
-	rm -rf fastrank2gcc3_fastrank2gcc3.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_accumulate.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_active.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_allreduce.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_autolink.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_bfgs.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_binary.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_bs.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_cache.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_cb.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_cb_algs.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_cbify.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_cost_sensitive.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_csoaa.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_ect.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_example.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_gd.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_gd_mf.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_global_data.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_hash.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_io_buf.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_kernel_svm.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_lda_core.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_learner.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_log_multi.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_loss_functions.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_lrq.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_memory.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_mf.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_multiclass.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_network.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_nn.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_noop.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_oaa.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_parse_args.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_parse_example.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_parse_primitives.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_parse_regressor.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_parser.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_print.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_rand48.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_scorer.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_search.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_search_dep_parser.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_search_entityrelationtask.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_search_hooktask.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_search_multiclasstask.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_search_sequencetask.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_sender.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_simple_label.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_stagewise_poly.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_topk.o
-	rm -rf ../src/vowpalwabbit/fastrank2gcc3_unique_sort.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_accumulate.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_active.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_allreduce.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_autolink.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_bfgs.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_binary.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_bs.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_cache.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_cb.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_cb_algs.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_cbify.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_cost_sensitive.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_csoaa.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_ect.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_example.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_gd.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_gd_mf.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_global_data.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_hash.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_io_buf.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_kernel_svm.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_lda_core.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_learner.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_log_multi.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_loss_functions.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_lrq.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_memory.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_mf.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_multiclass.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_network.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_nn.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_noop.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_oaa.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_parse_args.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_parse_example.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_parse_primitives.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_parse_regressor.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_parser.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_print.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_rand48.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_scorer.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_search.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_search_dep_parser.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_search_entityrelationtask.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_search_hooktask.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_search_multiclasstask.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_search_sequencetask.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_sender.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_simple_label.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_stagewise_poly.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_topk.o
+	rm -rf ../src/vowpalwabbit/gbdt4gcc3_unique_sort.o
 	rm -rf ../src/vowpalwabbit/gbdt_predict_accumulate.o
 	rm -rf ../src/vowpalwabbit/gbdt_predict_active.o
 	rm -rf ../src/vowpalwabbit/gbdt_predict_allreduce.o
@@ -559,6 +566,10 @@ clean:ccpclean
 	rm -rf ../src/vowpalwabbit/predicts_stagewise_poly.o
 	rm -rf ../src/vowpalwabbit/predicts_topk.o
 	rm -rf ../src/vowpalwabbit/predicts_unique_sort.o
+	rm -rf rank_metric_rank_metric.o
+	rm -rf ../src/Testers/rank_metric_ClassifierTester.o
+	rm -rf ../src/Testers/rank_metric_RankerTester.o
+	rm -rf ../src/Testers/rank_metric_Tester.o
 
 .PHONY:dist
 dist:
@@ -1205,6 +1216,8 @@ bin_sampling:bin_sampling_bin_sampling.o \
 melt:melt_melt.o \
   ../src/Wrapper/melt_PredictorFactory.o \
   ../src/Testers/melt_ClassifierTester.o \
+  ../src/Testers/melt_RankerTester.o \
+  ../src/Testers/melt_Tester.o \
   ../src/Prediction/Normalization/melt_BinNormalizer.o \
   ../src/Predictors/melt_LibSVMPredictor.o \
   ../src/Predictors/melt_VWPredictor.o \
@@ -1228,6 +1241,8 @@ melt:melt_melt.o \
 	$(CXX) melt_melt.o \
   ../src/Wrapper/melt_PredictorFactory.o \
   ../src/Testers/melt_ClassifierTester.o \
+  ../src/Testers/melt_RankerTester.o \
+  ../src/Testers/melt_Tester.o \
   ../src/Prediction/Normalization/melt_BinNormalizer.o \
   ../src/Predictors/melt_LibSVMPredictor.o \
   ../src/Predictors/melt_VWPredictor.o -Xlinker "-(" ../libmelt.a \
@@ -1340,6 +1355,8 @@ melt:melt_melt.o \
 melt.debug:melt.debug_melt.o \
   ../src/Wrapper/melt.debug_PredictorFactory.o \
   ../src/Testers/melt.debug_ClassifierTester.o \
+  ../src/Testers/melt.debug_RankerTester.o \
+  ../src/Testers/melt.debug_Tester.o \
   ../src/Prediction/Normalization/melt.debug_BinNormalizer.o \
   ../src/Predictors/melt.debug_LibSVMPredictor.o \
   ../src/Predictors/melt.debug_VWPredictor.o \
@@ -1415,6 +1432,8 @@ melt.debug:melt.debug_melt.o \
 	$(CXX) melt.debug_melt.o \
   ../src/Wrapper/melt.debug_PredictorFactory.o \
   ../src/Testers/melt.debug_ClassifierTester.o \
+  ../src/Testers/melt.debug_RankerTester.o \
+  ../src/Testers/melt.debug_Tester.o \
   ../src/Prediction/Normalization/melt.debug_BinNormalizer.o \
   ../src/Predictors/melt.debug_LibSVMPredictor.o \
   ../src/Predictors/melt.debug_VWPredictor.o \
@@ -1579,6 +1598,8 @@ melt.debug:melt.debug_melt.o \
 vw:vw_vw.o \
   ../src/Wrapper/vw_PredictorFactory.o \
   ../src/Testers/vw_ClassifierTester.o \
+  ../src/Testers/vw_RankerTester.o \
+  ../src/Testers/vw_Tester.o \
   ../src/Prediction/Normalization/vw_BinNormalizer.o \
   ../src/Predictors/vw_LibSVMPredictor.o \
   ../src/Predictors/vw_VWPredictor.o \
@@ -1654,6 +1675,8 @@ vw:vw_vw.o \
 	$(CXX) vw_vw.o \
   ../src/Wrapper/vw_PredictorFactory.o \
   ../src/Testers/vw_ClassifierTester.o \
+  ../src/Testers/vw_RankerTester.o \
+  ../src/Testers/vw_Tester.o \
   ../src/Prediction/Normalization/vw_BinNormalizer.o \
   ../src/Predictors/vw_LibSVMPredictor.o \
   ../src/Predictors/vw_VWPredictor.o \
@@ -2044,59 +2067,59 @@ vw.debug:vw.debug_vw.o \
 	mkdir -p ./output/bin
 	cp -f --link vw.debug ./output/bin
 
-fastrank2gcc3:fastrank2gcc3_fastrank2gcc3.o \
-  ../src/vowpalwabbit/fastrank2gcc3_accumulate.o \
-  ../src/vowpalwabbit/fastrank2gcc3_active.o \
-  ../src/vowpalwabbit/fastrank2gcc3_allreduce.o \
-  ../src/vowpalwabbit/fastrank2gcc3_autolink.o \
-  ../src/vowpalwabbit/fastrank2gcc3_bfgs.o \
-  ../src/vowpalwabbit/fastrank2gcc3_binary.o \
-  ../src/vowpalwabbit/fastrank2gcc3_bs.o \
-  ../src/vowpalwabbit/fastrank2gcc3_cache.o \
-  ../src/vowpalwabbit/fastrank2gcc3_cb.o \
-  ../src/vowpalwabbit/fastrank2gcc3_cb_algs.o \
-  ../src/vowpalwabbit/fastrank2gcc3_cbify.o \
-  ../src/vowpalwabbit/fastrank2gcc3_cost_sensitive.o \
-  ../src/vowpalwabbit/fastrank2gcc3_csoaa.o \
-  ../src/vowpalwabbit/fastrank2gcc3_ect.o \
-  ../src/vowpalwabbit/fastrank2gcc3_example.o \
-  ../src/vowpalwabbit/fastrank2gcc3_gd.o \
-  ../src/vowpalwabbit/fastrank2gcc3_gd_mf.o \
-  ../src/vowpalwabbit/fastrank2gcc3_global_data.o \
-  ../src/vowpalwabbit/fastrank2gcc3_hash.o \
-  ../src/vowpalwabbit/fastrank2gcc3_io_buf.o \
-  ../src/vowpalwabbit/fastrank2gcc3_kernel_svm.o \
-  ../src/vowpalwabbit/fastrank2gcc3_lda_core.o \
-  ../src/vowpalwabbit/fastrank2gcc3_learner.o \
-  ../src/vowpalwabbit/fastrank2gcc3_log_multi.o \
-  ../src/vowpalwabbit/fastrank2gcc3_loss_functions.o \
-  ../src/vowpalwabbit/fastrank2gcc3_lrq.o \
-  ../src/vowpalwabbit/fastrank2gcc3_memory.o \
-  ../src/vowpalwabbit/fastrank2gcc3_mf.o \
-  ../src/vowpalwabbit/fastrank2gcc3_multiclass.o \
-  ../src/vowpalwabbit/fastrank2gcc3_network.o \
-  ../src/vowpalwabbit/fastrank2gcc3_nn.o \
-  ../src/vowpalwabbit/fastrank2gcc3_noop.o \
-  ../src/vowpalwabbit/fastrank2gcc3_oaa.o \
-  ../src/vowpalwabbit/fastrank2gcc3_parse_args.o \
-  ../src/vowpalwabbit/fastrank2gcc3_parse_example.o \
-  ../src/vowpalwabbit/fastrank2gcc3_parse_primitives.o \
-  ../src/vowpalwabbit/fastrank2gcc3_parse_regressor.o \
-  ../src/vowpalwabbit/fastrank2gcc3_parser.o \
-  ../src/vowpalwabbit/fastrank2gcc3_print.o \
-  ../src/vowpalwabbit/fastrank2gcc3_rand48.o \
-  ../src/vowpalwabbit/fastrank2gcc3_scorer.o \
-  ../src/vowpalwabbit/fastrank2gcc3_search.o \
-  ../src/vowpalwabbit/fastrank2gcc3_search_dep_parser.o \
-  ../src/vowpalwabbit/fastrank2gcc3_search_entityrelationtask.o \
-  ../src/vowpalwabbit/fastrank2gcc3_search_hooktask.o \
-  ../src/vowpalwabbit/fastrank2gcc3_search_multiclasstask.o \
-  ../src/vowpalwabbit/fastrank2gcc3_search_sequencetask.o \
-  ../src/vowpalwabbit/fastrank2gcc3_sender.o \
-  ../src/vowpalwabbit/fastrank2gcc3_simple_label.o \
-  ../src/vowpalwabbit/fastrank2gcc3_stagewise_poly.o \
-  ../src/vowpalwabbit/fastrank2gcc3_topk.o \
-  ../src/vowpalwabbit/fastrank2gcc3_unique_sort.o \
+gbdt4gcc3:gbdt4gcc3_gbdt4gcc3.o \
+  ../src/vowpalwabbit/gbdt4gcc3_accumulate.o \
+  ../src/vowpalwabbit/gbdt4gcc3_active.o \
+  ../src/vowpalwabbit/gbdt4gcc3_allreduce.o \
+  ../src/vowpalwabbit/gbdt4gcc3_autolink.o \
+  ../src/vowpalwabbit/gbdt4gcc3_bfgs.o \
+  ../src/vowpalwabbit/gbdt4gcc3_binary.o \
+  ../src/vowpalwabbit/gbdt4gcc3_bs.o \
+  ../src/vowpalwabbit/gbdt4gcc3_cache.o \
+  ../src/vowpalwabbit/gbdt4gcc3_cb.o \
+  ../src/vowpalwabbit/gbdt4gcc3_cb_algs.o \
+  ../src/vowpalwabbit/gbdt4gcc3_cbify.o \
+  ../src/vowpalwabbit/gbdt4gcc3_cost_sensitive.o \
+  ../src/vowpalwabbit/gbdt4gcc3_csoaa.o \
+  ../src/vowpalwabbit/gbdt4gcc3_ect.o \
+  ../src/vowpalwabbit/gbdt4gcc3_example.o \
+  ../src/vowpalwabbit/gbdt4gcc3_gd.o \
+  ../src/vowpalwabbit/gbdt4gcc3_gd_mf.o \
+  ../src/vowpalwabbit/gbdt4gcc3_global_data.o \
+  ../src/vowpalwabbit/gbdt4gcc3_hash.o \
+  ../src/vowpalwabbit/gbdt4gcc3_io_buf.o \
+  ../src/vowpalwabbit/gbdt4gcc3_kernel_svm.o \
+  ../src/vowpalwabbit/gbdt4gcc3_lda_core.o \
+  ../src/vowpalwabbit/gbdt4gcc3_learner.o \
+  ../src/vowpalwabbit/gbdt4gcc3_log_multi.o \
+  ../src/vowpalwabbit/gbdt4gcc3_loss_functions.o \
+  ../src/vowpalwabbit/gbdt4gcc3_lrq.o \
+  ../src/vowpalwabbit/gbdt4gcc3_memory.o \
+  ../src/vowpalwabbit/gbdt4gcc3_mf.o \
+  ../src/vowpalwabbit/gbdt4gcc3_multiclass.o \
+  ../src/vowpalwabbit/gbdt4gcc3_network.o \
+  ../src/vowpalwabbit/gbdt4gcc3_nn.o \
+  ../src/vowpalwabbit/gbdt4gcc3_noop.o \
+  ../src/vowpalwabbit/gbdt4gcc3_oaa.o \
+  ../src/vowpalwabbit/gbdt4gcc3_parse_args.o \
+  ../src/vowpalwabbit/gbdt4gcc3_parse_example.o \
+  ../src/vowpalwabbit/gbdt4gcc3_parse_primitives.o \
+  ../src/vowpalwabbit/gbdt4gcc3_parse_regressor.o \
+  ../src/vowpalwabbit/gbdt4gcc3_parser.o \
+  ../src/vowpalwabbit/gbdt4gcc3_print.o \
+  ../src/vowpalwabbit/gbdt4gcc3_rand48.o \
+  ../src/vowpalwabbit/gbdt4gcc3_scorer.o \
+  ../src/vowpalwabbit/gbdt4gcc3_search.o \
+  ../src/vowpalwabbit/gbdt4gcc3_search_dep_parser.o \
+  ../src/vowpalwabbit/gbdt4gcc3_search_entityrelationtask.o \
+  ../src/vowpalwabbit/gbdt4gcc3_search_hooktask.o \
+  ../src/vowpalwabbit/gbdt4gcc3_search_multiclasstask.o \
+  ../src/vowpalwabbit/gbdt4gcc3_search_sequencetask.o \
+  ../src/vowpalwabbit/gbdt4gcc3_sender.o \
+  ../src/vowpalwabbit/gbdt4gcc3_simple_label.o \
+  ../src/vowpalwabbit/gbdt4gcc3_stagewise_poly.o \
+  ../src/vowpalwabbit/gbdt4gcc3_topk.o \
+  ../src/vowpalwabbit/gbdt4gcc3_unique_sort.o \
   ../libmelt.a \
   ../libsofia.a \
   ../libvw.a \
@@ -2113,60 +2136,60 @@ fastrank2gcc3:fastrank2gcc3_fastrank2gcc3.o \
   ../liblinear.a \
   ../libsvm.a \
   ../libvw.a
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank2gcc3[0m']"
-	$(CXX) fastrank2gcc3_fastrank2gcc3.o \
-  ../src/vowpalwabbit/fastrank2gcc3_accumulate.o \
-  ../src/vowpalwabbit/fastrank2gcc3_active.o \
-  ../src/vowpalwabbit/fastrank2gcc3_allreduce.o \
-  ../src/vowpalwabbit/fastrank2gcc3_autolink.o \
-  ../src/vowpalwabbit/fastrank2gcc3_bfgs.o \
-  ../src/vowpalwabbit/fastrank2gcc3_binary.o \
-  ../src/vowpalwabbit/fastrank2gcc3_bs.o \
-  ../src/vowpalwabbit/fastrank2gcc3_cache.o \
-  ../src/vowpalwabbit/fastrank2gcc3_cb.o \
-  ../src/vowpalwabbit/fastrank2gcc3_cb_algs.o \
-  ../src/vowpalwabbit/fastrank2gcc3_cbify.o \
-  ../src/vowpalwabbit/fastrank2gcc3_cost_sensitive.o \
-  ../src/vowpalwabbit/fastrank2gcc3_csoaa.o \
-  ../src/vowpalwabbit/fastrank2gcc3_ect.o \
-  ../src/vowpalwabbit/fastrank2gcc3_example.o \
-  ../src/vowpalwabbit/fastrank2gcc3_gd.o \
-  ../src/vowpalwabbit/fastrank2gcc3_gd_mf.o \
-  ../src/vowpalwabbit/fastrank2gcc3_global_data.o \
-  ../src/vowpalwabbit/fastrank2gcc3_hash.o \
-  ../src/vowpalwabbit/fastrank2gcc3_io_buf.o \
-  ../src/vowpalwabbit/fastrank2gcc3_kernel_svm.o \
-  ../src/vowpalwabbit/fastrank2gcc3_lda_core.o \
-  ../src/vowpalwabbit/fastrank2gcc3_learner.o \
-  ../src/vowpalwabbit/fastrank2gcc3_log_multi.o \
-  ../src/vowpalwabbit/fastrank2gcc3_loss_functions.o \
-  ../src/vowpalwabbit/fastrank2gcc3_lrq.o \
-  ../src/vowpalwabbit/fastrank2gcc3_memory.o \
-  ../src/vowpalwabbit/fastrank2gcc3_mf.o \
-  ../src/vowpalwabbit/fastrank2gcc3_multiclass.o \
-  ../src/vowpalwabbit/fastrank2gcc3_network.o \
-  ../src/vowpalwabbit/fastrank2gcc3_nn.o \
-  ../src/vowpalwabbit/fastrank2gcc3_noop.o \
-  ../src/vowpalwabbit/fastrank2gcc3_oaa.o \
-  ../src/vowpalwabbit/fastrank2gcc3_parse_args.o \
-  ../src/vowpalwabbit/fastrank2gcc3_parse_example.o \
-  ../src/vowpalwabbit/fastrank2gcc3_parse_primitives.o \
-  ../src/vowpalwabbit/fastrank2gcc3_parse_regressor.o \
-  ../src/vowpalwabbit/fastrank2gcc3_parser.o \
-  ../src/vowpalwabbit/fastrank2gcc3_print.o \
-  ../src/vowpalwabbit/fastrank2gcc3_rand48.o \
-  ../src/vowpalwabbit/fastrank2gcc3_scorer.o \
-  ../src/vowpalwabbit/fastrank2gcc3_search.o \
-  ../src/vowpalwabbit/fastrank2gcc3_search_dep_parser.o \
-  ../src/vowpalwabbit/fastrank2gcc3_search_entityrelationtask.o \
-  ../src/vowpalwabbit/fastrank2gcc3_search_hooktask.o \
-  ../src/vowpalwabbit/fastrank2gcc3_search_multiclasstask.o \
-  ../src/vowpalwabbit/fastrank2gcc3_search_sequencetask.o \
-  ../src/vowpalwabbit/fastrank2gcc3_sender.o \
-  ../src/vowpalwabbit/fastrank2gcc3_simple_label.o \
-  ../src/vowpalwabbit/fastrank2gcc3_stagewise_poly.o \
-  ../src/vowpalwabbit/fastrank2gcc3_topk.o \
-  ../src/vowpalwabbit/fastrank2gcc3_unique_sort.o -Xlinker "-(" ../libmelt.a \
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mgbdt4gcc3[0m']"
+	$(CXX) gbdt4gcc3_gbdt4gcc3.o \
+  ../src/vowpalwabbit/gbdt4gcc3_accumulate.o \
+  ../src/vowpalwabbit/gbdt4gcc3_active.o \
+  ../src/vowpalwabbit/gbdt4gcc3_allreduce.o \
+  ../src/vowpalwabbit/gbdt4gcc3_autolink.o \
+  ../src/vowpalwabbit/gbdt4gcc3_bfgs.o \
+  ../src/vowpalwabbit/gbdt4gcc3_binary.o \
+  ../src/vowpalwabbit/gbdt4gcc3_bs.o \
+  ../src/vowpalwabbit/gbdt4gcc3_cache.o \
+  ../src/vowpalwabbit/gbdt4gcc3_cb.o \
+  ../src/vowpalwabbit/gbdt4gcc3_cb_algs.o \
+  ../src/vowpalwabbit/gbdt4gcc3_cbify.o \
+  ../src/vowpalwabbit/gbdt4gcc3_cost_sensitive.o \
+  ../src/vowpalwabbit/gbdt4gcc3_csoaa.o \
+  ../src/vowpalwabbit/gbdt4gcc3_ect.o \
+  ../src/vowpalwabbit/gbdt4gcc3_example.o \
+  ../src/vowpalwabbit/gbdt4gcc3_gd.o \
+  ../src/vowpalwabbit/gbdt4gcc3_gd_mf.o \
+  ../src/vowpalwabbit/gbdt4gcc3_global_data.o \
+  ../src/vowpalwabbit/gbdt4gcc3_hash.o \
+  ../src/vowpalwabbit/gbdt4gcc3_io_buf.o \
+  ../src/vowpalwabbit/gbdt4gcc3_kernel_svm.o \
+  ../src/vowpalwabbit/gbdt4gcc3_lda_core.o \
+  ../src/vowpalwabbit/gbdt4gcc3_learner.o \
+  ../src/vowpalwabbit/gbdt4gcc3_log_multi.o \
+  ../src/vowpalwabbit/gbdt4gcc3_loss_functions.o \
+  ../src/vowpalwabbit/gbdt4gcc3_lrq.o \
+  ../src/vowpalwabbit/gbdt4gcc3_memory.o \
+  ../src/vowpalwabbit/gbdt4gcc3_mf.o \
+  ../src/vowpalwabbit/gbdt4gcc3_multiclass.o \
+  ../src/vowpalwabbit/gbdt4gcc3_network.o \
+  ../src/vowpalwabbit/gbdt4gcc3_nn.o \
+  ../src/vowpalwabbit/gbdt4gcc3_noop.o \
+  ../src/vowpalwabbit/gbdt4gcc3_oaa.o \
+  ../src/vowpalwabbit/gbdt4gcc3_parse_args.o \
+  ../src/vowpalwabbit/gbdt4gcc3_parse_example.o \
+  ../src/vowpalwabbit/gbdt4gcc3_parse_primitives.o \
+  ../src/vowpalwabbit/gbdt4gcc3_parse_regressor.o \
+  ../src/vowpalwabbit/gbdt4gcc3_parser.o \
+  ../src/vowpalwabbit/gbdt4gcc3_print.o \
+  ../src/vowpalwabbit/gbdt4gcc3_rand48.o \
+  ../src/vowpalwabbit/gbdt4gcc3_scorer.o \
+  ../src/vowpalwabbit/gbdt4gcc3_search.o \
+  ../src/vowpalwabbit/gbdt4gcc3_search_dep_parser.o \
+  ../src/vowpalwabbit/gbdt4gcc3_search_entityrelationtask.o \
+  ../src/vowpalwabbit/gbdt4gcc3_search_hooktask.o \
+  ../src/vowpalwabbit/gbdt4gcc3_search_multiclasstask.o \
+  ../src/vowpalwabbit/gbdt4gcc3_search_sequencetask.o \
+  ../src/vowpalwabbit/gbdt4gcc3_sender.o \
+  ../src/vowpalwabbit/gbdt4gcc3_simple_label.o \
+  ../src/vowpalwabbit/gbdt4gcc3_stagewise_poly.o \
+  ../src/vowpalwabbit/gbdt4gcc3_topk.o \
+  ../src/vowpalwabbit/gbdt4gcc3_unique_sort.o -Xlinker "-(" ../libmelt.a \
   ../libsofia.a \
   ../libvw.a \
   ../libblas.a \
@@ -2269,9 +2292,9 @@ fastrank2gcc3:fastrank2gcc3_fastrank2gcc3.o \
   -lrt \
   -ldl \
   -rdynamic \
-  -lgomp -Xlinker "-)" -o fastrank2gcc3
+  -lgomp -Xlinker "-)" -o gbdt4gcc3
 	mkdir -p ./output/bin
-	cp -f --link fastrank2gcc3 ./output/bin
+	cp -f --link gbdt4gcc3 ./output/bin
 
 gbdt_predict:gbdt_predict_gbdt_predict.o \
   ../src/vowpalwabbit/gbdt_predict_accumulate.o \
@@ -2731,6 +2754,137 @@ predicts:predicts_predicts.o \
 	mkdir -p ./output/bin
 	cp -f --link predicts ./output/bin
 
+rank_metric:rank_metric_rank_metric.o \
+  ../src/Testers/rank_metric_ClassifierTester.o \
+  ../src/Testers/rank_metric_RankerTester.o \
+  ../src/Testers/rank_metric_Tester.o \
+  ../libmelt.a \
+  ../libsofia.a \
+  ../libvw.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mrank_metric[0m']"
+	$(CXX) rank_metric_rank_metric.o \
+  ../src/Testers/rank_metric_ClassifierTester.o \
+  ../src/Testers/rank_metric_RankerTester.o \
+  ../src/Testers/rank_metric_Tester.o -Xlinker "-(" ../libmelt.a \
+  ../libsofia.a \
+  ../libvw.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libsofia.a \
+  ../libblas.a \
+  ../liblinear.a \
+  ../libsvm.a \
+  ../libvw.a ../../../../../../app/search/sep/anti-spam/gezi/libgezi_common.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_cppformat.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/libgezi_json.a \
+  ../../../../../../app/search/sep/anti-spam/gezi/output/lib/libPYNotation.a \
+  ../../../../../../app/search/sep/anti-spam/melt-train/libmelt_trainers.a \
+  ../../../../../../baidu/nlp-dnn/liblego/libliblego.a \
+  ../../../../../../com/btest/gtest/output/lib/libgtest.a \
+  ../../../../../../com/btest/gtest/output/lib/libgtest_main.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_archive.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_buffer.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_check_cast.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_exception.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_pool.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_utils.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var_implement.a \
+  ../../../../../../lib2-64/bsl/lib/libbsl_var_utils.a \
+  ../../../../../../lib2-64/ccode/lib/libulccode.a \
+  ../../../../../../lib2-64/dict/lib/libuldict.a \
+  ../../../../../../lib2-64/libcrf/lib/libcrf.a \
+  ../../../../../../lib2-64/others-ex/lib/libullib_ex.a \
+  ../../../../../../lib2-64/postag/lib/libpostag.a \
+  ../../../../../../lib2-64/ullib/lib/libullib.a \
+  ../../../../../../lib2-64/wordseg/libsegment.a \
+  ../../../../../../public/comlog-plugin/libcomlog.a \
+  ../../../../../../public/comlog-plugin/output/lib/libdfsappender.a \
+  ../../../../../../public/configure/libconfig.a \
+  ../../../../../../public/connectpool/libconnectpool.a \
+  ../../../../../../public/odict/libodict.a \
+  ../../../../../../public/spreg/libspreg.a \
+  ../../../../../../public/uconv/libuconv.a \
+  ../../../../../../quality/autotest/reportlib/cpp/libautotest.a \
+  ../../../../../../third-64/boost/lib/libboost_atomic.a \
+  ../../../../../../third-64/boost/lib/libboost_chrono.a \
+  ../../../../../../third-64/boost/lib/libboost_container.a \
+  ../../../../../../third-64/boost/lib/libboost_context.a \
+  ../../../../../../third-64/boost/lib/libboost_coroutine.a \
+  ../../../../../../third-64/boost/lib/libboost_date_time.a \
+  ../../../../../../third-64/boost/lib/libboost_exception.a \
+  ../../../../../../third-64/boost/lib/libboost_filesystem.a \
+  ../../../../../../third-64/boost/lib/libboost_graph.a \
+  ../../../../../../third-64/boost/lib/libboost_locale.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99f.a \
+  ../../../../../../third-64/boost/lib/libboost_math_c99l.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1f.a \
+  ../../../../../../third-64/boost/lib/libboost_math_tr1l.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi.a \
+  ../../../../../../third-64/boost/lib/libboost_mpi_python.a \
+  ../../../../../../third-64/boost/lib/libboost_prg_exec_monitor.a \
+  ../../../../../../third-64/boost/lib/libboost_program_options.a \
+  ../../../../../../third-64/boost/lib/libboost_python.a \
+  ../../../../../../third-64/boost/lib/libboost_random.a \
+  ../../../../../../third-64/boost/lib/libboost_regex.a \
+  ../../../../../../third-64/boost/lib/libboost_serialization.a \
+  ../../../../../../third-64/boost/lib/libboost_signals.a \
+  ../../../../../../third-64/boost/lib/libboost_system.a \
+  ../../../../../../third-64/boost/lib/libboost_test_exec_monitor.a \
+  ../../../../../../third-64/boost/lib/libboost_thread.a \
+  ../../../../../../third-64/boost/lib/libboost_timer.a \
+  ../../../../../../third-64/boost/lib/libboost_unit_test_framework.a \
+  ../../../../../../third-64/boost/lib/libboost_wave.a \
+  ../../../../../../third-64/boost/lib/libboost_wserialization.a \
+  ../../../../../../third-64/gflags/lib/libgflags.a \
+  ../../../../../../third-64/gflags/lib/libgflags_nothreads.a \
+  ../../../../../../third-64/glog/lib/libglog.a \
+  ../../../../../../third-64/gtest/lib/libgtest.a \
+  ../../../../../../third-64/gtest/lib/libgtest_main.a \
+  ../../../../../../third-64/libcurl/lib/libcurl.a \
+  ../../../../../../third-64/pcre/lib/libpcre.a \
+  ../../../../../../third-64/pcre/lib/libpcrecpp.a \
+  ../../../../../../third-64/pcre/lib/libpcreposix.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf-lite.a \
+  ../../../../../../third-64/protobuf/lib/libprotobuf.a \
+  ../../../../../../third-64/protobuf/lib/libprotoc.a \
+  ../../../../../../third-64/tcmalloc/lib/libprofiler.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_and_profiler.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_debug.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal.a \
+  ../../../../../../third-64/tcmalloc/lib/libtcmalloc_minimal_debug.a \
+  ../../../../../../third-64/zlib/lib/libz.a -lpthread \
+  -lrt \
+  -ldl \
+  -rdynamic \
+  -lgomp -Xlinker "-)" -o rank_metric
+	mkdir -p ./output/bin
+	cp -f --link rank_metric ./output/bin
+
 calibrate_calibrate.o:calibrate.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mcalibrate_calibrate.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o calibrate_calibrate.o calibrate.cc
@@ -2762,6 +2916,14 @@ melt_melt.o:melt.cc
 ../src/Testers/melt_ClassifierTester.o:../src/Testers/ClassifierTester.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/melt_ClassifierTester.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Testers/melt_ClassifierTester.o ../src/Testers/ClassifierTester.cpp
+
+../src/Testers/melt_RankerTester.o:../src/Testers/RankerTester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/melt_RankerTester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Testers/melt_RankerTester.o ../src/Testers/RankerTester.cpp
+
+../src/Testers/melt_Tester.o:../src/Testers/Tester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/melt_Tester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Testers/melt_Tester.o ../src/Testers/Tester.cpp
 
 ../src/Prediction/Normalization/melt_BinNormalizer.o:../src/Prediction/Normalization/BinNormalizer.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Prediction/Normalization/melt_BinNormalizer.o[0m']"
@@ -2795,6 +2957,20 @@ melt.debug_melt.o:melt.cc
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/Testers/melt.debug_ClassifierTester.o ../src/Testers/ClassifierTester.cpp
+
+../src/Testers/melt.debug_RankerTester.o:../src/Testers/RankerTester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/melt.debug_RankerTester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O0 $(CXXFLAGS)  -o ../src/Testers/melt.debug_RankerTester.o ../src/Testers/RankerTester.cpp
+
+../src/Testers/melt.debug_Tester.o:../src/Testers/Tester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/melt.debug_Tester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O0 $(CXXFLAGS)  -o ../src/Testers/melt.debug_Tester.o ../src/Testers/Tester.cpp
 
 ../src/Prediction/Normalization/melt.debug_BinNormalizer.o:../src/Prediction/Normalization/BinNormalizer.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Prediction/Normalization/melt.debug_BinNormalizer.o[0m']"
@@ -3192,6 +3368,14 @@ vw_vw.o:vw.cc
 ../src/Testers/vw_ClassifierTester.o:../src/Testers/ClassifierTester.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/vw_ClassifierTester.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Testers/vw_ClassifierTester.o ../src/Testers/ClassifierTester.cpp
+
+../src/Testers/vw_RankerTester.o:../src/Testers/RankerTester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/vw_RankerTester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Testers/vw_RankerTester.o ../src/Testers/RankerTester.cpp
+
+../src/Testers/vw_Tester.o:../src/Testers/Tester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/vw_Tester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/Testers/vw_Tester.o ../src/Testers/Tester.cpp
 
 ../src/Prediction/Normalization/vw_BinNormalizer.o:../src/Prediction/Normalization/BinNormalizer.cpp
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Prediction/Normalization/vw_BinNormalizer.o[0m']"
@@ -3784,429 +3968,421 @@ vw.debug_vw.o:vw.cc
   -DVERSION=\"1.9.8.7\" \
   -O0 $(CXXFLAGS)  -o ../src/vowpalwabbit/vw.debug_unique_sort.o ../src/vowpalwabbit/unique_sort.cc
 
-fastrank2gcc3_fastrank2gcc3.o:fastrank2gcc3.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mfastrank2gcc3_fastrank2gcc3.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_accumulate.o:../src/vowpalwabbit/accumulate.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_accumulate.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o fastrank2gcc3_fastrank2gcc3.o fastrank2gcc3.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_accumulate.o ../src/vowpalwabbit/accumulate.cc
 
-../src/vowpalwabbit/fastrank2gcc3_accumulate.o:../src/vowpalwabbit/accumulate.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_accumulate.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_active.o:../src/vowpalwabbit/active.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_active.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_accumulate.o ../src/vowpalwabbit/accumulate.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_active.o ../src/vowpalwabbit/active.cc
 
-../src/vowpalwabbit/fastrank2gcc3_active.o:../src/vowpalwabbit/active.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_active.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_allreduce.o:../src/vowpalwabbit/allreduce.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_allreduce.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_active.o ../src/vowpalwabbit/active.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_allreduce.o ../src/vowpalwabbit/allreduce.cc
 
-../src/vowpalwabbit/fastrank2gcc3_allreduce.o:../src/vowpalwabbit/allreduce.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_allreduce.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_autolink.o:../src/vowpalwabbit/autolink.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_autolink.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_allreduce.o ../src/vowpalwabbit/allreduce.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_autolink.o ../src/vowpalwabbit/autolink.cc
 
-../src/vowpalwabbit/fastrank2gcc3_autolink.o:../src/vowpalwabbit/autolink.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_autolink.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_bfgs.o:../src/vowpalwabbit/bfgs.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_bfgs.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_autolink.o ../src/vowpalwabbit/autolink.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_bfgs.o ../src/vowpalwabbit/bfgs.cc
 
-../src/vowpalwabbit/fastrank2gcc3_bfgs.o:../src/vowpalwabbit/bfgs.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_bfgs.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_binary.o:../src/vowpalwabbit/binary.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_binary.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_bfgs.o ../src/vowpalwabbit/bfgs.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_binary.o ../src/vowpalwabbit/binary.cc
 
-../src/vowpalwabbit/fastrank2gcc3_binary.o:../src/vowpalwabbit/binary.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_binary.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_bs.o:../src/vowpalwabbit/bs.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_bs.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_binary.o ../src/vowpalwabbit/binary.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_bs.o ../src/vowpalwabbit/bs.cc
 
-../src/vowpalwabbit/fastrank2gcc3_bs.o:../src/vowpalwabbit/bs.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_bs.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_cache.o:../src/vowpalwabbit/cache.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_cache.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_bs.o ../src/vowpalwabbit/bs.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_cache.o ../src/vowpalwabbit/cache.cc
 
-../src/vowpalwabbit/fastrank2gcc3_cache.o:../src/vowpalwabbit/cache.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_cache.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_cb.o:../src/vowpalwabbit/cb.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_cb.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_cache.o ../src/vowpalwabbit/cache.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_cb.o ../src/vowpalwabbit/cb.cc
 
-../src/vowpalwabbit/fastrank2gcc3_cb.o:../src/vowpalwabbit/cb.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_cb.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_cb_algs.o:../src/vowpalwabbit/cb_algs.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_cb_algs.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_cb.o ../src/vowpalwabbit/cb.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_cb_algs.o ../src/vowpalwabbit/cb_algs.cc
 
-../src/vowpalwabbit/fastrank2gcc3_cb_algs.o:../src/vowpalwabbit/cb_algs.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_cb_algs.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_cbify.o:../src/vowpalwabbit/cbify.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_cbify.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_cb_algs.o ../src/vowpalwabbit/cb_algs.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_cbify.o ../src/vowpalwabbit/cbify.cc
 
-../src/vowpalwabbit/fastrank2gcc3_cbify.o:../src/vowpalwabbit/cbify.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_cbify.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_cost_sensitive.o:../src/vowpalwabbit/cost_sensitive.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_cost_sensitive.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_cbify.o ../src/vowpalwabbit/cbify.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_cost_sensitive.o ../src/vowpalwabbit/cost_sensitive.cc
 
-../src/vowpalwabbit/fastrank2gcc3_cost_sensitive.o:../src/vowpalwabbit/cost_sensitive.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_cost_sensitive.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_csoaa.o:../src/vowpalwabbit/csoaa.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_csoaa.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_cost_sensitive.o ../src/vowpalwabbit/cost_sensitive.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_csoaa.o ../src/vowpalwabbit/csoaa.cc
 
-../src/vowpalwabbit/fastrank2gcc3_csoaa.o:../src/vowpalwabbit/csoaa.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_csoaa.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_ect.o:../src/vowpalwabbit/ect.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_ect.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_csoaa.o ../src/vowpalwabbit/csoaa.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_ect.o ../src/vowpalwabbit/ect.cc
 
-../src/vowpalwabbit/fastrank2gcc3_ect.o:../src/vowpalwabbit/ect.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_ect.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_example.o:../src/vowpalwabbit/example.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_example.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_ect.o ../src/vowpalwabbit/ect.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_example.o ../src/vowpalwabbit/example.cc
 
-../src/vowpalwabbit/fastrank2gcc3_example.o:../src/vowpalwabbit/example.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_example.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_gd.o:../src/vowpalwabbit/gd.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_gd.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_example.o ../src/vowpalwabbit/example.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_gd.o ../src/vowpalwabbit/gd.cc
 
-../src/vowpalwabbit/fastrank2gcc3_gd.o:../src/vowpalwabbit/gd.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_gd.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_gd_mf.o:../src/vowpalwabbit/gd_mf.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_gd_mf.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_gd.o ../src/vowpalwabbit/gd.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_gd_mf.o ../src/vowpalwabbit/gd_mf.cc
 
-../src/vowpalwabbit/fastrank2gcc3_gd_mf.o:../src/vowpalwabbit/gd_mf.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_gd_mf.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_global_data.o:../src/vowpalwabbit/global_data.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_global_data.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_gd_mf.o ../src/vowpalwabbit/gd_mf.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_global_data.o ../src/vowpalwabbit/global_data.cc
 
-../src/vowpalwabbit/fastrank2gcc3_global_data.o:../src/vowpalwabbit/global_data.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_global_data.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_hash.o:../src/vowpalwabbit/hash.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_hash.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_global_data.o ../src/vowpalwabbit/global_data.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_hash.o ../src/vowpalwabbit/hash.cc
 
-../src/vowpalwabbit/fastrank2gcc3_hash.o:../src/vowpalwabbit/hash.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_hash.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_io_buf.o:../src/vowpalwabbit/io_buf.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_io_buf.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_hash.o ../src/vowpalwabbit/hash.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_io_buf.o ../src/vowpalwabbit/io_buf.cc
 
-../src/vowpalwabbit/fastrank2gcc3_io_buf.o:../src/vowpalwabbit/io_buf.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_io_buf.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_kernel_svm.o:../src/vowpalwabbit/kernel_svm.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_kernel_svm.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_io_buf.o ../src/vowpalwabbit/io_buf.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_kernel_svm.o ../src/vowpalwabbit/kernel_svm.cc
 
-../src/vowpalwabbit/fastrank2gcc3_kernel_svm.o:../src/vowpalwabbit/kernel_svm.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_kernel_svm.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_lda_core.o:../src/vowpalwabbit/lda_core.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_lda_core.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_kernel_svm.o ../src/vowpalwabbit/kernel_svm.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_lda_core.o ../src/vowpalwabbit/lda_core.cc
 
-../src/vowpalwabbit/fastrank2gcc3_lda_core.o:../src/vowpalwabbit/lda_core.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_lda_core.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_learner.o:../src/vowpalwabbit/learner.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_learner.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_lda_core.o ../src/vowpalwabbit/lda_core.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_learner.o ../src/vowpalwabbit/learner.cc
 
-../src/vowpalwabbit/fastrank2gcc3_learner.o:../src/vowpalwabbit/learner.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_learner.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_log_multi.o:../src/vowpalwabbit/log_multi.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_log_multi.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_learner.o ../src/vowpalwabbit/learner.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_log_multi.o ../src/vowpalwabbit/log_multi.cc
 
-../src/vowpalwabbit/fastrank2gcc3_log_multi.o:../src/vowpalwabbit/log_multi.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_log_multi.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_loss_functions.o:../src/vowpalwabbit/loss_functions.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_loss_functions.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_log_multi.o ../src/vowpalwabbit/log_multi.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_loss_functions.o ../src/vowpalwabbit/loss_functions.cc
 
-../src/vowpalwabbit/fastrank2gcc3_loss_functions.o:../src/vowpalwabbit/loss_functions.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_loss_functions.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_lrq.o:../src/vowpalwabbit/lrq.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_lrq.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_loss_functions.o ../src/vowpalwabbit/loss_functions.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_lrq.o ../src/vowpalwabbit/lrq.cc
 
-../src/vowpalwabbit/fastrank2gcc3_lrq.o:../src/vowpalwabbit/lrq.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_lrq.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_memory.o:../src/vowpalwabbit/memory.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_memory.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_lrq.o ../src/vowpalwabbit/lrq.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_memory.o ../src/vowpalwabbit/memory.cc
 
-../src/vowpalwabbit/fastrank2gcc3_memory.o:../src/vowpalwabbit/memory.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_memory.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_mf.o:../src/vowpalwabbit/mf.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_mf.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_memory.o ../src/vowpalwabbit/memory.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_mf.o ../src/vowpalwabbit/mf.cc
 
-../src/vowpalwabbit/fastrank2gcc3_mf.o:../src/vowpalwabbit/mf.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_mf.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_multiclass.o:../src/vowpalwabbit/multiclass.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_multiclass.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_mf.o ../src/vowpalwabbit/mf.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_multiclass.o ../src/vowpalwabbit/multiclass.cc
 
-../src/vowpalwabbit/fastrank2gcc3_multiclass.o:../src/vowpalwabbit/multiclass.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_multiclass.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_network.o:../src/vowpalwabbit/network.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_network.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_multiclass.o ../src/vowpalwabbit/multiclass.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_network.o ../src/vowpalwabbit/network.cc
 
-../src/vowpalwabbit/fastrank2gcc3_network.o:../src/vowpalwabbit/network.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_network.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_nn.o:../src/vowpalwabbit/nn.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_nn.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_network.o ../src/vowpalwabbit/network.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_nn.o ../src/vowpalwabbit/nn.cc
 
-../src/vowpalwabbit/fastrank2gcc3_nn.o:../src/vowpalwabbit/nn.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_nn.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_noop.o:../src/vowpalwabbit/noop.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_noop.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_nn.o ../src/vowpalwabbit/nn.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_noop.o ../src/vowpalwabbit/noop.cc
 
-../src/vowpalwabbit/fastrank2gcc3_noop.o:../src/vowpalwabbit/noop.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_noop.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_oaa.o:../src/vowpalwabbit/oaa.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_oaa.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_noop.o ../src/vowpalwabbit/noop.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_oaa.o ../src/vowpalwabbit/oaa.cc
 
-../src/vowpalwabbit/fastrank2gcc3_oaa.o:../src/vowpalwabbit/oaa.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_oaa.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_parse_args.o:../src/vowpalwabbit/parse_args.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_parse_args.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_oaa.o ../src/vowpalwabbit/oaa.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_parse_args.o ../src/vowpalwabbit/parse_args.cc
 
-../src/vowpalwabbit/fastrank2gcc3_parse_args.o:../src/vowpalwabbit/parse_args.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_parse_args.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_parse_example.o:../src/vowpalwabbit/parse_example.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_parse_example.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_parse_args.o ../src/vowpalwabbit/parse_args.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_parse_example.o ../src/vowpalwabbit/parse_example.cc
 
-../src/vowpalwabbit/fastrank2gcc3_parse_example.o:../src/vowpalwabbit/parse_example.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_parse_example.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_parse_primitives.o:../src/vowpalwabbit/parse_primitives.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_parse_primitives.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_parse_example.o ../src/vowpalwabbit/parse_example.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_parse_primitives.o ../src/vowpalwabbit/parse_primitives.cc
 
-../src/vowpalwabbit/fastrank2gcc3_parse_primitives.o:../src/vowpalwabbit/parse_primitives.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_parse_primitives.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_parse_regressor.o:../src/vowpalwabbit/parse_regressor.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_parse_regressor.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_parse_primitives.o ../src/vowpalwabbit/parse_primitives.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_parse_regressor.o ../src/vowpalwabbit/parse_regressor.cc
 
-../src/vowpalwabbit/fastrank2gcc3_parse_regressor.o:../src/vowpalwabbit/parse_regressor.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_parse_regressor.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_parser.o:../src/vowpalwabbit/parser.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_parser.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_parse_regressor.o ../src/vowpalwabbit/parse_regressor.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_parser.o ../src/vowpalwabbit/parser.cc
 
-../src/vowpalwabbit/fastrank2gcc3_parser.o:../src/vowpalwabbit/parser.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_parser.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_print.o:../src/vowpalwabbit/print.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_print.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_parser.o ../src/vowpalwabbit/parser.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_print.o ../src/vowpalwabbit/print.cc
 
-../src/vowpalwabbit/fastrank2gcc3_print.o:../src/vowpalwabbit/print.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_print.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_rand48.o:../src/vowpalwabbit/rand48.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_rand48.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_print.o ../src/vowpalwabbit/print.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_rand48.o ../src/vowpalwabbit/rand48.cc
 
-../src/vowpalwabbit/fastrank2gcc3_rand48.o:../src/vowpalwabbit/rand48.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_rand48.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_scorer.o:../src/vowpalwabbit/scorer.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_scorer.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_rand48.o ../src/vowpalwabbit/rand48.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_scorer.o ../src/vowpalwabbit/scorer.cc
 
-../src/vowpalwabbit/fastrank2gcc3_scorer.o:../src/vowpalwabbit/scorer.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_scorer.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_search.o:../src/vowpalwabbit/search.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_search.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_scorer.o ../src/vowpalwabbit/scorer.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_search.o ../src/vowpalwabbit/search.cc
 
-../src/vowpalwabbit/fastrank2gcc3_search.o:../src/vowpalwabbit/search.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_search.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_search_dep_parser.o:../src/vowpalwabbit/search_dep_parser.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_search_dep_parser.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_search.o ../src/vowpalwabbit/search.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_search_dep_parser.o ../src/vowpalwabbit/search_dep_parser.cc
 
-../src/vowpalwabbit/fastrank2gcc3_search_dep_parser.o:../src/vowpalwabbit/search_dep_parser.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_search_dep_parser.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_search_entityrelationtask.o:../src/vowpalwabbit/search_entityrelationtask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_search_entityrelationtask.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_search_dep_parser.o ../src/vowpalwabbit/search_dep_parser.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_search_entityrelationtask.o ../src/vowpalwabbit/search_entityrelationtask.cc
 
-../src/vowpalwabbit/fastrank2gcc3_search_entityrelationtask.o:../src/vowpalwabbit/search_entityrelationtask.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_search_entityrelationtask.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_search_hooktask.o:../src/vowpalwabbit/search_hooktask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_search_hooktask.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_search_entityrelationtask.o ../src/vowpalwabbit/search_entityrelationtask.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_search_hooktask.o ../src/vowpalwabbit/search_hooktask.cc
 
-../src/vowpalwabbit/fastrank2gcc3_search_hooktask.o:../src/vowpalwabbit/search_hooktask.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_search_hooktask.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_search_multiclasstask.o:../src/vowpalwabbit/search_multiclasstask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_search_multiclasstask.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_search_hooktask.o ../src/vowpalwabbit/search_hooktask.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_search_multiclasstask.o ../src/vowpalwabbit/search_multiclasstask.cc
 
-../src/vowpalwabbit/fastrank2gcc3_search_multiclasstask.o:../src/vowpalwabbit/search_multiclasstask.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_search_multiclasstask.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_search_sequencetask.o:../src/vowpalwabbit/search_sequencetask.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_search_sequencetask.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_search_multiclasstask.o ../src/vowpalwabbit/search_multiclasstask.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_search_sequencetask.o ../src/vowpalwabbit/search_sequencetask.cc
 
-../src/vowpalwabbit/fastrank2gcc3_search_sequencetask.o:../src/vowpalwabbit/search_sequencetask.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_search_sequencetask.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_sender.o:../src/vowpalwabbit/sender.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_sender.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_search_sequencetask.o ../src/vowpalwabbit/search_sequencetask.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_sender.o ../src/vowpalwabbit/sender.cc
 
-../src/vowpalwabbit/fastrank2gcc3_sender.o:../src/vowpalwabbit/sender.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_sender.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_simple_label.o:../src/vowpalwabbit/simple_label.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_simple_label.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_sender.o ../src/vowpalwabbit/sender.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_simple_label.o ../src/vowpalwabbit/simple_label.cc
 
-../src/vowpalwabbit/fastrank2gcc3_simple_label.o:../src/vowpalwabbit/simple_label.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_simple_label.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_stagewise_poly.o:../src/vowpalwabbit/stagewise_poly.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_stagewise_poly.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_simple_label.o ../src/vowpalwabbit/simple_label.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_stagewise_poly.o ../src/vowpalwabbit/stagewise_poly.cc
 
-../src/vowpalwabbit/fastrank2gcc3_stagewise_poly.o:../src/vowpalwabbit/stagewise_poly.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_stagewise_poly.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_topk.o:../src/vowpalwabbit/topk.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_topk.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_stagewise_poly.o ../src/vowpalwabbit/stagewise_poly.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_topk.o ../src/vowpalwabbit/topk.cc
 
-../src/vowpalwabbit/fastrank2gcc3_topk.o:../src/vowpalwabbit/topk.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_topk.o[0m']"
+../src/vowpalwabbit/gbdt4gcc3_unique_sort.o:../src/vowpalwabbit/unique_sort.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt4gcc3_unique_sort.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
   -D__STDC_LIMIT_MACROS \
   -DVERSION=\"1.9.8.7\" \
   -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_topk.o ../src/vowpalwabbit/topk.cc
-
-../src/vowpalwabbit/fastrank2gcc3_unique_sort.o:../src/vowpalwabbit/unique_sort.cc
-	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/fastrank2gcc3_unique_sort.o[0m']"
-	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
-  -D__STDC_LIMIT_MACROS \
-  -DVERSION=\"1.9.8.7\" \
-  -O3 \
-  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/fastrank2gcc3_unique_sort.o ../src/vowpalwabbit/unique_sort.cc
+  -DNDEBUG $(CXXFLAGS)  -o ../src/vowpalwabbit/gbdt4gcc3_unique_sort.o ../src/vowpalwabbit/unique_sort.cc
 
 ../src/vowpalwabbit/gbdt_predict_accumulate.o:../src/vowpalwabbit/accumulate.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/gbdt_predict_accumulate.o[0m']"
@@ -4835,6 +5011,38 @@ predicts_predicts.o:predicts.cc
 ../src/vowpalwabbit/predicts_unique_sort.o:../src/vowpalwabbit/unique_sort.cc
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/vowpalwabbit/predicts_unique_sort.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ../src/vowpalwabbit/predicts_unique_sort.o ../src/vowpalwabbit/unique_sort.cc
+
+rank_metric_rank_metric.o:rank_metric.cc
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mrank_metric_rank_metric.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o rank_metric_rank_metric.o rank_metric.cc
+
+../src/Testers/rank_metric_ClassifierTester.o:../src/Testers/ClassifierTester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/rank_metric_ClassifierTester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/Testers/rank_metric_ClassifierTester.o ../src/Testers/ClassifierTester.cpp
+
+../src/Testers/rank_metric_RankerTester.o:../src/Testers/RankerTester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/rank_metric_RankerTester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/Testers/rank_metric_RankerTester.o ../src/Testers/RankerTester.cpp
+
+../src/Testers/rank_metric_Tester.o:../src/Testers/Tester.cpp
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40m../src/Testers/rank_metric_Tester.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) -D_GNU_SOURCE \
+  -D__STDC_LIMIT_MACROS \
+  -DVERSION=\"1.9.8.7\" \
+  -O3 \
+  -DNDEBUG $(CXXFLAGS)  -o ../src/Testers/rank_metric_Tester.o ../src/Testers/Tester.cpp
 
 endif #ifeq ($(shell uname -m),x86_64)
 

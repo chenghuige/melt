@@ -163,6 +163,7 @@ namespace gezi {
       }
     }
 
+    // FIXME not correct, hope LightGBM can add _previousLeafValue
     double SetAndGetNodeValues(int node = 0)
     {
       if (node < 0)
@@ -171,7 +172,7 @@ namespace gezi {
       }
       else
       {
-        _previousLeafValue[node] = SetAndGetNodeValues(_lteChild[node]) + SetAndGetNodeValues(_gtChild[node]);
+        _previousLeafValue[node] = (SetAndGetNodeValues(_lteChild[node]) + SetAndGetNodeValues(_gtChild[node])) / 2.0;
         return _previousLeafValue[node];
       }
     }

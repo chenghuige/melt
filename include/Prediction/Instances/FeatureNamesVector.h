@@ -111,7 +111,15 @@ namespace gezi {
 
     size_t size() const
     {
-      return std::max((size_t)_numFeatures, _featureNames->size());
+      //return std::max((size_t)_numFeatures, _featureNames->size());
+      if (_numFeatures > 0)
+      {
+        return _numFeatures;
+      }
+      else
+      {
+        return _featureNames->size();
+      }
     }
 
     size_t NumFeatures() const
@@ -149,13 +157,11 @@ namespace gezi {
 
     void Load(string file)
     {
-      static bool hasLoad = false;
-      if (!hasLoad)
+      if (_featureNames->size() == 0)
       {
         //*_featureNames = gezi::read_lines_fast(file);
         *_featureNames = gezi::read_to_vec(file, 0, "# ");
         //_numFeatures = _featureNames->size();
-        hasLoad = true;
       }
     }
 
