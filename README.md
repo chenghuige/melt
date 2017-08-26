@@ -1,60 +1,66 @@
-使用melt进行LightGBM训练与预测
+# 使用melt进行LightGBM训练与上线 
 
-使用示例
-完整环境在lightgbm路径下 直接使用lightgbm训练参考lightgbm-train-test.sh
-使用melt调用lightgbm训练参考 run-rank.sh run-regression.sh
-也可以使用 sh run.sh 将会执行3个训练实验，和一个python接口的预测/debug信息展示
-melt train_data -c tt -test test_data -cl lightgbm -cls lightgbm-rank.conf -cl 表示classifier -cl light | lgbm | gbm | lg 都表示使用lightgbm处理
--cls classifierSetting所有非melt内部算法的第三方都通过 -cls 设置第三方库自身的命令行参数
-melt train_data -c tt -test test_data -cl lightgbm -cls lightgbm-rank.conf,num_trees=200
-melt train_data -c tt -test test_data -cl lightgbm -cls lightgbm-rank.conf,num_trees=200 -incl i:33-55
-这相当于调用 lightgbm config=lightgbm-rank.conf以及 lightgbm config=lightgbm-rank.conf num_tress=200
-melt train_data -c tt -test test_data -cl lightgbm -cls lightgbm-regression.conf,num_trees=200 -incl i:33-55 --metric rank
-这里使用regression算法，但是仍然按照rank评估NDCG ,注意label需要是0-4的整数，如果label 有>4 需要手动设置 -gains
-如果lable是浮点数那么rank评估值计算top1准确率
-melt train_data -cl lightgbm -cls lightgbm-regression.conf
-默认command是交叉验证，这里进行5交叉
-conf的写法参考 https://github.com/Microsoft/LightGBM/blob/master/examples/lambdarank/train.conf
-使用melt的和直接使用LightGBM的区别
-melt对LightGBM做了封装，也就是说melt读取文本文件生成内部数据结构再转换进行LightGBM的训练
-和直接使用LightGBM的区别
-性能损失 如果不是超大数据可以忽略不计，melt的读取也非常快，转换代价基本可以忽略
-大文件处理，melt目前采用全部读入内存的方式，因此如果是超出内存大小的数据，不能使用melt的方式
-可以直接用lightgbm训练配置文件设置
+# 使用示例  
+完整环境在lightgbm路径下 直接使用lightgbm训练参考lightgbm-train-test.sh   
+使用melt调用lightgbm训练参考 run-rank.sh run-regression.sh   
+也可以使用 sh run.sh 将会执行3个训练实验，和一个python接口的预测/debug信息展示 
+1. melt train_data -c tt -test test_data -cl lightgbm -cls lightgbm-rank.conf 
+-cl 表示classifier -cl light | lgbm | gbm | lg 都表示使用lightgbm处理   
+-cls classifierSetting所有非melt内部算法的第三方都通过 -cls 设置第三方库自身的命令行参数  
+2. melt train_data -c tt -test test_data -cl lightgbm -cls lightgbm-rank.conf,num_trees=200   
+3. melt train_data -c tt -test test_data -cl lightgbm -cls lightgbm-rank.conf,num_trees=200 -incl i:33-55   
+这相当于调用 lightgbm config=lightgbm-rank.conf以及 lightgbm config=lightgbm-rank.conf num_tress=200    
+4. melt train_data -c tt -test test_data -cl lightgbm -cls lightgbm-regression.conf,num_trees=200 -incl i:33-55 --metric rank   
+这里使用regression算法，但是仍然按照rank评估NDCG ,注意label需要是0-4的整数，如果label 有>4  需要手动设置 -gains    
+如果lable是浮点数那么rank评估值计算top1准确率    
+5.  melt train_data -cl lightgbm -cls lightgbm-regression.conf   
+默认command是交叉验证，这里进行5交叉    
+conf的写法参考 [https://github.com/Microsoft/LightGBM/blob/master/examples/lambdarank/train.conf]( https://github.com/Microsoft/LightGBM/blob/master/examples/lambdarank/train.conf)  
+# 使用melt的和直接使用LightGBM的区别  
+- melt对LightGBM做了封装，也就是说melt读取文本文件生成内部数据结构再转换进行LightGBM的训练
+- 和直接使用LightGBM的区别  
+1. 性能损失 如果不是超大数据可以忽略不计，melt的读取也非常快，转换代价基本可以忽略  
+2. 大文件处理，melt目前采用全部读入内存的方式，因此如果是超出内存大小的数据，不能使用melt的方式  
+   可以直接用lightgbm训练配置文件设置  
+```
 two_round, default=false, type=bool, alias=two_round_loading,use_two_round_loading
-by default, LightGBM will map data file to memory and load features from memory. This will provide faster data loading speed. But it may out of memory when the data file is very big. set this to true if data file is too big to fit in memory.
-结果diff，结果的diff主要原因是LightGBM的分桶利用了部分数据默认50000样本随机，这部分随机和melt的instances随机逻辑略有不同 但是不影响模型训练效果，diff源自随机性。
-melt如果设置随机种子-rs为固定数值，lightgbm采用其配置文件默认的随机设置,不进行feature和bagging数据采样，那么每次训练结果保持不变。
-局限，melt暂时不支持多分类，lightgbm本身已经支持多分类和初始score输入。
-使用melt的收益
-使用melt训练的主要好处在易用性，体现在
-多种输入格式的支持
-melt同lightgbm一样支持libsvm,tsv,csv格式，同时melt也直接支持malloc rank格式的样本(无需其他设置直接解析malloc rank格式数据)
-lightgbm的rank需要样本提供query文件，并且保证数据文件要按照query排序
-melt数据格式可以通过 --name 0,1 -group 0 来表示前两列对应是名称，第一列是groupKey/query 或者--rank=1等价(-name 0,1 -group 0)
-melt支持内部默认的dense和sparse数据格式，其中sparse数据格式类似libsvm但是在label后面的第一列表示特征数目
-更好的支持特征命名
-melt可以通过以下几种方式提供特征命名信息
---header=1 确认输出有header信息 如 query,doc,label,name1,name2,name3....
-采用默认可解析header，样本数据第一行#开头 如 #query,doc,label,name1,name2..
-在当前路径下提供feature_name.txt里面的数据格式
-name1 #comment
-name2 #comment
-...
-特征匹配的支持
-lightgbm支持在conf中设置要去掉的特征，但是没有melt的特征匹配完善
-melt提供更方便的特征匹配支持 -incl, -excl
--incl i:0-44 表示 只使用0-44 45个特征
--excl i:3-22,50-64 表示去掉3-22和50-64的特征
--incl ^idf 表示只使用特征名称是idf开头的特征
--exc new,old 表示去掉特征名称匹配到new或者old的特征
--incl ^idf -excl new,old 表示只使用idf开头的特征，同时再去掉这里面能够匹配到new或者old的特征
+by default, LightGBM will map data file to memory and load features from memory. This will provide faster data loading speed. But it may out of memory when the data file is very big.
+set this to true if data file is too big to fit in memory.
+```  
+3. 结果diff，结果的diff主要原因是LightGBM的分桶利用了部分数据默认50000样本随机，这部分随机和melt的instances随机逻辑略有不同
+   但是不影响模型训练效果，diff源自随机性。  
+   melt如果设置随机种子-rs为固定数值，lightgbm采用其配置文件默认的随机设置,不进行feature和bagging数据采样，那么每次训练结果保持不变。
+4. 局限，melt暂时不支持多分类，lightgbm本身已经支持多分类和初始score输入。  
+# 使用melt的收益
+使用melt训练的主要好处在易用性，体现在  
+## 多种输入格式的支持  
+1. melt同lightgbm一样支持libsvm,tsv,csv格式，同时melt也直接支持malloc rank格式的样本(无需其他设置直接解析malloc rank格式数据) 
+2. lightgbm的rank需要样本提供query文件，并且保证数据文件要按照query排序  
+3. melt数据格式可以通过 --name 0,1 -group 0 来表示前两列对应是名称，第一列是groupKey/query 或者--rank=1等价(-name 0,1 -group 0)   
+4. melt支持内部默认的dense和sparse数据格式，其中sparse数据格式类似libsvm但是在label后面的第一列表示特征数目
+## 更好的支持特征命名  
+  melt可以通过以下几种方式提供特征命名信息
+1. --header=1 确认输出有header信息 如   query,doc,label,name1,name2,name3....
+2. 采用默认可解析header，样本数据第一行#开头   如 #query,doc,label,name1,name2..
+3. 在当前路径下提供feature_name.txt里面的数据格式  
+name1   #comment  
+name2   #comment  
+...  
+## 特征匹配的支持  
+  lightgbm支持在conf中设置要去掉的特征，但是没有melt的特征匹配完善    
+  melt提供更方便的特征匹配支持 -incl, -excl 
+1. -incl i:0-44 表示 只使用0-44 45个特征
+2. -excl i:3-22,50-64 表示去掉3-22和50-64的特征
+3. -incl ^idf  表示只使用特征名称是idf开头的特征
+4. -exc new,old 表示去掉特征名称匹配到new或者old的特征
+5. -incl ^idf -excl new,old 表示只使用idf开头的特征，同时再去掉这里面能够匹配到new或者old的特征  
 melt处理机制会将不使用的特征对应的全部置为0，而lightgbm转换后再处理的时候，会默认去掉所有样本对应特征值一样的特征不参与训练(但是仍然特征索引占位)
-复用melt的处理框架
-melt支持train,test,train-test,cross validation等这些都可以直接复用，lightgbm目前还不支持交叉验证
-另外方便在相同环境测试不同算法效果，melt同时封装了liblinear,libsvm,vw,sofia-ml第三方算法库，同时自带linearSVM和gbdt二分类回归算法
+## 复用melt的处理框架  
+melt支持train,test,train-test,cross validation等这些都可以直接复用，lightgbm目前还不支持交叉验证    
+另外方便在相同环境测试不同算法效果，melt同时封装了liblinear,libsvm,vw,sofia-ml第三方算法库，同时自带linearSVM和gbdt二分类回归算法  
 melt另外支持一些比较有用的模式
-melt data_file -c si #展示数据文件信息
+1. melt data_file -c si  #展示数据文件信息
+```
 mlt train -c tt --rank=1 -c si
 I1118 07:49:16.736133  7969 Melt.h:59] _cmd.randSeed --- [1649160588]
 I1118 07:49:16.736424  7969 Melt.h:1360] omp_get_num_procs() --- [12]
@@ -96,7 +102,11 @@ I1118 07:49:17.806306  7969 InstanceParser.h:1128] 558       f558:new_tfidf_rank
 I1118 07:49:17.806313  7969 InstanceParser.h:1129] _instances.schema.featureNames.NumFeatures() --- [559]
 I1118 07:49:17.806319  7969 InstanceParser.h:1130] _instances.schema.featureNames.NumFeatureNames() --- [559]
 I1118 07:49:17.806332  7969 time_util.h:118] ParseInputDataFile finished using:       [1069.31 ms] (1.06931 s)
-melt data_file -c fss #fss表示featureStatusShow
+
+```
+2. melt data_file -c fss #fss表示featureStatusShow
+
+```
 mlt train -c tt --rank=1 -c fss
 I1118 07:54:50.291501  8197 Melt.h:59] _cmd.randSeed --- [3262480143]
 I1118 07:54:50.291765  8197 Melt.h:1360] omp_get_num_procs() --- [12]
@@ -144,7 +154,9 @@ I1118 07:54:51.536783  8197 FeatureStatus.h:161] Write csv result to train.featu
 466:f466:click_ner_PDT is always taking value: [0:0]
 Finished [ 559 ] (0.008675 s)100% |*******************************************|
 I1118 07:54:51.681234  8197 time_util.h:118] FeatureStatus! -vl >= 0 to print warning of possible no use features finished using: [1388.95 ms] (1.38895 s)
+```
 查看生成的feature status文件
+```
 more train.featurestatus
 FeatureName	Mean	PosMean	NegMean	PosMin	NegMin	PosMax	NegMax	Var	PosVar	NegVar
 f0:title_ok	mean:0.705236	min:0	max:1	posMean:0.708858	negMean:0.658926	posMin:0	negMin:0	posMax:1	negMax:1	var:0.207879	posVar:0.206379	negVar:0.224753	
@@ -153,9 +165,12 @@ f2:title_num_distinct_matches	mean:1.0452	min:0	max:47	posMean:1.06156	negMean:0
 f3:title_book_count	mean:0.0111703	min:0	max:10	posMean:0.011654	negMean:0.00498607	posMin:0	negMin:0	posMax:10	negMax:6	var:0.0266475	posVar:0.0280664	negVar:0.008465
 32	
 f4:title_num_distinct_matches_weight	mean:2.38964	min:0	max:99.7132	posMean:2.43418	negMean:1.82024	posMin:0	negMin:0	posMax:99.7132	negMax:25.77	var:8.10253	posVar:8.35914	negVar:4.47227	
-f5:title_num_strict_exact_matches	mean:0.0215194	min:0	max:6	posMean:0.0221942	negMean:0.0128919	posMin:0	negMin:0	posMax:6	negMax:2	var:0.0252729	posVar:0.0261918      negVar:0.013445
-更好的特征重要度支持
-lightgbm会在生成的模型文件最后展示特征重要度，这里的特征重要度是用特征在模型生成的所有树中的出现次数来表示的
+f5:title_num_strict_exact_matches	mean:0.0215194	min:0	max:6	posMean:0.0221942	negMean:0.0128919	posMin:0	negMin:0	posMax:6	negMax:2	var:0.0252729	posVar:0.0261918      negVar:0.013445	
+
+```
+## 更好的特征重要度支持
+### lightgbm会在生成的模型文件最后展示特征重要度，这里的特征重要度是用特征在模型生成的所有树中的出现次数来表示的
+```
 feature importances:
 f482:old_examplar=302
 f480:old_Term_freq_weight=232
@@ -178,7 +193,9 @@ f53:title_sum_texts_weight=37
 f538:old_ner_BRD=37
 f16:title_startswith_wordrank=36
 f48:title_avg_offset=29
-使用melt训练会在产出的模型路径默认./model文件夹下面提供model.featureGain.txt，提供了按照特征的分裂收益累加计算的特征重要度信息，并且做了归一化处理
+```
+### 使用melt训练会在产出的模型路径默认./model文件夹下面提供model.featureGain.txt，提供了按照特征的分裂收益累加计算的特征重要度信息，并且做了归一化处理
+```
 more ./model/model.featureGain.txt 
 0:f471:total_wordrank                           1
 1:f546:new_tuwen_showandtell                    0.718685
@@ -192,9 +209,11 @@ more ./model/model.featureGain.txt
 9:f543:new_tuwen_rnn                            0.356774
 10:f550:new_idf_ranktext_simid                  0.227524
 11:f547:new_tuwen_showandtell_char              0.196125
-melt支持单次预测特征重要度的展示
-melt训练过程 使用参数--wr=1会打印预测结果到./result/0.inst.txt（可以通过--rf a.txt配置为打印到a.txt)
+```
+### melt支持单次预测特征重要度的展示
+melt训练过程 使用参数--wr=1会打印预测结果到./result/0.inst.txt（可以通过--rf a.txt配置为打印到a.txt)  
 默认会设置 --writeDebug=1 展示debug信息也就是特征预测重要度信息，默认展示top5可以通过-numDebugs=10来修改为top10
+```
 mlt train -c tt -t test --rank=1 -cl lgb -cls lightgbm-rank.conf --wr=1 --rf result.txt^C
 gezi@localhost:~/work/keywords/train/v2/zhongce/text$ more ./result.txt 
 Instance	GroupKey	True	Predicted	NDCG@1	NDCG@2	NDCG@3	DCG@1	DCG@2	DCG@3	MaxDCG@1	MaxDCG@2	MaxDCG@3	Debug
@@ -207,15 +226,18 @@ n_showandtell_char:0.889376:0.521313,f546:new_tuwen_showandtell:0.574118:0.50291
 3448460368,430059535|吴建中	3448460368,430059535	3	-0.150239	100	100	92.8479	21.6404	35.294	37.4581	21.6404	35.294	40.3434	f482:old_examplar:-3.1043:-2,f480:old_Term_freq_weight:-2.60871:1,f548:new_idf_
 ranktext_all_simid:1.05964:9867,f535:old_ner_PER:0.649271:1,f546:new_tuwen_showandtell:0.609997:0.56614
 3448460368,430059535|应建仁	3448460368,430059535	3	-0.352779	100	100	92.8479	21.6404	35.294	37.4581	21.6404	35.294	40.3434	f548:new_idf_ranktext_all_simid:2.65718:197,f482:old_examplar:-2.30219:-2,f480:
-单次预测特征重要度的计算是通过计算特征在预测路径分裂前后的差值累加得到的。
-melt支持无依赖的c++接口预测上线
-melt训练 -c train模式 设置 --mcustorm=1 则生成的 model.bin文件(默认在 ./model路径下 可以通过 -m 修改) 可以直接利用无编译依赖的GbdtPredictor.h头文件读取预测,具体参考工具包inference目录
-melt提供预测和单次预测特征重要度的python接口
-melt的python预测接口
-统一的python接口(libmelt)
-不仅仅限于gbdt，melt支持的其它模型如线性svm模型liblinear，同样可以只用统一的python预测接口
-注意--mcustom=1生成的模型 LoadPredictor(string path, string modelName = "", bool isText = false, bool useCustomModel = false)
+```
+单次预测特征重要度的计算是通过计算特征在预测路径分裂前后的差值累加得到的。  
+## melt支持无依赖的c++接口预测上线
+melt训练 -c train模式 设置 --mcustorm=1 则生成的  model.bin文件(默认在 ./model路径下 可以通过 -m 修改)  可以直接利用无编译依赖的GbdtPredictor.h头文件读取预测,具体参考工具包inference目录
+## melt提供预测和单次预测特征重要度的python接口 
+
+### melt的python预测接口
+#### 统一的python接口(libmelt)
+不仅仅限于gbdt，melt支持的其它模型如线性svm模型liblinear，同样可以只用统一的python预测接口  
+注意--mcustom=1生成的模型 LoadPredictor(string path, string modelName = "", bool isText = false, bool useCustomModel = false)  
 需要设置 useCustomModel=True
+```
 In [1]: import gezi.nowarning
 
 In [2]: from libmelt import PredictorFactory, Vector
@@ -248,9 +270,11 @@ I1118 09:42:03.382071 25865 Predictor.h:806] Try load feature names from ./featu
 
 In [6]: predictor.Predict(Vector('21:12.5,33:22.3'))
 Out[6]: -1.207006727
-gbdt专用python接口(libgbdt)
+```
+#### gbdt专用python接口(libgbdt)
 与统一接口类似，用法见下面单次特征重要度预测
-melt的python单次预测特征重要度接口
+### melt的python单次预测特征重要度接口 
+```
 In [2]: from libgbdt import GbdtPredictor, Vector
 
 In [3]: predictor = GbdtPredictor('./LightGBM_model.txt')
@@ -283,8 +307,11 @@ f482:old_examplar:-2.59336:-2
 f547:new_tuwen_showandtell_char:0.7709:0.521313
 f546:new_tuwen_showandtell:0.520602:0.50291
 f468:keyword_length:0.431322:6
-c++二进制的debug工具 gbdt_predict
-在tools路径下
+
+```
+## c++二进制的debug工具 gbdt_predict
+在tools路径下 
+```
 gbdt_predict -m LightGBM_model.txt -f '0:1,1:1,2:1,4:1.77017,11:1,18:0.122528,19:1.34781,20:1,21:0.122528,22:1.34781,23:1,24:1,31:0.122528,32:1.34781,33:1,34:0.122528,35:1.34781,36:1.77017,43:0.216896,44:2.38586,45:1,46:0.122528,47:1.34781,48:13,50:1,51:1,52:1,53:1.77017,128:1,129:1,200:1,201:1,468:6,469:3,470:1,471:0.122528,472:1.77017,473:1,474:1,475:1,480:1,481:3,482:-2,521:1.77017,542:0.597565,543:0.696085,544:0.609126,545:0.702186,546:0.50291,547:0.521313,548:3.7336e+06,549:699743,550:511960,551:4,552:4,555:2,556:2,557:30.2658,558:26.916'
 I1118 10:00:56.809183 28321 LoadSave.h:55] gbdt try load as text from LightGBM_model.txt
 I1118 10:00:56.809365 28321 GbdtPredictor.h:348] Loading from text file LightGBM_model.txt of LightGBM format
@@ -305,9 +332,9 @@ I1118 10:00:56.824920 28321 GbdtPredictor.h:332] Per_feature_gain print top 10 -
 I1118 10:00:56.825709 28321 gbdt_predict.cc:47] predictorName: -- Notice for non gbdt binary classification model, proababilty is meaning less
 I1118 10:00:56.825742 28321 gbdt_predict.cc:52] predict -- [-0.626421] probablity -- [-0.626421]
 I1118 10:00:56.826164 28321 gbdt_predict.cc:78] Per feature gain for this predict, sortByGain: 1
-0:f480:old_Term_freq_weight                     	-2.70486 480:1
-1:f482:old_examplar                             	-2.59336 482:-2
-2:f547:new_tuwen_showandtell_char               	0.7709 547:0.521313
+0:f480:old_Term_freq_weight                     	-2.70486	480:1
+1:f482:old_examplar                             	-2.59336	482:-2
+2:f547:new_tuwen_showandtell_char               	0.7709	547:0.521313
 3:f546:new_tuwen_showandtell                    	0.520602	546:0.50291
 4:f468:keyword_length                           	0.431322	468:6
 5:f545:new_tuwen_rnn_bi                         	0.385684	545:0.702186
@@ -316,15 +343,17 @@ I1118 10:00:56.826164 28321 gbdt_predict.cc:78] Per feature gain for this predic
 8:f555:new_idf_query_top1match                  	0.314287	555:2
 9:f548:new_idf_ranktext_all_simid               	-0.282919	548:3.7336e+06
 10:f47:title_avg_normed_wordrank_weight         	0.271767	47:1.34781
-11:f550:new_idf_ranktext_simid                  	-0.204529 550:511960
-12:f45:title_avg_matches_weight                 	0.194325 45:1
-13:f34:title_avg_wordrank_real                  	0.177239 34:0.122528
-14:f257:desc_num_start_matches_weight           	0.176843 257:0
-15:f554:new_idf_query_top1ematch                	0.161948 554:0
-16:f43:title_wordrank_weight                    	0.160418 43:0.216896
-17:f46:title_avg_wordrank_weight                	0.134556 46:0.122528
-18:f469:keyword_unicode_length                  	-0.132079 469:3
+11:f550:new_idf_ranktext_simid                  	-0.204529	550:511960
+12:f45:title_avg_matches_weight                 	0.194325	45:1
+13:f34:title_avg_wordrank_real                  	0.177239	34:0.122528
+14:f257:desc_num_start_matches_weight           	0.176843	257:0
+15:f554:new_idf_query_top1ematch                	0.161948	554:0
+16:f43:title_wordrank_weight                    	0.160418	43:0.216896
+17:f46:title_avg_wordrank_weight                	0.134556	46:0.122528
+18:f469:keyword_unicode_length                  	-0.132079	469:3
+```
 展示第一棵树的预测路径
+```
 gbdt_predict -m LightGBM_model.txt -t 0 -f '0:1,1:1,2:1,4:1.77017,11:1,18:0.122528,19:1.34781,20:1,21:0.122528,22:1.34781,23:1,24:1,31:0.122528,32:1.34781,33:1,34:0.122528,35:1.34781,36:1.77017,43:0.216896,44:2.38586,45:1,46:0.122528,47:1.34781,48:13,50:1,51:1,52:1,53:1.77017,128:1,129:1,200:1,201:1,468:6,469:3,470:1,471:0.122528,472:1.77017,473:1,474:1,475:1,480:1,481:3,482:-2,521:1.77017,542:0.597565,543:0.696085,544:0.609126,545:0.702186,546:0.50291,547:0.521313,548:3.7336e+06,549:699743,550:511960,551:4,552:4,555:2,556:2,557:30.2658,558:26.916' 
 I1118 10:03:04.561481 28535 LoadSave.h:55] gbdt try load as text from LightGBM_model.txt
 I1118 10:03:04.561647 28535 GbdtPredictor.h:348] Loading from text file LightGBM_model.txt of LightGBM format
@@ -408,3 +437,5 @@ $[471] f471:total_wordrank 0.12253 <= 0.19798 ?
 |  |  |  |  [475] f475:old_Title_freq 1.00000 <= 0.50000 ?
 |  |  |  |  |  0.0306819
 |  |  |  |  |  0.0429537
+
+```
