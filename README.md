@@ -2,7 +2,7 @@
 ## 方便的机器学习各种算法在各种数据平台(单机,mpi, hadoop,gpu)的实验。  
 ## 提供丰富的实验支持和机器学习数据分析支持(MELT本身的支持及多个外围脚本支持)  
 ## 训练时候的特征动态选择 –incl   -excl支持  
-## 多种normalizer,calibrator可供选择(优化速度的minmax normalizer，还提供guass和bin normalizer)  
+## 多种normalizer,calibrator可供选择(优化速度的minmax normalizer，还提供gauss和bin normalizer)  
 ## Python接口的支持  
 ## 特征重要度打印，如GBDT,LinearSVM均支持   
 ## GBDT模型的单次预测重要度展示，gbdt树模型的图片打印，模型输出到C++/PYTON/PHP代码  
