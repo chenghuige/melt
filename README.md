@@ -1,3 +1,25 @@
+# MELT是一个机器学习包，主要特色是丰富的实验特性支持，注重训练速度优化，它的设计目标
+## 方便的机器学习各种算法在各种数据平台(单机,mpi, hadoop,gpu)的实验。  
+## 提供丰富的实验支持和机器学习数据分析支持(MELT本身的支持及多个外围脚本支持)  
+## 训练时候的特征动态选择 –incl   -excl支持  
+## 多种normalizer,calibrator可供选择(优化速度的minmax normalizer，还提供guass和bin normalizer)  
+## Python接口的支持  
+## 特征重要度打印，如GBDT,LinearSVM均支持   
+## GBDT模型的单次预测重要度展示，gbdt树模型的图片打印，模型输出到C++/PYTON/PHP代码  
+## 迭代模型如GBDT，LinearSVM均支持迭代过程中的validating，early stop  
+## Predictor内部整合normalizer和calibrator更加方便使用。   
+## 良好的扩展性 支持其它开源线性模型的引入（sofia,liblinear,libsvm,lightgbm）
+## 加入你自己的模型  
+## 场景及特性 
+通过在命令行执行melt命令完成单机实验  
+标配设置:   交叉验证, 训练+测试, 训练 + 测试 + 预测(线上), 特征选择(指定部分特征，或指定去掉部分特征  
+任务： 二元分类，多分类，回归，排序  
+Learners:   boosted trees, SVMs, logistic regression, stochastic gradient descent, perceptron, VW, bagging, etc.  
+MPI:  大规模数据并行算法  
+参数扫描(Parameter sweeps):   单机的参数扫描及hadoop，mpi版本参数扫描.  
+提供数据分析对比支持  
+数据输入格式建议采用melt默认的稠密或者稀疏表示格式，同时也直接LibSVM格式的输入  
+
 # 使用melt进行LightGBM训练与上线 
 
 # 使用示例  
